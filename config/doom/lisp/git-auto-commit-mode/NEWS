@@ -1,0 +1,81 @@
+# -*- mode: org; -*-
+#+STARTUP: showall
+
+* v4.7.0
+
+  - Fix the URL package header, it was pointing at a non-existent page.
+  - Add user options =gac-commit-additional-flags=, and =gac-silent-message-p=.
+  - Fix an issue with having the =[= character somewhere in the path of the file.
+
+* v4.6.0
+
+  - Only try to commit when changes have been discovered in the file. By
+    extension git-auto-commit-mode won't ask for a summary to a commit that it
+    won't make.
+  - Add option to prevent new (untracked) files from being added to the git
+    repository automatically, =gac-automatically-add-new-files-p=.
+
+* v4.5.0
+
+  - Support the fish shell through the ~gac-shell-and~ option.
+  - Support buffering commits within a certain time interval using the
+    ~gac-debounce-interval~.
+
+* v4.4.0
+
+  - Support Windows paths using =convert-standard-filename=.
+  - Properly escape command-line arguments when calling git with
+    =shell-quote-argument=.
+  - Explicitly bind =default-directory= when calling git.
+
+* v4.3.2
+
+  - Bump version, oops I forgot to do this for 4.3.1.
+
+* v4.3.1
+
+  - Fix committing files with spaces in their name.
+
+* v4.3.0
+
+  - Add user option =gac-ask-for-summary-p=.
+
+* v4.2.2
+
+  - =provide= a ~git-auto-commit-mode~ feature. (Thanks Jascha Geerds!)
+
+* v4.2.1
+
+  - Fix some version number mistakes.
+
+* v4.2.0
+
+  - Add README, NEWS, CONTRIBUTING and INSTALL files.
+
+  - Use Emacs' Customize interface for user option
+    =gac-automatically-push-p=.
+
+* v4.1
+
+  - Update package URL to new homepage.
+
+* v4
+
+  - Make =gac-automatically-push= buffer local, always.
+
+  - Rename =gac-automatically-push= to =gac-automatically-push-p= to
+    follow standard emacs-lisp conventions.
+
+  - Fix commentary about =gac-automatically-push-p=.
+
+* v3
+
+  - Shows the status when push finishes.
+
+* v2
+
+  - Add ability to automatically push.
+
+* v1
+
+  - Initial release.

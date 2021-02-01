@@ -1,0 +1,17 @@
+#!/bin/sh
+
+set -x
+
+if [ -n "$INSIDE_EMACS" ]; then
+	exec emacsclient "$@"
+fi
+
+# Emacs in the terminal
+
+# If Emacs.app isn't already running, ...
+if [ -n "$EMACS_MAC" ] && ! pgrep -f Emacs.app >/dev/null; then
+	# ...open Emacs.app (which also launches the daemon) in the background.
+	open -g -j -a Emacs
+fi
+emacs-daemon-wait term
+exec emacsclient -s term -nw "$@"

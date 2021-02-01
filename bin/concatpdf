@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+
+params = {out: 'all.pdf'}
+ARGV.push('-h') if ARGV.empty?
+OptionParser.new do |opts|
+	opts.banner = "Usage: #{$0} [options] inputfiles..."
+	opts.version = "0.1-pre"
+
+	opts.on('-o', '--out FILE', 'name of output file (all.pdf by default)')
+
+	opts.on('-y', '--yes', 'replace file if it exists')
+
+	opts.on('-h', '--help', 'Prints this help') do
+		puts opts
+		exit
+	end
+end.parse!(into: params)
+
+if File.exist?(params[:out]) && !params[:yes]
+	if $stdout.isatty
+		# running interactively
+		print "Replace existing file #{params[:out]} (y/n)? "
+		unless STDIN.gets.start_with?('y')
+			fail "#{params[:out]} already exists"
+		end
+	else
+		fail "#{params[:out]} already exists (use -y to overwrite)"
+	end
+end
+
+`gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=#{params[:out]} #{ARGV.map{%{"#{_1}"}}.join(' ')}`

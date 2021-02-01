@@ -1,0 +1,4 @@
+#compdef git-stash-unstaged
+#description stash unstaged changes (but not staged changes)
+
+# TODO

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -x
+
+if [ -n "$INSIDE_EMACS" ]; then
+	exec emacsclient "$@"
+fi
+
+# new Emacs in the terminal
+
+exec emacs -nw "$@"

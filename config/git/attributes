@@ -1,0 +1,102 @@
+# https://gist.github.com/ruediger/5647207
+# https://gist.github.com/tekin/12500956bd56784728e490d8cef9cb81
+# https://tekin.co.uk/2020/10/better-git-diff-output-for-ruby-python-elixir-and-more
+# for binary files: https://gist.github.com/Konfekt/5ece511a94a8aa118aadbbb23dab1f21
+
+# https://github.com/git/git/blob/master/userdiff.c
+# https://git-scm.com/docs/gitattributes#_defining_a_custom_hunk_header
+
+# https://github.com/gitattributes/gitattributes/blob/master/Common.gitattributes
+
+# BUILT IN
+# ada suitable for source code in the Ada language.
+*.adb   diff=ada
+*.ads   diff=ada
+# bash suitable for source code in the Bourne-Again SHell language. Covers a superset of POSIX shell function definitions.
+*.sh    diff=bash
+*.bash  diff=bash
+*.zsh   diff=bash
+# bibtex suitable for files with BibTeX coded references.
+*.bib   diff=bibtex
+# cpp suitable for source code in the C and C++ languages.
+*.c     diff=cpp
+*.h     diff=cpp
+*.c++   diff=cpp
+*.h++   diff=cpp
+*.cpp   diff=cpp
+*.hpp   diff=cpp
+*.cc    diff=cpp
+*.hh    diff=cpp
+# csharp suitable for source code in the C# language.
+*.cs    diff=csharp
+# css suitable for cascading style sheets.
+*.css   diff=css
+# dts suitable for devicetree (DTS) files.
+# elixir suitable for source code in the Elixir language.
+*.ex    diff=elixir
+*.exs   diff=elixir
+# fortran suitable for source code in the Fortran language.
+*.f     diff=fortran
+# fountain suitable for Fountain documents. (https://fountain.io/faq/)
+.fountain diff=fountain
+.spmd   diff=fountain
+# golang suitable for source code in the Go language.
+*.go    diff=golang
+# html suitable for HTML/XHTML documents.
+*.html  diff=html
+*.xhtml diff=html
+# java suitable for source code in the Java language.
+*.java  diff=java
+# kotlin suitable for source code in the Kotlin language.
+*.kt    diff=kotlin
+*.kts   diff=kotlin
+# markdown suitable for Markdown documents.
+*.md    diff=markdown
+*.*md   diff=markdown
+*.mdx   diff=markdown
+# TODO: matlab and objc conflict for .m files
+# matlab suitable for source code in the MATLAB and Octave languages.
+*.m     diff=matlab 
+# objc suitable for source code in the Objective-C language.
+*.m     diff=objc
+*.mm    diff=objc
+# pascal suitable for source code in the Pascal/Delphi language.
+.pas    diff=pascal
+# perl suitable for source code in the Perl language.
+*.pl    diff=perl
+# php suitable for source code in the PHP language.
+*.php   diff=php
+# python suitable for source code in the Python language.
+*.py    diff=python
+# ruby suitable for source code in the Ruby language.
+*.rb    diff=ruby
+*.rake  diff=ruby
+# rust suitable for source code in the Rust language.
+*.rs    diff=rust
+# scheme suitable for source code in the Scheme language.
+.scm    diff=scheme
+.sps    diff=scheme
+.sls    diff=scheme
+.sld    diff=scheme
+.rkt    diff=scheme
+.ss     diff=scheme
+.sc     diff=scheme
+.sch    diff=scheme
+.sps7   diff=scheme
+# tex suitable for source code for LaTeX documents.
+*.tex   diff=tex
+
+# CUSTOM (see ./config)
+# lisp
+*.lisp  diff=lisp
+*.el    diff=lisp
+# rstats
+*.r     diff=rstats
+# texinfo
+*.texi* diff=texinfo
+# orgmode
+*.org   diff=orgmode
+# rspec
+*_spec.rb diff=rspec
+# swift
+*.swift diff=swift

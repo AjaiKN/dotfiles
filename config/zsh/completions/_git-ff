@@ -1,0 +1,15 @@
+#compdef git-ff
+#description fast-forward a branch to a commit
+
+# ensure /usr/share/zsh/5.9/functions/_git is loaded
+typeset -f __git_commits >/dev/null 2>&1 || _git
+
+local ret=1
+
+_arguments -S -s $endopt \
+	'(-n --dry-run)'{-n,--dry-run}'[do not actually do anything; just say what would be done]' \
+	'(-v --verbose)'{-v,--verbose}'[be more verbose]' \
+	'1:place to fast-forward to: __git_commits' \
+	'2:branch to fast-forward: __git_branch_names' && ret=0
+
+return ret

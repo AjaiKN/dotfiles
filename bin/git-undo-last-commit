@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# https://stackoverflow.com/a/13956422
+is_merge ()  {
+	return $(( ! $(git rev-list --no-walk --count --merges "$@")));
+}
+
+orig_commit="$(git rev-parse HEAD)"
+
+if is_merge HEAD; then
+	echo "Merge commit detected. Undoing merge commit $(git rev-parse HEAD) and moving back to $(git rev-parse ORIG_HEAD)."
+	echo -e "$ \033[1mgit reset --merge ORIG_HEAD\033[0m"
+	git reset --merge ORIG_HEAD
+else
+	echo "Not a merge commit. Undoing commit $(git rev-parse HEAD) and moving back to $(git rev-parse HEAD~)."
+	echo -e "$ \033[1mgit reset --soft HEAD~\033[0m"
+	git reset --soft HEAD~
+fi
+
+echo
+echo "Saving commit message to .git/MY_UNDONE_COMMIT_MSG"
+echo -e "$ \033[1mgit log --format=%B -n 1 \"$orig_commit\" > \"$(git rev-parse --show-toplevel)/.git/MY_UNDONE_COMMIT_MSG\"\033[0m"
+git log --format=%B -n 1 "$orig_commit" > "$(git rev-parse --show-toplevel)/.git/MY_UNDONE_COMMIT_MSG"
+
+# if .git/branchless/config exists
+if [ -f "$(git rev-parse --show-toplevel)/.git/branchless/config" ]; then
+	# and git-branchless command is available
+	if command -v git-branchless >/dev/null 2>&1; then
+		echo
+		echo "git-branchless is being used. Removing original commit $orig_commit from the branchless smartlog."
+		echo -e "To undo this, run: \033[1mgit-branchless unhide $orig_commit\033[0m"
+		echo -e "$ \033[1mgit-branchless hide $orig_commit\033[0m"
+		git-branchless hide "$orig_commit"
+	fi
+fi
+
+echo
+echo -e "When you are ready to redo the commit, use \033[1mgit redo-commit\033[0m to start a new commit with the same message."
+# shellcheck disable=SC2016
+echo -e Or use: '\033[1mgit commit --allow-empty-message --template="$(git rev-parse --show-toplevel)/.git/MY_UNDONE_COMMIT_MSG"\033[0m'

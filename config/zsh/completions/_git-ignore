@@ -1,0 +1,4 @@
+#compdef git-ignore
+#description add to .gitignore
+
+_alternative 'files:filename:_files' 'pattern:ignore pattern:'

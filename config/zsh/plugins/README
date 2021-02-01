@@ -1,0 +1,1 @@
+To load a plugin that's in here, add it to the `plugins` variable in ~/.zshrc

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KeepAlive</key>
+	<true/>
+
+	<key>Label</key>
+	<string>dev.ajai.emacsdaemonterm</string>
+
+	<key>LimitLoadToSessionType</key>
+	<array>
+		<string>Aqua</string>
+		<string>Background</string>
+		<string>LoginWindow</string>
+		<string>StandardIO</string>
+		<string>System</string>
+	</array>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>/opt/homebrew/opt/emacs-plus@30/bin/emacs</string>
+		<!-- <string>/Users/ajainelson/.nix-profile/bin/emacs</string> -->
+		<string>--fg-daemon=term</string>
+	</array>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>StandardErrorPath</key>
+	<string>/tmp/dev.ajai.emacsdaemon.term.stderr.log</string>
+	<key>StandardOutPath</key>
+	<string>/tmp/dev.ajai.emacsdaemon.term.stdout.log</string>
+</dict>
+</plist>

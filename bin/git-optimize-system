@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# Enable some machine-specific global config settings that can speed up git.
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+set -x
+
+if ! [ -f "$HOME/.gitconfig" ]; then
+	cat >>"$HOME/.gitconfig" <<-EOF
+		# I use this file as machine-specific configuration, since it has higher
+		# precedence than ~/.config/git/config, and since I don't track this file in my
+		# dotfiles repo.
+	EOF
+fi
+
+set +x
+if git help config | grep ' --comment' >/dev/null; then
+	comment=("--comment" "for performance; see $DOTFILES/bin/git-optimize-system")
+else
+	# support git versions that don't support --comment
+	comment=()
+fi
+set -x
+
+## core.untrackedCache
+if git update-index --test-untracked-cache; then
+	git config "${comment[@]}" --file="$HOME/.gitconfig" core.untrackedCache true
+else
+	git config "${comment[@]}" --file="$HOME/.gitconfig" core.untrackedCache false
+fi
+
+## checkout.workers
+# https://matheustavares.dev/posts/parallel-checkout
+# only effective for performance on SSDs or NFS
+# TODO: is this bad for small repos?
+if
+	# SSD (Linux)
+	[ "$(cat /sys/block/sda/queue/rotational 2>/dev/null)" = "0" ] ||
+		# SSD (Mac)
+		system_profiler SPStorageDataType | grep SSD 2>/dev/null ||
+		# NFS (Linux)
+		df -TP . | grep nfs 2>/dev/null ||
+		gstat -f -L -c %T . | grep nfs 2>/dev/null ||
+		stat  -f -L -c %T . | grep nfs 2>/dev/null
+then
+	git config "${comment[@]}" --file="$HOME/.gitconfig" checkout.workers "$(($(nproc) / 2))"
+
+	# "You can also change the `checkout.thresholdForParallelism` configuration,
+	# which defines the minimum number of files for which Git should enable
+	# parallelism. This avoids the cost of spawning multiple workers and
+	# performing inter-process communication when there is not enough workload for
+	# parallelism. (The default value is 100, which should be reasonable in most
+	# cases.)" -- https://matheustavares.dev/posts/parallel-checkout
+	# I'm setting this conservatively in case it causes problems for small repos.
+	git config "${comment[@]}" --file="$HOME/.gitconfig" checkout.thresholdForParallelism 400
+else
+	# TODO: `--unset` is deprecated; switch to `unset`
+	git config --unset --file="$HOME/.gitconfig" checkout.workers || :
+fi

@@ -1,0 +1,4 @@
+#compdef git-redo-commit
+#description redo a commit made by git-undo-last-commit
+
+# no arguments

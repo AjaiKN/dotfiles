@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+echo "Making a temporary commit."
+git commit --allow-empty --no-verify -m 'git-stash-unstaged temporary commit'
+
+# if .git/branchless/config exists
+if [ -f "$(git rev-parse --show-toplevel)/.git/branchless/config" ]; then
+	# and git-branchless command is available
+	if command -v git-branchless >/dev/null 2>&1; then
+		echo
+		echo "git-branchless is being used. Hiding the git-stash-unstaged temporary commit."
+		git-branchless hide HEAD
+	fi
+fi
+
+echo
+# Even if the stash fails, we still want to undo the temporary commit.
+set +e
+# NOTE: To override the -u, you can pass --no-include-untracked.
+git stash push -u "$@"
+EXIT_CODE=$?
+set -e
+
+echo
+git reset --soft HEAD~1
+
+exit $EXIT_CODE

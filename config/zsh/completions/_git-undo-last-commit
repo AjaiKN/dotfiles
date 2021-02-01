@@ -1,0 +1,4 @@
+#compdef git-undo-last-commit
+#description undo the last commit
+
+# no arguments

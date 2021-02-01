@@ -1,0 +1,2 @@
+#compdef git-shelved
+#description list branches that were moved to refs/shelved/

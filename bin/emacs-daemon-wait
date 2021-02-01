@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [ $# -eq 0 ]; then
+	server_file=()
+else
+	server_file=(-s "$1")
+fi
+
+while ! emacsclient "${server_file[@]}" -e t >/dev/null 2>&1; do
+	sleep 0.05
+done

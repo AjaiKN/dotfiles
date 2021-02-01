@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+#License for this file:
+# Copyright (c) 2019, Gautam Kotian
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+
+# * Neither the name of the copyright holder nor the names of its
+#   contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# Script to show the colours used for different file types
+
+# This is just a more readable version of the 'eval' code at:
+#     http://askubuntu.com/a/17300/309899
+
+# A nice description of the colour codes is here:
+#     http://askubuntu.com/a/466203/309899
+
+IFS=:
+for SET in $LS_COLORS
+do
+	TYPE=$(echo $SET | cut -d"=" -f1)
+	COLOUR=$(echo $SET | cut -d"=" -f2)
+
+	case $TYPE in
+		no) TEXT="Global default";;
+		fi) TEXT="Normal file";;
+		di) TEXT="Directory";;
+		ln) TEXT="Symbolic link";;
+		pi) TEXT="Named pipe";;
+		so) TEXT="Socket";;
+		do) TEXT="Door";;
+		bd) TEXT="Block device";;
+		cd) TEXT="Character device";;
+		or) TEXT="Orphaned symbolic link";;
+		mi) TEXT="Missing file";;
+		su) TEXT="Set UID";;
+		sg) TEXT="Set GID";;
+		tw) TEXT="Sticky other writable";;
+		ow) TEXT="Other writable";;
+		st) TEXT="Sticky";;
+		ex) TEXT="Executable";;
+		rs) TEXT="Reset to \"normal\" color";;
+		mh) TEXT="Multi-Hardlink";;
+		ca) TEXT="File with capability";;
+		*) TEXT="${TYPE} (TODO: get description)";;
+	esac
+
+	printf "Type: %-10s Colour: %-10s \e[${COLOUR}m${TEXT}\e[0m\n" "${TYPE}" "${COLOUR}"
+done

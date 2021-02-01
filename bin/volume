@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+# https://stackoverflow.com/a/1034499
+class String
+	def valid_float?
+		# The double negation turns this into an actual boolean true - if you're
+		# okay with "truthy" values (like 0.0), you can remove it.
+		!!Float(self) rescue false
+	end
+end
+
+if ARGV[0] == "-v"
+	ARGV.shift
+	$verbose = true
+end
+
+if ARGV[0]&.valid_float?
+	percent = ARGV[0].to_f * 100.0
+	if $verbose
+		STDERR.puts "Setting volume to #{percent}%"
+		STDERR.puts %(osascript -e "set volume output volume #{percent}")
+	end
+	print `osascript -e "set volume output volume #{percent}"`
+elsif ARGV[0].nil?
+	if $verbose
+		STDERR.puts %(osascript -e 'output volume of (get volume settings)')
+		STDERR.puts "(and then dividing by 100)"
+	end
+	puts `osascript -e 'output volume of (get volume settings)'`.to_f / 100.0
+elsif ARGV[0] == "--version"
+	puts "volume 0.1-pre"
+else
+	puts "Usage: #{$0} FRACTION\n  or:  #{$0}\nSet the volume to a FRACTION of the maximum volume.\nFRACTION should be a number between 0 and 1.\n\nIf no FRACTION is given, the current volume is printed.\n\n  -v      print the osascript commands that are run"
+end

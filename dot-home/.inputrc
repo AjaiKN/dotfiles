@@ -1,0 +1,214 @@
+# For Readline
+# Used in things like bash, irb, python repl
+
+$if term=dumb
+	# https://www.gnu.org/software/emacs/manual/html_node/tramp/Frequently-Asked-Questions.html
+$else
+	# https://www.topbug.net/blog/2017/07/31/inputrc-for-humans/
+	set colored-stats On
+	set completion-ignore-case On
+	set completion-prefix-display-length 3
+	set mark-symlinked-directories On
+	set show-all-if-ambiguous On
+	set show-all-if-unmodified On
+	set visible-stats On
+
+	set keyseq-timeout 10
+
+	# https://codeinthehole.com/tips/the-most-important-command-line-tip-incremental-history-searching-with-inputrc/
+	"\e[A": history-search-backward
+	"\e[B": history-search-forward
+	"\e[C": forward-char
+	"\e[D": backward-char
+
+	# vi mode can cause problems with irb
+	$if Ruby
+		set editing-mode emacs
+	$else
+		set editing-mode vi
+	$endif
+
+	$if mode=vi
+		# https://news.ycombinator.com/item?id=21206913
+		set show-mode-in-prompt on
+		# https://stackoverflow.com/a/48449104
+		# set vi-cmd-mode-string "\1\e[2 q\2"
+		# set vi-ins-mode-string "\1\e[6 q\2"
+		set vi-cmd-mode-string "\1\e[2 q\2[N] "
+		set vi-ins-mode-string "\1\e[6 q\2[I] "
+		set convert-meta on # https://superuser.com/a/802364
+
+		# add back emacs commands
+		C-@:set-mark
+		C-a:beginning-of-line
+		C-b:backward-char
+		C-d:delete-char
+		C-e:end-of-line
+		C-f:forward-char
+		C-g:abort
+		C-h:backward-delete-char
+		C-i:complete
+		C-j:accept-line
+		C-k:kill-line
+		C-l:clear-screen
+		C-m:accept-line
+		C-n:next-history
+		C-p:previous-history
+		C-q:quoted-insert
+		C-r:reverse-search-history
+		C-s:forward-search-history
+		C-t:transpose-chars
+		C-u:unix-line-discard
+		C-v:quoted-insert
+		C-w:unix-word-rubout
+		C-y:yank
+		C-]:character-search
+		C-_:undo
+		M-C-g:abort
+		M-C-h:backward-kill-word
+		M-C-i:tab-insert
+		M-C-j:vi-editing-mode
+		M-C-l:clear-display
+		M-C-m:vi-editing-mode
+		M-C-r:revert-line
+		M-C-y:yank-nth-arg
+		M-C-[:complete
+		M-C-]:character-search-backward
+		M-space:set-mark
+		M-\#:insert-comment
+		M-&:tilde-expand
+		M-*:insert-completions
+		M--:digit-argument
+		M-.:yank-last-arg
+		M-0:digit-argument
+		M-1:digit-argument
+		M-2:digit-argument
+		M-3:digit-argument
+		M-4:digit-argument
+		M-5:digit-argument
+		M-6:digit-argument
+		M-7:digit-argument
+		M-8:digit-argument
+		M-9:digit-argument
+		M-<:beginning-of-history
+		M-=:possible-completions
+		M->:end-of-history
+		M-?:possible-completions
+		M-b:backward-word
+		M-c:capitalize-word
+		M-d:kill-word
+		M-f:forward-word
+		M-l:downcase-word
+		M-n:non-incremental-forward-search-history
+		M-p:non-incremental-reverse-search-history
+		M-r:revert-line
+		M-t:transpose-words
+		M-u:upcase-word
+		M-y:yank-pop
+		M-\:delete-horizontal-space
+		M-\\:delete-horizontal-space
+		M-~:tilde-expand
+		M-C-?:backward-kill-word
+		M-_:yank-last-arg
+
+
+		set keymap vi-command
+			Control-l: clear-screen
+			"#": insert-comment
+			".": "i !*\r"
+			"|": "A | "
+			"D":kill-line
+			"C": "Da"
+			"dw": kill-word
+			"dd": kill-whole-line
+			"db": backward-kill-word
+			"cc": "ddi"
+			"cw": "dwi"
+			"cb": "dbi"
+			"daw": "lbdW"
+			"yaw": "lbyW"
+			"caw": "lbcW"
+			"diw": "lbdw"
+			"yiw": "lbyw"
+			"ciw": "lbcw"
+			"da\"": "lF\"df\""
+			"di\"": "lF\"lmtf\"d`t"
+			"ci\"": "di\"i"
+			"ca\"": "da\"i"
+			"da'": "lF'df'"
+			"di'": "lF'lmtf'd`t"
+			"ci'": "di'i"
+			"ca'": "da'i"
+			"da`": "lF\`df\`"
+			"di`": "lF\`lmtf\`d`t"
+			"ci`": "di`i"
+			"ca`": "da`i"
+			"da(": "lF(df)"
+			"di(": "lF(lmtf)d`t"
+			"ci(": "di(i"
+			"ca(": "da(i"
+			"da)": "lF(df)"
+			"di)": "lF(lmtf)d`t"
+			"ci)": "di(i"
+			"ca)": "da(i"
+			"da{": "lF{df}"
+			"di{": "lF{lmtf}d`t"
+			"ci{": "di{i"
+			"ca{": "da{i"
+			"da}": "lF{df}"
+			"di}": "lF{lmtf}d`t"
+			"ci}": "di}i"
+			"ca}": "da}i"
+			"da[": "lF[df]"
+			"di[": "lF[lmtf]d`t"
+			"ci[": "di[i"
+			"ca[": "da[i"
+			"da]": "lF[df]"
+			"di]": "lF[lmtf]d`t"
+			"ci]": "di]i"
+			"ca]": "da]i"
+			"da<": "lF<df>"
+			"di<": "lF<lmtf>d`t"
+			"ci<": "di<i"
+			"ca<": "da<i"
+			"da>": "lF<df>"
+			"di>": "lF<lmtf>d`t"
+			"ci>": "di>i"
+			"ca>": "da>i"
+			"da/": "lF/df/"
+			"di/": "lF/lmtf/d`t"
+			"ci/": "di/i"
+			"ca/": "da/i"
+			"da:": "lF:df:"
+			"di:": "lF:lmtf:d`t"
+			"ci:": "di:i"
+			"ca:": "da:i"
+			"gg": beginning-of-history
+			"G": end-of-history
+			?: reverse-search-history
+			/: forward-search-history
+
+		set keymap vi-insert
+	$endif
+
+	Control-l: clear-screen
+
+	# https://codeinthehole.com/tips/the-most-important-command-line-tip-incremental-history-searching-with-inputrc/
+	"\e[A": history-search-backward
+	"\e[B": history-search-forward
+	"\e[C": forward-char
+	"\e[D": backward-char
+	# NOTE: these don't seem to be working for me
+	# https://brettterpstra.com/2015/07/09/shell-tricks-inputrc-binding-fun/
+	"\e[1;5C": forward-word
+	"\e[1;5D": backward-word
+	"\e[1;3C": forward-word
+	"\e[1;3D": backward-word
+	# "^[^[[C": forward-word
+	# '^[^[[D': backward-word # this seems to make typing a single quote not work
+	"\eOC": forward-word
+	"\eOD": backward-word
+	# https://unix.stackexchange.com/questions/613141/how-to-map-alt-backspace-to-some-command-in-inputrc
+	"\e\177": backward-kill-word
+	"\e\b": backward-kill-word
+$endif

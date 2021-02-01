@@ -1,0 +1,148 @@
+[submodule "fasd"]
+	path = vendor/fasd
+	url = https://github.com/whjvenyl/fasd
+	branch = master
+	shallow = true
+[submodule "oh-my-zsh-custom/plugins/zsh-autosuggestions"]
+	path = config/zsh/plugins/zsh-users/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions
+	branch = master
+	shallow = true
+[submodule "oh-my-zsh-custom/plugins/zsh-history-substring-search"]
+	path = config/zsh/plugins/zsh-users/zsh-history-substring-search
+	url = https://github.com/zsh-users/zsh-history-substring-search
+	branch = master
+	shallow = true
+[submodule "oh-my-zsh-custom/plugins/zsh-syntax-highlighting"]
+	path = config/zsh/plugins/zsh-users/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting
+	branch = master
+	shallow = true
+[submodule "oh-my-zsh-custom/plugins/nix-shell"]
+	path = config/zsh/plugins/chisui/zsh-nix-shell
+	url = https://github.com/chisui/zsh-nix-shell
+	branch = master
+	shallow = true
+[submodule "oh-my-zsh-custom/themes/powerlevel10k"]
+	path = config/zsh/themes/powerlevel10k
+	url = https://github.com/romkatv/powerlevel10k.git
+	branch = master
+	shallow = true
+[submodule "dot-home/.config/emacs"]
+	path = config/emacs
+	url = https://github.com/AjaiKN/doomemacs
+	branch = akn-main
+	shallow = true
+[submodule "dot-home/.config/zsh/plugins/zsh-smartcache"]
+	path = config/zsh/plugins/QuarticCat/zsh-smartcache
+	url = https://github.com/QuarticCat/zsh-smartcache
+	branch = main
+	shallow = true
+[submodule "dot-home/.config/zsh/plugins/evalcache"]
+	path = config/zsh/plugins/mroth/evalcache
+	url = https://github.com/mroth/evalcache
+	branch = master
+	shallow = true
+[submodule "dot-home/.config/zsh/plugins/zsh-completions"]
+	path = config/zsh/plugins/zsh-users/zsh-completions
+	url = https://github.com/zsh-users/zsh-completions
+	branch = master
+	shallow = true
+[submodule "dot-home/.config/zsh/plugins/completion"]
+	path = config/zsh/plugins/zimfw/completion
+	url = https://github.com/zimfw/completion
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/input"]
+	path = config/zsh/plugins/zimfw/input
+	url = https://github.com/zimfw/input
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/archive"]
+	path = config/zsh/plugins/zimfw/archive
+	url = https://github.com/zimfw/archive
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/direnv"]
+	path = config/zsh/plugins/zimfw/direnv
+	url = https://github.com/zimfw/direnv
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/termtitle"]
+	path = config/zsh/plugins/zimfw/termtitle
+	url = https://github.com/zimfw/termtitle
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/magic-enter"]
+	path = config/zsh/plugins/zimfw/magic-enter
+	url = https://github.com/zimfw/magic-enter
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/homebrew"]
+	path = config/zsh/plugins/zimfw/homebrew
+	url = https://github.com/zimfw/homebrew
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/zim-mise"]
+	path = config/zsh/plugins/joke/zim-mise
+	url = https://github.com/joke/zim-mise
+	branch = main
+	shallow = true
+[submodule "config/zsh/plugins/zim-github-cli"]
+	path = config/zsh/plugins/joke/zim-github-cli
+	url = https://github.com/joke/zim-github-cli
+	branch = main
+	shallow = true
+[submodule "config/zsh/plugins/ohmyzsh"]
+	path = config/zsh/plugins/ohmyzsh
+	url = https://github.com/ohmyzsh/ohmyzsh
+	branch = master
+	ignore = untracked
+	shallow = true
+[submodule "config/zsh/plugins/clarketm/zsh-completions"]
+	path = config/zsh/plugins/clarketm/zsh-completions
+	url = https://github.com/clarketm/zsh-completions
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/scriptingosx/mac-zsh-completions"]
+	path = config/zsh/plugins/scriptingosx/mac-zsh-completions
+	url = https://github.com/scriptingosx/mac-zsh-completions
+	branch = master
+	ignore = untracked
+	shallow = true
+[submodule "config/zsh/plugins/BronzeDeer/zsh-completion-sync"]
+	path = config/zsh/plugins/BronzeDeer/zsh-completion-sync
+	url = https://github.com/BronzeDeer/zsh-completion-sync
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/lukechilds/zsh-better-npm-completion"]
+	path = config/zsh/plugins/lukechilds/zsh-better-npm-completion
+	url = https://github.com/lukechilds/zsh-better-npm-completion
+	ignore = untracked
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/jeffreytse/zsh-vi-mode"]
+	path = config/zsh/plugins/jeffreytse/zsh-vi-mode
+	url = https://github.com/jeffreytse/zsh-vi-mode
+	branch = master
+	shallow = true
+[submodule "config/zsh/plugins/zsh-vi-more/vi-motions"]
+	path = config/zsh/plugins/zsh-vi-more/vi-motions
+	url = https://github.com/zsh-vi-more/vi-motions
+	ignore = untracked
+	shallow = true
+[submodule "config/zsh/plugins/ziglang/shell-completions"]
+	path = config/zsh/plugins/ziglang/shell-completions
+	url = https://github.com/ziglang/shell-completions
+	ignore = untracked
+	branch = master
+[submodule "private"]
+	path = private
+	url = https://github.com/AjaiKN/dotfiles-private
+	branch = main
+	shallow = true
+[submodule "config/nano/nano-highlight"]
+	path = config/nano/nano-highlight
+	url = https://github.com/serialhex/nano-highlight
+	branch = master
+	shallow = true

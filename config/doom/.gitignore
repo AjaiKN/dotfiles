@@ -1,0 +1,7 @@
+# this seems to keep appearing and quickly disappearing, not sure exactly what it is
+flycheck_config.el
+flycheck_init.el
+# +modules-override.el
++local-tags.el
+local.el
+*.html

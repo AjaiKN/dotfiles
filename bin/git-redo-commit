@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+set -x
+
+# allow-empty-message means git won't abort the commit if we don't change the commit message
+git commit --allow-empty-message --template="$(git rev-parse --show-toplevel)/.git/MY_UNDONE_COMMIT_MSG"

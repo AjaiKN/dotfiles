@@ -1,0 +1,36 @@
+#!/bin/sh
+
+set -x
+
+if [ -n "$INSIDE_EMACS" ]; then
+	exec emacsclient -n "$@"
+fi
+
+# Use this when you want a file to be open in Emacs
+# (Or you just want to open Emacs)
+
+# Open a file in graphical Emacs.
+# If Emacs is already running, open the file in a new frame of the existing Emacs.
+# Don't wait for it to finish.
+
+if [ -n "$EMACS_MAC" ]; then
+	if [ $# -eq 0 ]; then
+		# number of args is zero
+		open /Applications/Emacs.app
+	elif pgrep -f Emacs.app >/dev/null; then
+		# emacs server/daemon is already running
+		open /Applications/Emacs.app & # focus Emacs
+		emacsclient -n "$@"
+	else
+		# emacs server/daemon is not running
+		open /Applications/Emacs.app --args "$@"
+	fi
+else
+	# open /Applications/Emacs.app & # focus Emacs
+	# quote='"'
+	# arg_with_quotes_escaped="$(printf "%s" "${1//\"/\\\"}")"
+	#
+	emacs-daemon-wait
+	TERM=xterm-256color emacsclient -c -n "$@"
+	emacsclient -e "(akn/focus-this-frame)"
+fi

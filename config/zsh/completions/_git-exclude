@@ -1,0 +1,4 @@
+#compdef git-exclude
+#description add to .git/info/exclude
+
+_alternative 'files:filename:_files' 'pattern:ignore pattern:'

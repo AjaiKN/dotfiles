@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -x
+
+if [ -n "$INSIDE_EMACS" ]; then
+	exec emacsclient "$@"
+fi
+
+# Use this for stuff like git commit messages (if you want a GUI)
+
+# Open a file in graphical Emacs.
+# If Emacs is already running, open the file in the existing Emacs.
+# Don't wait for it to finish.
+
+# If Emacs.app isn't already running, ...
+if [ -n "$EMACS_MAC" ] && ! pgrep -f Emacs.app >/dev/null; then
+	# ...open Emacs.app (which also launches the daemon) in the background.
+	open -g -j -a Emacs
+fi
+
+[ -n "$EMACS_MAC" ] && open /Applications/Emacs.app & # focus Emacs
+emacs-daemon-wait
+exec emacsclient -r "$@"

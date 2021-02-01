@@ -1,0 +1,10 @@
+# regenerate defaults file:
+#   ghostty +show-config --default --docs > $DOTFILES/default.conf
+
+macos-option-as-alt = left
+mouse-hide-while-typing = true
+background-opacity = 0.8
+background-blur-radius = 5
+# working-directory = "~/prog/"
+
+# keybind

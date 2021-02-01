@@ -1,0 +1,5 @@
+To use a theme in here, set the ZSH_THEME variable in ~/.zshrc
+
+For example:
+- to use `./simple.zsh-theme`, set `ZSH_THEME="simple"`
+- to use `./powerlevel10/powerlevel10k.zsh-theme`, set `ZSH_THEME="powerlevel10k/powerlevel10k"`

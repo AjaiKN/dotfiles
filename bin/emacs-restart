@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+set -x
+
+emacsclient -e '(akn/restart-and-restore)'
+emacsclient -s term -e '(doom/restart)' || :
+# emacs-open-frame

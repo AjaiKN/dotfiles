@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# https://formulae.brew.sh/formula/sleepwatcher
+# Runs when computer wakes up
+# Also see .sleep
+
+# mute if headphones aren't plugged in
+# https://apple.stackexchange.com/a/397157
+if system_profiler SPAudioDataType | grep --quiet Headphones; then
+	# headphones plugged in
+	# TODO: not sure if this'll work with airpods
+	true
+else
+	# headphones not plugged in
+	"${DOTFILES:-/Users/ajainelson/prog/dotfiles}"/bin/volume 0
+fi

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+# Use this when you want a file to be open in a new instance of Emacs
+# (Or you just want to launch a new instance of Emacs)
+
+# Open a file in a new instance of graphical Emacs.
+# Don't wait for it to finish.
+
+set -x
+
+if [ -n "$INSIDE_EMACS" ]; then
+	exec emacsclient -n "$@"
+fi
+
+if [ -n "$EMACS_MAC" ]; then
+	open -n /Applications/Emacs.app --args "$@"
+else
+	nohup emacs "$@" &
+fi

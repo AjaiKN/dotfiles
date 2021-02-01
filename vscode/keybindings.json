@@ -1,0 +1,66 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+  {
+    "key": "ctrl+alt+cmd+.",
+    "command": "editor.action.fixAll"
+  },
+  {
+    "key": "alt+cmd+e",
+    "command": "editor.emmet.action.wrapWithAbbreviation"
+  },
+  {
+    "key": "ctrl+alt+r",
+    "command": "workbench.action.openRecent"
+  },
+  {
+    // conflicts with vim
+    "key": "ctrl+r",
+    "command": "-workbench.action.openRecent"
+  },
+  // LaTeX fraction
+  {
+    "key": "ctrl+/",
+    "command": "editor.action.insertSnippet",
+    "when": "editorTextFocus",
+    "args": {
+      "snippet": "\\frac{${TM_SELECTED_TEXT:$1}}{$2}"
+    }
+  },
+  {
+    "key": "alt+cmd+h",
+    "command": "rust-analyzer.toggleInlayHints"
+  },
+  {
+    "key": "ctrl+=",
+    "command": "workbench.action.navigateForward",
+    "when": "canNavigateForward"
+  },
+  {
+    "key": "alt+cmd+,",
+    "command": "workbench.action.openSettingsJson"
+  },
+  {
+    "key": "shift+alt+cmd+,",
+    "command": "workbench.action.openFolderSettingsFile"
+  },
+  {
+    "key": "shift+cmd+2",
+    "command": "typst-preview.preview"
+  },
+  {
+    "key": "alt+left",
+    "when": "terminalFocus",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": {
+      "text": "\u001b[1;5D"
+    }
+  },
+  {
+    "key": "alt+right",
+    "when": "terminalFocus",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": {
+      "text": "\u001b[1;5C"
+    }
+  },
+]

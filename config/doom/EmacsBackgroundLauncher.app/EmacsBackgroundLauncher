@@ -1,0 +1,9 @@
+#!/bin/sh
+
+export PATH="${DOTFILES:-$HOME/prog/dotfiles}/bin:/opt/homebrew/bin:/usr/bin:$PATH"
+if [ -n "$EMACS_MAC" ]; then
+	COLORTERM=truecolor open -g -j -a Emacs
+else
+	lunchy start emacsdaemonserver
+	lunchy start emacsdaemonterm
+fi

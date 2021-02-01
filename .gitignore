@@ -1,0 +1,10 @@
+bin/roc
+bin/roc_language_server
+config/karabiner/automatic_backups
+config/karabiner/assets/complex_modifications
+*.log
+*.log.*
+octave-workspace
+__pycache__
+*.eln
+*.elc

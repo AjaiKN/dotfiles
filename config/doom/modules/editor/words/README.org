@@ -1,0 +1,13 @@
+#+title: Readme
+
+TODO: document
+
+notes for myself:
+
+|             | word        | evil-word   | evil-WORD |
+|-------------+-------------+-------------+-----------|
+| regularword | regularword | regularword | WORD      |
+| basicword   | subword     | subword     | WORD      |
+| subword     | subword     | subword     | symbol    |
+| superword   | symbol      | symbol      | WORD      |
+| all         | subword     | symbol      | WORD      |

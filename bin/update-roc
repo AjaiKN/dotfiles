@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -x
+
+OS_ARCH=macos_apple_silicon
+TARGET_DIR=${DOTFILES:-$HOME/prog/dotfiles}/bin
+
+# https://roc.zulipchat.com/#narrow/stream/231634-beginners/topic/roc.20nightly.20install.20script
+curl --fail --location "https://github.com/roc-lang/roc/releases/download/nightly/roc_nightly-$OS_ARCH-latest.tar.gz" | TAR_OPTIONS=--wildcards tar --directory "$TARGET_DIR" --extract --gzip --strip-components 1 --file - 'roc_nightly-*/roc' 'roc_nightly-*/roc_language_server'

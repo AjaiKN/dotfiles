@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -x
+
+if [ -n "$INSIDE_EMACS" ]; then
+	exec emacsclient -n "$@"
+fi
+
+# Use this when you want a file to be open in Emacs
+# (Or you just want to open Emacs)
+
+# Open a file in graphical Emacs.
+# If Emacs is already running, open the file in the existing Emacs.
+# Don't wait for it to finish.
+
+if [ -n "$EMACS_MAC" ]; then
+	if [ $# -eq 0 ]; then
+		# number of args is zero
+		open /Applications/Emacs.app
+	elif pgrep -f Emacs.app >/dev/null; then
+		# emacs server/daemon is already running
+		open /Applications/Emacs.app & # focus Emacs
+		emacsclient -n "$@"
+	else
+		# emacs server/daemon is not running
+		open /Applications/Emacs.app --args "$@"
+	fi
+else
+	emacs-daemon-wait
+	# open /Applications/Emacs.app & # focus Emacs
+	if [ "$(emacsclient -e '(display-graphic-p)')" = "t" ]; then
+		arg_escaped=$1
+		arg_escaped=${arg_escaped//\\/\\\\} # escape backslashes
+		arg_escaped=${arg_escaped//\"/\\\"} # escape quotes
+		arg_quoted='"'${arg_escaped}'"'
+		exec emacsclient -e "(let ((file ${arg_quoted})) (if (string-empty-p file) nil (find-file file)) (akn/focus-this-frame) nil)" --no-wait
+	else
+		TERM=xterm-256color emacsclient -c -n "$@"
+		emacsclient -e '(akn/focus-this-frame)'
+	fi
+fi

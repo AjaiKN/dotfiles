@@ -1,0 +1,98 @@
+#compdef corepack
+
+function _corepack_cache {
+	local line state
+	_arguments -C \
+    "1: :->cmds"
+  case "$state" in
+    cmds)
+      _values "corepack cache command" \
+				"clean[Clean Corepack cache]"
+      ;;
+  esac
+}
+
+function _corepack_disable {
+	_arguments \
+		'(--install-directory)'--install-directory'[Where the shims are located]' \
+		'(-h --help)'{-h,--help}'[Show help for this command]' \
+		'1:package manager:->packagemanager'
+	case "$state" in
+		packagemanager)
+			_values "package manager" npm pnpm yarn
+			;;
+	esac
+}
+
+function _corepack_enable {
+	_arguments \
+		'(--install-directory)'--install-directory'[Where the shims are located]' \
+		'(-h --help)'{-h,--help}'[Show help for this command]' \
+		'1:package manager:->packagemanager'
+	case "$state" in
+		packagemanager)
+			_values "package manager" npm pnpm yarn
+			;;
+	esac
+}
+
+function _corepack_install {
+	_arguments \
+		'(-g --global)'{-g,--global}'[Install package managers on the system, not the local project]'
+		'(--cache-only)'--cache-only'[If true, the package managers will only be cached, not set as new defaults]' \
+		'(-h --help)'{-h,--help}'[Show help for this command]'
+		# TODO: positional argument
+}
+
+function _corepack_pack {
+	_arguments \
+		'(--json)'--json'[If true, the path to the generated tarball will be printed on stdout]' \
+		'(-o --output)'{-o,--output}'[Where the tarball should be generated; by default "corepack.tgz"]' \
+		'(-h --help)'{-h,--help}'[Show help for this command]'
+		# TODO: positional argument
+}
+
+function _corepack_up {
+	# no arguments
+	return
+}
+
+function _corepack_use {
+	# TODO: positional argument (pattern)
+	return
+}
+
+# https://old.reddit.com/r/zsh/comments/hhdvsm/make_completion_ignore_a_prefix_command/
+# https://stackoverflow.com/questions/9000698/completion-when-program-has-sub-commands
+# https://www.dolthub.com/blog/2021-11-15-zsh-completions-with-subcommands/
+local line state
+_arguments -C \
+	"1: :->cmds" \
+	"*::arg:->args"
+case "$state" in
+	cmds)
+		_values "corepack command" \
+			"npm[Run a command using npm]" \
+			"pnpm[Run a command using pnpm]" \
+			"yarn[Run a command using yarn]" \
+			"cache[Commands for managing Corepack cache]" \
+			"disable[Remove the Corepack shims from the install directory]" \
+			"enable[Add the Corepack shims to the install directory]" \
+			"install[Install package manager]" \
+			"pack[Store package managers in a tarball]" \
+			"up[Update the package manager used in the current project]" \
+			"use[Define the package manager to use for the current project]"
+		;;
+	args)
+		case $line[1] in
+			cache) _corepack_cache ;;
+			disable) _corepack_disable ;;
+			enable) _corepack_enable ;;
+			install) _corepack_install ;;
+			pack) _corepack_pack ;;
+			up) _corepack_up ;;
+			use) _corepack_use ;;
+			*) _normal ;;
+		esac
+		;;
+esac

@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+FIRST="$1"
+if [[ -z "$FIRST" ]]; then
+	# $FIRST is empty
+	# If you just run `git force` without an argument, this error/help message will appear
+	echo "git-force: error: Need to provide a <refname> argument for --force-with-lease=" >&2
+	echo -e "This is probably \e[34mthe name of the branch you're pushing to\e[0m." >&2
+	echo -e "  $ git force \e[34mbranch-name\e[0m" >&2
+	echo -e "Or you can specify \e[34m<refname>:<expect>\e[0m, where <refname> is the name of the branch you're pushing to and <expect> is what you think is the current state at the remote." >&2
+
+	exit 1
+fi
+shift
+set -x
+git push --force-if-includes --force-with-lease="$FIRST" "$@"

@@ -1,0 +1,4 @@
+#compdef git-optimize-system
+#description enable some machine-specific global config settings that can speed up git
+
+# no arguments

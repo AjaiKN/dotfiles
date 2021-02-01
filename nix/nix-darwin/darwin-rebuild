@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+here=$(dirname "$0")
+nix_darwin_version=$(nix --extra-experimental-features "nix-command flakes" eval --raw --impure --expr "(import ${here}/flake.nix).inputs.nix-darwin.url" | sed 's/^github:nix-darwin\///')
+if command -v nix-darwin >/dev/null 2>&1; then
+	exec darwin-rebuild "$@"
+else
+	exec nix --extra-experimental-features "nix-command flakes" run "${nix_darwin_version}#darwin-rebuild" -- "$@"
+fi
+

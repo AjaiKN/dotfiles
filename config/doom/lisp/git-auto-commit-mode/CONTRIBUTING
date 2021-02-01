@@ -1,0 +1,24 @@
+# -*- mode: org; -*-
+#+STARTUP: showall
+
+Please feel free to contribute. I welcome any help that you may offer. Whether
+it's fixing typo's, updating the documentation, or fixing bugs or adding new
+features.
+
+* Getting the source
+
+  If you wish to work on git-auto-commit-mode you can get the sources by cloning
+  the repository:
+  #+BEGIN_EXAMPLE
+    git clone git://ryuslash.org/emacs/git-auto-commit-mode.org
+  #+END_EXAMPLE
+
+* Style
+
+  Use spaces, don't use tabs. If you can, keep lines shorter than 80 characters.
+  Other than that, Emacs can handle indentation pretty well.
+
+* Patches
+
+  If you want to send any patches I'd be more than happy to merge them. Please
+  feel free to use Github pull requests, or any other means preferred by you.

@@ -1,0 +1,107 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+print_usage() {
+	echo "Usage: $0 [--dry-run|-n] [--verbose|-v] [directory_or_ds_store_file...]"
+	echo "Delete .DS_Store files in the given directory."
+	echo "If no arguments are given, the current directory is used."
+	echo
+	echo "  -n, --dry-run   do not actually do anything; just say what would be done"
+	echo "  -v, --verbose   be more verbose"
+}
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--help|-h)
+			print_usage
+			exit 0
+			;;
+		--version)
+			echo "delete-ds-stores 0.1-pre"
+			exit
+			;;
+		--dry-run|-n)
+			DRY_RUN=1
+			shift
+			;;
+		--verbose|-v)
+			VERBOSE=1
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+		-*)
+			echo "ERROR: Unknown option: $1"
+			print_usage
+			exit 1
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
+if [ $# -eq 0 ]; then
+	# add the current directory to the list of arguments
+	set -- .
+fi
+
+for file in "$@"; do
+	if [ ! -e "$file" ]; then
+		echo "delete-ds-stores: File '$file' does not exist" >&2
+		exit 1
+	fi
+	if [ ! -d "$file" ]; then
+		if [ "$(basename "$file")" != ".DS_Store" ]; then
+			echo "delete-ds-stores: File '$file' is not a directory and is not named .DS_Store" >&2
+			exit 1
+		fi
+	fi
+	if [ -L "$file" ]; then
+		echo "delete-ds-stores: File '$file' is a symlink" >&2
+		exit 1
+	fi
+done
+
+for file in "$@"; do
+	if [ -d "$file" ]; then
+		# if dry run
+		if [ -n "${DRY_RUN:-}" ]; then
+			# Dry run
+			# https://stackoverflow.com/a/62624587
+			find "$file" -type f -name ".DS_Store" -print 2>&1
+		else
+			# Not dry run
+			# https://stackoverflow.com/a/62624587
+			if [ -n "${VERBOSE:-}" ]; then
+				# Verbose
+				output=$(find "$file" -type f -name ".DS_Store" -print -delete 2>&1)
+			else
+				output=$(find "$file" -type f -name ".DS_Store" -delete 2>&1)
+			fi
+			# https://unix.stackexchange.com/a/723300
+			returncode=0
+			printf '%s' "$output" | grep -v "Permission denied" || returncode=$?
+			if [ $returncode -gt 1 ]; then exit 1; fi # if grep returns 1, that's fine
+		fi
+	else
+		if [ "$(basename "$file")" = ".DS_Store" ]; then # redundant check
+			if [ -n "${DRY_RUN:-}" ]; then
+				# Dry run
+				echo "$file"
+			else
+				# Not dry run
+				if [ -n "${VERBOSE:-}" ]; then
+					rm -vf "$file"
+				else
+					rm -f "$file"
+				fi
+			fi
+		fi
+	fi
+done

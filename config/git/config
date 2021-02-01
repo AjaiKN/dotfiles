@@ -1,0 +1,135 @@
+[user]
+	name = Ajai Khatri Nelson
+	email = ajai@ajai.dev
+	signingkey = 00B967B600FAB0F7
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[credential]
+	helper = osxkeychain
+	helper = 
+	helper = /usr/local/share/gcm-core/git-credential-manager
+	# helper =
+	# helper = /usr/local/share/gcm-core/git-credential-manager
+[diff]
+	tool = default-difftool
+	colorMoved = default
+	algorithm = histogram # https://jvns.ca/blog/2024/02/16/popular-git-config-options/#diff-algorithm-histogram
+	# submodule = log # https://jvns.ca/blog/2024/02/16/popular-git-config-options/#submodule-stuff
+[difftool "default-difftool"]
+	cmd = code --wait --diff $LOCAL $REMOTE
+[status]
+	submoduleSummary = true # https://jvns.ca/blog/2024/02/16/popular-git-config-options/#submodule-stuff
+[init]
+	defaultBranch = main
+[pull]
+	ff = only
+[push]
+	# https://jvns.ca/blog/2024/02/16/popular-git-config-options/#push-default-simple-push-default-current-push-autosetupremote-true
+	default = current
+	# autoSetupRemote = true
+[core]
+	autocrlf = input
+	safecrlf = warn
+	eol = lf
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	# hyperlinks-file-link-format = "vscode://file/{path}:{line}"
+[alias]
+	c = commit
+	p = push
+	co = checkout
+	sw = switch
+	z = stash
+
+	ac = !git add -A && git commit
+	unstage = restore --staged
+	bisect-abort = bisect reset
+	bisect-stop = bisect reset
+	# TODO: make these automatically stage all *if there's nothing staged*
+	# inspired by magit
+	extend = commit --amend --no-edit
+	# TODO: make amend & reword commands - probably make them use git-branchless
+
+	# amend = branchless amend
+	# hide = branchless hide
+	# move = branchless move
+	next = branchless next
+	prev = branchless prev
+	# query = branchless query
+	# record = branchless record
+	# restack = branchless restack
+	# reword = branchless reword
+	sl = branchless smartlog
+	smartlog = branchless smartlog
+	# submit = branchless submit
+	sw = branchless switch
+	# sync = branchless sync
+	# test = branchless test
+	# undo = branchless undo
+	# unhide = branchless unhide
+
+	# https://blog.ipspace.net/2020/04/git-tip-word-diff.html
+	wdiff = diff --word-diff --word-diff-regex='\\w+'
+[merge]
+	# https://github.blog/2022-01-24-highlights-from-git-2-35/: zdiff3 (disabled b/c could be confusing sometimes maybe)
+	conflictstyle = diff3
+[filesystem "Oracle Corporation|13|/dev/disk3s1s1"]
+	timestampResolution = 9000 nanoseconds
+	minRacyThreshold = 0 nanoseconds
+[rebase]
+	missingCommitsCheck = warn
+	autosquash = true
+	updateRefs = true # https://andrewlock.net/working-with-stacked-branches-in-git-is-easier-with-update-refs/
+[commit]
+	verbose = true
+[submodule]
+	recurse = true
+	fetchJobs = 0
+# [credential "https://dev.azure.com"]
+# 	useHttpPath = true
+[rerere]
+	enabled = true
+[branch]
+	sort = -committerdate
+[help]
+	autocorrect = prompt
+# for emacs magit forge
+[github]
+	user = AjaiKN
+[receive]
+	fsckObjects = true # https://jvns.ca/blog/2024/02/16/popular-git-config-options/#fsckobjects-avoid-data-corruption
+[transfer]
+	fsckObjects = true # https://jvns.ca/blog/2024/02/16/popular-git-config-options/#fsckobjects-avoid-data-corruption
+[fetch]
+	fsckObjects = true # https://jvns.ca/blog/2024/02/16/popular-git-config-options/#fsckobjects-avoid-data-corruption
+	parallel = 0 # "A value of 0 will give some reasonable default."
+[fetch "fsck"]
+	zeroPaddedFilemode = warn # https://stackoverflow.com/a/51918148
+[credential "https://dev.azure.com"]
+	useHttpPath = true
+
+# see ./attributes
+[diff "lisp"]
+	xfuncname = "^(\\(.*)$"
+[diff "rstats"]
+	xfuncname = "^([a-zA-z.]+ *(<-|=) *function.*)$"
+[diff "texinfo"]
+	# http://git.savannah.gnu.org/gitweb/?p=coreutils.git;a=blob;f=.gitattributes;h=c3b2926c78c939d94358cc63d051a70d38cfea5d;hb=HEAD
+	xfuncname = "^@node[ \t][ \t]*\\([^,][^,]*\\)"
+[diff "orgmode"]
+	xfuncname = "^(\\*+.*)$"
+[diff "rspec"]
+	xfuncname = "^[ \t]*((RSpec|describe|context|it|before|after|around|feature|scenario|background)[ \t].*)$"
+[diff "swift"]
+	# xfuncname = ^[ \t]*((class|func)[ \t].*)$
+	# https://juripakaste.fi/swift-git-attributes/
+	xfuncname = "^[ \t]*(((private |public |internal |final |open )*class|(private |public |internal )*struct|(private |public |internal )*actor|(private |public |internal )*func|(private |public |internal )*extension|(private |public |internal )*enum)[ \t].*)$"
+[diff "php"]
+	# https://gist.github.com/ruediger/5647207?permalink_comment_id=5153197#gistcomment-5153197
+	# replacement for built-in
+	xfuncname = "^.*(\\b(((public|protected|private|static)\\s+){1,4}function\\s+[_A-Za-z][_A-Za-z0-9]+\\b\\s*\\()).*$"

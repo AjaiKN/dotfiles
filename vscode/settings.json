@@ -1,0 +1,360 @@
+// Place your settings in this file to overwrite the default settings
+{
+  // LANGUAGE SPECIFIC SETTINGS
+  "[elm]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "elmTooling.elm-ls-vscode",
+    "editor.tabSize": 4,
+    "editor.useTabStops": false,
+    // "editor.formatOnSaveTimeout": 1000
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'ELMX' 1" // for Iosevka
+  },
+  "[svelte]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "svelte.svelte-vscode"
+  },
+  "[latex]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "James-Yu.latex-workshop"
+  },
+  "[apl]": {
+    "editor.unicodeHighlight.ambiguousCharacters": false
+  },
+  "[rust]": {
+    "editor.tabSize": 4,
+    "editor.useTabStops": false,
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
+  "[roc]": {
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4
+  },
+  "[python]": {
+    "editor.formatOnType": true
+  },
+  "[coq]": {
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.guides.indentation": false,
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'COQX' 1" // for Iosevka
+  },
+  "[nix]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "jnoortheen.nix-ide"
+  },
+  "[shellscript]": {
+    // https://github.com/vscode-shellcheck/vscode-shellcheck/issues/192#issuecomment-1033312440
+    "editor.showDeprecated": false
+  },
+  "[typst]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[c]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'CLIK' 1" // for Iosevka
+  },
+  "[cpp]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'CLIK' 1" // for Iosevka
+  },
+  "[csharp]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'CLIK' 1" // for Iosevka
+  },
+  "[java]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'CLIK' 1" // for Iosevka
+  },
+  "[jsonc]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "editor.suggest.insertMode": "replace",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'JSPT' 1" // for Iosevka
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'JSPT' 1" // for Iosevka
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'JSPT' 1" // for Iosevka
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'JSPT' 1" // for Iosevka
+  },
+  "[vue]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[less]": {
+    "editor.suggest.insertMode": "replace",
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[graphql]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    },
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[mdx]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[php]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'PHPX' 1" // for Iosevka
+  },
+  "[julia]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'JLIA' 1" // for Iosevka
+  },
+  "[raku]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'RAKU' 1" // for Iosevka
+  },
+  "[ocaml]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'MLXX' 1" // for Iosevka
+  },
+  "[fsharp]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'FSHP' 1" // for Iosevka
+  },
+  "[haskell]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'HSKL' 1" // for Iosevka
+  },
+  "[purescript]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'PURS' 1" // for Iosevka
+  },
+  "[swift]": {
+    "editor.fontLigatures": "'ss04' 1, 'calt' 0, 'SWFT' 1" // for Iosevka
+  },
+  "[elixir]": {
+    "editor.formatOnSave": true,
+
+    "editor.insertSpaces": true,
+    "editor.tabSize": 2,
+    "editor.wordBasedSuggestions": "off",
+    "editor.formatOnType": true,
+    "editor.trimAutoWhitespace": false,
+    "editor.snippetSuggestions": "inline",
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true
+  },
+
+
+  // FONTS
+  // Iosevka (https://typeof.net/Iosevka/) is super customizable!
+  // It even has stylistic sets that are in the styles of other fonts (specify these in the editor.fontLigatures setting).
+  // And it has stylistic sets that enable specific ligatures for specific programming languages.
+  // I'm using the Iosevka Extended width variant (remove the word Extended to get the normal one, which is pretty thin).
+  // There's also Iosevka Comfy (third-party), which is in between the normal and Extended widths.
+  // May have to use "Expanded" if "Extended" doesn't work (https://github.com/be5invis/Iosevka/issues/479).
+  // The ones after the comma are fallback fonts if the first one isn't available on the machine.
+  // "editor.fontFamily": "Iosevka Comfy, Menlo, Monaco, 'Courier New', monospace",
+  "terminal.integrated.fontFamily": "Iosevka Term", // "Terminal emulators have a stricter compatibility requirements for fonts."
+  // (NOTE: for some reason, with VSCode's default font, fl becomes a ligature)
+  // "editor.fontLigatures": true,
+  "editor.fontLigatures": "'ss04' 1", // Iosevka - Menlo Style
+  // "editor.fontLigatures": "'ss05' 1", // Iosevka - Fira Mono Style
+
+  // can install fonts with Homebrew: https://github.com/Homebrew/homebrew-cask-fonts
+  "editor.fontFamily": "M PLUS Code Latin, Menlo, Monaco, 'Courier New', monospace",
+  // "editor.fontFamily": "Monaspace Neon, Menlo, Monaco, 'Courier New', monospace",
+  // "editor.fontLigatures": true, // Monaspace: texture healing and basic coding ligatures
+  // CommitMono
+  // Input
+  // "editor.fontFamily": "Fira Code, monospace", // https://github.com/tonsky/FiraCode
+  // "editor.fontFamily": "Victor Mono",
+   // https://rubjo.github.io/victor-mono/
+  //     could use setting in description of https://www.youtube.com/watch?v=PQYdXwJJq-c
+  //     to make cursive work
+  // "editor.fontFamily": "JetBrains Mono"
+  // "editor.fontFamily": "Oxygen Mono"
+  // "editor.fontFamily": "Verdana", // non-monospace font
+
+
+  "java.home": "/Library/Java/JavaVirtualMachines/openjdk-13.jdk/Contents/Home",
+  "editor.multiCursorModifier": "ctrlCmd",
+  //"editor.tabSize": 2,
+  "editor.suggestSelection": "first",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "python.jediEnabled": false,
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "**/.ruby-lsp": true,
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true,
+    "**/*.olean": true,
+    "**/*.vo": true,
+    "**/*.vok": true,
+    "**/*.vos": true,
+    "**/*.aux": true,
+    "**/*.glob": true
+  },
+  "explorer.confirmDragAndDrop": false,
+  "editor.tabSize": 2,
+  "git.autofetch": true,
+  "npm.packageManager": "yarn",
+  "editor.autoClosingBrackets": "always",
+  "vetur.useWorkspaceDependencies": true,
+  "python.languageServer": "Pylance",
+  "tabnine.experimentalAutoImports": true,
+  "rust-client.rustupPath": "$HOME/.cargo/bin/rustup",
+  "debug.javascript.autoAttachFilter": "onlyWithFlag",
+  "git.enableSmartCommit": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "editor.insertSpaces": false,
+  "vim.useSystemClipboard": true,
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "phoenix-heex": "html",
+    "html-eex": "html"
+  },
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook",
+    "*.pdf": "latex-workshop-pdf-hook"
+  },
+  "terminal.integrated.scrollback": 10000,
+  "editor.cursorStyle": "line",
+  "editor.lineNumbers": "on",
+  "editor.wordSeparators": "/\\()\"':,.;<>~!@#$%^&*|+=[]{}`?-",
+  "editor.wordWrap": "off",
+  "notebook.cellToolbarLocation": {
+    "default": "right",
+    "jupyter-notebook": "left"
+  },
+  "vim.replaceWithRegister": true,
+  "vim.sneak": true,
+  "editor.accessibilitySupport": "off",
+  "importCost.bundleSizeDecoration": "compressed",
+  "vscode-neovim.neovimExecutablePaths.darwin": "/opt/homebrew/bin/nvim",
+  // https://github.com/vscode-neovim/vscode-neovim/tree/994b969eab1bb8f280d2763768c31e0f501dee75#installation
+  "extensions.experimental.affinity": {
+    "vscodevim.vim": 1,
+    "asvetliakov.vscode-neovim": 1
+  },
+  "liveServer.settings.donotShowInfoMsg": true,
+  "redhat.telemetry.enabled": false,
+  "git.confirmSync": false,
+  "editor.inlineSuggest.enabled": true,
+  "latex-workshop.view.pdf.viewer": "tab",
+  "terminal.integrated.inheritEnv": false,
+  "terminal.external.osxExec": "iTerm.app",
+  // "editor.renderWhitespace": "all",
+  "gitlens.codeLens.enabled": false,
+  "latex-workshop.message.error.show": false,
+  // "omnisharp.path": "/Library/Frameworks/Mono.framework/Versions/6.12.0",
+  // "omnisharp.useGlobalMono": "never"
+  // "omnisharp.useGlobalMono": "always",
+  "omnisharp.monoPath": "/Library/Frameworks/Mono.framework/Versions/Current",
+  "omnisharp.path": "latest",
+  "latex-workshop.view.pdf.tab.editorGroup": "above",
+  "prettier.requireConfig": true,
+  "terminal.integrated.defaultProfile.linux": "fish",
+  "githubPullRequests.terminalLinksHandler": "github",
+  "explorer.autoReveal": "focusNoScroll",
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false,
+    "latex": false,
+    "coq": false
+  },
+  "diffEditor.ignoreTrimWhitespace": false,
+  "yaml.schemas": {
+    "file:///Users/ajainelson/.vscode/extensions/docsmsft.docs-yaml-1.0.1/dist/toc.schema.json": "/toc\\.yml/i"
+  },
+  "githubPullRequests.pullBranch": "never",
+  "workbench.colorTheme": "Default Dark+",
+  "zig.zls.path": "/Users/ajainelson/Library/Application Support/Code/User/globalStorage/ziglang.vscode-zig/zls_install/zls",
+  "coqtop.binPath": "/Applications/Coq-Platform~8.16~2022.09.app/Contents/Resources/bin/",
+  "playwright.reuseBrowser": false,
+  "coq-lsp.show_notices_as_diagnostics": true,
+  "coq-lsp.show_stats_on_hover": true,
+  "files.associations": {
+    ".stow-local-ignore": "ignore",
+    "flake.lock": "json",
+    ".env*": "dotenv",
+    "iostream": "cpp",
+    "source_location": "cpp",
+    ".parcelrc": "jsonc",
+    "*.in": "perl",
+    "*.t": "perl",
+    "*.inc": "php"
+  },
+  "go.toolsManagement.autoUpdate": true,
+  "eslint.rules.customizations": [
+    // show eslint errors as warnings
+    // https://stackoverflow.com/a/69223673
+    { "rule": "*", "severity": "warn" }
+  ],
+  "editor.tokenColorCustomizations": {
+    "[*Light*]": {
+      "textMateRules": [
+        {
+          "scope": "ref.matchtext",
+          "settings": {
+            "foreground": "#000"
+          }
+        }
+      ]
+    },
+    "[*Dark*]": {
+      "textMateRules": [
+        {
+          "scope": "ref.matchtext",
+          "settings": {
+            "foreground": "#fff"
+          }
+        }
+      ]
+    },
+    "textMateRules": []
+  },
+  "editor.renderWhitespace": "all",
+  "svelte.enable-ts-plugin": true,
+  "files.autoSaveDelay": 1,
+  "dotenv.enableAutocloaking": false
+}

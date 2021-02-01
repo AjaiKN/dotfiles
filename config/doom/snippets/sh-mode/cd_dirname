@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: cd to this directory
+# --
+cd "$(dirname "\$0")"

@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+print_usage() {
+	# NOTE: When this changes, rerun $DOTFILES/scripts/generate-manpages.sh
+	echo "Usage: $0 [--dry-run|-n] [--verbose|-v] <commit> [<commit>]"
+	echo "Fast-forward a branch to a commit."
+	echo "The branch and the commit can be specified in either order; we'll check which is an ancestor of the other."
+	echo "If the second argument is omitted, the current branch or (if detached) current commit is used."
+	echo
+	echo "  -n, --dry-run   do not actually do anything; just say what would be done"
+	echo "  -v, --verbose   be more verbose"
+}
+
+DRY_RUN=
+VERBOSE=
+FIRST_ARG=
+SECOND_ARG=
+
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--help|-h)
+			print_usage
+			exit 0
+			;;
+		--version)
+			echo "git-ff 0.1-pre"
+			exit
+			;;
+		--dry-run|-n)
+			DRY_RUN=1
+			VERBOSE=1
+			shift
+			;;
+		--verbose|-v)
+			VERBOSE=1
+			shift
+			;;
+		-*)
+			echo "ERROR: Unknown option: $1" >&2
+			print_usage
+			exit 1
+			;;
+		*)
+			if [[ -z "$FIRST_ARG" ]]; then
+				FIRST_ARG="$1"
+			elif [[ -z "$SECOND_ARG" ]]; then
+				SECOND_ARG="$1"
+			else
+				echo "ERROR: more than two arguments" >&2
+				print_usage
+				exit 1
+			fi
+			shift
+			;;
+	esac
+done
+
+if [[ -z "$FIRST_ARG" ]]; then
+	echo "ERROR: Missing first argument" >&2
+	print_usage
+	exit 1
+fi
+
+if [[ -z "$SECOND_ARG" ]]; then
+	[[ -n "$VERBOSE" ]] && echo "No second argument" >&2
+	CURRENT_BRANCH="$(git branch --show-current)"
+	if [[ -n "$CURRENT_BRANCH" ]]; then
+		[[ -n "$VERBOSE" ]] && echo "Using the current branch, $CURRENT_BRANCH, as second argument" >&2
+		SECOND_ARG="$CURRENT_BRANCH"
+	else
+		[[ -n "$VERBOSE" ]] && echo "Using HEAD as second argument" >&2
+		SECOND_ARG="HEAD"
+	fi
+fi
+
+if [ "$(git rev-parse "$FIRST_ARG")" = "$(git rev-parse "$SECOND_ARG")" ]; then
+	echo "First and second arguments both point to commit $(git rev-parse "$FIRST_ARG")" >&2
+	echo "So it's already fast-forwarded!" >&2
+	exit 1
+fi
+
+if git merge-base --is-ancestor "$FIRST_ARG" "$SECOND_ARG"; then
+	[[ -n "$VERBOSE" ]] && echo "$FIRST_ARG is an ancestor of $SECOND_ARG"
+	BASE="$FIRST_ARG"
+	TO="$SECOND_ARG"
+elif git merge-base --is-ancestor "$SECOND_ARG" "$FIRST_ARG"; then
+	[[ -n "$VERBOSE" ]] && echo "$SECOND_ARG is an ancestor of $FIRST_ARG"
+	BASE="$SECOND_ARG"
+	TO="$FIRST_ARG"
+else
+	echo "Neither $FIRST_ARG nor $SECOND_ARG are ancestors of each other" >&2
+	exit 1
+fi
+
+echo "Current commit before before running git-ff: $(git rev-parse HEAD)"
+
+echo "$ git switch $BASE"
+[[ -z "$DRY_RUN" ]] && git switch "$BASE"
+
+echo "$ git merge --ff-only $TO"
+[[ -z "$DRY_RUN" ]] && git merge --ff-only "$TO"
+
+echo "Done. To undo, run:"
+echo "  git reset --merge ORIG_HEAD"

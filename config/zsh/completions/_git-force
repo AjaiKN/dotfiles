@@ -1,0 +1,27 @@
+#compdef git-force
+#description force-push more safely
+
+# ensure /usr/share/zsh/5.9/functions/_git is loaded
+# autoload +XUz _git
+# typeset -f __git-push >/dev/null 2>&1 || _git
+typeset -f __git_remote_branch_names_noprefix >/dev/null 2>&1 || _git
+
+local ret=1
+
+_arguments -S -s $endopt \
+	':ref and expectation:->lease' \
+	'*:: : _git-push' && ret=0
+# ^ delegates to _git-push in /usr/share/zsh/5.9/functions/_git
+
+case $state in
+	(lease)
+		compset -P '*:'
+		if [[ -n ${IPREFIX#*=} ]]; then
+			_guard '[[:xdigit:]]#' "expected value" && ret=0
+		else
+			__git_remote_branch_names_noprefix && ret=0
+		fi
+		;;
+esac
+
+return ret

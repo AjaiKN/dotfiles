@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# https://formulae.brew.sh/formula/sleepwatcher
+# Runs when computer goes to sleep
+# Also see .wakeup

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# https://github.com/sharkdp/bat?tab=readme-ov-file#man
+# https://github.com/sharkdp/bat/pull/2858
+# https://github.com/sharkdp/bat/issues/1145#issuecomment-1743518097
+# mandoc passes a file name, other tools write to stdout
+# using `cat "$@"` we take care of both reading from file and stdin
+if command -v batcat >/dev/null 2>&1; then
+	# bat is called batcat on Ubuntu & Debian
+	exec cat "$@" | sed -u -e "s/\\x1B\[[0-9;]*m//g; s/.\\x08//g" | batcat --language man --style plain --pager "$PAGER"
+elif command -v bat >/dev/null 2>&1; then
+	exec cat "$@" | sed -u -e "s/\\x1B\[[0-9;]*m//g; s/.\\x08//g" | bat --language man --style plain --pager "$PAGER"
+else
+	exec "${PAGER:-less}" "$@"
+fi

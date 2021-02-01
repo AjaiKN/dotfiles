@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -x
+# Use this for stuff like git commit messages
+# (if you want a GUI and it to be in a new Emacs instance)
+
+if [ -n "$INSIDE_EMACS" ]; then
+	exec emacsclient "$@"
+fi
+
+# Open a file in a new instance of graphical Emacs.
+# Wait for it to finish.
+
+if [ -n "$EMACS_MAC" ]; then
+	open -W -n /Applications/Emacs.app --args "$@"
+else
+	exec emacs "$@"
+fi

@@ -1,0 +1,24 @@
+# https://www.nano-editor.org/dist/latest/nanorc.5.html
+# https://config.phundrak.com/deprecated/nano.html
+
+set mouse
+
+set backup
+set backupdir ~/.cache/nano/backups/
+
+set smarthome
+unset casesensitive
+set regexp
+
+set boldtext
+set softwrap
+set atblanks
+set linenumbers
+set constantshow
+
+set tabsize 2
+set autoindent
+
+# include /opt/homebrew/share/nano/*.nanorc
+# include /usr/local/share/nano/*.nanorc
+include ~/.config/nano/nano-highlight/*.nanorc

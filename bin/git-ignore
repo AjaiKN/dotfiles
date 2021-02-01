@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# NOTE: To exclude a glob, use single quotes around it.
+
+
+file="./.gitignore"
+
+if [ $# -eq 0 ]; then
+		# No arguments provided -> open in the editor git would use
+		# (1) GIT_EDITOR
+		# (2) git config core.editor
+		# (3) VISUAL
+		# (4) EDITOR
+		# (5) vi
+		core_editor="$(git config core.editor || true)"
+		set -x
+		"${GIT_EDITOR:-${core_editor:-${VISUAL:-${EDITOR:-vi}}}}" "$file"
+else
+	set -x
+	# Otherwise, put arguments in file
+	for argument in "$@"
+	do
+		echo "$argument" >> "$file"
+	done
+fi

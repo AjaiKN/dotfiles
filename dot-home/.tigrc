@@ -1,0 +1,11 @@
+set mouse = true
+set mouse-wheel-cursor = true
+set mouse-scroll = 3
+set ignore-case = smart-case
+set truncation-delimiter = utf-8
+set tab-size = 2
+set focus-child = false
+
+#set refresh-mode = auto
+set refresh-mode = periodic
+set refresh-interval = 3
