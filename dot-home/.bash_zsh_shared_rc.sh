@@ -91,55 +91,55 @@ export LSCOLORS="Gxfxcxdxbxegedabagacad"
 
 # Default coloring for GNU-based ls
 if [[ -z "$LS_COLORS" ]]; then
-  # Define LS_COLORS via dircolors if available. Otherwise, set a default
-  # equivalent to LSCOLORS (generated via https://geoff.greer.fm/lscolors)
-  if command -v dircolors >/dev/null 2>&1; then
+	# Define LS_COLORS via dircolors if available. Otherwise, set a default
+	# equivalent to LSCOLORS (generated via https://geoff.greer.fm/lscolors)
+	if command -v dircolors >/dev/null 2>&1; then
 		# shellcheck disable=SC2015 disable=1090
-    [[ -f "$HOME/.dircolors" ]] &&
-      source <(dircolors -b "$HOME/.dircolors") ||
-      source <(dircolors -b)
-  else
-    export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
-  fi
+		[[ -f "$HOME/.dircolors" ]] &&
+			source <(dircolors -b "$HOME/.dircolors") ||
+			source <(dircolors -b)
+	else
+		export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
+	fi
 fi
 
 function test-ls-args {
-  command "$@" /dev/null &>/dev/null
+	command "$@" /dev/null &>/dev/null
 }
 
 unalias ls 2>/dev/null
 # Find the option for using colors in ls, depending on the version
 case "$OSTYPE" in
-  (netbsd*)
-    # On NetBSD, test if `gls` (GNU ls) is installed (this one supports colors);
-    # otherwise, leave ls as is, because NetBSD's ls doesn't support -G
-    test-ls-args gls --color && alias ls='gls --color=tty'
-    ;;
-  (openbsd*)
-    # On OpenBSD, `gls` (ls from GNU coreutils) and `colorls` (ls from base,
-    # with color and multibyte support) are available from ports.
-    # `colorls` will be installed on purpose and can't be pulled in by installing
-    # coreutils (which might be installed for ), so prefer it to `gls`.
-    test-ls-args gls --color && alias ls='gls --color=tty'
-    test-ls-args colorls -G && alias ls='colorls -G'
-    ;;
-  (darwin*|freebsd*)
-    # This alias works by default just using $LSCOLORS
-    test-ls-args ls -G && alias ls='ls -G'
-    # OMZ only uses GNU ls if installed and there are user defaults for
-    # $LS_COLORS, as the default coloring scheme is not very pretty.
-    # But I like that GNU ls is more compact.
-    # zstyle -t ':omz:lib:theme-and-appearance' gnu-ls &&
-    test-ls-args gls --color &&
-      alias ls='gls --color=tty'
-    ;;
-  (*)
-    if test-ls-args ls --color; then
-      alias ls='ls --color=tty'
-    elif test-ls-args ls -G; then
-      alias ls='ls -G'
-    fi
-    ;;
+	(netbsd*)
+		# On NetBSD, test if `gls` (GNU ls) is installed (this one supports colors);
+		# otherwise, leave ls as is, because NetBSD's ls doesn't support -G
+		test-ls-args gls --color && alias ls='gls --color=tty'
+		;;
+	(openbsd*)
+		# On OpenBSD, `gls` (ls from GNU coreutils) and `colorls` (ls from base,
+		# with color and multibyte support) are available from ports.
+		# `colorls` will be installed on purpose and can't be pulled in by installing
+		# coreutils (which might be installed for ), so prefer it to `gls`.
+		test-ls-args gls --color && alias ls='gls --color=tty'
+		test-ls-args colorls -G && alias ls='colorls -G'
+		;;
+	(darwin*|freebsd*)
+		# This alias works by default just using $LSCOLORS
+		test-ls-args ls -G && alias ls='ls -G'
+		# OMZ only uses GNU ls if installed and there are user defaults for
+		# $LS_COLORS, as the default coloring scheme is not very pretty.
+		# But I like that GNU ls is more compact.
+		# zstyle -t ':omz:lib:theme-and-appearance' gnu-ls &&
+		test-ls-args gls --color &&
+			alias ls='gls --color=tty'
+		;;
+	(*)
+		if test-ls-args ls --color; then
+			alias ls='ls --color=tty'
+		elif test-ls-args ls -G; then
+			alias ls='ls -G'
+		fi
+		;;
 esac
 
 command -v gls >/dev/null 2>&1 && alias gls='gls --color=tty'
@@ -160,17 +160,17 @@ function diff {
 
 # Check if main exists and use instead of master
 function git_main_branch() {
-  command git rev-parse --git-dir &>/dev/null || return
-  local ref
-  for ref in refs/{heads,remotes/{origin,upstream}}/{main,trunk,mainline,default,stable,master}; do
-    if command git show-ref -q --verify "$ref"; then
-      echo "${ref:t}"
-      return 0
-    fi
-  done
-  # If no main branch was found, fall back to master but return error
-  echo master
-  return 1
+	command git rev-parse --git-dir &>/dev/null || return
+	local ref
+	for ref in refs/{heads,remotes/{origin,upstream}}/{main,trunk,mainline,default,stable,master}; do
+		if command git show-ref -q --verify "$ref"; then
+			echo "${ref:t}"
+			return 0
+		fi
+	done
+	# If no main branch was found, fall back to master but return error
+	echo master
+	return 1
 }
 
 alias ggpur='ggu'
@@ -463,9 +463,9 @@ alias unarchive='bsdtar caf'
 alias archive-ls='bsdtar tvf'
 
 if command -v wget >/dev/null 2>&1; then
-  alias download='wget'
+	alias download='wget'
 else
-  alias download='curl -O -L'
+	alias download='curl -O -L'
 fi
 
 function download-extract {
