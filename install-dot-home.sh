@@ -251,5 +251,7 @@ else
 fi
 
 ## launchd
-handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
-[ ! -d "$DOTFILES/launchd.private" ] || handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd.private"
+if [ "$(uname -s)" = "Darwin" ]; then
+	handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
+	[ ! -d "$DOTFILES/launchd.private" ] || handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd.private"
+fi
