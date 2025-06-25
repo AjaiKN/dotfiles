@@ -117,10 +117,24 @@ handle_file() {
 		mkdir -p "$1"
 		my_echo "${blue}UNFOLDING: $1/ -> $(dotfiles_relative_to_dir "$1")/$(echo "$2" | sed "s|^$DOTFILES/||")/${reset}"
 		(
-			cd "$2" || exit 50
 			indent="  $indent"
+
+			cd "$2" || exit 50
 			for file in * .*; do
-				[ "$file" = "." ] || [ "$file" = ".." ] || handle_file "$1/$file" "$2/$file"
+				if ! [ "$file" = "." ] && ! [ "$file" = ".." ]; then
+					handle_file "$1/$file" "$2/$file"
+				fi
+			done
+
+			my_echo "Checking for orphaned symlinks in $1..."
+			cd "$1" || exit 51
+			for file in * .*; do
+				if ! [ "$file" = "." ] && ! [ "$file" = ".." ]; then
+					if is_dotfiles_link "$1/$file" && ! [ -e "$(readlink "$1/$file")" ]; then
+						my_echo "${red}UNLINK (orphan): $1/$file -> $(readlink "$1/$file")${reset}"
+						rm "$1/$file"
+					fi
+				fi
 			done
 		)
 	else
