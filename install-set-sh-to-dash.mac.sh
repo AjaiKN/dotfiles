@@ -7,7 +7,8 @@ set -x
 
 # https://scriptingosx.com/2020/06/about-bash-zsh-sh-and-dash-in-macos-catalina-and-beyond/
 
-if [ /var/select/sh -ef /bin/bash ] && [ -f /bin/dash ] && [[ $- == *i* ]]; then
+#  && [[ $- == *i* ]]
+if [ /var/select/sh -ef /bin/bash ] && [ -f /bin/dash ]; then
 	set +x
 	echo
 	echo 'sh is symlinked to bash system-wide.'
@@ -20,5 +21,8 @@ if [ /var/select/sh -ef /bin/bash ] && [ -f /bin/dash ] && [[ $- == *i* ]]; then
 	if [[ $REPLY =~ ^[Yy]$ ]]; then
 		set -x
 		sudo ln -sf /bin/dash /var/select/sh
+		echo "Done"
+	else
+		echo "Aborting"
 	fi
 fi

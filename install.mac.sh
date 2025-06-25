@@ -12,4 +12,3 @@ cd "$(dirname "$0")"
 
 ./install-defaults.mac.sh
 ./install-dot-home.sh
-./install-set-sh-to-dash.mac.sh || :
