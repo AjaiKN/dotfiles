@@ -86,22 +86,19 @@ function superls {
 
 ##### ls colors (from ohmyzsh)
 
-# Default coloring for BSD-based ls
+# Default coloring for BSD-based ls:
 export LSCOLORS="Gxfxcxdxbxegedabagacad"
 
-# Default coloring for GNU-based ls
-if [[ -z "$LS_COLORS" ]]; then
-	# Define LS_COLORS via dircolors if available. Otherwise, set a default
-	# equivalent to LSCOLORS (generated via https://geoff.greer.fm/lscolors)
-	if command -v dircolors >/dev/null 2>&1; then
-		# shellcheck disable=SC2015 disable=1090
-		[[ -f "$HOME/.dircolors" ]] &&
-			source <(dircolors -b "$HOME/.dircolors") ||
-			source <(dircolors -b)
-	else
-		export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
-	fi
-fi
+# Default coloring for GNU-based ls:
+# LS_COLORS equivalent to LSCOLORS (generated via https://geoff.greer.fm/lscolors)
+export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
+# Define LS_COLORS via dircolors if available.
+# if command -v dircolors >/dev/null 2>&1; then
+# 	# shellcheck disable=SC2015 disable=1090
+# 	[[ -f "$HOME/.dircolors" ]] &&
+# 		source <(dircolors -b "$HOME/.dircolors") ||
+# 		source <(dircolors -b)
+# fi
 
 function test-ls-args {
 	command "$@" /dev/null &>/dev/null
