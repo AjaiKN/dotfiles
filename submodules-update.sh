@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")" || exit 1
 
-set -x
+# set -x
 
 git submodule --quiet sync --recursive
 
