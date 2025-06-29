@@ -2319,17 +2319,7 @@ file modes."
       (apply fn outer-args)))
 
   (map! :map treesit--explorer-tree-mode-map
-        :mn "q" #'quit-window)
-
-  ;; TODO: Doom bug? this shouldn't be necessary
-  (let ((source (file-name-concat doom-cache-dir "tree-sitter"))
-        (target (file-name-concat doom-data-dir "tree-sitter")))
-    (unless (equal (file-symlink-p source) target)
-      (when (file-exists-p source)
-        (message "Trashing %s" source)
-        (move-file-to-trash source))
-      (message "ln -s %s %s" target source)
-      (make-symbolic-link target source))))
+        :mn "q" #'quit-window))
 
 ;;; hercules
 ;; https://github.com/cyruseuros/hercules
