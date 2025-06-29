@@ -241,7 +241,7 @@ returns true."
            *extra fsharp            ; ML stands for Microsoft's Language
            fstar             ; (dependent) types and (monadic) effects and Z3
            gdscript          ; the language you waited for
-           *extra (go +lsp)         ; the hipster dialect
+           (go +lsp)         ; the hipster dialect
            *extra (graphql +lsp)    ; Give queries a REST
            *extra (haskell +lsp)    ; a language that's lazier than I am
            *extra hare
