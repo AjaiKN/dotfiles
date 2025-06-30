@@ -62,7 +62,7 @@ make_backup() {
 is_ignored() {
 	base=$(basename "$1")
 	case "$base" in
-		.DS_Store|.unfold|"Icon\r"|.#*|*~|'#'*'#') return 0 ;;
+		.DS_Store|.unfold|.#*|*~|'#'*'#') return 0 ;;
 		*) return 1 ;;
 	esac
 }
