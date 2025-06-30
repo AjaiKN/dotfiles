@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+set -x
+
+# If Emacs.app isn't already running, ...
+if ! pgrep -f Emacs.app >/dev/null; then
+	exec emacs -nw --eval '(progn (full-calc) (akn/terminal-quit-mode))'
+else
+	exec emacs-term --eval '(progn (full-calc) (akn/terminal-quit-mode))'
+fi
