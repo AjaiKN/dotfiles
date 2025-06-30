@@ -24,4 +24,5 @@ aliases:
     web: browse
     repo url: browse --no-browser
     url: repo url
+    link: repo url
 version: "1"
