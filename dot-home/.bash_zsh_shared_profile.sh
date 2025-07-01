@@ -1,6 +1,8 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2317
 
+source "$HOME/.bash_zsh_shared_env.sh"
+
 ## Nix prologue
 OLD_PATH_BASH_ZSH_SHARED_PROFILE=$PATH
 

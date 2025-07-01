@@ -3,8 +3,6 @@
 # Loaded by interactive login shells in bash.
 # On Mac, interactive shells are login shells by default.
 
-source "$HOME/.bash_zsh_shared_env.sh"
-
 source "$HOME/.bash_zsh_shared_profile.sh"
 
 # We load .bashrc so that all interactive shells load .bashrc.

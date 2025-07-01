@@ -200,5 +200,8 @@ if [ -n "$IN_NIX_SHELL" ]; then
 	# PROMPT="[IN_NIX_SHELL=$IN_NIX_SHELL] $PROMPT"
 fi
 
+### Deduplicate PATH and MANPATH
+typeset -U path manpath
+
 ### Profiling epilogue
 [ -z "$SHOULD_PROFILE" ] || zprof
