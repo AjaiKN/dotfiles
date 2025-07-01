@@ -37,7 +37,7 @@ else
 			arg_quoted='"'${arg_escaped}'"'
 			file_list="$file_list $arg_quoted"
 		done
-		exec emacsclient -e "(dolist (file '($file_list)) (if (string-empty-p file) nil (find-file file)) (akn/focus-this-frame) nil)" --no-wait
+		exec emacsclient -e "(progn (akn/focus-this-frame) (mapc #'find-file '($file_list)) nil)" --no-wait
 	else
 		TERM=xterm-256color emacsclient -c -n "$@"
 		emacsclient -e '(akn/focus-this-frame)'
