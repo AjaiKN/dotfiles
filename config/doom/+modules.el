@@ -100,6 +100,7 @@ returns true."
            (emoji +unicode)  ; 🙂
            *extra extra-themes
            *extra golden-ratio
+           *basic highlight-numbers
            *extra highlight-symbol
            *extra hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
            hydra
@@ -116,6 +117,7 @@ returns true."
            *basic (popup +defaults)   ; tame sudden yet inevitable temporary windows
            *basic (smooth-scroll) ; +interpolate     ; So smooth you won't believe it's not butter
            *extra prism
+           *basic rainbow-delimiters
            *extra read-aloud
            *basic tabs              ; a tab bar for Emacs
            *basic treemacs          ; a project drawer, like neotree but cooler

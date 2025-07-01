@@ -134,6 +134,9 @@ Forked from Doom's deleted module of the same name
 *** 🕰 [[./ui/emacs-dashboard][emacs-dashboard]]: an alternative to Doom's [[doom-module::ui doom-dashboard][:ui doom-dashboard]] module
 *** 🐁 [[./ui/extra-themes][extra-themes]]: some extra themes you can try or use
 *** 🕰🐁 [[./ui/golden-ratio][golden-ratio]]: auto-resize windows using the [[https://github.com/roman/golden-ratio.el][golden-ratio]] package, inspired by [[https://www.spacemacs.org/doc/DOCUMENTATION.html#golden-ratio][the Spacemacs integration]].
+*** ⭐🐁 [[./ui/highlight-numbers][highlight-numbers]]: highlight numbers in modes that don't highlight them
+
+This is taken from Doom's source code from before it was removed in [[https://github.com/doomemacs/doomemacs/commit/5cb34fa15155c6525ceb33a715b6c1944410bad3][this commit]].
 *** ⭐ [[./ui/highlight-symbol][highlight-symbol]]: highlight all instances of the symbol the cursor is on
 *** ⭐ [[./ui/modeline-minor-modes][modeline-minor-modes]]: show a menu of minor modes in the modeline
 *** ⭐🐁 [[./ui/modeline-scrollbar][modeline-scrollbar]]: show a mini scrollbar in the modeline
@@ -141,6 +144,9 @@ Forked from Doom's deleted module of the same name
 
 Forked from Doom's ~nav-flash~ module, but uses the [[https://github.com/protesilaos/pulsar][pulsar]] package instead of the [[https://github.com/rolandwalker/nav-flash][nav-flash]] package.
 *** 🕰 [[./ui/prism][prism]]: color code by the nesting level it's in, not by its syntactic role
+*** ⭐🐁 [[./ui/rainbow-delimiters][rainbow-delimiters]]: highlight numbers in modes that don't highlight them
+
+This is taken from Doom's source code from before it was removed in [[https://github.com/doomemacs/doomemacs/commit/87b616e5d8dcb9763a8caf7b83e1e8e9016b6d1d][this commit]].
 *** [[./ui/read-aloud][read-aloud]]: read text out loud
 *** ⭐🏢 [[./ui/tab-bar][tab-bar]]: an alternative to Doom's [[doom-module::ui workspaces][:ui workspaces]] module using the Emacs built-in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Tab-Bars.html][tab-bar-mode]]
 - With the +bufferlo flag, this uses [[https://github.com/florommel/bufferlo][bufferlo]].
