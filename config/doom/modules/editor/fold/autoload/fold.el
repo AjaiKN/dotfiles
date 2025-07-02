@@ -44,24 +44,22 @@
 (defun +fold--hideshow-fold-p ()
   (when (+fold--ensure-hideshow-mode)
     (save-excursion
-      (with-demoted-errors "+fold--hideshow-fold-p error: %S"
-        (or (and (bound-and-true-p hs-block-start-regexp)
-                 (hs-looking-at-block-start-p))
-            ;;DIFFERENCE FROM ORIGINAL
-            (save-excursion
-              (when-let* ((line-num-orig (line-number-at-pos))
-                          (block-beginning (hs-find-block-beginning))
-                          (line-num-of-block-beginning (line-number-at-pos block-beginning))
-                          (line-num-of-block-end (when hs-minor-mode
-                                                   (hs-minor-mode 1)
-                                                   (funcall hs-forward-sexp-func 1) ;; go to end of block
-                                                   (line-number-at-pos))))
-                (and (equal line-num-orig line-num-of-block-beginning)
-                     ;; if they're equal, then this block is only one line
-                     (not (equal line-num-of-block-beginning line-num-of-block-end)))))
-            (unless (eolp)
-              (end-of-line)
-              (+fold--hideshow-fold-p)))))))
+      (or (ignore-errors (funcall hs-looking-at-block-start-p-func))
+          ;;DIFFERENCE FROM ORIGINAL
+          (save-excursion
+            (when-let* ((line-num-orig (line-number-at-pos))
+                        (block-beginning (ignore-errors (funcall hs-find-block-beginning-func)))
+                        (line-num-of-block-beginning (line-number-at-pos block-beginning))
+                        (line-num-of-block-end (when hs-minor-mode
+                                                 (hs-minor-mode 1)
+                                                 (funcall hs-forward-sexp-func 1) ;; go to end of block
+                                                 (line-number-at-pos))))
+              (and (equal line-num-orig line-num-of-block-beginning)
+                   ;; if they're equal, then this block is only one line
+                   (not (equal line-num-of-block-beginning line-num-of-block-end)))))
+          (unless (eolp)
+            (end-of-line)
+            (+fold--hideshow-fold-p))))))
 
 (defun +fold--treesit-fold-p ()
   (ignore-errors
