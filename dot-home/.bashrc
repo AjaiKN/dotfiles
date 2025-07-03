@@ -241,6 +241,11 @@ fi
 ## mise
 hash mise 2>/dev/null && eval "$(mise activate bash)"
 
+## tabtab completions
+# https://github.com/mklabs/tabtab
+# Netlify CLI uses this
+[ -f ~/.config/tabtab/bash/__tabtab.bash ] && . ~/.config/tabtab/bash/__tabtab.bash
+
 ## Emacs vterm integration
 if [[ "$INSIDE_EMACS" = 'vterm' ]] && [[ -n ${EMACS_VTERM_PATH} ]] && [[ -f ${EMACS_VTERM_PATH}/etc/emacs-vterm-bash.sh ]]; then
 	# https://github.com/akermu/emacs-libvterm?tab=readme-ov-file#shell-side-configuration
