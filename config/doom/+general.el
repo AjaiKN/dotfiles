@@ -2714,6 +2714,27 @@ there's no need for `markdown-mode' to reduplicate the effort."
   (mapc (lambda (pkg) (ignore-errors (require pkg nil 'noerror))) (cdr doom-incremental-packages))
   (setf (cdr doom-incremental-packages) nil))
 
+;;; find-file: open dired after finding nonexisting directory
+
+;; `doom-create-missing-directories-h' works great. But suppose the file you're
+;; finding is *itself* a nonexisting directory - for example,
+;; (find-file "/tmp/i-dont-exist/") instead of (find-file "/tmp/i-dont-exist/file").
+;; The directory will be created, but then you're put into a useless, empty
+;; buffer. Instead, I want to be put into a dired buffer.
+
+(add-hook! 'find-file-hook :depth -25
+  (defun akn/no-longer-nonexisting-directory-h ()
+    (when-let* (((and buffer-file-truename
+                      find-file-run-dired
+                      (file-directory-p buffer-file-truename)))
+                (buf (run-hook-with-args-until-success
+                      'find-directory-functions
+                      (if find-file-visit-truename
+                          (abbreviate-file-name buffer-file-truename)
+                        buffer-file-name))))
+      (kill-buffer (current-buffer))
+      (set-buffer buf))))
+
 ;;; file-local variables
 
 ;; Local Variables:
