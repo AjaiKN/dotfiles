@@ -4,7 +4,7 @@
 OLD_PATH_ZSHENV=$PATH
 
 ## Stuff
-source "$HOME/.bash_zsh_shared_env.sh"
+source "$HOME/.shell_env.sh"
 
 
 ## Nix epilogue

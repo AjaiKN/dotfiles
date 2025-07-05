@@ -3,4 +3,4 @@
 # https://stackoverflow.com/questions/73416959/why-vs-code-on-macos-suggests-add-path-to-zprofile-instead-of-zshrc
 # https://code.visualstudio.com/docs/setup/mac#_alternative-manual-instructions
 
-source "$HOME/.bash_zsh_shared_profile.sh" || return 1
+source "$HOME/.shell_profile.sh" || return 1

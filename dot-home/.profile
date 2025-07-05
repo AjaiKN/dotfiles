@@ -3,7 +3,7 @@ OLD_PATH_PROFILE=$PATH
 
 ## Stuff
 
-. "$HOME/.bash_zsh_shared_env.sh"
+. "$HOME/.shell_env.sh"
 
 ## Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then

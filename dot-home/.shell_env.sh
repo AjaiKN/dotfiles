@@ -3,11 +3,11 @@
 
 # This gets run by bash, zsh, and sh.
 
-export ENV="$HOME/.bash_zsh_shared_env.sh"
-export BASH_ENV="$HOME/.bash_zsh_shared_env.sh"
+export ENV="$HOME/.shell_env.sh"
+export BASH_ENV="$HOME/.shell_env.sh"
 
 ## Nix prologue
-OLD_PATH_BASH_ZSH_SHARED_ENV=$PATH
+OLD_PATH_SHELL_ENV=$PATH
 
 ## DOTFILES
 
@@ -165,5 +165,5 @@ fi
 if [ -n "$IN_NIX_SHELL" ]; then
 	# If we're in a Nix shell, make sure the stuff Nix added to the PATH
 	# is ahead of all my stuff.
-	PATH=$OLD_PATH_BASH_ZSH_SHARED_ENV:$PATH
+	PATH=$OLD_PATH_SHELL_ENV:$PATH
 fi
