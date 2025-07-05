@@ -168,12 +168,15 @@ This can either be a directory or a list in the format of
   :group 'better-backup
   (if better-backup-buffer-mode
       (progn
-        (better-backup--buffer-backup-maybe)
+        (if (buffer-modified-p)
+            (better-backup-buffer-mode)
+          (add-hook 'first-change-hook #'better-backup--buffer-backup-maybe nil 'local))
         (add-hook 'before-save-hook #'better-backup--buffer-backup-maybe nil 'local)
         (add-hook 'after-save-hook #'better-backup--buffer-backup-maybe 92 'local))
     (progn
-      (add-hook 'before-save-hook #'better-backup--buffer-backup-maybe nil 'local)
-      (add-hook 'after-save-hook #'better-backup--buffer-backup-maybe 92 'local)
+      (remove-hook 'first-change-hook #'better-backup--buffer-backup-maybe 'local)
+      (remove-hook 'before-save-hook #'better-backup--buffer-backup-maybe 'local)
+      (remove-hook 'after-save-hook #'better-backup--buffer-backup-maybe 'local)
       (when better-backup--buffer-local-saved-state
         (buffer-local-restore-state better-backup--buffer-local-saved-state)
         (setq better-backup--buffer-local-saved-state nil)))))
