@@ -73,6 +73,7 @@
         +multiple-cursors/mc-toggle-cursors
         +multiple-cursors/mc-toggle-evil
         +vertico/project-search
+        +words/toggle-subword-superword
         +workspace/switch-right
         akn/command-click
         akn/evil-mc->mc
