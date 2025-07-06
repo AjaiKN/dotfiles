@@ -15,7 +15,9 @@ dotfiles_relative_to_dir() {
 	real_home=$(realpath "$HOME")
 	while true; do
 		if [ "$dir" = "/" ]; then
-			printf "%s" "${res}${DOTFILES}"
+			# printf "%s" "${res}${DOTFILES}"
+			# fall back to absolute path
+			printf "%s" "${DOTFILES}"
 			return
 		elif [ "$dir" = "$real_home" ] || [ "$dir" = "$HOME" ]; then
 			trimmed=$(echo "$DOTFILES" | sed "s|^$real_home/||" | sed "s|^$HOME/||")
@@ -29,9 +31,20 @@ dotfiles_relative_to_dir() {
 }
 
 get_planned_link_source() {
-	base=$(dotfiles_relative_to_dir "$(dirname "$1")")
-	trimmed=$(echo "$2" | sed "s|^$DOTFILES/||")
-	printf "%s/%s" "$base" "$trimmed"
+	case "$2" in
+		"$DOTFILES"/*)
+			base=$(dotfiles_relative_to_dir "$(dirname "$1")")
+			trimmed=$(echo "$2" | sed "s|^$DOTFILES/||")
+			printf "%s/%s" "$base" "$trimmed"
+			;;
+		/*)
+			printf "%s" "$2"
+			;;
+		*)
+			echo "$1 should be an absolute path" >&2
+			exit 36
+			;;
+	esac
 }
 
 is_dotfiles_link() {
@@ -68,7 +81,7 @@ is_ignored() {
 }
 
 is_unfold() {
-	[ -e "$1/.unfold" ]
+	[ -e "$1/.unfold" ] # && ! [ -L "$1" ]
 }
 
 indent=''
@@ -91,7 +104,7 @@ reset=$(printf '\033[0m')
 
 handle_file() {
 	if [ -L "$1" ]; then
-		if is_dotfiles_link "$1" || is_self_link "$1"; then
+		if is_dotfiles_link "$1" || is_self_link "$1" || [ "$(readlink "$1")" = "$(get_planned_link_source "$1" "$2")" ]; then
 			if is_ignored "$1"; then
 				my_echo "${red}UNLINK (because ignored): $1 -> $(readlink "$1")${reset}"
 				rm "$1"
@@ -243,11 +256,10 @@ handle_file "$HOME" "$DOTFILES/dot-home"
 handle_file "$HOME/.config" "$DOTFILES/config"
 [ ! -d "$DOTFILES/config.private" ] || handle_file "$HOME/.config" "$DOTFILES/config.private"
 
-## vscode
+## macOS Application Support
 if [ "$(uname -s)" = "Darwin" ]; then
-	handle_file "$HOME/Library/Application Support/Code/User" "$DOTFILES/vscode"
-else
-	handle_file "$HOME/.config/Code/User" "$DOTFILES/vscode"
+	handle_file "$HOME/Library/Application Support/Code" "$DOTFILES/config/Code"
+	handle_file "$HOME/Library/Application Support/edir-flags.conf" "$DOTFILES/config/edir-flags.conf"
 fi
 
 ## launchd
