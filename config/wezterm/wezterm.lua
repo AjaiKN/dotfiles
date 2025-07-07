@@ -5,6 +5,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 --disabled because I have no way of knowing if TERM=wezterm is installed on an ssh'ed machine
+--TODO: try doing something like this: https://ghostty.org/docs/help/terminfo#configure-ssh-to-fall-back-to-a-known-terminfo-entry
 -- function file_exists(name)
 --   -- https://stackoverflow.com/a/4991602
 --    local f=io.open(name,"r")

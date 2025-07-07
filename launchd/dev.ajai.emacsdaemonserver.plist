@@ -31,5 +31,11 @@
 	<string>/tmp/dev.ajai.emacsdaemon.stderr.log</string>
 	<key>StandardOutPath</key>
 	<string>/tmp/dev.ajai.emacsdaemon.stdout.log</string>
+
+ 	<key>EnvironmentVariables</key>
+	<dict>
+		<key>TERMINFO_DIRS</key>
+		<string>/Applications/Ghostty.app/Contents/Resources/terminfo</string>
+ 	</dict>
 </dict>
 </plist>
