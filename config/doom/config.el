@@ -76,8 +76,11 @@
          (seq-filter (lambda (p) (not (string-match-p "local/share/mise/installs" p)))
                      exec-path)))
 
+(when (or (daemonp)
+          (member (getenv "TERM_PROGRAM") '("WezTerm" "ghostty")))
+  (setq! etcc-term-type-override 'kitty))
 ;; (setenv "TERM_PROGRAM" "Apple_Terminal")
-(setenv "TERM_PROGRAM" "")
+;; (setenv "TERM_PROGRAM" "")
 
 ;;;; Name and email
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
