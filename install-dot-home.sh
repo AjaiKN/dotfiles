@@ -250,11 +250,11 @@ fi
 
 ## dot-home
 handle_file "$HOME" "$DOTFILES/dot-home"
-[ ! -d "$DOTFILES/dot-home.private" ] || handle_file "$HOME" "$DOTFILES/dot-home.private"
+[ ! -d "$DOTFILES/private/dot-home" ] || handle_file "$HOME" "$DOTFILES/private/dot-home"
 
 ## config
 handle_file "$HOME/.config" "$DOTFILES/config"
-[ ! -d "$DOTFILES/config.private" ] || handle_file "$HOME/.config" "$DOTFILES/config.private"
+[ ! -d "$DOTFILES/private/config" ] || handle_file "$HOME/.config" "$DOTFILES/private/config"
 
 ## macOS Application Support
 if [ "$(uname -s)" = "Darwin" ]; then
@@ -265,5 +265,5 @@ fi
 ## launchd
 if [ "$(uname -s)" = "Darwin" ]; then
 	handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
-	[ ! -d "$DOTFILES/launchd.private" ] || handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd.private"
+	[ ! -d "$DOTFILES/private/launchd" ] || handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/private/launchd"
 fi
