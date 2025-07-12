@@ -1,7 +1,58 @@
 ;;; lang/jsonian/config.el -*- lexical-binding: t; -*-
 
+;; TODO: JSON5 (.parcelrc should be moved to this)
+;; - https://github.com/dochang/json5-ts-mode (on MELPA)
+;; - https://fuchsia.googlesource.com/fuchsia/+/main/scripts/emacs/fuchsia-json5.el
+
 (use-package! jsonian
-  :mode ("\\.js\\(?:on\\|[hl]int\\(?:rc\\)?\\)\\'" . jsonian-mode)
+  :init
+  ;; https://github.com/microsoft/vscode/blob/7b1c3d3dcee38406280f67f9909508680da0898d/extensions/json/package.json#L25
+  ;; https://github.com/microsoft/vscode/blob/7b1c3d3dcee38406280f67f9909508680da0898d/extensions/configuration-editing/package.json#L40
+  (pushnew! auto-mode-alist
+            (cons (rx (or (: "." ;extensions
+                             (or "json"
+                                 "bowerrc"
+                                 "webmanifest"
+                                 "js.map"
+                                 "har"
+                                 "jsonld"
+                                 "geojson"
+                                 ;; "ipynb"
+                                 "vuerc"
+                                 "code-profile"
+                                 (: (or "js" "css" "ts") "map")
+                                 (: "js" (or "lint" "cs") (? "rc"))))
+                          (: "/" ;filenames
+                             (or "composer.lock" ".watchmanconfig" "flake.lock")))
+                      eos)
+                  #'jsonian-mode)
+            (cons (rx (or (: "." ;extensions
+                             (or ".jsonc"
+                                 (: ".js" (or "hint" "fmt") (? "rc"))
+                                 (: ".eslintrc" (? ".json"))
+                                 ".swcrc"
+                                 ".hintrc"
+                                 ".babelrc"
+                                 ".parcelrc"
+                                 ".code-workspace"))
+                          (: (or "language-configuration" "icon-theme" "color-theme") ".json")
+                          (: "/"
+                             (or (: (or "settings" "launch" "tasks" "mcp" "keybindings" "extensions" "argv" "profiles" "devcontainer" ".devcontainer"
+                                        "babel.config" ".babelrc" "typedoc")
+                                    ".json")
+                                 "/bun.lock"
+                                 "/.ember-cli")))
+                      eos)
+                  #'jsonian-c-mode)
+            (cons (rx (or ".jsonl" ".ndjson")
+                      eos)
+                  #'+jsonian-lines-mode))
+  (pushnew! major-mode-remap-alist
+            '(json-mode . jsonian-mode)
+            '(json-ts-mode . jsonian-mode)
+            '(js-json-mode . jsonian-mode)
+            '(jsonc-mode . jsonian-c-mode)
+            '(+json-lines-mode . +jsonian-lines-mode))
   :config
   (after! so-long
     (jsonian-no-so-long-mode))
@@ -37,5 +88,3 @@
           (narrow-to-region (line-beginning-position) (line-end-position))
           (apply fn args))
       (apply fn args))))
-
-(add-to-list 'auto-mode-alist '("\\.jsonl\\'" . +jsonian-lines-mode))
