@@ -61,6 +61,7 @@
         sp-forward-sexp
         sp-forward-slurp-sexp
         string-inflection-kebab-case
+        wdired--self-insert
         ))
 
 (setq mc/cmds-to-run-once
