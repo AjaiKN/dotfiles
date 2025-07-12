@@ -3,7 +3,7 @@
 (use-package! pdf-tools
   :defer t
   :mode ("\\.pdf\\'" . pdf-view-mode)
-  :magic ("%PDF" . pdf-view-mode)
+  :magic ("\\`%PDF" . pdf-view-mode)
   :init
   (after! pdf-annot
     (defun +pdf-cleanup-windows-h ()

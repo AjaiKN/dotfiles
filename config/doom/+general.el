@@ -2115,7 +2115,7 @@ Also see `+default/find-file-under-here'."
 
 ;;; sqlite
 ;; https://christiantietze.de/posts/2024/01/emacs-sqlite-mode-open-sqlite-files-automatically/
-(add-to-list 'magic-mode-alist '("SQLite format 3\x00" . akn/sqlite-view-file-magically))
+(add-to-list 'magic-mode-alist '("\\`SQLite format 3\x00" . akn/sqlite-view-file-magically))
 (defun akn/sqlite-view-file-magically ()
   "Runs `sqlite-mode-open-file' on the file name visited by the
 current buffer, killing it."
@@ -2739,6 +2739,12 @@ there's no need for `markdown-mode' to reduplicate the effort."
                         buffer-file-name))))
       (kill-buffer (current-buffer))
       (set-buffer buf))))
+
+;;; magic-mode-alist
+
+;; might speed it up slightly
+(akn/remove-from-list 'magic-mode-alist '("#compdef " . sh-mode))
+(add-to-list          'magic-mode-alist '("\\`#compdef " . sh-mode))
 
 ;;; file-local variables
 

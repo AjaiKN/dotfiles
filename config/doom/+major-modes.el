@@ -791,6 +791,20 @@ or creates it if it does not exist."
 ;; This has precedence over the file extension (#'auto-afadsfm) magic-fallback-mode-alist.
 ;; Also see `racket-hash-lang-mode'.
 (add-to-list 'magic-mode-alist `(,(rx buffer-start "#lang ") . racket-mode))
+;; (add-to-list 'magic-mode-alist
+;;              (cons (rx buffer-start
+;;                        (* (or (any " \t\r\n")         ;spaces
+;;                               (: ";" (* not-newline)) ;line comments
+;;                               (: "#|"                 ;block comments
+;;                                  (* (or (not (any "|#"))
+;;                                         (: (+ "#") (not "|"))
+;;                                         (: (+ "|") (not "#"))))
+;;                                  (* "|")
+;;                                  "|#")))
+;;                        (or "#lang "))
+;;                            ;; (: "(module" (any " \t\r\n"))))
+;;                    #'racket-mode))
+
 (use-package! racket-mode
   :config
   (map! :mode racket-mode
