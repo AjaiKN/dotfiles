@@ -629,7 +629,7 @@ underscores in all modes."
       (dolist (feature '(rjsx-mode typescript-mode web-mode (nodejs-repl-mode . nodejs-repl)
                          csharp-mode dart-mode scala-mode
                          (sh-mode . sh-script) (c++-mode . cc-mode) (c-mode . cc-mode)
-                         (python-mode . python) (python-base-mode . python)))
+                         (python-mode . python) (python-ts-mode . python) (python-base-mode . python)))
         (let ((pkg  (or (cdr-safe feature) feature))
               (mode (or (car-safe feature) feature)))
           (with-eval-after-load pkg
