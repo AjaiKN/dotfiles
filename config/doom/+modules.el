@@ -249,7 +249,8 @@ returns true."
            *extra hare
            *extra hy                ; readability of scheme w/ speed of python
            *extra idris             ; a language you can depend on
-           *basic (json +lsp) ;+tree-sitter             ; At least it ain't XML
+           *extra (json +lsp) ;+tree-sitter             ; At least it ain't XML
+           *basic jsonian
            janet             ; Fun fact: Janet is me!
            *extra (java +lsp)       ; the poster child for carpal tunnel syndrome
            *extra (javascript +lsp +tree-sitter)        ; all(hope(abandon(ye(who(enter(here))))))

@@ -93,6 +93,7 @@ NOTE: On terminal emulators that support the [[https://sw.kovidgoyal.net/kitty/k
 ** :lang
 *** 🏢 [[./lang/ess][ess]]: fork of doom's ess module (R and Julia)
 *** 🐁 [[./lang/hare][hare]]: [[https://harelang.org/][Hare]]
+*** [[./lang/jsonian][jsonian]]: like doom's json module, but uses [[https://github.com/iwahbe/jsonian][jsonian]]
 *** 🐁 [[./lang/kdl][kdl]]: KDL (JSON/YAML/XML alternative, used for serialization and configuration)
 *** [[./lang/linear-program][linear-program]]:
 *** 🐁 [[./lang/log][log]]: dealing with log files
