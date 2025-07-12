@@ -55,7 +55,13 @@
             '(+json-lines-mode . +jsonian-lines-mode))
   :config
   (after! so-long
-    (jsonian-no-so-long-mode))
+    ;; (jsonian-no-so-long-mode))
+    (setq jsonian--so-long-predicate so-long-predicate)
+    (setq so-long-predicate
+          (lambda ()
+            ;; CHANGED from jsonian-no-so-long-mode: use derived-mode-p instead of checking major-mode directly
+            (unless (derived-mode-p 'jsonian-mode)
+              (funcall jsonian--so-long-predicate)))))
   (after! flycheck
     (jsonian-enable-flycheck))
 
