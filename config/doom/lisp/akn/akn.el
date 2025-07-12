@@ -1189,17 +1189,23 @@ This function was created by `akn/mode-disabler'." mode))
                           `(current-buffer))))
 
 ;;;###autoload
+(defun akn/record-buffer (&optional buffer)
+  (with-current-buffer (or buffer (current-buffer))
+    (cl-pushnew (current-buffer) (frame-parameter nil 'buffer-list) :test #'eq)
+    ;; window.c says: switch-to-buffer uses (select-window (selected-window)) as a
+    ;; "clever" way to call record_buffer from Elisp
+    (select-window (selected-window))))
+;;;###autoload
 (defun akn/mark-buffer-real (&optional buffer)
   (interactive)
-  (if (fboundp 'doom-set-buffer-real)
-      (doom-set-buffer-real (or buffer (current-buffer)) t)
-    (error "function undefined: doom-set-buffer-real")))
+  (with-current-buffer (or buffer (current-buffer))
+    (setq-local doom-real-buffer-p t)
+    (akn/record-buffer)))
 ;;;###autoload
 (defun akn/mark-buffer-unreal (&optional buffer)
   (interactive)
-  (if (fboundp 'doom-set-buffer-real)
-      (doom-set-buffer-real (or buffer (current-buffer)) nil)
-    (error "function undefined: doom-set-buffer-real")))
+  (with-current-buffer (or buffer (current-buffer))
+    (setq-local doom-real-buffer-p nil)))
 
 ;;;; join (unfill) paragraph
 ;;;###autoload

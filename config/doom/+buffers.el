@@ -178,7 +178,8 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                (if allow-mode-change "" " finely")
                (if (eq revert-buffer-function #'revert-buffer--default)
                    ""
-                 (format-message " (`%s')" revert-buffer-function)))))))
+                 (format-message " (`%s')" revert-buffer-function)))))
+    (akn/record-buffer)))
 (defun akn/hard-reload-buffer (&optional even-if-modified)
   (interactive (list current-prefix-arg))
   (cond
@@ -212,7 +213,8 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                 (message "Reopening file...done"))
             (with-temp-message "Killing temp buffer..."
               (kill-buffer temp-buf))))
-      (akn/reload-buffer nil t t)))))
+      (akn/reload-buffer nil t t))))
+  (akn/record-buffer))
 
 (defun akn/revert-buffer-keep-read-only (&optional ignore-auto noconfirm preserve-modes)
   "Like `revert-buffer', except preserves `buffer-read-only' if PRESERVE-MODES.
@@ -320,7 +322,7 @@ prefix argument is reversed."
     (with-current-buffer buffer
       (akn/new-file-mode)
       (funcall (or akn/default-major-mode (default-value 'major-mode)))
-      (pushnew! (frame-parameter nil 'buffer-list) buffer))
+      (akn/mark-buffer-real))
     buffer))
 
 (defadvice! akn/new-buffer-is-not-package-buffer-a (&rest _)
@@ -338,7 +340,7 @@ no file name."
     doom-real-buffer-p t)
   (setq-local lexical-binding t)
   (add-hook! 'after-save-hook :local #'akn/maybe-disable-new-file-mode)
-  (pushnew! (frame-parameter nil 'buffer-list) (current-buffer)))
+  (akn/mark-buffer-real))
 (put 'akn/new-file-mode 'permanent-local t)
 (add-hook 'after-change-major-mode-hook #'akn/new-file-mode-reenable-h)
 (defun akn/new-file-mode-reenable-h ()
