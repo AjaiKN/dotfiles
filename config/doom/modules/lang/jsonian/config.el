@@ -47,7 +47,7 @@
             (cons (rx (or ".jsonl" ".ndjson")
                       eos)
                   #'+jsonian-lines-mode))
-  (pushnew! major-mode-remap-alist
+  (pushnew! major-mode-remap-defaults
             '(json-mode . jsonian-mode)
             '(json-ts-mode . jsonian-mode)
             '(js-json-mode . jsonian-mode)
