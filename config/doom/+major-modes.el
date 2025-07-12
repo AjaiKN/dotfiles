@@ -542,7 +542,7 @@ This is to mimic the behavior of RET in Stand-alone GNU Info."
 
 ;;; json
 
-(when (modulep! json +lsp)
+(when (modulep! :lang json +lsp)
   (remove-hook 'json-mode-local-vars-hook #'lsp!)
   (define-minor-mode akn/json-always-lsp-mode
     "If enabled, always enable LSP for json files."
@@ -561,6 +561,15 @@ This is to mimic the behavior of RET in Stand-alone GNU Info."
                                                 (+ (point-min) magic-mode-regexp-match-limit))
                                            t))))))
         (lsp!)))))
+
+;;;; jsonl (json lines)
+
+(when (modulep! :lang json)
+  (define-derived-mode +json-lines-mode json-mode "JSONL"
+    "A major mode for editing JSON Lines (JSONL) files."
+    :group 'akn)
+  (unless (modulep! :lang jsonian)
+    (add-to-list 'auto-mode-alist '("\\.jsonl\\'" . +json-lines-mode))))
 
 ;;; launchctl
 (use-package! nxml-mode
