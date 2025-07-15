@@ -105,7 +105,7 @@
 
 (after! (:or dired dirvish)
   (advice-remove #'dired-find-file #'dirvish-find-entry-a))
-(define-advice dired-find-file (:around (fn &rest args) akn/dirvish-find-entry-a)
+(akn/undefine-advice dired-find-file (:around (fn &rest args) akn/dirvish-find-entry-a)
   (advice-remove #'dired-find-file #'dirvish-find-entry-a)
   (condition-case-unless-debug err
       (apply #'dirvish-find-entry-a args)
