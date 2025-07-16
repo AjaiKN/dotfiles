@@ -356,5 +356,6 @@
   "editor.renderWhitespace": "all",
   "svelte.enable-ts-plugin": true,
   "files.autoSaveDelay": 1,
-  "dotenv.enableAutocloaking": false
+  "dotenv.enableAutocloaking": false,
+  "jupyter.interactiveWindow.creationMode": "perFile"
 }
