@@ -101,11 +101,7 @@ if !has('nvim')
 	let &t_SI = "\e[6 q"
 	let &t_EI = "\e[2 q"
 	set ttimeout
-	if !empty($SSH_CLIENT) || !empty($SSH_TTY)
-		set ttimeoutlen=100
-	else
-		set ttimeoutlen=1
-	endif
+	set ttimeoutlen=1
 	set ttyfast
 endif
 
