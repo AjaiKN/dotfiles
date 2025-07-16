@@ -35,13 +35,15 @@ if !isdirectory(undo_dir)
 endif
 set undofile
 
+set incsearch
+set hlsearch
 " Clear search highlighting with Esc
 if empty($SSH_CLIENT) && empty($SSH_TTY)
-    nnoremap <Esc> :nohlsearch<CR>
+    nnoremap <silent> <Esc> :nohlsearch<CR>
 else
     " Disabled over SSH to avoid startup issues; otherwise vim starts in insert mode.
     " Over SSH, press Esc twice to clear search highlighting.
-    nnoremap <Esc><Esc> :nohlsearch<CR>
+    nnoremap <silent> <Esc><Esc> :nohlsearch<CR>
 endif
 
 " Sets how neovim will display certain whitespace characters in the editor.
