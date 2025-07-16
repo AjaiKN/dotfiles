@@ -36,7 +36,13 @@ endif
 set undofile
 
 " Clear search highlighting with Esc
-nnoremap <Esc> :nohlsearch<CR>
+if empty($SSH_CLIENT) && empty($SSH_TTY)
+    nnoremap <Esc> :nohlsearch<CR>
+else
+    " Disabled over SSH to avoid startup issues; otherwise vim starts in insert mode.
+    " Over SSH, press Esc twice to clear search highlighting.
+    nnoremap <Esc><Esc> :nohlsearch<CR>
+endif
 
 " Sets how neovim will display certain whitespace characters in the editor.
 "  See `:help 'list'`
@@ -92,9 +98,12 @@ set keymodel=startsel
 if !has('nvim')
 	let &t_SI = "\e[6 q"
 	let &t_EI = "\e[2 q"
-	" don't delay cursor change when changing back to normal mode
 	set ttimeout
-	set ttimeoutlen=1
+	if !empty($SSH_CLIENT) || !empty($SSH_TTY)
+		set ttimeoutlen=100
+	else
+		set ttimeoutlen=1
+	endif
 	set ttyfast
 endif
 
