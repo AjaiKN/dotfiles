@@ -5,7 +5,6 @@ set number
 " set softtabstop=2
 " set ts=2 sw=2
 set clipboard+=unnamedplus
-set undofile " save undo history
 set ignorecase
 set smartcase
 set breakindent
@@ -17,6 +16,24 @@ set splitbelow
 set cursorline " Show which line your cursor is on
 " set scrolloff=10
 set confirm
+
+let data_dir = has('nvim') ? stdpath('data') . '/site' : $HOME . '/.vim'
+let plug_dir = data_dir . '/plugged'
+let undo_dir = data_dir . '/undo-dir'
+let &undodir = undo_dir
+
+" https://vi.stackexchange.com/a/53
+" Saving undo info
+if !isdirectory(data_dir)
+    call mkdir(data_dir, 'p', 0700)
+endif
+if !isdirectory(plug_dir)
+    call mkdir(plug_dir, 'p', 0700)
+endif
+if !isdirectory(undo_dir)
+    call mkdir(undo_dir, 'p', 0700)
+endif
+set undofile
 
 " Clear search highlighting with Esc
 nnoremap <Esc> :nohlsearch<CR>
@@ -54,8 +71,8 @@ let g:netrw_winsize = 20
 "endif
 
 nnoremap <SPACE> <Nop>
-let mapleader = " "
-let maplocalleader = ","
+let mapleader = ' '
+let maplocalleader = ','
 
 " D- = command/super
 noremap <D-s> <cmd>w<cr>
@@ -88,14 +105,13 @@ if !has('nvim')
 		return a:cond ? opts : extend(opts, { 'on': [], 'for': [] })
 	endfunction
 
-	let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 	if empty(glob(data_dir . '/autoload/plug.vim'))
 		silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 		autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 	endif
 
 	" vim-plug
-	call plug#begin()
+	call plug#begin(plug_dir)
 		Plug 'tpope/vim-commentary'
 		Plug 'tpope/vim-sleuth'
 		Plug 'easymotion/vim-easymotion'
