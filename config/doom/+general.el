@@ -1997,7 +1997,10 @@ Also see `+default/find-file-under-here'."
   (tramp-set-completion-function
    "ssh" (append (tramp-get-completion-function "ssh")
                  (mapcar (lambda (file) `(tramp-parse-sconfig ,(expand-file-name file)))
-                         (doom-glob "~/.ssh/config.*")))))
+                         (doom-glob "~/.ssh/config.*"))))
+
+  ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2025-06/msg00810.html
+  (setq! tramp-inhibit-errors-if-setting-file-attributes-fail t))
 
 
 ;;; embark
