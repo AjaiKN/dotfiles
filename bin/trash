@@ -11,10 +11,11 @@ trap 's=$?; echo >&2 "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 # https://stackoverflow.com/a/21188136
 # Mostly like `realpath --no-symlinks`, but --no-symlinks is only available for GNU realpath.
 get_abs_filename() {
-	if [ -d "$(dirname -- "$1")" ]; then
-		printf "%s" "$(cd "$(dirname -- "$1")" >/dev/null && pwd)/$(basename -- "$1")"
+	if [ -d "$(dirname -- "$1" || exit 2)" ]; then
+		printf "%s" \
+			"$(cd "$(dirname -- "$1" || exit 2)" >/dev/null && pwd)/$(basename -- "$1" || exit 2)"
 	else
-		echo "Directory does not exist: $(dirname -- "$1")" >&2
+		echo "Directory does not exist: $(dirname -- "$1" || exit 2)" >&2
 		return 1
 	fi
 }
@@ -253,10 +254,10 @@ TRASH_STRATEGY=${TRASH_STRATEGY:-$(choose_strategy)}
 # check that none of the arguments are sub/superdirectories of the trash directory
 check_not_trash_sub_or_super_directory() {
 	if [ -z "$force" ] && command -v realpath >/dev/null 2>&1; then
-		trash_realpath="$(realpath "$trash")"
+		trash_realpath="$(realpath "$trash" || exit 2)"
 		for file in "$@"; do
 			if [ ! -L "$file" ]; then
-				file_realpath="$(realpath "$file")"
+				file_realpath="$(realpath "$file" || exit 2)"
 				if [[ "$file_realpath"/ == "$trash_realpath"/* ]]; then
 					echo "Error: '$file_realpath' is a subdirectory of the trash directory '$trash_realpath'"
 					exit 1

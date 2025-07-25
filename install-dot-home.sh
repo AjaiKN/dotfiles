@@ -10,9 +10,9 @@ cd "$DOTFILES"
 dotfiles_relative_to_dir() {
 	# NOTE: dir must exist
 	[ -d "$1" ] || exit 10
-	dir=$(realpath "$1")
+	dir=$(realpath "$1" || exit 21)
 	res=""
-	real_home=$(realpath "$HOME")
+	real_home=$(realpath "$HOME" || exit 22)
 	while true; do
 		if [ "$dir" = "/" ]; then
 			# printf "%s" "${res}${DOTFILES}"
@@ -25,7 +25,7 @@ dotfiles_relative_to_dir() {
 			return
 		else
 			res="../$res"
-			dir=$(dirname "$dir")
+			dir=$(dirname "$dir" || exit 23)
 		fi
 	done
 }
@@ -33,8 +33,8 @@ dotfiles_relative_to_dir() {
 get_planned_link_source() {
 	case "$2" in
 		"$DOTFILES"/*)
-			base=$(dotfiles_relative_to_dir "$(dirname "$1")")
-			trimmed=$(echo "$2" | sed "s|^$DOTFILES/||")
+			base=$(dotfiles_relative_to_dir "$(dirname "$1" || exit 27)" || exit 24)
+			trimmed=$(echo "$2" | sed "s|^$DOTFILES/||" || exit 26)
 			printf "%s/%s" "$base" "$trimmed"
 			;;
 		/*)
@@ -49,8 +49,8 @@ get_planned_link_source() {
 
 is_dotfiles_link() {
 	[ -L "$1" ] || return 1
-	relative=$(dotfiles_relative_to_dir "$(dirname "$1")")
-	link=$(readlink "$1")
+	relative=$(dotfiles_relative_to_dir "$(dirname "$1" || exit 28)" || exit 25)
+	link=$(readlink "$1" || exit 29)
 	case "$link" in
 		"$DOTFILES"/*|"$relative"/*|./"$relative"/*) return 0 ;;
 		*) return 1 ;;
@@ -59,21 +59,21 @@ is_dotfiles_link() {
 
 is_self_link() {
 	[ -L "$1" ] || return 1
-	link=$(readlink "$1")
-	base=$(basename "$1")
+	link=$(readlink "$1" || exit 30)
+	base=$(basename "$1" || exit 31)
 	[ "$link" = "$base" ] || [ "$link" = "$1" ]
 }
 
 make_backup() {
 	if [ -e "$1" ]; then
-		make_backup "$1.bak" # If $1.bak already exists, make $1.bak.bak
+		make_backup "$1.bak" || exit 32 # If $1.bak already exists, make $1.bak.bak
 		my_echo "Renaming $1 to $1.bak"
-		mv -i "$1" "$1.bak"
+		mv -i "$1" "$1.bak" || exit 33
 	fi
 }
 
 is_ignored() {
-	base=$(basename "$1")
+	base=$(basename "$1" || exit 34)
 	case "$base" in
 		.DS_Store|.unfold|.#*|*~|'#'*'#') return 0 ;;
 		*) return 1 ;;
