@@ -28,6 +28,9 @@
 
   (setq!
    calc-settings-file (file-name-concat doom-user-dir "calc.el")
+   ;; By default, multiplication has precedence over division in calc for some reason.
+   ;; Let's make it follow regular order of operations (multiplication and division have equal precedence).
+   calc-multiplication-has-precedence nil
    calc-make-windows-dedicated t
    ;; calc-incomplete-algebraic-mode t
    calc-algebraic-mode t
