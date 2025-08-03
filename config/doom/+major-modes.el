@@ -848,6 +848,21 @@ or creates it if it does not exist."
 ;;; raku
 (add-hook 'raku-mode-hook (akn/mode-disabler #'auto-composition-mode))
 
+;;; rocq/coq/proof-general
+(after! (:or proof-config proof-useropts)
+  (setq! proof-electric-terminator-enable t
+         proof-next-command-insert-space t
+         proof-autosend-enable nil
+         proof-autosend-delay 0.8
+         proof-imenu-enable t
+         proof-keep-response-history t
+         proof-minibuffer-messages t
+         proof-full-annotation t
+         proof-output-tooltips t
+         proof-query-file-save-when-activating-scripting t
+         proof-sticky-errors t
+         proof-script-fly-past-comments t))
+
 ;;; ruby
 (after! inf-ruby
   (when (modulep! :editor evil)
