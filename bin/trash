@@ -27,11 +27,13 @@ Usage: $0 [OPTION]... [--] FILE...
 Put each FILE in the trash. Currently supports macOS and Linux.
 
   -h, --help               Show this usage message.
-  -f, --force              Override read-only files, and ignore nonexistent or otherwise untrashable files.
-                           If any of the files are owned by the current user but don't have write
-                           permissions, delete them anyway. If any of the files are nonexistent or owned
-                           by someone else, ignore them and still trash everything else. (Otherwise, this
-                           command will refuse to do anything if any of the arguments are untrashable.)
+  -f, --force              Override non-writable files, and ignore nonexistent or otherwise untrashable files.
+                           If any of the files are owned by the current user but don't have write permissions,
+                           delete them anyway. If any of the files are nonexistent, or if we can't trash them
+                           (because their directories aren't writable and executable, or because they're owned
+                           by another user and not readable), ignore them and still trash everything else.
+                           (Otherwise, this command will refuse to do anything if any of the arguments are
+                           untrashable.)
   -n, --dry-run            Don't actually trash anything; just print what this command *would* do.
                            This option implies --verbose.
   -v, --verbose            Be more verbose.
@@ -69,6 +71,77 @@ urlencode_help() {
 }
 urlencode() {
 	printf '%s' "$1" | urlencode_help
+}
+
+can_delete_file() {
+	# File must exist.
+	# (If it's a broken symlink, -e will return false, but -L will return true.)
+	if [ ! -e "$1" ] && [ ! -L "$file" ]; then
+		echo "trash: File '$file' does not exist" >&2
+		return 1
+	fi
+	# If we're the superuser, we can always delete.
+	if [ "$EUID" -eq 0 ]; then
+		return 0
+	fi
+	# To delete a file, all you need is write and execute permissions on its parent directory.
+	local dir
+	dir=$(dirname -- "$1" || return 1)
+	if [ ! -w "$dir" ] || [ ! -x "$dir" ]; then
+		echo "Cannot trash '$file' because we don't have write and execute permissions on its parent directory '$(dirname "$file")'" >&2
+		return 1
+	fi
+}
+
+is_writable_by_current_user() {
+	# If we're the superuser, permissions don't matter.
+	if [ "$EUID" -eq 0 ]; then
+		return 0
+	fi
+  # Permissions for a symlink don't matter (except on Mac, but only when following the symlink; deleting it is always fine).
+	if [ -L "$1" ]; then
+		return 0
+	fi
+	# Check if writable.
+	if [ ! -w "$1" ]; then
+		echo "trash: The file '$file' is not writable by the current user. Use --force to override." >&2
+		return 1
+	fi
+}
+
+# https://unix.stackexchange.com/a/44267
+# https://pubs.opengroup.org/onlinepubs/7908799/xcu/df.html
+is_same_filesystem() {
+	df -P "$(get_abs_filename "$1")" "$(get_abs_filename "$2")" | awk 'NR==2 {dev1=$1} NR==3 {exit($1!=dev1)}'
+}
+
+can_read_file() {
+	# If we're the superuser, we can always read.
+	if [ "$EUID" -eq 0 ]; then
+		return 0
+	fi
+	# If we own the file, we can always read it.
+	if [ -O "$1" ]; then
+		return 0
+	fi
+	# Check if readable.
+	[ -r "$1" ]
+}
+
+can_move_to() {
+	local destdir
+	destdir="$1"
+	shift
+
+	local file
+	for file in "$@"; do
+		# If the file and destination directory aren't on the same filesystem, then
+		# mv will need to copy instead of rename. In order to copy, we need to read
+		# the file.
+		if ! is_same_filesystem "$file" "$destdir" && ! can_read_file "$file"; then
+			return 1
+		fi
+	done
 }
 
 ## Parse options
@@ -180,27 +253,15 @@ fi
 ## Checks
 files=()
 for file in "$@"; do
-	if [ ! -e "$file" ] && [ ! -L "$file" ]; then
-		# (If it's a broken symlink, -e will return false, but -L will return true.)
-		# All files must exist.
-		# This is stricter than rm.
-		echo "trash: File '$file' does not exist" >&2
+  if ! can_delete_file "$file"; then
 		[ -n "$force" ] || exit 1
-	elif [ "$EUID" -ne 0 ] && [ ! -L "$file" ] && [ ! -O "$file" ]; then
-		echo "trash: The current user doesn't own '$file'" >&2
-		[ -n "$force" ] || exit 1
-	elif [ "$EUID" -ne 0 ] && [ -L "$file" ] && [ "$(ls -ld -- "$file" | awk '{print $3}')" != "$(id -un)" ]; then
-		# ShellCheck doesn't like that we're using `ls` instead of `find`, but POSIX
-		# `find` can't determine the ownership, and POSIX `ls` is well-specified
-		# enough that parsing it should work fine. The double-hyphen `--` isn't part
-		# of POSIX, but it seems to be well-supported. Otherwise it won't work with
-		# filenames that start with a hyphen.
-		echo "trash: '$file' is a symbolic link not owned by the current user" >&2
-	elif [ "$EUID" -ne 0 ] && [ -z "$force" ] && [ ! -L "$file" ] && [ ! -w "$file" ]; then
-		# Note that permissions for a symlink don't matter (except on Mac, but only when following the symlink; deleting it is always fine).
-		echo "trash: The file '$file' is not writable by the current user. Use --force to override." >&2
+	elif [ -z "$force" ] && ! is_writable_by_current_user "$file"; then
 		exit 1
 	else
+		# TODO: If the destination directory is on a different filesystem, the file
+		# is owned by another user, we're not the superuser, and we don't have read
+		# permissions on the file, then we won't be able to move it. See the
+		# can_move_to() function above.
 		file=$(get_abs_filename "$file")
 		[ -z "$verbose" ] || echo "Will trash $file"
 		files+=("$file")
