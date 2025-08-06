@@ -331,6 +331,10 @@ check_not_trash_sub_or_super_directory() {
 	fi
 }
 
+if [ -n "$force" ]; then
+	set +euo pipefail
+fi
+
 case "$TRASH_STRATEGY" in
 	freedesktop)
 		# https://specifications.freedesktop.org/trash-spec/latest/
@@ -398,7 +402,8 @@ case "$TRASH_STRATEGY" in
 	macos_trash_command)
 		trash="$HOME/.Trash" check_not_trash_sub_or_super_directory "$@"
 		# introduced in macOS 14.0
-		options=(--stopOnError)
+		options=()
+		[ -n "$force"   ] || options+=(--stopOnError)
 		[ -z "$verbose" ] || options+=(--verbose)
 		[ -z "$verbose" ] || echo /usr/bin/trash "${options[@]}" "$@"
 		# /usr/bin/trash doesn't support `--`, but that should be fine because we're
