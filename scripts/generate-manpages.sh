@@ -8,12 +8,19 @@ if ! command -v help2man >/dev/null 2>&1 || ! command -v ruby >/dev/null 2>&1; t
 	fi
 fi
 
-mkdir -p "${DOTFILES:-$HOME/prog/dotfiles}/man/man1" || exit 1
+mkdir -p ./man/man1 || exit 1
 
-PATH="$(dirname "$0")/../bin:$PATH"
+PATH="$PWD/bin:$PATH"
 export PATH
 
 commands=(trash volume git-ff delete-ds-stores concatpdf)
 for c in "${commands[@]}"; do
-	help2man --no-info --output="${DOTFILES:-$HOME/prog/dotfiles}/man/man1/$c.1" "$c"
+	outfile=./man/man1/"$c.1"
+	help2man --no-info --output="$outfile" "$c"
+	# If the only thing that changed is the date, undo the change.
+	if git ls-files --error-unmatch "$outfile" &&
+			git diff --ignore-matching-lines='^\.TH .* "1" .* "User Commands"$' --exit-code "$outfile" >/dev/null
+ 	then
+		git restore "$outfile"
+	fi
 done
