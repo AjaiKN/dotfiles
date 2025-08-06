@@ -30,10 +30,9 @@ Put each FILE in the trash. Currently supports macOS and Linux.
   -f, --force              Override non-writable files, and ignore nonexistent or otherwise untrashable files.
                            If any of the files are owned by the current user but don't have write permissions,
                            delete them anyway. If any of the files are nonexistent, or if we can't trash them
-                           (because their directories aren't writable and executable, or because they're owned
-                           by another user and not readable), ignore them and still trash everything else.
-                           (Otherwise, this command will refuse to do anything if any of the arguments are
-                           untrashable.)
+                           (because their directories aren't writable and executable), ignore them and still
+                           trash everything else. (Otherwise, this command will refuse to do anything if any
+                           of the arguments are untrashable.)
   -n, --dry-run            Don't actually trash anything; just print what this command *would* do.
                            This option implies --verbose.
   -v, --verbose            Be more verbose.
