@@ -8,15 +8,15 @@
   (package! evil-vimish-fold :pin "b6e0e6b91b8cd047e80debef1a536d9d49eef31a"))
 
 (when (modulep! :tools tree-sitter)
-  (package! treesit-fold :pin "6628b7cce585328e05d810b5505e4fdb9306f24f"
+  (package! treesit-fold :pin "c2a46c0c9fa76103279f5f6ac97d7a6d9d6bcb7f"
     :recipe (:host github :repo "emacs-tree-sitter/treesit-fold"))
-  (package! ts-fold :pin "6eed69cf2b97dce9c6ad329710ed42f0ad674f76"
+  (package! ts-fold :pin "3439756b5bbab83f65914d86b093d8c237eb7275"
     :recipe (:host github :repo "emacs-tree-sitter/ts-fold")))
 
-(package! outli :pin "c716ed5b4b14ac3694d75529cb05b16ef6a9447a"
+(package! outli :pin "6527512470b450b4d1c0d8bba69888de19f0c124"
   :recipe (:host github :repo "jdtsmith/outli"))
 
-(package! outline-indent :pin "56595594ea59fc10c6a8f7293883bede14ecb53e")
+(package! outline-indent :pin "707c5b75af9934776504662d03b68b51de93b26c")
 
 (package! comint-fold :pin "9b9f2bbc762c846bf328e698413391db149cc759"
   :recipe (:host github :repo "jdtsmith/comint-fold"))
