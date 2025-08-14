@@ -789,6 +789,14 @@ underscores in all modes."
 ;; https://old.reddit.com/r/emacs/comments/pt8kod/gumshoe_20_my_first_package_in_melpa/
 
 
+;;; bookmarks
+
+(setq!
+ ;; Save to bookmarks file every time bookmarks change.
+ bookmark-save-flag 1
+ ;; If the bookmark file changes on disk, reload it without prompting.
+ bookmark-watch-bookmark-file 'silent)
+
 ;;; Tabs & spaces
 
 (setq-default tab-width 2)
