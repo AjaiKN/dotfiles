@@ -47,6 +47,10 @@
 (after! lsp-tailwindcss
   (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
 
+;;; conf-mode
+;; https://docs.netlify.com/manage/routing/redirects/overview/
+(add-to-list 'auto-mode-alist '("/_redirects\\'" . conf-space-mode))
+
 ;;; csv
 
 (setq-hook! 'csv-mode-hook
