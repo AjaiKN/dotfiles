@@ -2084,46 +2084,6 @@ Also see `+default/find-file-under-here'."
     lsp-ui-mode nil)
   (lsp-ui-mode (if lsp-ui-mode 1 -1)))
 
-;;; lsp-booster
-(after! lsp-mode
-  (when (modulep! :tools lsp -eglot)
-    (advice-add (if (progn (require 'json)
-                           (fboundp 'json-parse-buffer))
-                    #'json-parse-buffer
-                  #'json-read)
-                :around
-                #'akn/lsp-booster--advice-json-parse)
-    (advice-add 'lsp-resolve-final-command :around #'akn/lsp-booster--advice-final-command)))
-(defun akn/lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(defun akn/lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (akn/file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(after! eglot
-  (use-package! eglot-booster
-    :demand t
-    :when (and (modulep! :tools lsp +eglot)
-               (executable-find "emacs-lsp-booster"))
-    :config
-    ;; https://github.com/jdtsmith/eglot-booster?tab=readme-ov-file#io-only
-    (unless (version< emacs-version "30") (setq! eglot-booster-io-only t))
-    (eglot-booster-mode)))
-
 ;;; sqlite
 ;; https://christiantietze.de/posts/2024/01/emacs-sqlite-mode-open-sqlite-files-automatically/
 (add-to-list 'magic-mode-alist '("\\`SQLite format 3\x00" . akn/sqlite-view-file-magically))
