@@ -12,7 +12,7 @@
   "Delete service at point. Asks for confirmation."
   (interactive "P" prodigy-mode)
   (prodigy-with-refresh
-   (when-let (service (prodigy-service-at-pos))
+   (when-let* ((service (prodigy-service-at-pos)))
      (let ((name (plist-get service :name)))
        (cond ((or arg
                   (y-or-n-p (format "Delete '%s' service?" name)))
@@ -47,7 +47,7 @@
         (plist-put! args :cwd project)))
     (when (not (plist-get args :name))
       (if-let* ((command-or-tags (or (plist-get args :command)
-                                     (when-let ((tags (plist-get args :tags)))
+                                     (when-let* ((tags (plist-get args :tags)))
                                        (string-join tags ", "))))
                 (cwd (plist-get args :cwd))
                 (name (format "%s (%s)" command-or-tags cwd)))

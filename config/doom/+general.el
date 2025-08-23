@@ -1268,8 +1268,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
         (locate-dominating-file default-directory ".prettierrc.js")
         (locate-dominating-file default-directory ".prettierrc.toml")
         (locate-dominating-file default-directory (lambda (dir)
-                                                    (when-let ((package-json (akn/existing-file (expand-file-name "package.json" dir)))
-                                                               (json (ignore-errors (json-read-file package-json))))
+                                                    (when-let* ((package-json (akn/existing-file (expand-file-name "package.json" dir)))
+                                                                (json (ignore-errors (json-read-file package-json))))
                                                       (not (eq (alist-get 'prettier json 'not-found)
                                                                'not-found))))))))
 
@@ -1314,13 +1314,14 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
                 (locate-dominating-file default-directory "tailwind.config.cts")
                 (locate-dominating-file default-directory "tailwind.config.mts")
                 (locate-dominating-file default-directory (lambda (dir)
-                                                            (when-let ((package-json (akn/existing-file (expand-file-name "package.json" dir)))
-                                                                       (json (ignore-errors (json-read-file package-json)))
-                                                                       (deps (append (alist-get 'dependencies json)
-                                                                                     (alist-get 'devDependencies json)
-                                                                                     (alist-get 'peerDependencies json)
-                                                                                     (alist-get 'bundledDependencies json)
-                                                                                     (alist-get 'optionalDependencies json))))
+                                                            (when-let* ((package-json (akn/existing-file (expand-file-name "package.json" dir)))
+                                                                        (json (ignore-errors (json-read-file package-json)))
+                                                                        (deps (let-alist json
+                                                                                (append .dependencies
+                                                                                        .devDependencies
+                                                                                        .peerDependencies
+                                                                                        .bundledDependencies
+                                                                                        .optionalDependencies))))
                                                               (alist-get 'tailwindcss deps)))))
         (akn/require-tailwind)))))
 

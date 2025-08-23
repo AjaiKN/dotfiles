@@ -164,11 +164,11 @@ SQL can be either the emacsql vector representation, or a string."
 
 ;;;###autoload
 (defun +xkcd-db-read (num)
-  (when-let ((res
-              (car (+xkcd-db-query [:select * :from xkcds
-                                    :where (= num $s1)]
-                                   num
-                                   :limit 1))))
+  (when-let* ((res
+               (car (+xkcd-db-query [:select * :from xkcds
+                                     :where (= num $s1)]
+                                    num
+                                    :limit 1))))
     (+xkcd-db-list-to-plist res)))
 
 ;;;###autoload

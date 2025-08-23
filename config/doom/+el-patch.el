@@ -102,7 +102,7 @@ Respects `ws-butler-keep-whitespace-before-point', which see."
      " This\ncommand will throw an error if a parent of DIR is a valid project (which would\nmask DIR)."
      ""))
   (interactive "D")
-  (when-let ((proj-dir (doom-project-root dir)))
+  (when-let* ((proj-dir (doom-project-root dir)))
     (if (file-equal-p proj-dir dir)
         (user-error "ERROR: Directory is already a project: %s" proj-dir)
       (user-error "ERROR: Directory is already inside another project: %s" proj-dir)))
@@ -359,7 +359,7 @@ If DIR is not supplied its set to the current directory by default."
                     (puthash cache-key value projectile-project-root-cache)
                     value))))
             projectile-project-root-functions)
-           (if-let ((found (gethash (format "%s-%s" "projectile-root-any" dir) projectile-project-root-cache)))
+           (if-let* ((found (gethash (format "%s-%s" "projectile-root-any" dir) projectile-project-root-cache)))
                found
              (let ((cache-truename))
                (cl-some

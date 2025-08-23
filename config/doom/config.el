@@ -413,7 +413,7 @@
 (defvar shut-up-ignore)
 (akn/after-idle! ((* 60 12) :timer-name akn/func-compile-timer :cancel-old-timer t)
   (akn/after-idle! (10 :repeat t :timer-name akn/func-compile-timer2 :cancel-old-timer t)
-    (if-let (fn (pop akn/funcs-to-compile))
+    (if-let* ((fn (pop akn/funcs-to-compile)))
         (let ((shut-up-ignore doom-debug-mode))
           (doom-log "compile-functions: %s" fn)
           (shut-up

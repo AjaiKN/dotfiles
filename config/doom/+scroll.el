@@ -11,7 +11,7 @@
     (setq scroll-conservatively 10
           scroll-margin 10)))
 (defun akn/do-scroll-conservatively-unless-minibuffer (&rest _)
-  (unless (when-let ((w (minibuffer-window))) (minibuffer-window-active-p w))
+  (unless (when-let* ((w (minibuffer-window))) (minibuffer-window-active-p w))
     (akn/do-scroll-conservatively)))
 (defun akn/scroll-conservatively (&rest _)
   (run-with-idle-timer 0.1 nil

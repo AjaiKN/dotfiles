@@ -425,7 +425,7 @@ Use (setq akn-keypad-describe-keymap-function \\='nil) to disable popup.")
       (when meta-both-keymap
         (akn-keypad--make-keymap-for-describe meta-both-keymap t)))
      (akn-keypad--use-literal
-      (when-let ((keymap (akn-keypad--lookup-key (read-kbd-macro input))))
+      (when-let* ((keymap (akn-keypad--lookup-key (read-kbd-macro input))))
         (when (keymapp keymap)
           (akn-keypad--make-keymap-for-describe keymap nil))))
 
@@ -437,10 +437,10 @@ Use (setq akn-keypad-describe-keymap-function \\='nil) to disable popup.")
      ;; Leader keymap may contain akn-keypad-dispatch commands
      ;; translated names based on the commands they refer to
      ((null akn-keypad--keys)
-      (when-let ((keymap (if (stringp akn-keypad-leader-dispatch)
-                             (akn-keypad--lookup-key (read-kbd-macro akn-keypad-leader-dispatch))
-                           (or akn-keypad-leader-dispatch
-                               mode-specific-map))))
+      (when-let* ((keymap (if (stringp akn-keypad-leader-dispatch)
+                              (akn-keypad--lookup-key (read-kbd-macro akn-keypad-leader-dispatch))
+                            (or akn-keypad-leader-dispatch
+                                mode-specific-map))))
         (let ((km (make-keymap)))
           (suppress-keymap km t)
           (map-keymap
@@ -457,7 +457,7 @@ Use (setq akn-keypad-describe-keymap-function \\='nil) to disable popup.")
           km)))
 
      (t
-      (when-let ((keymap (akn-keypad--lookup-key (read-kbd-macro input))))
+      (when-let* ((keymap (akn-keypad--lookup-key (read-kbd-macro input))))
         (when (keymapp keymap)
           (let* ((km (make-keymap))
                  (has-sub-meta (akn-keypad--has-sub-meta-keymap-p))
@@ -598,9 +598,9 @@ Use (setq akn-keypad-describe-keymap-function \\='nil) to disable popup.")
   "Return a symbol as title or DEF.
 
 Returning DEF will result in a generated title."
-  (if-let ((cmd (and (symbolp def)
-                     (commandp def)
-                     (get def 'akn-keypad-dispatch))))
+  (if-let* ((cmd (and (symbolp def)
+                      (commandp def)
+                      (get def 'akn-keypad-dispatch))))
       (akn-keypad--lookup-key (kbd cmd))
     def))
 
@@ -681,8 +681,8 @@ try replacing the last modifier and try again."
   (interactive)
   ;; (message "self insert")
   (setq this-command last-command)
-  (when-let ((e (akn-keypad--event-key last-input-event))
-             (key (akn-keypad--parse-input-event e)))
+  (when-let* ((e (akn-keypad--event-key last-input-event))
+              (key (akn-keypad--parse-input-event e)))
     ;; (message "body")
     (let ((has-sub-meta (akn-keypad--has-sub-meta-keymap-p)))
       (cond
@@ -715,7 +715,7 @@ try replacing the last modifier and try again."
                               (alist-get e akn-keypad-start-keys)))
               akn-keypad--keys))
        (akn-keypad--allow-quick-dispatch
-        (if-let ((keymap (akn-keypad--get-leader-keymap)))
+        (if-let* ((keymap (akn-keypad--get-leader-keymap)))
             (setq akn-keypad--base-keymap keymap)
           (setq akn-keypad--keys (akn-keypad--parse-string-to-keypad-keys akn-keypad-leader-dispatch)))
         (push (cons 'literal key) akn-keypad--keys))

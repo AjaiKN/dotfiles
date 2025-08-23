@@ -634,7 +634,7 @@ to normal state is deprioritized)."
                      ;; (doom-thing-at-point-or-region) #'+lookup/definition
                      (let ((arg current-prefix-arg))
                        (require 'embark)
-                       (if-let ((targets (embark--targets)))
+                       (if-let* ((targets (embark--targets)))
                              (let* ((target
                                      (or (nth
                                           (if (or (null arg) (minibufferp))
@@ -785,7 +785,7 @@ to normal state is deprioritized)."
  (:map help-map
             "s-;" (cmd! (message "%s"
                                  (let ((arg current-prefix-arg))
-                                  (if-let ((targets (embark--targets)))
+                                  (if-let* ((targets (embark--targets)))
                                         (let* ((target
                                                 (or (nth
                                                      (if (or (null arg) (minibufferp))
