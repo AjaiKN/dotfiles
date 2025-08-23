@@ -255,9 +255,9 @@ was non-nil."
 
 (defun akn/make-frame-other-monitor ()
   (interactive)
-  (let* ((current-monitor (cdr (assq 'name (frame-monitor-attributes))))
+  (let* ((current-monitor (alist-get 'name (frame-monitor-attributes)))
          (monitors (or (delq nil (mapcar (lambda (a)
-                                           (cdr (assq 'name a)))
+                                           (alist-get 'name a))
                                          (display-monitor-attributes-list)))
                        '("")))
          (other-monitors (remove current-monitor monitors))
