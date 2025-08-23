@@ -593,6 +593,10 @@ to normal state is deprioritized)."
  ;; want it to fill-paragraph, not reindent.
  [remap prog-fill-reindent-defun] (akn/cmds! (region-active-p) #'fill-paragraph
                                              #'prog-fill-reindent-defun)
+ ;; https://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
+ ;; Call `fill-paragraph' twice in a row (in a non-prog buffer) -> unfill paragraph
+ [remap fill-paragraph] (akn/cmds! (eq last-command #'fill-paragraph) #'akn/unfill-paragraphs
+                                   #'fill-paragraph)
 
  ;; shift click
  ;; https://superuser.com/questions/521223/shift-click-to-extend-marked-region
