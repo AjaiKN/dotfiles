@@ -221,7 +221,9 @@ returns true."
 
            :lang
            agda              ; types of types of types of types...
-           beancount         ; mind the GAAP
+           *extra beancount         ; mind the GAAP
+           *extra ledger            ; be audit you can be
+           *extra ledger+hledger
            *basic (cc +lsp)         ; C > C++ == 1
            *extra clojure           ; java with a lisp
            *extra common-lisp       ; if you've seen one lisp, you've seen them all
@@ -258,7 +260,6 @@ returns true."
            *extra kotlin            ; a better, slicker Java(Script)
            *extra (latex +fold +latexmk +fontification +viewers)             ; writing papers in Emacs has never been so fun
            *extra lean              ; for folks with too much to prove
-           ledger            ; be audit you can be
            *basic (lua +tree-sitter)               ; one-based indices? one-based indices
            *basic markdown          ; writing docs for people to ignore
            *extra obsidian
