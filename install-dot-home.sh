@@ -267,3 +267,9 @@ if [ "$(uname -s)" = "Darwin" ]; then
 	handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
 	[ ! -d "$DOTFILES/private/launchd" ] || handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/private/launchd"
 fi
+
+## xbar
+if [ "$(uname -s)" = "Darwin" ]; then
+	[ ! -d "$DOTFILES/xbar" ] || handle_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/xbar"
+	[ ! -d "$DOTFILES/private/xbar" ] || handle_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/private/xbar"
+fi
