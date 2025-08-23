@@ -791,6 +791,10 @@ or creates it if it does not exist."
 ;;; python
 (after! python
   (setq! python-fill-docstring-style 'django))
+
+(add-to-list 'interpreter-mode-alist
+             (cons (rx bos "uv" eos) #'python-mode))
+
 ;;; racket
 ;; This has precedence over the file extension (#'auto-afadsfm) magic-fallback-mode-alist.
 ;; Also see `racket-hash-lang-mode'.
