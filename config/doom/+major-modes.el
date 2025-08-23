@@ -152,6 +152,54 @@
     (doom-files--update-refs file))
   (ignore-errors (when (projectile-project-root) (projectile-invalidate-cache nil))))
 
+;; https://xenodium.com/interactive-ordering-of-dired-items
+(after! dired
+ (defun ar/dired-drag-item-up ()
+   "Drag dired item down in buffer."
+   (interactive)
+   (unless (dired-get-filename nil t)
+     (error "Not a dired draggable item"))
+   (when (= (line-number-at-pos) 2)
+     (error "Already at top"))
+   (let* ((inhibit-read-only t)
+          (col (current-column))
+          (item-start (line-beginning-position))
+          (item-end (1+ (line-end-position)))
+          (item (buffer-substring item-start item-end)))
+     (delete-region item-start item-end)
+     (forward-line -1)
+     (beginning-of-line)
+     (insert item)
+     (forward-line -1)
+     (move-to-column col)))
+
+ (defun ar/dired-drag-item-down ()
+   "Drag dired item down in buffer."
+   (interactive)
+   (unless (dired-get-filename nil t)
+     (error "Not a dired draggable item"))
+   (when (save-excursion
+           (forward-line 1)
+           (eobp))
+     (error "Already at bottom"))
+   (let* ((inhibit-read-only t)
+          (col (current-column))
+          (item-start (line-beginning-position))
+          (item-end (1+ (line-end-position)))
+          (item (buffer-substring item-start item-end)))
+     (delete-region item-start item-end)
+     (forward-line 1)
+     (beginning-of-line)
+     (insert item)
+     (forward-line -1)
+     (move-to-column col)))
+
+ (map! :map dired-mode-map
+       [remap drag-stuff-up] #'ar/dired-drag-item-up
+       [remap drag-stuff-down] #'ar/dired-drag-item-down
+       [remap +fold/drag-stuff-up] #'ar/dired-drag-item-up
+       [remap +fold/drag-stuff-down] #'ar/dired-drag-item-down))
+
 ;;; treemacs
 ;; Otherwise, when treemacs-follow-mode gets loaded (incrementally),
 ;; it immediately gets turned on and runs treemacs--follow-after-buffer-list-update constantly.
