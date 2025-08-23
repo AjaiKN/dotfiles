@@ -16,11 +16,12 @@
 (defun js-manager/package-json-deps ()
   (when-let* ((json (js-manager/package-json))
               ((listp json))
-              (deps (append (alist-get 'dependencies json)
-                            (alist-get 'devDependencies json)
-                            (alist-get 'peerDependencies json)
-                            (alist-get 'bundledDependencies json)
-                            (alist-get 'optionalDependencies json))))
+              (deps (let-alist json
+                      (append .dependencies
+                              .devDependencies
+                              .peerDependencies
+                              .bundledDependencies
+                              .optionalDependencies))))
     (seq-filter (lambda (p)
                   (and (consp p)
                        (or (symbolp (car p)) (stringp (car p)))

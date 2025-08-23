@@ -196,17 +196,18 @@ SQL can be either the emacsql vector representation, or a string."
 (defun +xkcd-db-write (data)
   (+xkcd-db-query [:insert-into xkcds
                    :values $v1]
-                  (list (vector
-                         (cdr (assoc 'num        data))
-                         (cdr (assoc 'year       data))
-                         (cdr (assoc 'month      data))
-                         (cdr (assoc 'link       data))
-                         (cdr (assoc 'news       data))
-                         (cdr (assoc 'safe_title data))
-                         (cdr (assoc 'title      data))
-                         (cdr (assoc 'transcript data))
-                         (cdr (assoc 'alt        data))
-                         (cdr (assoc 'img        data))))))
+                  (let-alist data
+                    (list (vector
+                           .num
+                           .year
+                           .month
+                           .link
+                           .news
+                           .safe_title
+                           .title
+                           .transcript
+                           .alt
+                           .img)))))
 
 ;;;###autoload
 (defun +xkcd--initialize ()
