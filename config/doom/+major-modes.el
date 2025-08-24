@@ -78,8 +78,32 @@
 (use-package! dired
   :defer-incrementally (dired-loaddefs dnd)
   :config
-  (setq! dired-movement-style 'cycle
-         dired-listing-switches "-ahl -v --group-directories-first"))
+  (setq! dired-movement-style 'cycle-files
+         dirvish-use-header-line nil ; dirvish's header line makes cycling not work right
+         dired-listing-switches "-ahl -v --group-directories-first")
+  (setq-hook! 'dired-mode-hook
+    line-move-visual nil))
+
+(defun akn/dired-goto-beginning ()
+  (interactive nil dired-mode)
+  (let ((dired-movement-style 'cycle-files))
+    (goto-char (point-max))
+    (dired-next-line 1)))
+(defun akn/dired-goto-end ()
+  (interactive)
+  (let ((dired-movement-style 'cycle-files))
+    (goto-char (point-min))
+    (dired-previous-line 1)))
+(map! :after dired
+      :map dired-mode-map
+      [remap beginning-of-buffer]  (cmds! (not current-prefix-arg) #'akn/dired-goto-beginning)
+      [remap end-of-buffer]        (cmds! (not current-prefix-arg) #'akn/dired-goto-end)
+      [remap evil-goto-first-line] (cmds! (not current-prefix-arg) #'akn/dired-goto-beginning)
+      [remap evil-goto-line]       (cmds! (not current-prefix-arg) #'akn/dired-goto-end)
+      [remap evil-next-line]            #'dired-next-line
+      [remap evil-previous-line]        #'dired-previous-line
+      [remap evil-next-visual-line]     #'dired-next-line
+      [remap evil-previous-visual-line] #'dired-previous-line)
 
 (defun akn/dired-hide-subdir ()
   (interactive nil dired-mode)
@@ -154,51 +178,51 @@
 
 ;; https://xenodium.com/interactive-ordering-of-dired-items
 (after! dired
- (defun ar/dired-drag-item-up ()
-   "Drag dired item down in buffer."
-   (interactive)
-   (unless (dired-get-filename nil t)
-     (error "Not a dired draggable item"))
-   (when (= (line-number-at-pos) 2)
-     (error "Already at top"))
-   (let* ((inhibit-read-only t)
-          (col (current-column))
-          (item-start (line-beginning-position))
-          (item-end (1+ (line-end-position)))
-          (item (buffer-substring item-start item-end)))
-     (delete-region item-start item-end)
-     (forward-line -1)
-     (beginning-of-line)
-     (insert item)
-     (forward-line -1)
-     (move-to-column col)))
+  (defun ar/dired-drag-item-up ()
+    "Drag dired item down in buffer."
+    (interactive)
+    (unless (dired-get-filename nil t)
+      (error "Not a dired draggable item"))
+    (when (= (line-number-at-pos) 2)
+      (error "Already at top"))
+    (let* ((inhibit-read-only t)
+           (col (current-column))
+           (item-start (line-beginning-position))
+           (item-end (1+ (line-end-position)))
+           (item (buffer-substring item-start item-end)))
+      (delete-region item-start item-end)
+      (forward-line -1)
+      (beginning-of-line)
+      (insert item)
+      (forward-line -1)
+      (move-to-column col)))
 
- (defun ar/dired-drag-item-down ()
-   "Drag dired item down in buffer."
-   (interactive)
-   (unless (dired-get-filename nil t)
-     (error "Not a dired draggable item"))
-   (when (save-excursion
-           (forward-line 1)
-           (eobp))
-     (error "Already at bottom"))
-   (let* ((inhibit-read-only t)
-          (col (current-column))
-          (item-start (line-beginning-position))
-          (item-end (1+ (line-end-position)))
-          (item (buffer-substring item-start item-end)))
-     (delete-region item-start item-end)
-     (forward-line 1)
-     (beginning-of-line)
-     (insert item)
-     (forward-line -1)
-     (move-to-column col)))
+  (defun ar/dired-drag-item-down ()
+    "Drag dired item down in buffer."
+    (interactive)
+    (unless (dired-get-filename nil t)
+      (error "Not a dired draggable item"))
+    (when (save-excursion
+            (forward-line 1)
+            (eobp))
+      (error "Already at bottom"))
+    (let* ((inhibit-read-only t)
+           (col (current-column))
+           (item-start (line-beginning-position))
+           (item-end (1+ (line-end-position)))
+           (item (buffer-substring item-start item-end)))
+      (delete-region item-start item-end)
+      (forward-line 1)
+      (beginning-of-line)
+      (insert item)
+      (forward-line -1)
+      (move-to-column col)))
 
- (map! :map dired-mode-map
-       [remap drag-stuff-up] #'ar/dired-drag-item-up
-       [remap drag-stuff-down] #'ar/dired-drag-item-down
-       [remap +fold/drag-stuff-up] #'ar/dired-drag-item-up
-       [remap +fold/drag-stuff-down] #'ar/dired-drag-item-down))
+  (map! :map dired-mode-map
+        [remap drag-stuff-up] #'ar/dired-drag-item-up
+        [remap drag-stuff-down] #'ar/dired-drag-item-down
+        [remap +fold/drag-stuff-up] #'ar/dired-drag-item-up
+        [remap +fold/drag-stuff-down] #'ar/dired-drag-item-down))
 
 ;;; treemacs
 ;; Otherwise, when treemacs-follow-mode gets loaded (incrementally),

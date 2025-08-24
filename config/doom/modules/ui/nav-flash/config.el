@@ -65,6 +65,8 @@
   (pushnew! pulsar-pulse-functions
             #'beginning-of-buffer
             #'end-of-buffer
+            #'akn/dired-goto-beginning
+            #'akn/dired-goto-end
             #'+fold/open-all
             #'+fold/close-all
             #'+fold/table-of-contents
