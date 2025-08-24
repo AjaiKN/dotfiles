@@ -86,6 +86,8 @@
 
 (defun akn/dired-goto-beginning ()
   (interactive nil dired-mode)
+  (goto-char (point-min))
+  (redisplay)
   (let ((dired-movement-style 'cycle-files))
     (goto-char (point-max))
     (dired-next-line 1)))
