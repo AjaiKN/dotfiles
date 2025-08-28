@@ -1655,13 +1655,14 @@ Use \\[visible-mode] to show the full hashes."
 
 ;;; lispy
 (after! lispyville
-  (setq! lispyvile-key-theme '((operators normal)
-                               c-w
-                               (prettify insert)
-                               (atom-movement t)
-                               slurp/barf-cp
-                               additional
-                               additional-insert))
+  (setq! lispyville-key-theme '((operators normal)
+                                c-w
+                                (prettify insert)
+                                (atom-movement t)
+                                ;; slurp/barf-lispy
+                                slurp/barf-cp
+                                additional
+                                additional-insert))
   (lispyville-set-key-theme))
 
 ;;; Consult
