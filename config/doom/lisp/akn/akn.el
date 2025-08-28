@@ -991,52 +991,62 @@ function the return value of `akn/local-set-faces!'."
   (mapc 'face-remap-remove-relative cookies))
 
 ;;; opacity
-;;;###autoload
-(defun akn/doom/set-frame-opacity (&rest args)
-  (interactive '(interactive))
+
+(defun akn--doom-opacity-parameter ()
+  (if (eq window-system 'pgtk)
+      'alpha-background
+    'alpha))
+(defun akn--doom-opacity-lower-limit (&optional param)
+  (if (eq (or param (akn--doom-opacity-parameter)) 'alpha)
+      frame-alpha-lower-limit
+    0))
+(defun akn--prompt-opacity (&optional param)
+  (read-number (format "Opacity (%s-100): " (akn--doom-opacity-lower-limit param))
+               (akn/current-opacity param)))
+
+(defun akn/opaque-p (&optional param)
+  (= (akn/current-opacity param) 100))
+(defun akn/transparent-p (&optional param)
+  (not (akn/opaque-p param)))
+(defun akn/current-opacity (&optional param)
+  (min 100
+       (or (frame-parameter nil (or param (akn--doom-opacity-parameter)))
+           100)))
+
+;;;autoload
+(defun akn/doom/set-frame-opacity (opacity &optional frames)
+  (interactive (list (akn--prompt-opacity) current-prefix-arg))
   (if (fboundp 'doom/set-frame-opacity)
-      (apply #'doom/set-frame-opacity args)
+      (funcall #'doom/set-frame-opacity opacity (or frames (list (selected-frame))))
     (error "doom/set-frame-opacity not defined")))
 ;;;###autoload
 (defun akn/set-frame-opacity/alpha-background (opacity)
   "Change the current frame's opacity (but keeping foreground text opaque).
 
 OPACITY is an integer between 0 to 100, inclusive."
-  (interactive
-   (list (read-number (format "Opacity (%s-100): " 0)
-                      (or (frame-parameter nil 'alpha-background)
-                          100))))
+  (interactive (list (akn--prompt-opacity 'alpha-background)))
   (set-frame-parameter nil 'alpha-background opacity))
 ;;;###autoload
 (defun akn/set-frame-opacity/alpha (opacity)
   "Change the current frame's opacity, including foreground text opacity.
 
 OPACITY is an integer between 0 to 100, inclusive."
-  (interactive
-   (list (read-number (format "Opacity (%s-100): " frame-alpha-lower-limit)
-                      (or (frame-parameter nil 'alpha)
-                          100))))
+  (interactive (list (akn--prompt-opacity 'alpha)))
   (set-frame-parameter nil 'alpha opacity))
 
-(defun akn/current-opacity ()
-  (min 100
-       (let ((parameter (if (eq window-system 'pgtk)
-                            'alpha-background
-                          'alpha)))
-         (or (frame-parameter nil parameter)
-             100))))
-(defun akn/transparent-p ()
-  (not (= (akn/current-opacity) 100)))
 (defvar akn/transparent-opacity 90)
 (defun akn/transparency-on ()
+  (interactive)
   (unless (akn/transparent-p)
     (akn/doom/set-frame-opacity akn/transparent-opacity)
     (message "Opacity is now %s%%" (akn/current-opacity))))
 (defun akn/transparency-off ()
+  (interactive)
   (when (akn/transparent-p)
     (setq akn/transparent-opacity (akn/current-opacity))
     (akn/doom/set-frame-opacity 100)
     (message "Opacity is now %s%%" (akn/current-opacity))))
+
 ;;;###autoload
 (defun akn/toggle-opacity (&optional level)
   (interactive "P")
@@ -1045,7 +1055,7 @@ OPACITY is an integer between 0 to 100, inclusive."
               (akn/doom/set-frame-opacity level)
             (call-interactively #'akn/doom/set-frame-opacity))
           (message "Opacity is now %s%%" (akn/current-opacity)))
-   ((= (akn/current-opacity) 100) (akn/transparency-on))
+   ((akn/opaque-p) (akn/transparency-on))
    (t (akn/transparency-off))))
 ;;;###autoload
 (defun akn/opacity-down (&optional amount)
