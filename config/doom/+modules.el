@@ -136,10 +136,10 @@ returns true."
            *basic format  ; automated prettiness
            god               ; run Emacs commands without modifier keys
            *extra license-headers
-           lispy             ; vim for lisp, for people who don't like vim
            *extra mindstream
            *basic multiple-cursors  ; editing in many places at once
            objed             ; text object editing for the innocent
+           lispy             ; vim for lisp, for people who don't like vim
            *extra parinfer          ; turn lisp into python, sort of
            *basic rotate-text       ; cycle region at point between text candidates
            *extra smart-tabs
