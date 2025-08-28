@@ -9,6 +9,7 @@
         akn/evilnc-comment-or-uncomment-lines
         akn/goto-region-beginning
         akn/goto-region-end
+        backward-sexp
         consult-yank-pop
         cycle-spacing
         doom/backward-to-bol-or-indent
@@ -43,9 +44,18 @@
         evil-quoted-insert
         evil-shift-right-line
         evil-yank
+        forward-sexp
         ignore-preserving-kill-region
         indent-for-tab-command
         kill-region
+        lispy-backward
+        lispy-comment
+        lispy-delete-backward
+        lispy-forward
+        lispy-hash
+        lispy-quotes
+        lispy-space
+        lispy-tick
         markdown-electric-backquote
         markdown-outdent-or-delete
         nxml-electric-slash
@@ -60,6 +70,33 @@
         sp-backward-sexp
         sp-forward-sexp
         sp-forward-slurp-sexp
+        special-digit-argument
+        special-lh-knight/body
+        special-lispy-ace-paren
+        special-lispy-ace-subword
+        special-lispy-ace-symbol
+        special-lispy-back
+        special-lispy-clone
+        special-lispy-different
+        special-lispy-down
+        special-lispy-eval
+        special-lispy-eval-other-window
+        special-lispy-flow
+        special-lispy-goto-local
+        special-lispy-left
+        special-lispy-mark-list
+        special-lispy-move-down
+        special-lispy-move-up
+        special-lispy-new-copy
+        special-lispy-occur
+        special-lispy-other-mode
+        special-lispy-right
+        special-lispy-tab
+        special-lispy-teleport
+        special-lispy-undo
+        special-lispy-up
+        special-lispy-view
+        special-lispy-x
         string-inflection-kebab-case
         wdired--self-insert
         ))

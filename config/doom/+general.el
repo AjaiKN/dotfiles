@@ -1655,15 +1655,39 @@ Use \\[visible-mode] to show the full hashes."
 
 ;;; lispy
 (after! lispyville
-  (setq! lispyville-key-theme '((operators normal)
-                                c-w
-                                (prettify insert)
-                                (atom-movement t)
-                                ;; slurp/barf-lispy
-                                slurp/barf-cp
-                                additional
-                                additional-insert))
+  (setq lispyville-key-theme '((operators normal) ;remap evil-yank -delete -change -yank-line -delete-line -change-line -delete-char -delete-backward-char -substitute -change-whole-line -join
+                               c-w                ;remap evil-delete-backward-word
+                               c-u                ;remap evil-delete-back-to-indentation
+                               (prettify insert)  ;remap evil-indent->lispyville-prettify
+                               (atom-movement t)  ;remap WORD->atom
+                               ;; slurp/barf-lispy ; > and <
+                               slurp/barf-cp       ; > and <
+                               text-objects
+                               commentary
+                               ;; normal state:
+                               ;;    M-j=drag-forward  M-J=join M-s=splice M-r=raise-sexp M-t=transpose-sexps
+                               ;;    M-k=drag-backward          M-S=split  M-R=raise-list M-v=convolute-sexp
+                               additional
+                               ;; insert state:
+                               ;;    M-( = lispyville-wrap-round
+                               ;;    M-[ = lispyville-wrap-brackets
+                               ;;    M-{ = lispyville-wrap-braces
+                               additional-insert))
   (lispyville-set-key-theme))
+
+;; lispy-mode-map-special  +-./~_        <> 0123456789 ABCDEFGHIJKLMNOPQRS  VWX Z abcdefghjiklmnopqrstuvwxyz
+;; lispy-mode-map-lispy    "();[]{}:^`#'@
+;; lispy-mode-map-paredit  "();[]{}
+;; lispy-mode-map-parinfer "();[]{}:^`#'
+;; lispy-mode-map-evilcp   "();          <>                                                               y
+;; lispy-mode-map-c-digits
+;; lispy-mode-map-oleh
+
+(when (modulep! :editor lispy)
+  (setq lispy-key-theme
+        '(special lispy parinfer c-digits))
+  (when (featurep 'lispy)
+    (lispy-set-key-theme lispy-key-theme)))
 
 ;;; Consult
 (use-package! consult
