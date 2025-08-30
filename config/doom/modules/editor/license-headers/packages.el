@@ -1,7 +1,7 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; editor/license-headers/packages.el
 
-(package! headlice :pin "ad9cdeee417b29ac14b3efd4e211e1ae83f86795"
+(package! headlice :pin "1d56771651a608aeb2093c267a7d94511b25caff"
   :recipe (:type git
            :repo "https://code.tecosaur.net/tec/headlice"
            :files ("*.el" "licenses" "headers")))
