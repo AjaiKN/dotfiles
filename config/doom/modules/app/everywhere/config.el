@@ -49,21 +49,21 @@
         (setq persp-emacsclient-init-frame-behaviour-override nil))))
 
   (setq! emacs-everywhere-major-mode-function #'markdown-mode)
-  (setq! emacs-everywhere-clipboard-sleep-delay 0.01)
-  (add-hook! 'emacs-everywhere-init-hooks
-             ;; one of the hooks is the one that copies, so we can't switch to this window until
-             ;; that's done
-             :depth -100
-             (defun akn/focus-emacs ()
-               ;; (async-shell-command "osascript -e 'tell application \"Emacs\" to activate'")))
-               ;; (start-process-shell-command "emacs-everywhere-command-c" nil "osascript -e 'tell application \"System Events\" to keystroke \"c\" using {command down}'")))
-               ;; (sleep-for emacs-everywhere-clipboard-sleep-delay)
-               ;; (start-process-shell-command "applescript-focus-emacs"
-               ;;                              nil
-               ;;                              "osascript -e 'tell application \"Emacs\" to activate'")))
-               (start-process "applescript-focus-emacs"
-                              nil
-                              "osascript")))
+  ;; (setq! emacs-everywhere-clipboard-sleep-delay 0.01)
+  ;; (add-hook! 'emacs-everywhere-init-hooks
+  ;;            ;; one of the hooks is the one that copies, so we can't switch to this window until
+  ;;            ;; that's done
+  ;;            :depth -100
+  ;;            (defun akn/focus-emacs ()
+  ;;              ;; (async-shell-command "osascript -e 'tell application \"Emacs\" to activate'")))
+  ;;              ;; (start-process-shell-command "emacs-everywhere-command-c" nil "osascript -e 'tell application \"System Events\" to keystroke \"c\" using {command down}'")))
+  ;;              ;; (sleep-for emacs-everywhere-clipboard-sleep-delay)
+  ;;              ;; (start-process-shell-command "applescript-focus-emacs"
+  ;;              ;;                              nil
+  ;;              ;;                              "osascript -e 'tell application \"Emacs\" to activate'")))
+  ;;              (start-process "applescript-focus-emacs"
+  ;;                             nil
+  ;;                             "osascript")))
   ;; (sleep-for emacs-everywhere-clipboard-sleep-delay)))
   ;; (yank)))
   (when (executable-find "pbcopy")
