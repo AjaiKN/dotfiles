@@ -17,10 +17,11 @@
        (ad-remove-advice #',function 'around 'smart-tabs)))
   (akn/rotate-symbols! 'emacs-lisp-mode-hook "smart-tabs-advice" "+smart-tabs-unadvice")
 
+  (defvar sh-basic-offset)
   (smart-tabs-advice sh-basic-indent-line sh-basic-offset)
   (smart-tabs-advice sh-smie--indent-continuation sh-basic-offset)
 
-  (defadvice smie-indent-line (around +smart-tabs activate)
+  (define-advice smie-indent-line (:around (orig-fun &rest args) +smart-tabs)
     "This advice is similar to the one that would be added by
 `smart-tabs-advice'. But `smie-indent-line' is used by multiple
 modes, so there are some complications."
@@ -31,7 +32,7 @@ modes, so there are some complications."
                    smie-indent-basic)))
       (save-excursion
         (beginning-of-line)
-        (while (looking-at "	*\\( +\\)	+")
+        (while (looking-at "\t*\\( +\\)\t+")
           (replace-match "" nil nil nil 1)))
       (setq tab-width tab-width)
 
@@ -44,6 +45,8 @@ modes, so there are some complications."
       (defvar rust-indent-offset)
       (defvar rustic-indent-offset)
       (defvar scala-indent:step)
+      (defvar smie-indent-basic)
+      (defvar smie-rules-function)
       (let* ((tab-width fill-column)
              (smie-indent-basic fill-column)
              (sh-basic-offset fill-column)
@@ -64,6 +67,6 @@ modes, so there are some complications."
                     fill-column
                   (apply +smart-tabs--old-smie-rules-function method arg rest)))))
         (unwind-protect
-            (progn ad-do-it))))
+            (progn (apply orig-fun args)))))
 
-     (t ad-do-it))))
+     (t (apply orig-fun args)))))
