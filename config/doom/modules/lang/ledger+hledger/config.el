@@ -3,7 +3,6 @@
 ;; https://hledger.org/editors.html#emacs
 
 (use-package! ledger-mode
-  :custom
   :mode ("\\.hledger\\'" "\\.ledger\\'")
   :config
   (setq!
