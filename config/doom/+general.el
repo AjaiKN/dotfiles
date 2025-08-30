@@ -2743,6 +2743,30 @@ there's no need for `markdown-mode' to reduplicate the effort."
 (akn/remove-from-list 'magic-mode-alist '("#compdef " . sh-mode))
 (add-to-list          'magic-mode-alist '("\\`#compdef " . sh-mode))
 
+;;; ediff
+
+(after! ediff
+  (define-minor-mode akn/ediff-buffer-mode
+    "A mode automatically enabled in ediff buffers."
+    :group 'akn
+    :interactive nil)
+
+  (add-hook 'ediff-prepare-buffer-hook #'akn/ediff-buffer-mode)
+  (add-hook! '(ediff-startup-hook ediff-cleanup-hook ediff-quit-hook ediff-quit-merge-hook ediff-suspend-hook
+               ediff-prepare-buffer-hook ediff-after-setup-windows-hook
+               ediff-after-session-group-setup-hook ediff-quit-session-group-hook)
+    (defun akn--enable-or-disable-ediff-buffer-mode-h ()
+      (dolist (buf (list ediff-buffer-A ediff-buffer-B ediff-buffer-C ediff-ancestor-buffer))
+        (when (buffer-live-p buf)
+          (with-current-buffer buf
+            (if ediff-this-buffer-ediff-sessions
+                (unless akn/ediff-buffer-mode (akn/ediff-buffer-mode))
+              (when akn/ediff-buffer-mode (akn/ediff-buffer-mode -1))))))))
+
+  (add-hook! 'akn/ediff-buffer-mode-hook
+    (defun akn--ediff-disable-hl-line-h ()
+      (hl-line-mode (if akn/ediff-buffer-mode -1 1)))))
+
 ;;; file-local variables
 
 ;; Local Variables:
