@@ -7,7 +7,6 @@
 
 (use-package! smart-tabs-mode
   :defer t
-  :defer-incrementally t
   :config
   (setq-hook! 'smart-tabs-mode-hook
     evil-indent-convert-tabs nil)
