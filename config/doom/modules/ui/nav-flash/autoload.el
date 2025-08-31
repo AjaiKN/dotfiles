@@ -7,7 +7,8 @@
   "Blinks the current line in the current window, to make it clear where the
 cursor has landed (typically after a large motion, like switching windows or
 jumping to another part of the file)."
-  (unless (or (bound-and-true-p so-long-minor-mode)
+  (unless (or (not pulsar-mode)
+              (bound-and-true-p so-long-minor-mode)
               (minibufferp)
               (not (display-graphic-p)))
     ;; (nav-flash-show)
@@ -20,7 +21,8 @@ jumping to another part of the file)."
 (defun +nav-flash-blink-cursor-maybe (&rest _)
   "Like `+nav-flash-blink-cursor', but no-ops if in special-mode, term-mode,
 vterm-mode, or triggered from one of `+nav-flash-exclude-commands'."
-  (unless (or (memq this-command +nav-flash-exclude-commands)
+  (unless (or (not pulsar-mode)
+              (memq this-command +nav-flash-exclude-commands)
               (bound-and-true-p so-long-minor-mode)
               (apply #'derived-mode-p +nav-flash-exclude-modes)
               (equal +nav-flash--last-point

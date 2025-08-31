@@ -18,6 +18,7 @@
   :unless (bound-and-true-p akn/terminal-only-p)
   :defer t
   :defer-incrementally t
+  :commands pulsar-global-mode
   :init
   ;; NOTE In :tools lookup `recenter' is hooked to a bunch of jumping
   ;; commands, which will trigger nav-flash.
@@ -52,7 +53,6 @@
   (advice-add #'vlf-move-to-chunk :after #'+nav-flash-delayed-blink-cursor-a)
 
   ;; https://github.com/torgeir/.config/emacs
-  :commands pulsar-global-mode
   :config
   (setq pulsar-delay 0.055
         pulsar-face 'pulsar-magenta

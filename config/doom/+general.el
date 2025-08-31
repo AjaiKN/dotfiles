@@ -2765,7 +2765,11 @@ there's no need for `markdown-mode' to reduplicate the effort."
 
   (add-hook! 'akn/ediff-buffer-mode-hook
     (defun akn--ediff-disable-hl-line-h ()
-      (hl-line-mode (if akn/ediff-buffer-mode -1 1)))))
+      (akn/mode-set akn/ediff-buffer-mode
+        hl-line-mode nil
+        pulsar-mode nil)
+      (hl-line-mode (if hl-line-mode 1 -1))
+      (pulsar-mode (if pulsar-mode 1 -1)))))
 
 ;;; file-local variables
 
