@@ -28,7 +28,7 @@
 ;;;; Conditional
 (package! transient-showcase      :pin "ac2bbe6a6be5f7c8f2251517d50410991db66cfa" :disable (not (modulep! :lang emacs-lisp))        :recipe (:host github :repo "positron-solutions/transient-showcase"))
 (package! page-break-lines        :pin "84b872a056404f11cacbf3fc2b0788aa7feac635" :disable (not (or (modulep! :lang cc) (modulep! :lang emacs-lisp))))
-(package! elisp-indent-docstrings                 :disable (not (modulep! :lang emacs-lisp))        :recipe (:local-repo "lisp/elisp-indent-docstrings"))
+(package! elisp-indent-docstrings                   :disable (not (modulep! :lang emacs-lisp))        :recipe (:local-repo "lisp/elisp-indent-docstrings"))
 (package! valign                  :pin "8b0002844cb6012ac4f8952e255c165e0e3be5b6" :disable (not (modulep! :lang org)))
 (package! org-wc                  :pin "dbbf794e4ec6c4080d945f43338185e34a4a582d" :disable (not (modulep! :lang org)))
 (package! org-appear              :pin "32ee50f8fdfa449bbc235617549c1bccb503cb09" :disable (not (modulep! :lang org)))
