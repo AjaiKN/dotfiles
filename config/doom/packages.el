@@ -24,7 +24,7 @@
 (package! shut-up :type 'core     :pin "ed62a7fefdf04c81346061016f1bc69ca045aaf6") ;also see fork https://github.com/jamescherti/be-quiet.el
 (package! akn  :type 'core     :recipe (:local-repo "lisp/akn")) ;:build (:not compile)))
 (package! boring-processes :recipe (:local-repo "lisp/boring-processes")) ;TODO: shouldn't be required
-(package! el-patch :pin "92803e7ea6e07cd56667ed7ea0dfacfc1f37f6d9")
+(package! el-patch :pin "5adb7097d0ff3d9e004a8bb07c0b25f7ee20ba8a")
 ;;;; Conditional
 (package! transient-showcase      :pin "ac2bbe6a6be5f7c8f2251517d50410991db66cfa" :disable (not (modulep! :lang emacs-lisp))        :recipe (:host github :repo "positron-solutions/transient-showcase"))
 (package! page-break-lines        :pin "84b872a056404f11cacbf3fc2b0788aa7feac635" :disable (not (or (modulep! :lang cc) (modulep! :lang emacs-lisp))))
@@ -33,10 +33,10 @@
 (package! org-wc                  :pin "dbbf794e4ec6c4080d945f43338185e34a4a582d" :disable (not (modulep! :lang org)))
 (package! org-appear              :pin "32ee50f8fdfa449bbc235617549c1bccb503cb09" :disable (not (modulep! :lang org)))
 (package! org-super-agenda        :pin "fb20ad9c8a9705aa05d40751682beae2d094e0fe" :disable (not (modulep! :lang org)))
-(package! lsp-tailwindcss         :pin "ca5e611d2a38fea8802a365bcdd6fdc73e3d79af" :disable (not (modulep! :lang web))               :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
+(package! lsp-tailwindcss         :pin "8574cb3ad2e669eebb34b4d57c3cdef5a424a9b5" :disable (not (modulep! :lang web))               :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
 (package! astro-ts-mode           :pin "78e7e942011839bd4f4de0a1d8460f5879ba4ca5" :disable (not (modulep! :lang web)))
 (package! launchctl               :pin "c9b7e93f5ec6fa504dfb03d60571cf3e5dc38e12" :disable (not (modulep! :os macos)))
-(package! applescript-mode        :pin "f83997f4285679c4a62601ae9e8e075cb3fdc910" :disable (not (modulep! :os macos)))
+(package! applescript-mode        :pin "3dbbb8b48e519a5208ce237db577056c7a5a5943" :disable (not (modulep! :os macos)))
 (package! eshell-vterm            :pin "20f4b246fa605a1533cdfbe3cb7faf31a24e3d2e" :disable (not (and (modulep! :term eshell) (modulep! :term vterm))))
 (package! coterm                  :pin "6f04b2e7151db862c85b1cbdcf523bdeae27c006" :disable (not (modulep! :term shell)))
 (package! lsp-booster             :pin "5f702a2699f306a3958ff1996a2b1a625f0cee0b" :recipe (:host github :repo "blahgeek/emacs-lsp-booster"))
@@ -44,7 +44,7 @@
 (package! magit-delta             :pin "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616" :disable (not (modulep! :tools magit)))
 (package! magit-todos             :pin "bd27c57eada0fda1cc0a813db04731a9bcc51b7b" :disable (not (modulep! :tools magit)))
 ;;;; :ui
-(package! color-identifiers-mode  :pin "89343c624ae64f568b5305ceca3db48d65711863")
+(package! color-identifiers-mode  :pin "162e56caa183c16f252b3e0a9dc816e5baaaea28")
 (package! framemove               :pin "0faa8a4937f398e4971fc877b1c294100506b645" :disable nil                                      :recipe (:host github :repo "emacsmirror/framemove"))
 (package! hercules                :pin "557da39878d0637395fdded91243b340c37eff7b" :disable nil)
 (package! evil-quickscope :recipe (:local-repo "lisp/evil-quickscope") :disable (or t (not (modulep! :editor evil))))
