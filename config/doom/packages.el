@@ -25,6 +25,11 @@
 (package! akn  :type 'core     :recipe (:local-repo "lisp/akn")) ;:build (:not compile)))
 (package! boring-processes :recipe (:local-repo "lisp/boring-processes")) ;TODO: shouldn't be required
 (package! el-patch :pin "5adb7097d0ff3d9e004a8bb07c0b25f7ee20ba8a")
+;;;; Making repos local
+(when (file-exists-p "~/prog/emacs/minizinc-ts-mode")
+  (package! minizinc-ts-mode :recipe (:local-repo "~/prog/emacs/minizinc-ts-mode")))
+(when (file-exists-p  "~/prog/roc/roc-ts-mode")
+  (package! roc-ts-mode :recipe (:local-repo "~/prog/roc/roc-ts-mode")))
 ;;;; Conditional
 (package! transient-showcase      :pin "ac2bbe6a6be5f7c8f2251517d50410991db66cfa" :disable (not (modulep! :lang emacs-lisp))        :recipe (:host github :repo "positron-solutions/transient-showcase"))
 (package! page-break-lines        :pin "84b872a056404f11cacbf3fc2b0788aa7feac635" :disable (not (or (modulep! :lang cc) (modulep! :lang emacs-lisp))))

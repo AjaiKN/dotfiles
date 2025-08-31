@@ -5,5 +5,4 @@
   :recipe (:local-repo "~/.config/doom/lisp/linear-program-mode"
            :build (:not compile)))
 
-(package! minizinc-ts-mode
-  :recipe (:local-repo "~/prog/emacs/minizinc-ts-mode"))
+(package! minizinc-ts-mode)
