@@ -4,8 +4,6 @@
   :defer t
   :mode ("\\.roc-ts\\'" . roc-ts-mode)
   :config
-  (add-hook 'roc-ts-mode-hook #'rainbow-delimiters-mode)
-
   (map! :map roc-ts-mode-map
         (:localleader
          "f" #'roc-ts-format

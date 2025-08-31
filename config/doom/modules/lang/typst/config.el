@@ -22,8 +22,6 @@
   (set-tree-sitter! 'typst-mode 'typst-ts-mode
     '((typst :url "https://github.com/uben0/tree-sitter-typst")))
   :config
-  (add-hook 'typst-ts-mode-hook #'rainbow-delimiters-mode)
-
   (map! :map typst-ts-mode-map
        "C-c C-w" #'typst-ts-watch-mode
        ;; "C-c C-o" #'typst-ts-compile

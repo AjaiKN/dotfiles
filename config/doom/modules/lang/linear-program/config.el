@@ -8,8 +8,6 @@
   :defer t
   :mode "\\.lp\\'"
   :config
-  (add-hook 'linear-program-mode-hook #'rainbow-delimiters-mode)
-
   (defun +linear-program-run-on-file (fmt)
     (compilation-start (format fmt
                                (shell-quote-argument (or (buffer-file-name)
@@ -91,7 +89,6 @@
 (use-package! minizinc-ts-mode
   :defer t
   :config
-  (add-hook 'minizinc-ts-mode-hook #'rainbow-delimiters-mode)
   (add-hook 'minizinc-ts-mode-hook #'treesit-inspect-mode)
 
   (after! dtrt-indent
