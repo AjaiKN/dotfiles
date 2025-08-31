@@ -409,6 +409,21 @@ name and is empty, it'll still try to save it."
            (user-error "No frame in that direction")
          (signal (car err) (cdr err)))))))
 
+;;; undelete-frame-mode
+
+(undelete-frame-mode)
+(defalias 'akn/undo-delete-frame #'undelete-frame)
+(defalias 'akn/undo-close-frame #'undelete-frame)
+
+(define-advice doom/delete-frame-with-prompt (:override () akn/a)
+  "Delete the current frame, but ask for confirmation if it isn't empty."
+  (interactive)
+  (if (cdr (frame-list))
+      (when (or (not confirm-kill-emacs)
+                (doom-quit-p "Close frame?"))
+        (delete-frame))
+    (save-buffers-kill-emacs)))
+
 ;;; fix loading session, no workspace selected
 ;; See https://github.com/doomemacs/doomemacs/issues/8069.
 ;; TODO: remove if this is fixed
