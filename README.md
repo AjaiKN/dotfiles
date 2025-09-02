@@ -5,11 +5,11 @@
 To download my dotfiles, you can run either of the following commands:
 
 ``` sh
-sh -c "$(curl -fL https://dotfiles.ajai.dev/download.sh)"
+sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download.sh)"
 ```
 
 ``` sh
-sh -c "$(wget -O - https://dotfiles.ajai.dev/download.sh)"
+sh -c "$(wget -qO - https://dotfiles.ajai.dev/download.sh)"
 ```
 
 By default, it will download to `~/prog/dotfiles`. If you want it to download to a different directory, set the `DOTFILES` environment variable to the location the repository should go.
