@@ -4,6 +4,10 @@ cd "$(dirname "$0")" || exit 1
 
 # set -x
 
+if ! command -v git >/dev/null 2>&1; then
+	echo "Error: git command not found; skipping submodule update"
+fi
+
 git submodule --quiet sync --recursive
 
 # init all submodules except for private. (used ChatGPT)
@@ -14,5 +18,3 @@ done
 
 # update all submodules
 git -c submodule.fetchJobs=0 submodule update --depth=1 --recursive
-
-:
