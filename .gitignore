@@ -8,3 +8,4 @@ octave-workspace
 __pycache__
 *.eln
 *.elc
+trusted_users.txt
