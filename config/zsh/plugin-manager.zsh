@@ -34,7 +34,7 @@ function add_to_fpath {
 	for dir in "$@"; do
 		if [ -d "$dir" ]; then
 			fpath=("$dir" $fpath)
-	 	fi
+	fi
 	done
 }
 function add_to_path {
@@ -42,7 +42,7 @@ function add_to_path {
 	for dir in "$@"; do
 		if [ -d "$dir" ]; then
 			path=("$dir" $path)
-	 	fi
+	fi
 	done
 }
 
@@ -108,7 +108,7 @@ function load_plugins {
 	for plugin in $plugins; do
 		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#funcs-dir
 		if ! add_to_fpath "$ZSH_PLUGINS/${plugin}/functions"(/N); then
-	 		add_to_fpath "$ZSH_PLUGINS/${plugin}"(/N)           # omz modules
+			add_to_fpath "$ZSH_PLUGINS/${plugin}"(/N)           # omz modules
 			add_to_fpath "$ZSH_PLUGINS/${plugin}/src"(/N)       # zsh-users/zsh-completions
 		fi
 		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#bin-dir

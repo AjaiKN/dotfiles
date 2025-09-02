@@ -154,7 +154,7 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey '^[[1;3C' emacs-forward-word
 	bindkey '^[^[[D' emacs-backward-word
 	bindkey '^[[1;3D' emacs-backward-word
- 	bindkey '^[b' emacs-backward-word
+	bindkey '^[b' emacs-backward-word
 	bindkey '^[f' emacs-forward-word
 
 	bindkey '[OA' history-substring-search-up
@@ -166,7 +166,7 @@ if [ "$TERM" != "eterm-color" ]; then
 	# bindkey -M emacs '^P' history-substring-search-up
 	# bindkey -M emacs '^N' history-substring-search-down
 	# bindkey -M vicmd 'k' history-substring-search-up
- 	# bindkey -M vicmd 'j' history-substring-search-down
+	# bindkey -M vicmd 'j' history-substring-search-down
 fi
 
 zmodload zsh/complist

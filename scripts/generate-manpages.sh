@@ -20,7 +20,7 @@ for c in "${commands[@]}"; do
 	# If the only thing that changed is the date, undo the change.
 	if git ls-files --error-unmatch "$outfile" &&
 			git diff --ignore-matching-lines='^\.TH .* "1" .* "User Commands"$' --exit-code "$outfile" >/dev/null
- 	then
+	then
 		git restore "$outfile"
 	fi
 done
