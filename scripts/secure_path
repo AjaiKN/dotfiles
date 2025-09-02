@@ -7,6 +7,9 @@
 
 export LC_ALL=C
 
+newline='
+'
+
 stat=stat
 
 # detect stat flavor
@@ -140,16 +143,16 @@ all_perms_and_uids="$(follow=follow get_perms_and_uid "$@")"
 
 my_user="$(id -u)"
 
-IFS='
-'
+IFS="$newline"
 if command -v realpath >/dev/null 2>&1; then
 	# shellcheck disable=SC2046 # intentionally word-splitting
 	set -- $(realpath -- "$@")
 fi
 
+trusted_users="$(cat "$DOTFILES/trusted_users.txt" 2>/dev/null)"
+
 ret=''
-IFS='
-'
+IFS="$newline"
 for perms in $all_perms_and_uids; do
 	dir="$1"
 	shift
@@ -172,8 +175,16 @@ for perms in $all_perms_and_uids; do
 	# remove everything before (and including) the space
 	owner="${perms#* }"
 	if [ "$owner" != "$my_user" ] && [ "$owner" != "0" ]; then
-		>&2 echo "removing $dir because owned by untrusted user: $owner: '$(id -un "$owner")'"
-		continue
+		case "$newline$trusted_users$newline" in
+			"$newline$owner$newline")
+				;;
+			"$newline$(id -un "$owner")$newline")
+				;;
+			*)
+				>&2 echo "removing $dir because owned by untrusted user: $owner: '$(id -un "$owner")'"
+				continue
+				;;
+		esac
 	fi
 
 	firstchar="${perms%"${perms#?}"}"
