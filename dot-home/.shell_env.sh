@@ -103,6 +103,17 @@ $HOME/.poetry/bin:\
 /Applications/Coq-Platform~8.16~2022.09.app/Contents/Resources/bin:\
 $PATH"
 
+### Secure PATH
+if [ -x "$DOTFILES/scripts/secure_path" ]; then
+	if [ -t 0 ]; then
+		PATH="$("$DOTFILES/scripts/secure_path" || printf '%s' "$PATH")"
+	else
+		# if not interactive, don't let it print anything
+		PATH="$("$DOTFILES/scripts/secure_path" 2>/dev/null || printf '%s' "$PATH")"
+	fi
+	export PATH
+fi
+
 ## EDITOR
 
 # When we're inside Emacs, we want to check if EDITOR, GIT_EDITOR, or VISUAL was

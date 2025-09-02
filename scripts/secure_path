@@ -1,0 +1,218 @@
+#!/bin/sh
+
+# [ "$(ls -ld -- "$file" | awk '{print $3}')" != "$(id -un)"
+
+# This script is a best-effort attempt to check for security issues in $PATH and
+# remove the problematic directories. It definitely won't catch everything.
+
+export LC_ALL=C
+
+stat=stat
+
+# detect stat flavor
+stattype=""
+if command -v stat >/dev/null 2>&1; then
+	# try BSD stat style
+	if $stat -f '%Sp %u' / >/dev/null 2>&1; then
+		stattype=bsd
+	# try GNU stat style
+	elif $stat -c '%A %u' / >/dev/null 2>&1; then
+		stattype=gnu
+	fi
+fi
+
+follow=
+stat_maybe_follow_symlinks() {
+	if [ "$follow" = "follow" ]; then
+		$stat -L "$@"
+	else
+		$stat "$@"
+	fi
+}
+
+ls_maybe_follow_symlinks() {
+	if [ "$follow" = "follow" ]; then
+		ls -L "$@"
+	else
+		ls "$@"
+	fi
+}
+
+# get perms for a single path (symbolic perms like drwxr-xr-x)
+get_perms_and_uid() {
+	case "$stattype" in
+		bsd)
+			stat_maybe_follow_symlinks -f '%Sp %u' -- "$@"
+			;;
+		gnu)
+			stat_maybe_follow_symlinks -c '%A %u' -- "$@"
+			;;
+		*)
+			# ls fallback: loop per-arg to avoid relying on any particular ls behaviour for multiple args
+			for f in "$@"; do
+				# -l: long, -n: numeric ids, -d: directory entry itself
+				line="$(ls_maybe_follow_symlinks -lnd -- "$f")"
+				if [ -z "$line" ]; then
+					# keep a placeholder that will fail check_perms_format
+					printf '??????????? 99999999\n'
+				else
+					# typical ls -ln output: perms links uid gid size date name
+					# we want perms and numeric uid (field 1 and 3)
+					# awk is safe here because owner and group are numeric with -n
+					printf '%s %s\n' "$(printf '%s' "$line" | awk '{print $1}')" "$(printf '%s' "$line" | awk '{print $3}')"
+				fi
+			done
+			;;
+	esac
+}
+
+check_perms_format() {
+	case "$1" in
+		?[r-][w-][Ssx-][r-][w-][Ssx-][r-][w-][Ttx-]*) return 0 ;;
+		*) return 1 ;;
+	esac
+}
+
+is_writable_and_not_sticky() {
+	case "$(follow=follow get_perms_and_uid "$1")" in
+		#rwxrwxrwx
+		????????wx*) return 0 ;;
+		*) return 1 ;;
+	esac
+}
+
+is_other_executable() {
+	case "$(follow=follow get_perms_and_uid "$1")" in
+		#rwxrwxrwx
+		?????????[-T]*) return 1 ;;
+		*) return 0 ;;
+	esac
+}
+
+# return true (0) if all ancestors are o+x
+# return false (1) if any ancestor isn't o+x
+can_world_reach() {
+	dir1="$1"
+	while [ "$dir1" != "/" ]; do
+		perms1="$(follow=nofollow get_perms_and_uid "$dir1")"
+		#o+x?
+		if [ "$(printf '%s' "$perms1" | cut -c10)" = "-" ]; then
+			return 1
+		fi
+		dir1="$(dirname "$dir1")"
+	done
+	return 0
+}
+
+is_dir_empty() {
+	# must be a directory and readable
+	[ -d "$1" ] || return 0
+	[ -r "$1" ] || return 0
+	# "$1"/* -> everything that doesn't start with '.'
+	# "$1"/.[!.]* -> everything (except '.' itself) that starts with '.' but not '..'
+	# "$1"/..?* -> everything (except '..' itself) that starts with '..'
+	for entry in "$1"/* "$1"/.[!.]* "$1"/..?*; do
+		# if the glob didn't match it remains a literal pattern -> -e will be false
+		if [ -e "$entry" ]; then
+			# found a real entry (these globs do not match '.' or '..')
+			return 1 # not empty
+		fi
+	done
+	return 0 # empty
+}
+
+IFS=':'
+for dir in $PATH; do
+	if [ "${dir#/}" = "$dir" ]; then
+		>&2 echo "removing $dir because doesn't start with /"
+		continue
+	fi
+
+	[ -d "$dir" ] || {
+		# >&2 echo "removing $dir because it's not an existing directory"
+		continue
+	}
+
+	set -- "$@" "$dir"
+done
+
+all_perms_and_uids="$(follow=follow get_perms_and_uid "$@")"
+
+my_user="$(id -u)"
+
+IFS='
+'
+if command -v realpath >/dev/null 2>&1; then
+	# shellcheck disable=SC2046 # intentionally word-splitting
+	set -- $(realpath -- "$@")
+fi
+
+ret=''
+IFS='
+'
+for perms in $all_perms_and_uids; do
+	dir="$1"
+	shift
+
+	if [ "${dir#/}" = "$dir" ]; then
+		>&2 echo "removing $dir because doesn't start with /"
+		continue
+	fi
+
+	[ -d "$dir" ] || {
+		>&2 echo "removing $dir because it's not an existing directory"
+		continue
+	}
+
+	check_perms_format "$perms" || {
+		>&2 echo "removing $dir because invalid permissions: $perms"
+		continue
+	}
+
+	# remove everything before (and including) the space
+	owner="${perms#* }"
+	if [ "$owner" != "$my_user" ] && [ "$owner" != "0" ]; then
+		>&2 echo "removing $dir because owned by untrusted user: $owner: '$(id -un "$owner")'"
+		continue
+	fi
+
+	firstchar="${perms%"${perms#?}"}"
+	if [ "$firstchar" != "d" ]; then
+		>&2 echo "This shouldn't happen: firstchar='$firstchar': $dir"
+		continue
+	fi
+
+	case "$perms" in
+		????????w?*)
+			if can_world_reach "$dir"; then
+				>&2 echo "removing $dir because world writable (o+w, and its ancestors are o+x)"
+				continue
+			fi
+			;;
+	esac
+
+	if is_dir_empty "$dir" && is_writable_and_not_sticky "$(dirname "$dir")" && can_world_reach "$dir"; then
+		>&2 echo "removing $dir because world deletable (empty, its parent is writable and not sticky, and its ancestors are o+x)"
+		continue
+	fi
+
+	ret="${ret}:${dir}"
+done
+
+# Add the default system PATH back at the end
+system_path="$(getconf PATH)"
+ret="${ret%:}:${system_path#:}"
+
+# deduplicate
+ret="$(printf '%s' ":${ret#:}:" | awk -v RS=":" -v ORS=":" '!x[$0]++')"
+ret="${ret%:}"
+ret="${ret#:}"
+
+if [ -z "$ret" ]; then
+	>&2 echo "WARNING: secure_path: reverting to original PATH because the new PATH is empty"
+	printf '%s' "$PATH"
+else
+	printf '%s' "$ret"
+fi
+
+:
