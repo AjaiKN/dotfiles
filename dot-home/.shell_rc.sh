@@ -646,22 +646,6 @@ alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
 
 alias c='a -e code'
 
-### PS4 (used by set -x and bash -x)
-# $PS4 is the prefix used by `set -x`, and it's '+ ' by default.
-# $SHLVL is the current number of nested shells.
-#
-# If I have a bash script that uses `set -x`, and that calls another bash script
-# which uses `set -x`, I want to make it clear that the commands are nested a
-# level further. To do this, I insert an extra $SHLVL "+"s into $PS4.
-#
-# if command -v printf >/dev/null 2>&1 && command -v seq >/dev/null 2>&1; then
-# 	export PS4='$(printf "+%.0s" $(seq ${SHLVL:-1})) '
-# fi
-
-# I commented this out because in PS4, POSIX sh only supports parameter
-# expansion (env vars), not command substitution. Bash supports it, but dash
-# doesn't.
-
 ### GPG
 # if $TTY is defined and not empty
 if [ -n "$TTY" ]; then
