@@ -25,7 +25,7 @@ if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
 	if command -v git >/dev/null 2>&1; then
 		git clone --depth=1 "https://github.com/AjaiKN/dotfiles"
 	else
-		confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
+		set +x; confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
 
 		if command -v wget >/dev/null 2>&1; then
 			wget -O dotfiles.tar.gz 'https://api.github.com/repos/AjaiKN/dotfiles/tarball/'
@@ -49,7 +49,7 @@ if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
 fi
 
 if [ -e "$DOTFILES"/install.sh ]; then
-	confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?" || exit 0
+	set +x; confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?" || exit 0
 	exec "$DOTFILES"/install.sh
 else
 	echo "Failed to download"
