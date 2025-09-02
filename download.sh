@@ -47,10 +47,10 @@ if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
 	fi
 fi
 
-if ! [ -e "$DOTFILES"/install.sh ]; then
+if [ -e "$DOTFILES"/install.sh ]; then
 	confirm "Dotfiles are downloaded. Install now? " || exit 0
 	exec "$DOTFILES"/install.sh
 else
-	echo "Failed to install"
+	echo "Failed to download"
 	exit 1
 fi
