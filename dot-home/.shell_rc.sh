@@ -654,9 +654,13 @@ alias c='a -e code'
 # which uses `set -x`, I want to make it clear that the commands are nested a
 # level further. To do this, I insert an extra $SHLVL "+"s into $PS4.
 #
-if command -v printf >/dev/null 2>&1 && command -v seq >/dev/null 2>&1; then
-	export PS4='$(printf "+%.0s" $(seq ${SHLVL:-1})) '
-fi
+# if command -v printf >/dev/null 2>&1 && command -v seq >/dev/null 2>&1; then
+# 	export PS4='$(printf "+%.0s" $(seq ${SHLVL:-1})) '
+# fi
+
+# I commented this out because in PS4, POSIX sh only supports parameter
+# expansion (env vars), not command substitution. Bash supports it, but dash
+# doesn't.
 
 ### GPG
 # if $TTY is defined and not empty

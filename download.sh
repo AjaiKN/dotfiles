@@ -1,7 +1,7 @@
-#!/usr/bin/env sh
+#!/bin/sh
 
-# sh -c "$(curl -fL https://dotfiles.ajai.dev/download.sh)"
-# sh -c "$(wget -O - https://dotfiles.ajai.dev/download.sh)"
+# sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download.sh)"
+# sh -c "$(wget -qO - https://dotfiles.ajai.dev/download.sh)"
 # TODO: maybe https://stackoverflow.com/a/72601010
 
 set -eu
