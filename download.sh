@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-# curl -L https://dotfiles.ajai.dev/download.sh | sh
-# TODO: https://stackoverflow.com/a/72601010
+# sh -c "$(curl -fL https://dotfiles.ajai.dev/download.sh)"
+# sh -c "$(wget -O - https://dotfiles.ajai.dev/download.sh)"
+# TODO: maybe https://stackoverflow.com/a/72601010
 
 set -eu
 set -x
@@ -10,7 +11,6 @@ confirm() {
 	set +x
 	printf '%s (y/n) ' "$1"
 	read -r REPLY
-	echo
 	case "$REPLY" in
 		y*) : ;;
 		*) return 2 ;;
@@ -21,6 +21,7 @@ confirm() {
 if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
 	mkdir -p "$(dirname "$DOTFILES")"
 	cd "$(dirname "$DOTFILES")"
+	echo "Installing to $DOTFILES..."
 	if command -v git >/dev/null 2>&1; then
 		git clone --depth=1 "https://github.com/AjaiKN/dotfiles"
 	else
@@ -48,7 +49,7 @@ if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
 fi
 
 if [ -e "$DOTFILES"/install.sh ]; then
-	confirm "Dotfiles are downloaded. Install now? " || exit 0
+	confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?" || exit 0
 	exec "$DOTFILES"/install.sh
 else
 	echo "Failed to download"
