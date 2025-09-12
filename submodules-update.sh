@@ -11,11 +11,10 @@ fi
 git submodule --quiet sync --recursive
 
 # init all submodules except for private.
-# If you do want to init private, then run `git submodule init private`
-git submodule init config/nano vendor/fasd "$@"
+# If you do want to init private, then run `./submodules-update.sh private`
+git submodule init config/nano vendor/fasd config/zsh/themes "$@"
 # git submodule init private
 # git submodule init config/emacs
-# git submodule init config/zsh
 
 # update all submodules
 git -c submodule.fetchJobs=0 submodule update --depth=1 --recursive

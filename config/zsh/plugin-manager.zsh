@@ -1,46 +1,83 @@
 function .set_zsh_plugin_default_branch {
 	local default_branch=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${1}" | jq -r .default_branch)
 	if [ -n "$default_branch" ] && [ "$default_branch" != null ]; then
-		set -x
-		git -C "$DOTFILES" submodule set-branch -b "$default_branch" -- "config/zsh/plugins/${1}"
-		set +x
+		(
+			set -x
+			git -C "$DOTFILES" submodule set-branch -b "$default_branch" -- "config/zsh/plugins/${1}"
+		)
 	fi
 }
 
+function .zsh_plugin__is_empty_dir {
+  [[ -d "$1" ]] || return 2
+	for file in "$1"/*(N); do
+		return 1
+	done
+	return 0
+}
+
+function .zsh_plugin__is_nonempty_dir {
+	[[ -d "$1" ]] || return 2
+	! .zsh_plugin__is_empty_dir "$@"
+}
+
 function install_zsh_plugin {
-	local url="https://github.com/${1}"
-	set -x
-	mkdir -p "$DOTFILES/config/zsh/plugins/${1:h}"
-	git -C "$DOTFILES" submodule add --depth=1 "$url" "config/zsh/plugins/${1}"
-	set +x
-	.set_zsh_plugin_default_branch "$1"
+	init_zsh_plugin "$@" || {
+		local url="https://github.com/${1}"
+		(
+			set -x
+			mkdir -p "$DOTFILES/config/zsh/plugins/${1:h}"
+			git -C "$DOTFILES" submodule add --depth=1 "$url" "config/zsh/plugins/${1}"
+		)
+		.set_zsh_plugin_default_branch "$1"
+	}
 }
 
 function uninstall_zsh_plugin {
-	set -x
-	git -C "$DOTFILES" rm -f "config/zsh/plugins/${1}"
-	set +x
+	(
+		set -x
+		git -C "$DOTFILES" rm -f "config/zsh/plugins/${1}"
+	)
 }
 
 function update_zsh_plugin {
 	.set_zsh_plugin_default_branch "$1"
-	set -x
-	git -C "$DOTFILES" submodule update --remote --depth=1 "config/zsh/plugins/${1}"
-	set +x
+	(
+		set -x
+		git -C "$DOTFILES" submodule update --remote --depth=1 "config/zsh/plugins/${1}"
+	)
+}
+
+function init_zsh_plugin {
+	if [[ $1 == ohmyzsh/* ]]; then
+		init_zsh_plugin ohmyzsh
+		return $?
+	fi
+	[[ -o interactive ]] || return 5
+	(( $+commands[git] )) || return 2
+	.zsh_plugin__is_empty_dir "$DOTFILES/config/zsh/plugins/$1" || return 3
+	(
+		cd "$DOTFILES" || return 1
+		>&2 echo "Initializing plugin submodule $1"
+		set -x
+		git submodule update --init --depth=1 --recursive "config/zsh/plugins/$1"
+	) || return 4
+	>&2 echo
+	.zsh_plugin__is_nonempty_dir "$DOTFILES/config/zsh/plugins/$1"
 }
 
 function add_to_fpath {
-	[ "$#" -eq 0 ] && return 1
+	(( $# == 0 )) && return 1
 	for dir in "$@"; do
-		if [ -d "$dir" ]; then
+		if [[ -d "$dir" ]]; then
 			fpath=("$dir" $fpath)
 	fi
 	done
 }
 function add_to_path {
-	[ "$#" -eq 0 ] && return 1
+	(( $# == 0 )) && return 1
 	for dir in "$@"; do
-		if [ -d "$dir" ]; then
+		if [[ -d "$dir" ]]; then
 			path=("$dir" $path)
 	fi
 	done
@@ -58,14 +95,24 @@ function load_plugin {
 		"$ZSH_PLUGINS/${1}"/*.zsh(.N)
 	)
 	if [ ${#possible_paths[@]} -eq 0 ]; then
-		>&2 echo "Plugin not found: ${1}"
-		>&2 echo "To add it as a submodule, run:"
-		>&2 echo "install_zsh_plugin ${1}"
-		>&2 echo
+		if [[ -o interactive ]]; then
+			if [ -z $retrying_after_submodule_init ] && init_zsh_plugin "$1"; then
+				retrying_after_submodule_init=1 load_plugin "$@"
+				return $?
+			else
+				>&2 echo "Plugin not found: ${1}"
+				>&2 echo "To add it as a submodule, run:"
+				>&2 echo "install_zsh_plugin ${1}"
+				>&2 echo
+				return 1
+			fi
+		else
+			return 1
+		fi
 	else
 		zsh_loaded_plugins+=( "${1:t}" )
 		plugin_file="${possible_paths[@]:0:1}"
-	  typeset -F start_time=EPOCHREALTIME
+		typeset -F start_time=EPOCHREALTIME
 		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
 		ZERO="$plugin_file" compile_and_source "$plugin_file"
 		typeset -F end_time=EPOCHREALTIME

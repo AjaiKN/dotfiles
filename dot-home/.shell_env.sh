@@ -195,7 +195,7 @@ fi
 # In POSIX sh, PS4 only has to support parameter expansion (env vars ${}), not
 # command substitution. For example, dash doesn't support command subsitution
 # in PS4. So we check that we're in either bash or zsh.
-if [ -n "$BASH_VERSION" ] || [ -n "$ZSH_VERSION" ]; then
+if [ -n "$BASH_VERSION" ]; then #|| [ -n "$ZSH_VERSION" ]; then
 	PS4='$(printf "+%.0s" $(seq ${SHLVL:-1})) '
 	# Don't export so it doesn't get inherited by shells like dash.
 fi
