@@ -103,6 +103,7 @@
 
 (setq mc/cmds-to-run-once
       '(
+        +format/save-buffer
         +multiple-cursors/evil-mc-make-cursor-move-next-line
         +multiple-cursors/evil-mc-make-cursor-move-prev-line
         +multiple-cursors/mc-make-cursor-move-next-line
