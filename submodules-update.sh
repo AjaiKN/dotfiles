@@ -10,11 +10,12 @@ fi
 
 git submodule --quiet sync --recursive
 
-# init all submodules except for private. (used ChatGPT)
+# init all submodules except for private.
 # If you do want to init private, then run `git submodule init private`
-for sm_path in $(git config --file .gitmodules --get-regexp path | awk '{print $2}'); do
-	[ "$sm_path" = "private" ] || git submodule init "$sm_path"
-done
+git submodule init config/nano vendor/fasd "$@"
+# git submodule init private
+# git submodule init config/emacs
+# git submodule init config/zsh
 
 # update all submodules
 git -c submodule.fetchJobs=0 submodule update --depth=1 --recursive
