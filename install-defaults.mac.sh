@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=2088
 
 set -euo pipefail
 # shellcheck disable=SC2154
@@ -122,7 +123,10 @@ defaults write com.apple.ActivityMonitor ShowCategory -int 0
 
 ## iTerm 2
 # Specify the preferences directory
-# shellcheck disable=2088
 defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/.config/iterm2"
 # Tell iTerm2 to use the custom preferences in the directory
 defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
+
+## Hammerspoon
+# Put config in ~/.config/hammerspoon instead of ~/.hammerspoon
+defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
