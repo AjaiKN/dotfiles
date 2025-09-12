@@ -122,6 +122,7 @@ defaults write com.apple.ActivityMonitor ShowCategory -int 0
 
 ## iTerm 2
 # Specify the preferences directory
+# shellcheck disable=2088
 defaults write com.googlecode.iterm2.plist PrefsCustomFolder -string "~/.config/iterm2"
 # Tell iTerm2 to use the custom preferences in the directory
 defaults write com.googlecode.iterm2.plist LoadPrefsFromCustomFolder -bool true
