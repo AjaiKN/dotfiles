@@ -673,6 +673,7 @@ zz () {
 	# cd with interactive selection
 	cd "$(fasd -d -l | fzf --tac --tiebreak=index --query="$*")" || return 1
 }
+alias e='f -e "$EDITOR"'
 
 ### bad package.json files
 # check if there are any package.json files that shouldn't be there
