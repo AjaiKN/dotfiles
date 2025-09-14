@@ -3,7 +3,7 @@ OLD_PATH_PROFILE=$PATH
 
 ## Stuff
 
-. "$HOME/.shell_env.sh"
+. "$HOME/.shell_profile.sh"
 
 ## Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then
@@ -11,6 +11,3 @@ if [ -n "$IN_NIX_SHELL" ]; then
 	# is ahead of all my stuff.
 	PATH=$OLD_PATH_PROFILE:$PATH
 fi
-
-# shellcheck disable=SC1091
-[ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
