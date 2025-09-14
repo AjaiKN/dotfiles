@@ -117,13 +117,16 @@ function load_plugin {
 		ZERO="$plugin_file" compile_and_source "$plugin_file"
 		typeset -F end_time=EPOCHREALTIME
 		plugin_times+=( $((end_time - start_time)) )
+		return
 	fi
 }
 
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#indicator
 typeset -ga zsh_loaded_plugins
-
 typeset -ga plugin_times
+
+typeset -gaU plugins_failed
+typeset -gaU plugins
 
 function print_plugin_times {
 	(
@@ -134,7 +137,6 @@ function print_plugin_times {
 	) | sort -n --reverse
 }
 
-plugins=()
 function plugin {
 	plugins+=("$1")
 }
@@ -164,7 +166,11 @@ function load_plugins {
 
 	# actually load the plugins
 	for plugin in $plugins; do
-		load_plugin "$plugin"
+		load_plugin "$plugin" || {
+			# If it failed to load, remove it from plugins array and add it to plugins_failed
+			plugins[$plugins[(i)$plugin]]=()
+			plugins_failed+=("$plugin")
+		}
 	done
 	unset plugin
 

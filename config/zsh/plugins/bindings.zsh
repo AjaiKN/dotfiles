@@ -20,9 +20,12 @@ if [ "$TERM" != "eterm-color" ]; then
 	# bindkey "^O" accept-line-and-down-history
 	bindkey "^P" up-line-or-history # or up-history?
 	bindkey "^Q" push-line
-	bindkey "^R" fzf-history-widget
+	if (( $+functions[fzf-history-widget] )); then
+		bindkey "^R" fzf-history-widget
+		bindkey "^T" fzf-file-widget
+		bindkey "^[c" fzf-cd-widget
+	fi
 	bindkey "^S" history-incremental-search-forward
-	bindkey "^T" fzf-file-widget
   #Conflict: In vim, this deletes until the beginning of the line, not the whole line
 	# bindkey "^U" kill-whole-line
 	bindkey "^V" quoted-insert
@@ -123,7 +126,6 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey "^[_" insert-last-word
 	bindkey "^[a" accept-and-hold
 	# bindkey "^[b" backward-word # emacs-backward-word
-	bindkey "^[c" fzf-cd-widget
 	bindkey "^[d" kill-word # backward-kill-word
 	# bindkey "^[f" forward-word # emacs-forward-word
 	bindkey "^[g" get-line
@@ -157,16 +159,18 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey '^[b' emacs-backward-word
 	bindkey '^[f' emacs-forward-word
 
-	bindkey '[OA' history-substring-search-up
-	bindkey '[OB' history-substring-search-down
-	bindkey '^[[A' history-substring-search-up
-	bindkey '^[[B' history-substring-search-down
-	[[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
-	[[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down
-	# bindkey -M emacs '^P' history-substring-search-up
-	# bindkey -M emacs '^N' history-substring-search-down
-	# bindkey -M vicmd 'k' history-substring-search-up
-	# bindkey -M vicmd 'j' history-substring-search-down
+	if (( $+functions[history-substring-search-up] )); then
+		bindkey '[OA' history-substring-search-up
+		bindkey '[OB' history-substring-search-down
+		bindkey '^[[A' history-substring-search-up
+		bindkey '^[[B' history-substring-search-down
+		[[ -n "$terminfo[kcuu1]" ]] && bindkey "$terminfo[kcuu1]" history-substring-search-up
+		[[ -n "$terminfo[kcud1]" ]] && bindkey "$terminfo[kcud1]" history-substring-search-down
+		# bindkey -M emacs '^P' history-substring-search-up
+		# bindkey -M emacs '^N' history-substring-search-down
+		# bindkey -M vicmd 'k' history-substring-search-up
+		# bindkey -M vicmd 'j' history-substring-search-down
+	fi
 fi
 
 zmodload zsh/complist

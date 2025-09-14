@@ -143,7 +143,7 @@ plugin ocaml
 # plugin conda
 plugin nix
 # plugin direnv
-plugin fzf
+(( $+commands[fzf] )) && plugin fzf
 plugin history
 plugin bindings
 plugin edit-command-line
