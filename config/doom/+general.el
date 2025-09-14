@@ -2158,15 +2158,15 @@ file modes."
 ;;; consult-omni
 
 (defun akn/focus-this-frame ()
-  (select-frame-set-input-focus (selected-frame)))
+  (select-frame-set-input-focus (selected-frame))
   ;; https://apple.stackexchange.com/a/276462
-  ;; (when (featurep :system 'macos)
-  ;;   (shut-up (start-process-shell-command "focus-this-frame"
-  ;;                                         nil ;" *focus-this-frame*"
-  ;;                                         (format "osascript -e 'tell application \"System Events\" to tell process \"%s\"' -e 'set frontmost to true' -e 'if windows is not {} then perform action \"AXRaise\" of item 1 of windows' -e 'end tell'"
-  ;;                                                 (if (string-match-p "\\<nix\\>" (car (last load-path)))
-  ;;                                                     "emacs"
-  ;;                                                   "Emacs"))))))
+  (when (modulep! :os emacs-mac)
+    (shut-up (start-process-shell-command "focus-this-frame"
+                                          nil ;" *focus-this-frame*"
+                                          (format "osascript -e 'tell application \"System Events\" to tell process \"%s\"' -e 'set frontmost to true' -e 'if windows is not {} then perform action \"AXRaise\" of item 1 of windows' -e 'end tell'"
+                                                  (if (string-match-p "\\<nix\\>" (car (last load-path)))
+                                                      "emacs"
+                                                    "Emacs"))))))
 
 
 ;;; yasnippet
