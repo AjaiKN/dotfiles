@@ -14,6 +14,12 @@ sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)"
 
 By default, it will download to `~/prog/dotfiles`. If you want it to download to a different directory, set the `DOTFILES` environment variable to the location the repository should go.
 
+Or you can just clone it yourself:
+
+``` sh
+git clone --depth=1 https://github.com/AjaiKN/dotfiles
+```
+
 ## Installation
 
 To install the dotfiles to your home directory, run `./install`.
