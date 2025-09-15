@@ -15,7 +15,8 @@
 (package! track-changes :built-in t)
 (package! eldoc :built-in t)
 (package! pdf-tools :built-in 'prefer) ;https://discourse.nixos.org/t/how-can-i-get-emacs-pdf-tools-working/10270
-(unpin! proof-general)
+(when (modulep! :lang coq)
+  (unpin! proof-general))
 
 
 ;;; new packages
