@@ -30,6 +30,8 @@ If any of the relevant dotfiles already exist in the home directory, don't worry
 
 If you want to remove all the symlinks to my dotfiles, run `./uninstall`.
 
+NOTE: The `uninstall` script ONLY removes symlinks to my dotfiles. If you told the `install` script to delete, trash, or back up any of the original files, the `uninstall` script will not undo that; you'll have to undo it yourself.
+
 ## License
 Copyright (C) 2025 Ajai Khatri Nelson
 
