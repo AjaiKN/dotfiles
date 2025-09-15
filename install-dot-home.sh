@@ -201,6 +201,69 @@ $1 should not exist.
 	fi
 }
 
+## Uninstalling
+
+uninstall_file() {
+	if [ -L "$1" ]; then
+		if is_dotfiles_link "$1" || is_self_link "$1" || [ "$(readlink "$1")" = "$(get_planned_link_source "$1" "$2")" ]; then
+			my_echo "${red}UNLINK: $1 -> $(readlink "$1")${reset}"
+			rm "$1"
+		fi
+	fi
+
+	if is_ignored "$1"; then
+		my_echo "IGNORING: $2"
+		return
+	fi
+
+	if is_unfold "$2" && [ -d "$1" ]; then
+		my_echo "${blue}UNFOLDING: $1/ -> $(dotfiles_relative_to_dir "$1")/$(echo "$2" | sed "s|^$DOTFILES/||")/${reset}"
+		(
+			indent="  $indent"
+
+			my_echo "Checking for dotfiles symlinks in $1..."
+			cd "$1" || exit 51
+			for file in * .*; do
+				if ! [ "$file" = "." ] && ! [ "$file" = ".." ]; then
+					uninstall_file "$1/$file" "$2/$file"
+				fi
+			done
+		)
+	fi
+}
+
+uninstall() {
+	./submodules-update.sh || :
+	## dot-home
+	uninstall_file "$HOME" "$DOTFILES/dot-home"
+	uninstall_file "$HOME" "$DOTFILES/private/dot-home"
+	## config
+	uninstall_file "$HOME/.config" "$DOTFILES/config"
+	uninstall_file "$HOME/.config" "$DOTFILES/private/config"
+	## macOS Application Support
+	uninstall_file "$HOME/Library/Application Support/Code" "$DOTFILES/config/Code"
+	uninstall_file "$HOME/Library/Application Support/edir-flags.conf" "$DOTFILES/config/edir-flags.conf"
+	## launchd
+	uninstall_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
+	uninstall_file "$HOME/Library/LaunchAgents" "$DOTFILES/private/launchd"
+	## xbar
+	uninstall_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/xbar"
+	uninstall_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/private/xbar"
+
+	## rename ~/.ssh/config.local back to ~/.ssh/config
+	# I use ~/.ssh/config.local as machine-specific configuration. I import it from my ~/.ssh/config.
+	if [ -f "$HOME/.ssh/config.local" ] && [ ! -L "$HOME/.ssh" ] && [ ! -L "$HOME/.ssh/config.local" ] && [ ! -e "$HOME/.ssh/config" ]; then
+		my_echo "Renaming ~/.ssh/config.local to ~/.ssh/config"
+		mv -i "$HOME/.ssh/config.local" "$HOME/.ssh/config"
+	fi
+}
+
+if [ -n "${AKN_UNINSTALL:-}" ]; then
+	my_echo "Uninstalling symlinks to $DOTFILES..."
+	uninstall
+	exit
+fi
+
 ## Pre
 
 cd "$DOTFILES" || exit 54

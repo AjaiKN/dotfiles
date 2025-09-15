@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -eu
+
+DOTFILES=$(realpath "$(dirname "$0")")
+export DOTFILES
+cd "$DOTFILES"
+
+AKN_UNINSTALL=1 ./install-dot-home.sh
