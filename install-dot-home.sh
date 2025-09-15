@@ -130,6 +130,7 @@ handle_file() {
 		mkdir -p "$1"
 		my_echo "${blue}UNFOLDING: $1/ -> $(dotfiles_relative_to_dir "$1")/$(echo "$2" | sed "s|^$DOTFILES/||")/${reset}"
 		(
+			# shellcheck disable=SC2030
 			indent="  $indent"
 
 			cd "$2" || exit 50
@@ -219,6 +220,7 @@ uninstall_file() {
 	if is_unfold "$2" && [ -d "$1" ]; then
 		my_echo "${blue}UNFOLDING: $1/ -> $(dotfiles_relative_to_dir "$1")/$(echo "$2" | sed "s|^$DOTFILES/||")/${reset}"
 		(
+			# shellcheck disable=SC2031
 			indent="  $indent"
 
 			my_echo "Checking for dotfiles symlinks in $1..."
