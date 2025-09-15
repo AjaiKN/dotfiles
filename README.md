@@ -26,6 +26,10 @@ To install the dotfiles to your home directory, run `./install`.
 (The download script will also offer to run this for you.)
 If any of the relevant dotfiles already exist in the home directory, don't worry: the install script will prompt to ask you whether to skip that file, delete the original file, back up the original file, or move the original file to the trash.
 
+## Uninstalling
+
+If you want to remove all the symlinks to my dotfiles, run `./uninstall`.
+
 ## License
 Copyright (C) 2025 Ajai Khatri Nelson
 
