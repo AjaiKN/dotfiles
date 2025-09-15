@@ -5,18 +5,18 @@
 To download my dotfiles, you can run either of the following commands:
 
 ``` sh
-sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download.sh)"
+sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)"
 ```
 
 ``` sh
-sh -c "$(wget -qO - https://dotfiles.ajai.dev/download.sh)"
+sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)"
 ```
 
 By default, it will download to `~/prog/dotfiles`. If you want it to download to a different directory, set the `DOTFILES` environment variable to the location the repository should go.
 
 ## Installation
 
-To install the dotfiles to your home directory, run `./install.sh`.
+To install the dotfiles to your home directory, run `./install`.
 (The download script will also offer to run this for you.)
 If any of the relevant dotfiles already exist in the home directory, don't worry: the install script will prompt to ask you whether to skip that file, delete the original file, back up the original file, or move the original file to the trash.
 

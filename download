@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download.sh)"
-# sh -c "$(wget -qO - https://dotfiles.ajai.dev/download.sh)"
+# sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)"
+# sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)"
 # TODO: maybe https://stackoverflow.com/a/72601010
 
 set -eu
@@ -48,9 +48,9 @@ if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
 	fi
 fi
 
-if [ -e "$DOTFILES"/install.sh ]; then
+if [ -e "$DOTFILES"/install ]; then
 	set +x; confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?" || exit 0
-	exec "$DOTFILES"/install.sh
+	exec "$DOTFILES"/install
 else
 	echo "Failed to download"
 	exit 1
