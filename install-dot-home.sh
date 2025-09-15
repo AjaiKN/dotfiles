@@ -206,8 +206,8 @@ $1 should not exist.
 cd "$DOTFILES" || exit 54
 
 # nano's backupdir must exist or it gets mad
-
 mkdir -p "$HOME/.cache/nano/backups/"
+
 ./submodules-update.sh || :
 
 mkdir -p "$HOME/.config"
