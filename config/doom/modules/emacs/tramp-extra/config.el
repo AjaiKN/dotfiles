@@ -41,7 +41,9 @@
                                         'make-auto-save-file-name))
                buffer-file-name
              ;;CHANGED
-             (concat (or (and (string-match-p "/tramp-autosave/" buffer-file-name) (file-name-directory buffer-file-name)) "")
+             (concat (or (and (string-match-p "/tramp-autosave/" buffer-file-name)
+                              (file-name-directory buffer-file-name))
+                         "")
                      (sha1 buffer-file-name)))))
       (funcall fn))))
 
@@ -113,10 +115,17 @@
                                                                (or (+ blank) (seq (* blank) "=" (* blank)))
                                                                ;; "It is recommended that any ControlPath used for opportunistic connection sharing include at least %h, %p, and %r (or alternatively %C)"
                                                                ;; - man 5 ssh_config
-                                                               (seq (* nonl) "%" (any "rChp") (* nonl) "%" (any "rChp") (* nonl) "%" (any "rChp")))
+                                                               (or (seq (* nonl) "%C")
+                                                                   (seq (* nonl) "%" (any "rhp") (* nonl) "%" (any "rhp") (* nonl) "%" (any "rhp"))))
                                                            nil t)))
                ;; "tramp-use-connection-share should also be set to nil or suppress if you use the ProxyCommand or ProxyJump options in your ssh configuration."
-               (save-excursion (search-forward-regexp (rx bol (* blank) "Proxy") nil t)))))
+               (save-excursion
+                 (when (file-exists-p "~/.ssh/config.local")
+                   (save-excursion
+                     (goto-char (point-max))
+                     (insert "\n")
+                     (insert-file-contents-literally "~/.ssh/config.local")))
+                 (search-forward-regexp (rx bol (* blank) "Proxy") nil t)))))
       (setq! tramp-use-connection-share nil))))
 
 
