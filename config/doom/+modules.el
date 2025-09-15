@@ -164,6 +164,7 @@ returns true."
            *extra perf-extras
            *basic repeat
            *basic secondary-selection
+           *basic tramp             ; remote files at your arthritic fingertips
            *basic undo              ; persistent, smarter undo for your inevitable mistakes
            *basic vc                ; version-control and Emacs, sitting in a tree
            *basic vlf ; very large files
