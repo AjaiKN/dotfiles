@@ -143,6 +143,116 @@ can_move_to() {
 	done
 }
 
+### freedesktop helpers
+
+# detect stat flavor
+stattype=""
+if command -v stat >/dev/null 2>&1; then
+	if stat -c %d / >/dev/null 2>&1; then
+		stattype=gnu
+	elif stat -f %d / >/dev/null 2>&1; then
+		stattype=bsd
+	fi
+fi
+stat_device() {
+	if [ "$stattype" = gnu ]; then
+		stat -c %d "$1"
+	elif [ "$stattype" = bsd ]; then
+		stat -f %d "$1"
+	else
+		return 2
+	fi
+}
+
+# mountpoint_of FILE
+# prints the mountpoint containing FILE (resolves symlinks).
+# FILE should be an absolute path.
+mountpoint_of() {
+	local path
+	# canonicalize
+	path=$(cd "$1" 2>/dev/null && pwd -P) || return 2
+
+	mountpoint_of___helper "$path" ||
+		# fallback: use df (POSIX df -P if available). Prints mountpoint column from df.
+		df -P "$path" 2>/dev/null | awk 'NR==2{print $6; exit}'
+}
+mountpoint_of___helper() {
+	local dev parent parentdev
+	dev=$(stat_device "$1") || return 2
+
+	while [ "$1" != "/" ]; do
+		parent=$(dirname -- "$1") || return 2
+		parentdev=$(stat_device "$parent") || return 2
+		if [ "$parentdev" = "$dev" ]; then
+			set -- "$parent"
+		else
+			printf '%s\n' "$1"
+			return 0
+		fi
+	done
+
+	# reached root
+	printf '%s\n' /
+}
+
+home_mountpoint=
+get_top_freedesktop_trashdir() {
+	local topdir
+
+	if [ -z "$home_mountpoint" ]; then
+		home_mountpoint=$(mountpoint_of "${XDG_DATA_HOME:-$HOME/.local/share}" || return 1)
+	fi
+	topdir="$(mountpoint_of "$1")" || return 1
+
+	# When trashing a file from a non-home partition/device [4], ...
+	# [4] To be more precise, from a partition/device different from the one on which $XDG_DATA_HOME resides.
+	if [ "$topdir" != "$home_mountpoint" ]; then
+		# ... an implementation (if it supports trashing in top directories) MUST check for
+		# the presence of $topdir/.Trash.
+		if
+			[ -d "$topdir/.Trash" ] &&
+				# If this directory is present, the implementation MUST, by default,
+				# check for the “sticky bit”.
+				[ -k "$topdir/.Trash" ] &&
+				# The implementation also MUST check that this directory is not a
+				# symbolic link.
+				[ ! -L "$topdir/.Trash" ] &&
+				# If the directory exists and passes the checks, a subdirectory of the
+				# $topdir/.Trash directory is to be used as the user’s trash directory for
+				# this partition/device. The name of this subdirectory is the numeric
+				# identifier of the current user ($topdir/.Trash/$uid). When trashing a
+				# file, if this directory does not exist for the current user, the
+				# implementation MUST immediately create it, without any warnings or
+				# delays for the user.
+				mkdir -p "$topdir/.Trash/$UID"/{files,info} 2>/dev/null
+		then
+			printf '%s\n' "$topdir/.Trash/$UID"
+			return
+		fi
+
+		# (2) If an $topdir/.Trash directory is absent, an $topdir/.Trash-$UID
+		# directory is to be used as the user’s trash directory for this
+		# device/partition. $UID is the user’s numeric identifier.
+		if mkdir -p "$topdir/.Trash-$UID"/{files,info} 2>/dev/null
+		then
+			printf '%s\n' "$topdir/.Trash-$UID"
+			return
+		fi
+	fi
+
+	return 3
+}
+
+get_freedesktop_trashdir() {
+	local ret
+	ret=$(get_top_freedesktop_trashdir "$1") ||
+		ret="${XDG_DATA_HOME:-$HOME/.local/share}/Trash"
+
+	mkdir -p "$ret"/{files,info}
+
+	printf '%s\n' "$ret"
+}
+
 ## Parse options
 force=
 dry_run=
@@ -337,13 +447,10 @@ fi
 case "$TRASH_STRATEGY" in
 	freedesktop)
 		# https://specifications.freedesktop.org/trash-spec/latest/
-		trash="${XDG_DATA_HOME:-$HOME/.local/share}/Trash"
-		[ -z "$verbose" ] || echo "Trash directory: '$trash'"
-		[ -z "$verbose" ] || echo "Creating '$trash/files' and '$trash/info' if they don't exist"
-		[ -n "$dry_run" ] || mkdir -p "$trash/files" "$trash/info"
-		check_not_trash_sub_or_super_directory "$@"
 		set -o noclobber # don't overwrite file when using >
 		for file in "$@"; do
+			trash=$(get_freedesktop_trashdir "$file")
+			check_not_trash_sub_or_super_directory "$file"
 			thedate=$(date +"%Y-%m-%dT%H:%M:%S")
 			dest_filename=$(basename -- "$file")
 			if [ -e "$trash/info/$dest_filename.trashinfo" ] || [ -L "$trash/info/$dest_filename.trashinfo" ] || [ -e "$trash/files/$dest_filename" ] || [ -L "$trash/files/$dest_filename" ]; then
