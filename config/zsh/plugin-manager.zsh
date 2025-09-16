@@ -147,9 +147,6 @@ function load_plugins {
 
 	unset -f plugin
 
-	# make sure we use the git completion that ships with zsh, which is better than the one that ships with git
-	autoload -Uzr _git
-
 	mkdir -p "$ZSH_CACHE_DIR/completions"
 	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
 

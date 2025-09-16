@@ -4,6 +4,11 @@
 OLD_PATH_ZSHENV=$PATH
 
 ## Stuff
+if [[ -o interactive ]] && ! (( $+functions[_git] )); then
+	# make sure we use the git completion that ships with zsh, which is better than the one that ships with git
+	autoload -Uzr _git
+fi
+
 source "$HOME/.shell_env.sh"
 
 
