@@ -1041,19 +1041,6 @@ or creates it if it does not exist."
 
 ;;; terminals
 ;;;; General
-(map!
- (:leader
-  ;; "o t" #'+term/toggle
-  ;; "o T" #'+term/here
-  "o t" #'+eat/toggle
-  "o T" #'+eat/here
-  "o s" #'+shell/toggle
-  "o S" #'+shell/here
-  "o v" #'+vterm/toggle
-  "o V" #'+vterm/here
-  "o q" #'+mistty/toggle
-  "o Q" #'+mistty/here))
-
 (defun akn/recenter-top ()
   (interactive)
   (recenter 0))
