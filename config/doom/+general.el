@@ -907,6 +907,19 @@ underscores in all modes."
   (setq-hook! 'akn/auto-save-visited-local-mode-hook
     ws-butler-keep-whitespace-before-point t))
 
+;;; whitespace-style
+
+;; comes after `+emacs-highlight-non-default-indentation-h'
+(add-hook! 'after-change-major-mode-hook :depth 92
+  (defun akn/modify-doom-whitespace-style-h ()
+    (when (and (local-variable-p 'whitespace-style) (bound-and-true-p whitespace-mode))
+      (setq-local whitespace-style
+                  (append whitespace-style
+                          '(space-before-tab)
+                          (unless (bound-and-true-p smart-tabs-mode)
+                            '(space-after-tab))))
+      (whitespace-mode))))
+
 ;;; parinfer-rust
 
 (when-let* (((modulep! :editor parinfer))
