@@ -9,7 +9,7 @@ function .set_zsh_plugin_default_branch {
 }
 
 function .zsh_plugin__is_empty_dir {
-  [[ -d "$1" ]] || return 2
+	[[ -d "$1" ]] || return 2
 	for file in "$1"/*(N); do
 		return 1
 	done
