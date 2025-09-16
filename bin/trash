@@ -36,8 +36,9 @@ Put each FILE in the trash. Currently supports macOS and Linux.
   -n, --dry-run            Don't actually trash anything; just print what this command *would* do.
                            This option implies --verbose.
   -v, --verbose            Be more verbose.
-  -s, --strategy=STRATEGY  Specify which trashing strategy to use. Can also be specified with the
-                           TRASH_STRATEGY environment variable, which this option supersedes.
+  -s, --strategy=STRATEGY  Specify which trashing strategy to use.
+                           Can also be specified with the TRASH_STRATEGY environment variable, which this
+                           option supersedes.
   -d, --dir                Does nothing. For compatibility with rm.
   -r, -R, --recursive      Does nothing. For compatibility with rm.
 
