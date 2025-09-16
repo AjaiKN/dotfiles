@@ -472,7 +472,19 @@ case "$TRASH_STRATEGY" in
 			[ -n "$dry_run" ] || printf '[Trash Info]\nPath=%s\nDeletionDate=%s\n' "$(urlencode "$file")" "$thedate" >"$trash/info/$dest_filename.trashinfo"
 			[ -z "$verbose" ] || echo mv -n "'$file'" "'$trash/files/$dest_filename'" >&2
 			[ -n "$dry_run" ] || mv -n "$file" "$trash/files/$dest_filename"
+			if [ -d "$trash/files/$dest_filename" ] && dirsize=$(du -s -B1 "$trash/files/$dest_filename" | awk '{print $1}') && [[ $dirsize =~ ^[0-9]+$ ]] && command -v mktemp >/dev/null 2>&1; then
+				if [ -z "${tmp_dirsizes_file:-}" ]; then
+					touch "$trash/directorysizes" || continue
+					cp "$trash/directorysizes" "${tmp_dirsizes_file:=$(mktemp)}" || continue
+				fi
+				the_mtime="$(stat_mtime "$trash/info/$dest_filename.trashinfo")" || continue
+				[ -z "$verbose" ] || printf 'Writing to "%s": "%d %d %s"\n' "$trash/directorysizes" "$dirsize" "$the_mtime" "$(urlencode "$dest_filename")" >&2 || continue
+				[ -n "$dry_run" ] || printf '%d %d %s\n' "$dirsize" "$the_mtime" "$(urlencode "$dest_filename")" >>"$tmp_dirsizes_file" || continue
+			fi
 		done
+		if [ -n "${tmp_dirsizes_file:-}" ]; then
+			cp "$tmp_dirsizes_file" "$trash/directorysizes"
+		fi
 		;;
 
 	macos_applescript)
