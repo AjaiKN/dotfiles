@@ -85,7 +85,7 @@ can_delete_file() {
 	fi
 	# To delete a file, all you need is write and execute permissions on its parent directory.
 	local dir
-	dir=$(dirname -- "$1" || return 1)
+	dir=$(dirname -- "$1") || return 1
 	if [ ! -w "$dir" ] || [ ! -x "$dir" ]; then
 		echo "Cannot trash '$file' because we don't have write and execute permissions on its parent directory '$(dirname "$file")'" >&2
 		return 1
@@ -163,6 +163,15 @@ stat_device() {
 		return 2
 	fi
 }
+stat_mtime() {
+	if [ "$stattype" = gnu ]; then
+		stat -c %Y "$1"
+	elif [ "$stattype" = bsd ]; then
+		stat -f %m "$1"
+	else
+		return 2
+	fi
+}
 
 # mountpoint_of FILE
 # prints the mountpoint containing FILE (resolves symlinks).
@@ -200,7 +209,7 @@ get_top_freedesktop_trashdir() {
 	local topdir
 
 	if [ -z "$home_mountpoint" ]; then
-		home_mountpoint=$(mountpoint_of "${XDG_DATA_HOME:-$HOME/.local/share}" || return 1)
+		home_mountpoint=$(mountpoint_of "${XDG_DATA_HOME:-$HOME/.local/share}") || return 1
 	fi
 	topdir="$(mountpoint_of "$1")" || return 1
 
@@ -459,9 +468,9 @@ case "$TRASH_STRATEGY" in
 			while [ -e "$trash/info/$dest_filename.trashinfo" ] || [ -L "$trash/info/$dest_filename.trashinfo" ] || [ -e "$trash/files/$dest_filename" ] || [ -L "$trash/files/$dest_filename" ]; do
 				dest_filename="$(basename -- "$file") $thedate $RANDOM"
 			done
-			[ -z "$verbose" ] || printf 'Writing to "%s":\n\t[Trash Info]\n\tPath=%s\n\tDeletionDate=%s\n' "$trash/info/$dest_filename.trashinfo" "$(urlencode "$file")" "$thedate"
+			[ -z "$verbose" ] || printf 'Writing to "%s":\n\t[Trash Info]\n\tPath=%s\n\tDeletionDate=%s\n' "$trash/info/$dest_filename.trashinfo" "$(urlencode "$file")" "$thedate" >&2
 			[ -n "$dry_run" ] || printf '[Trash Info]\nPath=%s\nDeletionDate=%s\n' "$(urlencode "$file")" "$thedate" >"$trash/info/$dest_filename.trashinfo"
-			[ -z "$verbose" ] || echo mv -n "'$file'" "'$trash/files/$dest_filename'"
+			[ -z "$verbose" ] || echo mv -n "'$file'" "'$trash/files/$dest_filename'" >&2
 			[ -n "$dry_run" ] || mv -n "$file" "$trash/files/$dest_filename"
 		done
 		;;
