@@ -1,6 +1,6 @@
 compdef _dirs d
 
-compdef _gnu_generic trash volume delete-ds-stores concatpdf
+compdef _gnu_generic volume delete-ds-stores concatpdf
 compdef _restic rstc
 compdef _restic-backup rstc-backup
 compdef _directories mkcd
