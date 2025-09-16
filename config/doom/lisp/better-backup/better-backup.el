@@ -169,7 +169,7 @@ This can either be a directory or a list in the format of
   (if better-backup-buffer-mode
       (progn
         (if (buffer-modified-p)
-            (better-backup-buffer-mode)
+            (better-backup--buffer-backup-maybe)
           (add-hook 'first-change-hook #'better-backup--buffer-backup-maybe nil 'local))
         (add-hook 'before-save-hook #'better-backup--buffer-backup-maybe nil 'local)
         (add-hook 'after-save-hook #'better-backup--buffer-backup-maybe 92 'local))
