@@ -97,7 +97,7 @@ is_writable_by_current_user() {
 	if [ "$EUID" -eq 0 ]; then
 		return 0
 	fi
-  # Permissions for a symlink don't matter (except on Mac, but only when following the symlink; deleting it is always fine).
+	# Permissions for a symlink don't matter (except on Mac, but only when following the symlink; deleting it is always fine).
 	if [ -L "$1" ]; then
 		return 0
 	fi
@@ -252,7 +252,7 @@ fi
 ## Checks
 files=()
 for file in "$@"; do
-  if ! can_delete_file "$file"; then
+	if ! can_delete_file "$file"; then
 		[ -n "$force" ] || exit 1
 	elif [ -z "$force" ] && ! is_writable_by_current_user "$file"; then
 		exit 1
