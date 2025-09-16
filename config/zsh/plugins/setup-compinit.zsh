@@ -28,6 +28,8 @@
 # https://github.com/umlx5h/zsh-manpage-completion-generator
 # This should be at the end of fpath.
 fpath+=($HOME/.local/share/zsh/generated_man_completions)
+# make sure my stuff is at the front
+add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
 
 autoload -Uz is-at-least
 # from https://github.com/zimfw/completion/blob/master/init.zsh

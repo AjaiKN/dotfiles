@@ -213,8 +213,8 @@ if [ -x "$DOTFILES/scripts/secure_path" ]; then
 	export PATH
 fi
 
-### Deduplicate PATH and MANPATH
-typeset -U path manpath
+### Deduplicate PATH, MANPATH, and fpath
+typeset -U path manpath fpath
 
 ### Profiling epilogue
 [ -z "$SHOULD_PROFILE" ] || zprof
