@@ -71,7 +71,7 @@ function add_to_fpath {
 	for dir in "$@"; do
 		if [[ -d "$dir" ]]; then
 			fpath=("$dir" $fpath)
-	fi
+		fi
 	done
 }
 function add_to_path {
