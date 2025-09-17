@@ -88,7 +88,9 @@ Respects `ws-butler-keep-whitespace-before-point', which see."
         (unless (eq remaining-lines 0)
           (insert (make-string remaining-lines ?\n))))
       (el-patch-add
-        (when (caddr ws-butler-presave-coord)
+        (move-to-column (cadr ws-butler-presave-coord) t)
+        (when (and (caddr ws-butler-presave-coord)
+                   (not (eq (char-after) ?\t)))
           (move-to-column (1+ (cadr ws-butler-presave-coord)) t)))
       (move-to-column (cadr ws-butler-presave-coord) t)
       (set-buffer-modified-p nil))))
