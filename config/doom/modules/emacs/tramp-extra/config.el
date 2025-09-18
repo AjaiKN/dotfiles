@@ -49,6 +49,8 @@
 
 ;;; PERF: tramp
 
+;; TODO: look at advice here: https://coredumped.dev/2025/06/18/making-tramp-go-brrrr./
+
 (after! files-x
   ;; This will cause errors if the commands tramp sends are too long.
   ;; But it makes stuff (e.g. M-x compile) a lot faster.
