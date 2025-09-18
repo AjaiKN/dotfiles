@@ -1891,6 +1891,17 @@ Also see `+default/find-file-under-here'."
     lsp-ui-mode nil)
   (lsp-ui-mode (if lsp-ui-mode 1 -1)))
 
+;;; eglot
+
+(after! eglot
+  (when akn/terminal-only-p
+    ;; In the terminal, code action indications in the margin seem to cause
+    ;; weird UI glitches where lines appear twice. I think maybe this problem
+    ;; only occurs when `eglot-code-action-indicator' is a character like "💡"
+    ;; (the default) rather than a character like "*". But I'm not finding the
+    ;; margin indicator very helpful anyway right now, so I'm just disabling it.
+    (akn/remove-from-list 'eglot-code-action-indications 'margin)))
+
 ;;; sqlite
 ;; https://christiantietze.de/posts/2024/01/emacs-sqlite-mode-open-sqlite-files-automatically/
 (add-to-list 'magic-mode-alist '("\\`SQLite format 3\x00" . akn/sqlite-view-file-magically))
