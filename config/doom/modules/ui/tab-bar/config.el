@@ -278,7 +278,7 @@ new project directory.")
     (add-to-list 'consult-buffer-sources 'my:bufferlo-consult--source-local-buffers))
 
   (add-hook! 'bufferlo-mode-hook
-    (defun +tab-bar--override-doom-buffer-list-a ()
+    (defun +tab-bar--override-doom-buffer-list-h ()
       (if bufferlo-mode
           (advice-add #'doom-buffer-list :override #'+workspace-buffer-list)
         (advice-remove #'doom-buffer-list #'+workspace-buffer-list))))
