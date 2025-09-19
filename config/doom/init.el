@@ -23,22 +23,20 @@
 (defvar akn/private-doom-dir "~/.config/doom.private/")
 
 ;; can remove this paragraph after Doom 3
-(defvar akn/xdg-data-home  (or (getenv-internal "XDG_DATA_HOME")  "~/.local/share"))
-(defvar akn/xdg-cache-home (or (getenv-internal "XDG_CACHE_HOME") "~/.cache"))
-(defvar akn/xdg-state-home (or (getenv-internal "XDG_STATE_HOME") "~/.local/state"))
 (after! (:or emacs doom doom-projects)
+  (require 'xdg)
   (setq! doom-data-dir
          (if (featurep :system 'windows)
              (expand-file-name "doomemacs/data/" (getenv-internal "LOCALAPPDATA"))
-           (expand-file-name "doom/" akn/xdg-data-home))
+           (expand-file-name "doom/" (xdg-data-home)))
          doom-cache-dir
          (if (featurep :system 'windows)
              (expand-file-name "doomemacs/cache/" (getenv-internal "LOCALAPPDATA"))
-           (expand-file-name "doom/" akn/xdg-cache-home))
+           (expand-file-name "doom/" (xdg-cache-home)))
          doom-state-dir
          (if (featurep :system 'windows)
              (expand-file-name "doomemacs/state/" (getenv-internal "LOCALAPPDATA"))
-           (expand-file-name "doom/" akn/xdg-state-home))
+           (expand-file-name "doom/" (xdg-state-home)))
          doom-profile-cache-dir    (file-name-concat doom-cache-dir (car doom-profile))
          doom-profile-data-dir     (file-name-concat doom-data-dir (car doom-profile))
          doom-profile-state-dir    (file-name-concat doom-state-dir (car doom-profile))
