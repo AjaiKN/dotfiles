@@ -49,15 +49,9 @@ new project directory.")
          tab-bar-history-limit 500
          tab-bar-close-last-tab-choice
          (lambda (_tab-to-close)
-           (if (not (display-graphic-p))
-               (delete-frame)
-             (+workspaces--save-tab-excursion
-               (+workspace/new))
-             (let (tab-bar-close-last-tab-choice)
-               (tab-bar-close-tab))
-             (with-current-buffer (doom-fallback-buffer)
-               (setq default-directory "~"
-                     +doom-dashboard--last-cwd nil)))))
+           (if (or t (not (display-graphic-p)))
+               (doom/delete-frame-with-prompt)
+             (+workspace/clear-tab))))
 
   (define-minor-mode +tab-bar-show-mode
     "Show the tab bar at the top of the screen."

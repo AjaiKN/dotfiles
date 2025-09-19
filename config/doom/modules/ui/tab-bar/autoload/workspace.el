@@ -315,6 +315,21 @@ end of the workspace list."
   (interactive "sWorkspace Name: ")
   (+workspace/new name))
 
+;;;###autoload
+(defun +workspace/clear-tab ()
+  "Totally clear the current tab/workspace.
+
+Remove its buffers, and set the `default-directory' to the home
+directory."
+  (interactive)
+  (+workspaces--save-tab-excursion
+    (+workspace/new))
+  (let (tab-bar-close-last-tab-choice)
+    (tab-bar-close-tab))
+  (with-current-buffer (doom-fallback-buffer)
+    (setq default-directory "~"
+          +doom-dashboard--last-cwd nil)))
+
 ;;; Tabs display in minibuffer
 
 ;;; Hooks
