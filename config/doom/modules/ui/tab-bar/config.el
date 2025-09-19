@@ -325,7 +325,7 @@ new project directory.")
   :around #'+term/toggle
   :around #'+shell/toggle
   :around #'+eshell/toggle
-  (akn/letf! ((defconst persp-mode t)
+  (akn/letf! ((persp-mode t)
               ;; (safe-persp-name (get-current-persp))
               (#'get-current-persp #'+workspace-current)
               (#'safe-persp-name #'+workspace--name))

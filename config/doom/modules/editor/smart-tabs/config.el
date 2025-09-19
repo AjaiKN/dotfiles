@@ -37,35 +37,25 @@ modes, so there are some complications."
       (setq tab-width tab-width)
 
       ;; I took this variable list from `dtrt-indent-hook-mapping-list'
-      (defvar sh-basic-offset)
-      (defvar ruby-indent-level)
-      (defvar enh-ruby-indent-level)
-      (defvar crystal-indent-level)
-      (defvar css-indent-offset)
-      (defvar rust-indent-offset)
-      (defvar rustic-indent-offset)
-      (defvar scala-indent:step)
-      (defvar smie-indent-basic)
-      (defvar smie-rules-function)
-      (let* ((tab-width fill-column)
-             (smie-indent-basic fill-column)
-             (sh-basic-offset fill-column)
-             (ruby-indent-level fill-column)
-             (enh-ruby-indent-level fill-column)
-             (crystal-indent-level fill-column)
-             (css-indent-offset fill-column)
-             (rust-indent-offset fill-column)
-             (rustic-indent-offset fill-column)
-             (scala-indent:step fill-column)
+      (akn/letf! ((tab-width fill-column)
+                  (smie-indent-basic fill-column)
+                  (sh-basic-offset fill-column)
+                  (ruby-indent-level fill-column)
+                  (enh-ruby-indent-level fill-column)
+                  (crystal-indent-level fill-column)
+                  (css-indent-offset fill-column)
+                  (rust-indent-offset fill-column)
+                  (rustic-indent-offset fill-column)
+                  (scala-indent:step fill-column)
 
-             (+smart-tabs--old-smie-rules-function smie-rules-function)
-             ;; When the `smie-rules-function' is called with arguments :elem and 'basic,
-             ;; it's supposed to return the basic offset.
-             (smie-rules-function
-              (lambda (method arg &rest rest)
-                (if (and (eq method :elem) (eq arg 'basic))
-                    fill-column
-                  (apply +smart-tabs--old-smie-rules-function method arg rest)))))
+                  (+smart-tabs--old-smie-rules-function smie-rules-function)
+                  ;; When the `smie-rules-function' is called with arguments :elem and 'basic,
+                  ;; it's supposed to return the basic offset.
+                  (smie-rules-function
+                   (lambda (method arg &rest rest)
+                     (if (and (eq method :elem) (eq arg 'basic))
+                         fill-column
+                       (apply +smart-tabs--old-smie-rules-function method arg rest)))))
         (unwind-protect
             (progn (apply orig-fun args)))))
 

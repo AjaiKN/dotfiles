@@ -326,6 +326,8 @@ BINDINGS is either:
   A list of (PLACE VALUE) bindings as `cl-letf*' would accept.
     PLACE can also be a sharp-quoted function, which will be converted to a
     `symbol-function' call that's accepted by `cl-letf*'.
+    If PLACE is just a regular symbol, it will always be dynamically (rather
+    than lexically) bound.
   A list of, or a single, def* forms.
 
 The def* forms accepted are:
@@ -417,6 +419,12 @@ The def* forms accepted are:
                        body))))
               ((or `defvar* `defconst `akn/defvar-setq)
                (cl-destructuring-bind (symbol initvalue &optional _docstring) rest
+                 `(progn
+                    (defvar ,symbol)
+                    (let ((,symbol ,initvalue))
+                      ,body))))
+              ((pred symbolp)
+               (cl-destructuring-bind (symbol initvalue) binding
                  `(progn
                     (defvar ,symbol)
                     (let ((,symbol ,initvalue))

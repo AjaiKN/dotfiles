@@ -851,8 +851,6 @@ or creates it if it does not exist."
 ;;   :around #'mgl-try-read-from-minibuffer
 ;;   :around #'mgl-try-next-not-expected-success
 ;;   :around #'mgl-try-previous-not-expected-success
-;;   (defvar slime-minibuffer-setup-hook)
-;;   (defvar slime-minibuffer-map)
 ;;   ;; (defalias 'slime-symbol-at-point #'sly-symbol-at-point)
 ;;   (akn/letf! ((slime-minibuffer-setup-hook sly-minibuffer-setup-hook)
 ;;               (slime-minibuffer-map sly-minibuffer-map)

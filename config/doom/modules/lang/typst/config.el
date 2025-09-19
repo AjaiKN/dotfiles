@@ -121,8 +121,6 @@
   :init
   (defun +typst/preview-this-file ()
     (interactive nil typst-ts-mode)
-    (defvar typst-preview-autostart)
-    (defvar typst-preview-ask-if-pin-main)
     (akn/letf! ((typst-preview-autostart t)
                 (typst-preview-ask-if-pin-main nil)
                 (define-advice read-file-name (:around (read-file-name prompt &optional dir default-filename &rest args) akn/typst-a)
