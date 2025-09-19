@@ -469,8 +469,15 @@ case "$TRASH_STRATEGY" in
 			while [ -e "$trash/info/$dest_filename.trashinfo" ] || [ -L "$trash/info/$dest_filename.trashinfo" ] || [ -e "$trash/files/$dest_filename" ] || [ -L "$trash/files/$dest_filename" ]; do
 				dest_filename="$(basename -- "$file") $thedate $RANDOM"
 			done
-			[ -z "$verbose" ] || printf 'Writing to "%s":\n\t[Trash Info]\n\tPath=%s\n\tDeletionDate=%s\n' "$trash/info/$dest_filename.trashinfo" "$(urlencode "$file")" "$thedate" >&2
-			[ -n "$dry_run" ] || printf '[Trash Info]\nPath=%s\nDeletionDate=%s\n' "$(urlencode "$file")" "$thedate" >"$trash/info/$dest_filename.trashinfo"
+			while : ; do
+				[ -z "$verbose" ] || printf 'Writing to "%s":\n\t[Trash Info]\n\tPath=%s\n\tDeletionDate=%s\n' "$trash/info/$dest_filename.trashinfo" "$(urlencode "$file")" "$thedate" >&2
+				if [ -n "$dry_run" ] || printf '[Trash Info]\nPath=%s\nDeletionDate=%s\n' "$(urlencode "$file")" "$thedate" >"$trash/info/$dest_filename.trashinfo"; then
+					break
+				else
+					printf 'Failed to write! Trying a different name. ' >&2
+					dest_filename="$(basename -- "$file") $thedate $RANDOM$RANDOM"
+				fi
+			done
 			[ -z "$verbose" ] || echo mv -n "'$file'" "'$trash/files/$dest_filename'" >&2
 			[ -n "$dry_run" ] || mv -n "$file" "$trash/files/$dest_filename"
 		done
