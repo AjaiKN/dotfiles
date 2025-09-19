@@ -2197,15 +2197,22 @@ file modes."
 
 ;;; preview while asking whether to save buffers (in particular, when killing emacs)
 
-(akn/advise-letf! save-some-buffers (akn/preview-a)
-  (define-advice map-y-or-n-p (:filter-args (args) akn/preview-a)
-    (when (functionp (car args))
-        (setf (car args)
-              (let ((old-fun (car args)))
-                (lambda (buffer)
-                  (display-buffer buffer '((display-buffer-reuse-window) . ()))
-                  (funcall old-fun buffer)))))
-    args))
+(define-advice save-some-buffers (:around (oldfun &rest args) akn/preview-a)
+  (if (car-safe args)
+      (apply oldfun args)
+    (akn/letf!
+      ((define-advice map-y-or-n-p (:filter-args (args) akn/preview-a)
+         (ignore-errors
+           (unless (null (cl-third args))
+             (akn/focus-this-frame)))
+         (when (functionp (car args))
+           (setf (car args)
+                 (let ((old-fun (car args)))
+                   (lambda (buffer)
+                     (display-buffer buffer '((display-buffer-reuse-window) . ()))
+                     (funcall old-fun buffer)))))
+         args))
+      (apply oldfun args))))
 (define-advice save-some-buffers (:around (fn &rest args) akn/preview-a2)
   (save-window-excursion
     (apply fn args)))
