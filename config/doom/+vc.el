@@ -279,6 +279,17 @@ If a prefix argument is provided, ask before reverting hunk."
       (when (akn/current-magit-status-buffer)
         (magit-after-save-refresh-status))))
 
+  (defun akn/magit-parent-directory ()
+    (interactive nil magit-mode)
+    (let ((display-buffer-overriding-action
+           (if (derived-mode-p 'magit-status-mode)
+               (cons #'display-buffer-same-window nil)
+             (cons nil nil))))
+      (magit-status-setup-buffer (file-name-parent-directory default-directory))))
+  (defalias 'akn/magit-supermodule #'akn/magit-parent-directory)
+  (defalias 'akn/magit-submodule-up #'akn/magit-parent-directory)
+  (defalias 'akn/magit-superdirectory #'akn/magit-parent-directory)
+
   ;; I want magit to open to the side, not replace the whole buffer
   (defadvice! akn/+magit-display-buffer-fn-a (_fn buffer)
     :around #'+magit-display-buffer-fn
