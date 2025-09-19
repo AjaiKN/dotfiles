@@ -424,7 +424,8 @@ The def* forms accepted are:
               (_
                (when (eq (car-safe type) 'function)
                  (setq type (list 'symbol-function type)))
-               (list 'cl-letf (list (cons type rest)) body)))))))
+               `(cl-letf ((,type ,@rest))
+                  ,body)))))))
 
 ;;; akn/completing-read
 
