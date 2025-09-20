@@ -1,5 +1,7 @@
 # https://tychoish.com/post/running-emacs/
 # https://laihoconsulting.com/blog/2021-08-emacs-daemon-and-multiple-daemons/
+# When this file changes, run:
+#   systemctl --user daemon-reload
 # To start:
 #   systemctl --user start --now emacs@server
 #   systemctl --user start --now emacs@term
@@ -8,7 +10,7 @@
 #   systemctl --user enable emacs@term
 
 [Unit]
-Description=Emacs text editor with Lucid
+Description=Emacs text editor
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 
 [Service]
@@ -22,7 +24,7 @@ SuccessExitStatus=15
 # The location of the SSH auth socket varies by distribution, and some
 # set it from PAM, so don't override by default.
 # Environment=SSH_AUTH_SOCK=%t/keyring/ssh
-Restart=on-failure
+Restart=always
 
 [Install]
 WantedBy=default.target
