@@ -1,0 +1,28 @@
+# https://tychoish.com/post/running-emacs/
+# https://laihoconsulting.com/blog/2021-08-emacs-daemon-and-multiple-daemons/
+# To start:
+#   systemctl --user start --now emacs@server
+#   systemctl --user start --now emacs@term
+# To enable for future (and create the symlinks in ~/.config/systemd/user/default.target.wants/emacs@*.service )
+#   systemctl --user enable emacs@server
+#   systemctl --user enable emacs@term
+
+[Unit]
+Description=Emacs text editor with Lucid
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/emacs-lucid --fg-daemon=%i --chdir %h
+
+# Emacs will exit with status 15 after having received SIGTERM, which
+# is the default "KillSignal" value systemd uses to stop services.
+SuccessExitStatus=15
+
+# The location of the SSH auth socket varies by distribution, and some
+# set it from PAM, so don't override by default.
+# Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
