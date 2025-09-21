@@ -1,11 +1,14 @@
 ;;; os/exwm/start.el -*- lexical-binding: t; -*-
 
 (require 'exwm)
+(require 'akn)
+
 ;; Set the initial workspace number.
 ;; (setq exwm-workspace-number 4)
 ;; Make class name the buffer name.
-(add-hook 'exwm-update-class-hook
-          (lambda () (exwm-workspace-rename-buffer exwm-class-name)))
+(add-hook! 'exwm-update-class-hook
+  (defun +exwm--set-buffer-name-to-class-name-h ()
+    (exwm-workspace-rename-buffer exwm-class-name)))
 ;; Global keybindings.
 (setq exwm-input-global-keys
       `(([?\s-r] . exwm-reset) ;; s-r: Reset (to line-mode).
@@ -21,7 +24,7 @@
                         (exwm-workspace-switch-create ,i))))
                   (number-sequence 0 9))))
 ;; Enable EXWM
-(exwm-enable)
+(exwm-wm-mode)
 
 (defun +exwm/fix-screen-size ()
   (interactive)

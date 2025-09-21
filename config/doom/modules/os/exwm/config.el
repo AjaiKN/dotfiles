@@ -2,7 +2,9 @@
 
 ;; https://github.com/LemonBreezes/cyber-angel-emacs
 
-(defvar akn/exwm-enabled-p (and (eq 'x (framep (selected-frame)))
+(defvar akn/exwm-enabled-p (and (featurep :system 'linux)
+                                (eq 'x (framep (selected-frame)))
+                                (eq 'x window-system)
                                 (not (or (getenv "INSIDE_EXWM")
                                          (getenv "RATPOISON")
                                          (getenv "I3SOCK")
@@ -11,13 +13,16 @@
                                          (getenv "XDG_CURRENT_DESKTOP")
                                          (getenv "WAYLAND_DISPLAY")))
                                 ;; https://emacs.stackexchange.com/a/60455
-                                (and (executable-find "wmctrl")
-                                     (eq window-system 'x)
-                                     (progn
-                                       (shell-command "wmctrl -m ; echo $?" " *window-manager*" " *window-manager-error*")
-                                       ;; if there was an error detecting the window manager, initialize EXWM
-                                       (get-buffer " *window-manager-error*"))))
+                                (if (executable-find "wmctrl")
+                                    (progn
+                                      (shell-command "wmctrl -m ; echo $?" " *window-manager*" " *window-manager-error*")
+                                      ;; if there was an error detecting the window manager, initialize EXWM
+                                      (get-buffer " *window-manager-error*"))
+                                  t))
   "Whether EXWM is enabled.")
 
-(when akn/exwm-enabled-p
+(use-package! exwm
+  :when akn/exwm-enabled-p
+  :demand t
+  :config
   (akn/load! "start"))

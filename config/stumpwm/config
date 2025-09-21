@@ -4,6 +4,10 @@
 
 (in-package :stumpwm)
 
+(defcommand reload-config ()
+    ()
+  (load "~/.config/stumpwm/config"))
+
 (defcommand force-fullscreen ()
     ()
   (when (fullscreen-in-frame-p (current-window))
@@ -20,6 +24,21 @@
   (cond
     ((executable-exists-p "wezterm") "exec wezterm")
     (t "exec xterm")))
+
+(define-key *root-map* (kbd "e") "exec emacs-open")
+(define-key *root-map* (kbd "E") "exec emacs-open-frame")
+
+;; to connect from Emacs: (sly-connect "localhost" "4005")
+(ql:quickload "slynk")
+(defcommand start-slynk (port) ((:number "The port to open the slynk at "))
+  (handler-case
+      (slynk:create-server :port port :dont-close t)
+    (error ()
+      (message "Something's wrong, aborting"))))
+(defvar *akn-stumpwm-server-started* nil)
+(unless *akn-stumpwm-server-started*
+  (start-slynk 4005)
+  (setf *akn-stumpwm-server-started* t))
 
 ;; ;; change the prefix key to something else
 ;; (set-prefix-key (kbd "C-z"))
