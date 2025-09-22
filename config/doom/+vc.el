@@ -36,73 +36,88 @@
        ;; NOTE: there's also SPC g / = magit-dispatch
        ;; name is misleading for git, it's restore/discard, not revert
        ;; (non-evil binding = k)
-       :desc "Discard hunk" "k" #'+vc-gutter/save-and-revert-hunk
+       (:when (fboundp '+vc-gutter/save-and-revert-hunk)
+         :desc "Discard hunk" "k" #'+vc-gutter/save-and-revert-hunk
+         :desc "Discard hunk" "x" #'+vc-gutter/save-and-revert-hunk)
        :desc "Discard file" "K" #'vc-revert
-       :desc "Discard hunk" "x" #'+vc-gutter/save-and-revert-hunk
        :desc "Discard file" "X" #'vc-revert
        "r" #'ignore
        "R" #'ignore
 
-       ;; previously just `magit-blame-addition'
-       "B"   (akn/cmds! (bound-and-true-p magit-blame-mode) #'magit-blame-quit #'magit-blame-addition)
+       (:when (executable-find "gitup")
+         :desc "Open gitup" "o u" (akn/defun akn/open-gitup ()
+                                    (interactive)
+                                    (call-process "gitup")))
 
-       :desc "Magit run"          "!" #'magit-run
-       :desc "Magit status here"  "RET" #'magit-status-here
-       :desc "Magit git command"  "Q" #'magit-git-command
-       ;; TODO: implement "unstage hunk"
-       :desc "Magit stash"        "Z" #'magit-stash
-       :desc "Magit quit"         "q" #'akn/magit-quit
-       :desc "Magit push"         "p" #'magit-push
-       :desc "Refresh"            "r" #'akn/vc-full-refresh
-       ;; "g c" #'magit-commit
-       ;; previously magit-branch-checkout
-       :desc "Magit branch"       "b" #'magit-branch
-       :desc "Magit ignore"       "i" #'magit-gitignore
-       :desc "Magit reset"        "O" #'magit-reset
-       :desc "Magit worktree"     "%" #'magit-worktree
+       (:when (modulep! :tools magit)
+         ;; previously just `magit-blame-addition'
+         "B"   (akn/cmds! (bound-and-true-p magit-blame-mode) #'magit-blame-quit #'magit-blame-addition)
 
-       :desc "unstage hunk at point" "u" #'akn/unstage-hunk
-       :desc "stage hunk at point"   "s" #'akn/stage-hunk
+         :desc "Magit run"          "!" #'magit-run
+         :desc "Magit status here"  "RET" #'magit-status-here
+         :desc "Magit git command"  "Q" #'magit-git-command
+         ;; TODO: implement "unstage hunk"
+         :desc "Magit stash"        "Z" #'magit-stash
+         :desc "Magit quit"         "q" #'akn/magit-quit
+         :desc "Magit push"         "p" #'magit-push
+         :desc "Refresh"            "r" #'akn/vc-full-refresh
+         ;; "g c" #'magit-commit
+         ;; previously magit-branch-checkout
+         :desc "Magit branch"       "b" #'magit-branch
+         :desc "Magit ignore"       "i" #'magit-gitignore
+         :desc "Magit reset"        "O" #'magit-reset
+         :desc "Magit worktree"     "%" #'magit-worktree
 
-       :desc "Log current"        "l l" #'magit-log-current
-       :desc "Log..."             "l L" #'magit-log-current
-       :desc "Log..."             "l /" #'magit-log-current
-       :desc "Log HEAD"           "l h" #'magit-log-head
-       :desc "Log related"        "l u" #'magit-log-related
-       :desc "Log other"          "l o" #'magit-log-other
-       :desc "Log all branches"   "l b" #'magit-log-all-branches
-       :desc "Log all references" "l a" #'magit-log-all
-       :desc "Reflog current"     "l R" #'magit-reflog-current
-       :desc "Reflog HEAD"        "l H" #'magit-reflog-head
-       :desc "Reflog other"       "l O" #'magit-reflog-other
+         :desc "unstage hunk at point" "u" #'akn/unstage-hunk
+         :desc "stage hunk at point"   "s" #'akn/stage-hunk
 
-       :desc "Magit amend"          "c a" #'magit-commit-amend
-       :desc "Magit extend"         "c e" #'magit-commit-extend
-       :desc "Magit commit..."      "c C" #'magit-commit
-       :desc "Magit commit..."      "c /" #'magit-commit
-       :desc "Magit alter"          "c A" #'magit-commit-alter
-       :desc "Magit augment"        "c n" #'magit-commit-augment
-       :desc "Magit fixup"          "c F" #'magit-commit-fixup
-       :desc "Magit instant fixup"  "c F" #'magit-commit-instant-fixup
-       :desc "Magit squash"         "c s" #'magit-commit-squash
-       :desc "Magit instant squash" "c S" #'magit-commit-instant-squash
-       :desc "Magit reword"         "c w" #'magit-commit-reword
-       :desc "Magit revise"         "c W" #'magit-commit-revise
-       :desc "git undo-last-commit" "c u"   #'akn/git-undo-last-commit
-       :desc "git redo-commit"      "c C-r" #'akn/git-redo-commit
+         :desc "Log current"        "l l" #'magit-log-current
+         :desc "Log..."             "l L" #'magit-log-current
+         :desc "Log..."             "l /" #'magit-log-current
+         :desc "Log HEAD"           "l h" #'magit-log-head
+         :desc "Log related"        "l u" #'magit-log-related
+         :desc "Log other"          "l o" #'magit-log-other
+         :desc "Log all branches"   "l b" #'magit-log-all-branches
+         :desc "Log all references" "l a" #'magit-log-all
+         :desc "Reflog current"     "l R" #'magit-reflog-current
+         :desc "Reflog HEAD"        "l H" #'magit-reflog-head
+         :desc "Reflog other"       "l O" #'magit-reflog-other
 
-       :desc "Open gitup" "o u" (akn/defun akn/open-gitup ()
-                                  (interactive)
-                                  (call-process "gitup")))
-
+         :desc "Magit amend"          "c a" #'magit-commit-amend
+         :desc "Magit extend"         "c e" #'magit-commit-extend
+         :desc "Magit commit..."      "c C" #'magit-commit
+         :desc "Magit commit..."      "c /" #'magit-commit
+         :desc "Magit alter"          "c A" #'magit-commit-alter
+         :desc "Magit augment"        "c n" #'magit-commit-augment
+         :desc "Magit fixup"          "c F" #'magit-commit-fixup
+         :desc "Magit instant fixup"  "c F" #'magit-commit-instant-fixup
+         :desc "Magit squash"         "c s" #'magit-commit-squash
+         :desc "Magit instant squash" "c S" #'magit-commit-instant-squash
+         :desc "Magit reword"         "c w" #'magit-commit-reword
+         :desc "Magit revise"         "c W" #'magit-commit-revise
+         :desc "git undo-last-commit" "c u"   #'akn/git-undo-last-commit
+         :desc "git redo-commit"      "c C-r" #'akn/git-redo-commit))
 
       ;; previously toggled evil-goggles, but I always want that on
       "t g" nil
       (:prefix ("t g" . "git")
-               "b" #'blamer-mode
-               "C-b" #'global-blamer-mode
-               "B" (akn/cmds! (bound-and-true-p magit-blame-mode) #'magit-blame-quit #'magit-blame-addition)
-               "t" #'git-timemachine-toggle))
+       (:when (fboundp 'blamer-mode)
+         "b" #'blamer-mode
+         "C-b" #'global-blamer-mode)
+       (:when (modulep! :tools magit)
+         "B" (akn/cmds! (bound-and-true-p magit-blame-mode) #'magit-blame-quit #'magit-blame-addition))
+       (:when (fboundp 'git-timemachine-toggle)
+         "t" #'git-timemachine-toggle)
+       (:when (fboundp 'magit-delta-mode)
+         "d" (akn/cmds! (not (derived-mode-p 'magit-mode)) #'akn/magit-delta-global-mode
+                        magit-delta-mode #'magit-delta-mode
+                        #'akn/enable-magit-delta-mode)
+         "D" #'akn/magit-delta-global-mode))
+
+      (:prefix "p"
+       :when (fboundp 'magit-todos-list)
+       :desc "List project todos" "t" #'magit-todos-list))
+
 
 (after! which-key
   (akn/remove-from-list 'which-key-replacement-alist '(("\\`M-SPC t g\\'") nil . "Evil goggles"))
@@ -338,13 +353,6 @@ If a prefix argument is provided, ask before reverting hunk."
   :after-call magit-mode-hook
   ;; :ghook 'magit-mode-hook
   :commands akn/magit-delta-global-mode
-  :init
-  (map! :leader
-        "t g d" (akn/cmds! (not (derived-mode-p 'magit-mode)) #'akn/magit-delta-global-mode
-                           magit-delta-mode #'magit-delta-mode
-                           #'akn/enable-magit-delta-mode)
-
-        "t g D" #'akn/magit-delta-global-mode)
   :config
   (defvar akn--magit-delta-should-refresh nil)
   (add-hook! 'magit-delta-mode-hook
@@ -367,8 +375,6 @@ If a prefix argument is provided, ask before reverting hunk."
 (use-package! magit-todos
   :after magit
   :defer-incrementally (cl-lib compile grep seq async dash f hl-todo s with-editor git-commit package eieio transient magit rx re-builder macroexp advice ring pcase pcre2el)
-  :init
-  (map! :desc "List project todos" :leader "p t" #'magit-todos-list)
   ;; (magit-todos-mode)
   :config
   (setq magit-todos-keyword-suffix
