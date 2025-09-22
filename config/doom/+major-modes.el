@@ -860,6 +860,15 @@ or creates it if it does not exist."
 ;;     (apply fn args)))
 
 
+;;; lua
+
+;;;; fennel
+
+(after! fennel-mode
+  (put 'unless 'fennel-indent-function 1)
+  (put 'hs.hotkey.bind 'fennel-indent-function 'defun)
+  (put 'bind 'fennel-indent-function 'defun))
+
 ;;; python
 (after! python
   (setq! python-fill-docstring-style 'django))

@@ -262,7 +262,7 @@ returns true."
            *extra kotlin            ; a better, slicker Java(Script)
            *extra (latex +fold +latexmk +fontification +viewers)             ; writing papers in Emacs has never been so fun
            *extra lean              ; for folks with too much to prove
-           *basic (lua)               ; one-based indices? one-based indices
+           *basic (lua +fennel)               ; one-based indices? one-based indices
            *basic markdown          ; writing docs for people to ignore
            *extra obsidian
            *extra mercury
