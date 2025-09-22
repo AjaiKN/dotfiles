@@ -44,9 +44,11 @@
       (defun +everywhere-set-modeline ()
         (doom-modeline-set-modeline 'emacs-everywhere))))
   (add-hook! 'emacs-everywhere-init-hooks
-    (defun +everywhere-clear-persp-info-h ()
+    (defun +everywhere--clear-persp-info-h ()
       (when (bound-and-true-p persp-mode)
-        (setq persp-emacsclient-init-frame-behaviour-override nil))))
+        (setq persp-emacsclient-init-frame-behaviour-override nil)))
+    #'+everywhere--frame-setup-h
+    #'+everywhere--buffer-setup-h)
 
   (setq! emacs-everywhere-major-mode-function #'markdown-mode)
   ;; (setq! emacs-everywhere-clipboard-sleep-delay 0.01)
@@ -72,10 +74,31 @@
 ;;;; atomic-chrome (GhostText in Firefox)
 ;; https://discourse.doomemacs.org/t/emacs-for-editing-anything-anywhere-in-the-browser-discord-etc/129
 (use-package! atomic-chrome
+  :unless akn/terminal-only-p
   :defer-incrementally t
   :defer 5
-  :after-call after-focus-change-function ;focus-out-hook
+  :after-call (akn/emacs-focus-out-hook server-mode-on-hook)
   :config
-  (add-hook 'atomic-chrome-edit-mode-on-hook #'akn/focus-this-frame) ; TODO: this is defined in my private config
-  (add-hook 'atomic-chrome-edit-done-hook #'akn/focus-firefox)
+  (map! :map atomic-chrome-edit-mode-map
+        [remap server-edit] #'atomic-chrome-close-current-buffer)
+
+  (add-hook 'atomic-chrome-edit-mode-on-hook #'+everywhere--buffer-setup-h)
+  (add-hook 'atomic-chrome-edit-done-hook #'+everywhere--focus-firefox-h)
+
+  (defadvice! +everywhere--setup-frame-a (ret)
+    :filter-return #'atomic-chrome-show-edit-buffer
+    (with-demoted-errors "+everywhere--setup-frame-a: %S"
+      (when (and (eq atomic-chrome-buffer-open-style 'frame) (framep ret))
+        (with-selected-frame ret
+          (+everywhere--frame-setup-h))))
+    ret)
+  (defadvice! +everywhere--mark-unmodified-a (&rest _)
+    :after #'atomic-chrome-create-buffer
+    :after #'atomic-chrome-update-buffer
+    (when (and atomic-chrome-edit-mode (not buffer-file-name))
+      (set-buffer-modified-p nil)))
+
+  (setq atomic-chrome-buffer-open-style 'frame
+        atomic-chrome-buffer-frame-width  80
+        atomic-chrome-buffer-frame-height 12)
   (atomic-chrome-start-server))
