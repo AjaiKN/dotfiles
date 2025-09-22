@@ -164,7 +164,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme (cond
-                  (akn/terminal-daemon-p
+                  ((and akn/terminal-daemon-p (modulep! :ui doom))
                    ;; broken on daemon in terminal: doom-ephemeral, doom-plain-dark
                    (setq consult-themes '(default doom-nord doom-rouge doom-xcode doom-opera doom-badger doom-horizon doom-peacock doom-manegarm doom-material doom-flatwhite doom-laserwave doom-palenight doom-spacegrey doom-nord-light doom-city-lights doom-fairy-floss "doom-monokai" doom-nerd-aurora doom-opera-light doom-tokyo-night doom-homage-black doom-homage-white doom-oceanic-next doom-material-dark doom-tomorrow-night "nano"))
                    'doom-opera)
@@ -175,7 +175,7 @@
                    (fset #'turn-off-solaire-mode #'ignore)
                    (fset #'solaire-mode-reset #'ignore)
                    nil)
-                  ('doom-one)))
+                  ((modulep! :ui doom) 'doom-one)))
 ;; (setq! doom-theme 'doom-vibrant)
 
 ;; (when (equal (daemonp) "term"))
