@@ -12,5 +12,5 @@ if system_profiler SPAudioDataType | grep --quiet Headphones; then
 	true
 else
 	# headphones not plugged in
-	"${DOTFILES:-/Users/ajainelson/prog/dotfiles}"/bin/volume 0
+	"${DOTFILES:-/Users/ajainelson/prog/dotfiles}"/scripts/volume 0
 fi
