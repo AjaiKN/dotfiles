@@ -314,7 +314,7 @@ are exactly the same too."
   (advice-add #'documentation :around #'akn/ignore-errors-a))
 
 ;;; bell
-(setq ring-bell-function #'doom-themes-visual-bell-fn
+(setq ring-bell-function (if (fboundp 'doom-themes-visual-bell-fn) #'doom-themes-visual-bell-fn)
       evil-search-wrap-ring-bell t
       show-paren-ring-bell-on-mismatch nil)
 
