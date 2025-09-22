@@ -20,6 +20,7 @@
 ;;; patches
 ;;;; evil-mc
 (use-package! evil-mc-cursor-make
+  :when (modulep! :editor evil)
   :config/el-patch
   (el-patch-defun evil-mc-make-cursor-move-by-line (dir count)
     "Create COUNT cursors one for each line moving in the direction DIR.
@@ -202,61 +203,63 @@ Respects `ws-butler-keep-whitespace-before-point', which see."
 
 ;;;; diff-hl
 
-(el-patch-feature diff-hl)
-(el-patch-defun diff-hl-stage-some (&optional beg end)
-  "Stage some or all of the current changes, interactively.
+(use-package! diff-hl
+  :when (or (modulep! :ui vc-gutter) (fboundp 'diff-hl-mode))
+  :config/el-patch
+  (el-patch-defun diff-hl-stage-some (&optional beg end)
+    "Stage some or all of the current changes, interactively.
 Pops up a diff buffer that can be edited to choose the changes to stage."
-  (interactive "r")
-  (diff-hl--ensure-staging-supported)
-  (let* ((line-beg (and beg (line-number-at-pos beg t)))
-         (line-end (and end (line-number-at-pos end t)))
-         (file buffer-file-name)
-         (dest-buffer (get-buffer-create "*diff-hl-stage-some*"))
-         (orig-buffer (current-buffer))
-         ;; FIXME: If the file name has double quotes, these need to be quoted.
-         (file-base (file-name-nondirectory file)))
-    (with-current-buffer dest-buffer
-      (let ((inhibit-read-only t))
-        (erase-buffer)))
-    (diff-hl-diff-buffer-with-reference file dest-buffer nil 3)
-    (with-current-buffer dest-buffer
-      (let ((inhibit-read-only t))
-        (when end
-          (with-no-warnings
-            (let (diff-auto-refine-mode)
-              (diff-hl-diff-skip-to line-end)
-              (diff-hl-split-away-changes 3)
-              (el-patch-add
-                (delete-region (point)
-                               (save-excursion (forward-line 1) (point))))
-              (diff-end-of-hunk)))
-          (delete-region (point) (point-max)))
-        (if beg
+    (interactive "r")
+    (diff-hl--ensure-staging-supported)
+    (let* ((line-beg (and beg (line-number-at-pos beg t)))
+           (line-end (and end (line-number-at-pos end t)))
+           (file buffer-file-name)
+           (dest-buffer (get-buffer-create "*diff-hl-stage-some*"))
+           (orig-buffer (current-buffer))
+           ;; FIXME: If the file name has double quotes, these need to be quoted.
+           (file-base (file-name-nondirectory file)))
+      (with-current-buffer dest-buffer
+        (let ((inhibit-read-only t))
+          (erase-buffer)))
+      (diff-hl-diff-buffer-with-reference file dest-buffer nil 3)
+      (with-current-buffer dest-buffer
+        (let ((inhibit-read-only t))
+          (when end
             (with-no-warnings
               (let (diff-auto-refine-mode)
-                (diff-hl-diff-skip-to line-beg)
+                (diff-hl-diff-skip-to line-end)
                 (diff-hl-split-away-changes 3)
-                (el-patch-swap
-                  (diff-beginning-of-hunk)
-                  (diff-end-of-hunk))))
-          (goto-char (point-min))
-          (forward-line 3))
-        (delete-region (point-min) (point))
-        ;; diff-no-select creates a very ugly header; Git rejects it
-        (insert (format "diff a/%s b/%s\n" file-base file-base))
-        (insert (format "--- a/%s\n" file-base))
-        (insert (format "+++ b/%s\n" file-base)))
-      (let ((diff-default-read-only t))
-        (diff-hl-stage-diff-mode))
-      (setq-local diff-hl-stage--orig orig-buffer))
-    (pop-to-buffer dest-buffer)
-    (message "Press %s and %s to navigate, %s to split, %s to kill hunk, %s to undo, and %s to stage the diff after editing"
-             (substitute-command-keys "\\`n'")
-             (substitute-command-keys "\\`p'")
-             (substitute-command-keys "\\[diff-split-hunk]")
-             (substitute-command-keys "\\[diff-hunk-kill]")
-             (substitute-command-keys "\\[diff-undo]")
-             (substitute-command-keys "\\[diff-hl-stage-finish]"))))
+                (el-patch-add
+                  (delete-region (point)
+                                 (save-excursion (forward-line 1) (point))))
+                (diff-end-of-hunk)))
+            (delete-region (point) (point-max)))
+          (if beg
+              (with-no-warnings
+                (let (diff-auto-refine-mode)
+                  (diff-hl-diff-skip-to line-beg)
+                  (diff-hl-split-away-changes 3)
+                  (el-patch-swap
+                    (diff-beginning-of-hunk)
+                    (diff-end-of-hunk))))
+            (goto-char (point-min))
+            (forward-line 3))
+          (delete-region (point-min) (point))
+          ;; diff-no-select creates a very ugly header; Git rejects it
+          (insert (format "diff a/%s b/%s\n" file-base file-base))
+          (insert (format "--- a/%s\n" file-base))
+          (insert (format "+++ b/%s\n" file-base)))
+        (let ((diff-default-read-only t))
+          (diff-hl-stage-diff-mode))
+        (setq-local diff-hl-stage--orig orig-buffer))
+      (pop-to-buffer dest-buffer)
+      (message "Press %s and %s to navigate, %s to split, %s to kill hunk, %s to undo, and %s to stage the diff after editing"
+               (substitute-command-keys "\\`n'")
+               (substitute-command-keys "\\`p'")
+               (substitute-command-keys "\\[diff-split-hunk]")
+               (substitute-command-keys "\\[diff-hunk-kill]")
+               (substitute-command-keys "\\[diff-undo]")
+               (substitute-command-keys "\\[diff-hl-stage-finish]")))))
 
 ;; https://reddit.com/r/emacs/comments/1b6tb7d/committing_a_partial_changeset_in_emacs/ktln6vm/
 (define-advice vc-git-command (:filter-args (args) akn/fix-vc-git-checkin-a)

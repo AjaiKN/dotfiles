@@ -27,28 +27,32 @@
 ;;; Completion
 
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
-;; if orderless doesn't find anything, fall back to fuzzy search
 ;; also see `completion-category-defaults' and `completion-category-overrides'
-(defun akn/set-completion-styles ()
-  (let ((maybe-fussy (when (modulep! :completion fuzzy) '(fussy))))
-    (setq completion-styles `(orderless ,@maybe-fussy basic)) ;akn/emacs22-if-not-minibuffer))
-    (setf (alist-get `imenu completion-category-overrides) `((styles akn/orderless-without-initialism orderless ,@maybe-fussy basic)))
-    (setf (alist-get `consult-grep completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
-    (setf (alist-get `consult-location completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
-    (pushnew! completion-category-overrides
-              ;; `(lsp-capf         (styles orderless ,@maybe-fussy basic)) ;doom`s default
-              `(imenu             (styles akn/orderless-without-initialism orderless ,@maybe-fussy basic))
-              `(file              (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher-or-initialism ,@maybe-fussy partial-completion))
-              `(bookmark          (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher ,@maybe-fussy partial-completion))
-              `(consult-location  (styles akn/orderless-without-initialism ,@maybe-fussy basic))
-              `(consult-grep      (styles akn/orderless-without-initialism ,@maybe-fussy basic))
-              ;; Override the defaults in completion-category-defaults
-              `(racket-identifier (styles ,@completion-styles))
-              `(racket-module     (styles ,@completion-styles))
-              `(email             (styles ,@completion-styles)))))
-(akn/set-completion-styles)
-(after! (:or orderless vertico)
-  (akn/set-completion-styles))
+(after! (:or emacs orderless vertico)
+  (cond
+   ((and (modulep! :completion vertico)
+         (assoc 'orderless completion-styles-alist))
+    ;; if orderless doesn't find anything, fall back to fuzzy search
+    (let ((maybe-fussy (when (modulep! :completion fuzzy) '(fussy))))
+      (setq completion-styles `(orderless ,@maybe-fussy basic)) ;akn/emacs22-if-not-minibuffer))
+      (setf (alist-get `imenu completion-category-overrides) `((styles akn/orderless-without-initialism orderless ,@maybe-fussy basic)))
+      (setf (alist-get `consult-grep completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
+      (setf (alist-get `consult-location completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
+      (pushnew! completion-category-overrides
+                ;; `(lsp-capf         (styles orderless ,@maybe-fussy basic)) ;doom`s default
+                `(imenu             (styles akn/orderless-without-initialism orderless ,@maybe-fussy basic))
+                `(file              (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher-or-initialism ,@maybe-fussy partial-completion))
+                `(bookmark          (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher ,@maybe-fussy partial-completion))
+                `(consult-location  (styles akn/orderless-without-initialism ,@maybe-fussy basic))
+                `(consult-grep      (styles akn/orderless-without-initialism ,@maybe-fussy basic))
+                ;; Override the defaults in completion-category-defaults
+                `(racket-identifier (styles ,@completion-styles))
+                `(racket-module     (styles ,@completion-styles))
+                `(email             (styles ,@completion-styles)))))
+   ((modulep! :completion fussy)
+    (setq completion-styles '(fussy basic)))
+   (t
+    (setq completion-styles '(basic substring partial-completion initials flex)))))
 
 (add-to-list 'completion-styles-alist
              `(akn/emacs22-if-not-minibuffer
@@ -59,12 +63,13 @@
                   (unless (derived-mode-p 'minibuffer-mode)
                     (apply #'completion-emacs22-all-completions args)))
                "Like emacs22, except only applies if we're not in the minibuffer."))
-(add-to-list
- 'completion-styles-alist
- '(+vertico-basic-remote
-   +vertico-basic-remote-try-completion
-   +vertico-basic-remote-all-completions
-   "Use basic completion on remote files only"))
+(when (modulep! :completion vertico)
+  (add-to-list
+   'completion-styles-alist
+   '(+vertico-basic-remote
+     +vertico-basic-remote-try-completion
+     +vertico-basic-remote-all-completions
+     "Use basic completion on remote files only")))
 
 (use-package! orderless
   :init
