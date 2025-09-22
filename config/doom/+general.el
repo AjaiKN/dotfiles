@@ -1320,9 +1320,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;;; displaying page breaks / form feeds (^L)
 ;; https://en.wikipedia.org/wiki/Page_break#Form_feed
 ;; "This convention is predominantly used in Lisp code, and is also seen in C and Python source code."
-(add-hook! '(akn/lisp-like-mode-hook c-mode-hook c++-mode-hook python-mode-hook)
-           ;; from page-break-lines package
-           #'page-break-lines-mode)
+(use-package! page-break-lines
+  :ghook '(akn/lisp-like-mode-hook c-mode-hook c++-mode-hook python-mode-hook))
 
 ;;; sibling files
 (akn/incrementally! ()
@@ -2218,12 +2217,12 @@ file modes."
     (apply fn args)))
 
 ;;; keypad (extracted from meow)
-(use-package! akn-keypad
-  :defer t
-  :init
-  (map! :mn "C-SPC" #'akn-keypad)
-  :config
-  (akn-keypad--setup-which-key nil))
+;; (use-package! akn-keypad
+;;   :defer t
+;;   :init
+;;   (map! :mn "C-SPC" #'akn-keypad)
+;;   :config
+;;   (akn-keypad--setup-which-key nil))
 
 ;;; so-long
 

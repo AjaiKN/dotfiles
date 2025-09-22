@@ -15,5 +15,5 @@ fi
 if [ -n "$EMACS_MAC" ]; then
 	open -n /Applications/Emacs.app --args "$@"
 else
-	nohup emacs "$@" &
+	nohup emacs "$@" >/dev/null &
 fi

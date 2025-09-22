@@ -345,10 +345,11 @@ to normal state is deprioritized)."
                   #'consult-project-buffer
                   #'projectile-find-file))
 
-(add-hook! 'doom-before-reload-hook
-  ;; otherwise we get this error when reloading:
-  ;;   Error in a Doom module: modules/config/default/+evil-bindings.el, (error Key sequence o s t starts with non-prefix key o s)
-  (map! :leader "o s" nil))
+(when (modulep! +leader-bindings)
+  (add-hook! 'doom-before-reload-hook
+    ;; otherwise we get this error when reloading:
+    ;;   Error in a Doom module: modules/config/default/+evil-bindings.el, (error Key sequence o s t starts with non-prefix key o s)
+    (map! :leader "o s" nil)))
 
 ;;; global
 
