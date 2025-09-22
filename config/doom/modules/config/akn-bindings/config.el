@@ -199,16 +199,21 @@ to normal state is deprioritized)."
    :desc "Blimpy" "B" #'blimpy-type-the-word-blimpy-in-emacs))
 
  (:prefix "o"
-  ;; "t" #'+term/toggle
-  ;; "T" #'+term/here
-  "t" #'+eat/toggle
-  "T" #'+eat/here
-  "s" #'+shell/toggle
-  "S" #'+shell/here
-  "v" #'+vterm/toggle
-  "V" #'+vterm/here
-  "q" #'+mistty/toggle
-  "Q" #'+mistty/here
+  (:when (and (modulep! :term term) (not (modulep! :term eat)))
+    "t" #'+term/toggle
+    "T" #'+term/here)
+  (:when (modulep! :term eat)
+    "t" #'+eat/toggle
+    "T" #'+eat/here)
+  (:when (modulep! :term shell)
+    "s" #'+shell/toggle
+    "S" #'+shell/here)
+  (:when (modulep! :term vterm)
+    "v" #'+vterm/toggle
+    "V" #'+vterm/here)
+  (:when (modulep! :term mistty)
+    "q" #'+mistty/toggle
+    "Q" #'+mistty/here)
 
   "C-c" #'akn/open-in-vscode
   "C" #'akn/open-project-in-vscode
