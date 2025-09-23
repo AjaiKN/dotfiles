@@ -669,11 +669,13 @@ See URL `https://github.com/houmain/keymapper'."
     (flycheck-define-command-checker 'akn/keymapper
       "Checker for `akn/keymapper-conf-mode'."
       :command '("keymapper" "--check" "--config" source)
-      :error-patterns '((error line-start "ERROR: " (message) (? "in file '" (file-name) "'") (? " in line " line) line-end))
+      :error-patterns '((error line-start "ERROR: " (message) " in file '" (file-name) "'" " in line " line line-end)
+                        (error line-start "ERROR: " (message) " in file '" (file-name) "'"                  line-end)
+                        (error line-start "ERROR: " (message)                              " in line " line line-end)
+                        (error line-start "ERROR: " (message)                                               line-end))
       :error-filter
       (lambda (errs)
-        (flycheck-fill-empty-line-numbers errs)
-        (flycheck-sanitize-errors errs))
+        (flycheck-fill-empty-line-numbers (flycheck-sanitize-errors errs)))
       :modes '(akn/keymapper-conf-mode))
     (add-to-list 'flycheck-checkers 'akn/keymapper)))
 
