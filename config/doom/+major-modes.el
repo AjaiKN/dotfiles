@@ -649,6 +649,34 @@ This is to mimic the behavior of RET in Stand-alone GNU Info."
   (unless (modulep! :lang jsonian)
     (add-to-list 'auto-mode-alist '("\\.jsonl\\'" . +json-lines-mode))))
 
+;;; akn/keymapper-conf-mode
+
+(define-derived-mode akn/keymapper-conf-mode conf-unix-mode "Keymapper"
+  "Major mode for editing keymapper configuration file.
+
+See URL `https://github.com/houmain/keymapper'."
+  (conf-mode-initialize "#"))
+
+(add-to-list 'auto-mode-alist
+             (cons (rx (or (: "/keymapper.conf" eos)
+                           (: "/keymapper/" (* anychar) ".conf" eos)))
+                   #'akn/keymapper-conf-mode))
+
+(when (modulep! :checkers syntax -flymake)
+  (add-hook 'akn/keymapper-conf-mode-hook #'flycheck-mode)
+  (after! flycheck
+    (flycheck-def-executable-var akn/keymapper "keymapper")
+    (flycheck-define-command-checker 'akn/keymapper
+      "Checker for `akn/keymapper-conf-mode'."
+      :command '("keymapper" "--check" "--config" source)
+      :error-patterns '((error line-start "ERROR: " (message) (? "in file '" (file-name) "'") (? " in line " line) line-end))
+      :error-filter
+      (lambda (errs)
+        (flycheck-fill-empty-line-numbers errs)
+        (flycheck-sanitize-errors errs))
+      :modes '(akn/keymapper-conf-mode))
+    (add-to-list 'flycheck-checkers 'akn/keymapper)))
+
 ;;; launchctl
 (use-package! nxml-mode
   :init
