@@ -147,7 +147,7 @@ Same as Doom's `doom-unquote'."
 
 (defmacro akn/load! (file &optional path noerror)
   (when (string-match (rx bos (group (+ any)) ".el" eos) file)
-    (setq file (match-string 1 file)))
+    (setq file (match-string-no-properties 1 file)))
   `(condition-case-unless-debug err
        (load! ,file ,path ,noerror)
      (error

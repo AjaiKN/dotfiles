@@ -342,7 +342,7 @@ directory."
                              (literal activities-name-prefix)
                              (group (* anything)) eos)
                          name))
-      (match-string 1 name)
+      (match-string-no-properties 1 name)
     name))
 (defun +workspaces--add-activities-prefix (name)
   (if (stringp name)

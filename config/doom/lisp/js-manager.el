@@ -72,7 +72,7 @@
     (mapcar (lambda (file)
               (and (string-match (rx bos (literal "~/.pnpm-store/v3/metadata/registry.npmjs.org") "/" (group (one-or-more not-newline)) ".json" eos)
                                  file)
-                   (match-string 1 file)))
+                   (match-string-no-properties 1 file)))
             pnpm-pkgs)))
 (defun js-manager/all-known-packages ()
   (append (js-manager/all-known-packages-pnpm-cache)
@@ -114,7 +114,7 @@
                                                         (+ (any alphanumeric "-"))))
                                              eol)
                                          f)
-                                        (match-string 1 f)))
+                                        (match-string-no-properties 1 f)))
                                  (js-manager/node-modules-pkgs dir))))
 
 (defun js-manager/node-modules-pkgs3 (dir)
@@ -265,8 +265,8 @@
                               "@"
                               (group (minimal-match (* (not "@")))))
                           package-manager)
-            (let ((name (match-string 1 package-manager))
-                  (ver  (match-string 2 package-manager)))
+            (let ((name (match-string-no-properties 1 package-manager))
+                  (ver  (match-string-no-properties 2 package-manager)))
               (cond
                ((and (equal name "yarn") (> (string-to-number ver) 1))
                 (cons 'yarn@berry "berry"))

@@ -489,9 +489,9 @@ underscores in all modes."
 (defun akn/indentation-of (line &optional include-other-chars-p)
   (and (string-match (rx bol (group (* (any " \t"))) (group (* not-newline))) line)
        (if include-other-chars-p
-           (concat (match-string 1 line)
-                   (make-string (string-width (match-string 2 line)) ?\s))
-         (match-string 1 line))))
+           (concat (match-string-no-properties 1 line)
+                   (make-string (string-width (match-string-no-properties 2 line)) ?\s))
+         (match-string-no-properties 1 line))))
 
 (defun akn/blank-line-p (line)
   (string-match-p (rx bos (* blank) eol) line))
@@ -2083,7 +2083,7 @@ file modes."
           (narrow-to-region (line-beginning-position) (line-end-position))
           (beginning-of-line)
           (when-let* ((search (search-forward-regexp (rx bol (+ " ")) nil t))
-                      (num-spaces (length (without-restriction (match-string 0)))))
+                      (num-spaces (length (without-restriction (match-string-no-properties 0)))))
             (without-restriction
               (replace-match (make-string num-spaces ?\t))))))))
 

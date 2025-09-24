@@ -100,9 +100,9 @@
                                      (group (* whitespace))
                                      (group (any "-*+") (* whitespace)))
                                  prev-line)
-                   (string-match-p (rx bol (literal (match-string 1 prev-line)))
+                   (string-match-p (rx bol (literal (match-string-no-properties 1 prev-line)))
                                    this-line))
-          (insert (match-string 2 prev-line)))))))
+          (insert (match-string-no-properties 2 prev-line)))))))
 
 ;;Why can I select then paste if delete-selection-mode is off?
 ;;ANSWER: Without delete-selection-mode, you can't do that in Emacs state, only insert state.

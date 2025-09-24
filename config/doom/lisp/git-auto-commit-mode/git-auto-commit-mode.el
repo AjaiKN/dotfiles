@@ -142,7 +142,7 @@ output by PROC."
      ((or
        (string-match "^Enter passphrase for key '\\\(.*\\\)': $" string)
        (string-match "^\\\(.*\\\)'s password:" string))
-      (setq ask (format "Password for '%s': " (match-string 1 string))))
+      (setq ask (format "Password for '%s': " (match-string-no-properties 1 string))))
      ((string-match "^[pP]assword:" string)
       (setq ask "Password:")))
 

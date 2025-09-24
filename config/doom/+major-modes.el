@@ -1408,7 +1408,7 @@ Open the vterm buffer reusing a window."
                                         (seq "'" (group-n 2 (+ (not (any "'\n")))) "'")
                                         eol)
                                     nil t)
-            (eshell/alias (match-string 1) (match-string 2))))))))
+            (eshell/alias (match-string-no-properties 1) (match-string-no-properties 2))))))))
 
 ;;; vdiff
 (use-package! vdiff
