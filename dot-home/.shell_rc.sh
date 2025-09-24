@@ -511,7 +511,7 @@ alias matlab-nodisp='matlab-orig -nodisplay'
 alias matlab='matlab-nodisp -nojvm'
 alias stroke-backup='~/prog/stroke-trial-finder/backups/backup.sh'
 # brew upgrade casks first, then upgrade everything else (because casks sometimes ask for password)
-alias bup='brew upgrade --casks && brew upgrade'
+alias bup='brew upgrade --casks && brew upgrade && brew upgrade --cask wezterm@nightly --no-quarantine --greedy-latest'
 
 alias crepl=cling
 alias c-repl=cling
