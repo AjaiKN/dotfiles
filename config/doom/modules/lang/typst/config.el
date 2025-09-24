@@ -15,7 +15,7 @@
                         outline typst-ts-editing
                         eglot typst-ts-lsp
                         typst-ts-misc-commands
-                        transient typst-ts-transient
+                        ;; transient typst-ts-transient ;was causing an error
                         typst-ts-compile typst-ts-misc-commands)
 
   :init

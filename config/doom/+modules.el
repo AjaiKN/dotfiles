@@ -147,6 +147,7 @@ returns true."
            *extra symex
            *extra titlecase
            *extra typing-the-word-blimpy-in-doom-emacs
+           *basic (whitespace +guess +trim)  ; a butler for your whitespace
            *basic word-wrap         ; soft wrapping with language-aware indent
            *basic words
 

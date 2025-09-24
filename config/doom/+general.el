@@ -797,7 +797,15 @@ underscores in all modes."
  ;; If the bookmark file changes on disk, reload it without prompting.
  bookmark-watch-bookmark-file 'silent)
 
-;;; Tabs & spaces
+;;; whitespace stuff
+
+(when (modulep! :editor whitespace)
+  ;; might want to turn this off at some point
+  (setq! +whitespace-guess-in-projects t)
+  (pushnew! +whitespace-guess-excluded-modes
+            'elm-mode))
+
+;;;; Tabs & spaces
 
 (setq-default tab-width 2)
 
@@ -805,6 +813,8 @@ underscores in all modes."
   "If this is non-nil, `evil-shift-width' won't be set equal to `tab-width'.")
 (define-advice +evil-adjust-shift-width-h (:before-while (&rest _) akn/a)
   (not akn/evil-shift-width-different-from-tab-width))
+
+;;;; lisps
 
 (defconst akn/lisp-like-modes
   '(lisp-mode
@@ -888,7 +898,7 @@ underscores in all modes."
               (let ((tab-width 1))
                 (call-interactively #'backward-delete-char))))
 
-;;; ws-butler
+;;;; ws-butler
 (after! ws-butler
   ;; Doom disables this by default:
   ;;   "ws-butler normally preserves whitespace in the buffer (but strips it from
@@ -907,7 +917,7 @@ underscores in all modes."
   (setq-hook! 'akn/auto-save-visited-local-mode-hook
     ws-butler-keep-whitespace-before-point t))
 
-;;; whitespace-style
+;;;; whitespace-style
 
 ;; comes after `+emacs-highlight-non-default-indentation-h'
 (add-hook! 'after-change-major-mode-hook :depth 92
