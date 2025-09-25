@@ -12,11 +12,17 @@
 ;;; pinning ahead
 ;; stuff where I want to use a newer version than Doom goes here
 ;; https://github.com/doomemacs/doomemacs/issues/8287
-(package! track-changes :built-in t)
-(package! eldoc :built-in t)
-(package! pdf-tools :built-in 'prefer) ;https://discourse.nixos.org/t/how-can-i-get-emacs-pdf-tools-working/10270
 (when (modulep! :lang coq)
   (unpin! proof-general))
+
+(package! track-changes :built-in t)
+(package! eldoc :built-in t)
+(when (modulep! :tools pdf)
+  (package! pdf-tools :built-in 'prefer)) ;https://discourse.nixos.org/t/how-can-i-get-emacs-pdf-tools-working/10270
+(when (modulep! :lang graphviz)
+  ;; Workaround for https://github.com/ppareit/graphviz-dot-mode/issues/87
+  ;; See https://github.com/ppareit/graphviz-dot-mode/issues/87#issuecomment-3315652257
+  (package! graphviz-dot-mode :recipe (:build (:not compile))))
 
 
 ;;; new packages
