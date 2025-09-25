@@ -725,6 +725,8 @@ See URL `https://github.com/houmain/keymapper'."
 
 ;;; lisp
 
+(add-to-list 'auto-mode-alist '("[./]sbclrc\\'" . common-lisp-mode))
+
 (after! sly
   (set-popup-rule! (rx bol "*sly-mrepl") :slot 3 :side 'right :size 0.5 :select t :quit nil)
   (set-popup-rule! (rx bol "*aprepl")    :slot 2 :side 'right :size 0.5 :select t :quit nil)
