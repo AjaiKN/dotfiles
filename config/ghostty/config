@@ -1,5 +1,5 @@
 # regenerate defaults file:
-#   ghostty +show-config --default --docs > $DOTFILES/default.conf
+#   ghostty +show-config --default --docs >| ~/.config/ghostty/default.conf
 
 macos-option-as-alt = left
 mouse-hide-while-typing = true
