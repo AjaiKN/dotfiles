@@ -7,6 +7,36 @@ return {
   -- 'liuchengxu/vim-which-key',
   -- 'tpope/vim-fugitive',
 
+  -- Go forward/backward with square brackets
+  { 'nvim-mini/mini.bracketed', version = '*', opts = {} },
+  -- Comment lines
+  { 'nvim-mini/mini.comment', version = '*', opts = {} },
+  -- Autopairs
+  { 'nvim-mini/mini.pairs', version = '*', opts = {} },
+  -- Trailspace (highlight and remove)
+  { 'nvim-mini/mini.trailspace', version = '*', opts = {} },
+
+  -- Better Around/Inside textobjects
+  --
+  -- Examples:
+  --  - va)  - [V]isually select [A]round [)]paren
+  --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
+  --  - ci'  - [C]hange [I]nside [']quote
+  {
+    'nvim-mini/mini.ai',
+    version = '*',
+    opts = {
+      n_lines = 500
+    },
+  },
+
+  -- Add/delete/replace surroundings (brackets, quotes, etc.)
+  --
+  -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+  -- - sd'   - [S]urround [D]elete [']quotes
+  -- - sr)'  - [S]urround [R]eplace [)] [']
+  -- { 'nvim-mini/mini.surround', version = '*', opts = {} },
+
   -- 'tpope/vim-surround',
   {
     'kylechui/nvim-surround',
