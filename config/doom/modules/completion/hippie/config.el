@@ -26,4 +26,7 @@
           (seq-uniq (append hippie-expand-ignore-buffers
                             dabbrev-ignored-buffer-modes
                             (list (regexp-opt dabbrev-ignored-buffer-names))
-                            dabbrev-ignored-buffer-regexps)))))
+                            dabbrev-ignored-buffer-regexps))))
+
+  ;; https://tecosaur.github.io/emacs-config/#suffix-stripping
+  (advice-add #'he-substitute-string :filter-args #'+hippie--he-substitute-string-a))
