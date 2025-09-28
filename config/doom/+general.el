@@ -463,6 +463,24 @@ underscores in all modes."
           (kill-ring-deindent-mode 1))
       (apply fn args))))
 
+;; If I just pasted something, I want embark to use the whole region just pasted
+;; as a target.
+(after! embark
+  (defun akn/embark-target-just-yanked ()
+    (when (eq last-command 'yank)
+      (let ((inhibit-read-only t)
+            (start (min (point) (mark t)))
+            (end   (max (point) (mark t))))
+        `(region ,(buffer-substring start end) ,start . ,end))))
+  (add-to-list 'embark-target-finders #'akn/embark-target-just-yanked)
+
+  (map! :map embark-region-map
+        "<" (cmd! (let ((tab-width (or (bound-and-true-p evil-shift-width) tab-width))) (call-interactively #'indent-rigidly-left-to-tab-stop)))
+        ">" (cmd! (let ((tab-width (or (bound-and-true-p evil-shift-width) tab-width))) (call-interactively #'indent-rigidly-right-to-tab-stop)))
+        :m "<" #'+evil/shift-left
+        :m ">" #'+evil/shift-right
+        "=" #'indent-region))
+
 ;; (add-to-list 'yank-transform-functions #'akn/yank-match-indent-fn)
 
 (defun akn/yank-reindent (&optional arg)
