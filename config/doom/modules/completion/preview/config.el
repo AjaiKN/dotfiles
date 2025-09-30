@@ -10,7 +10,9 @@
   :config
   (global-completion-preview-mode)
   (add-to-list 'global-completion-preview-modes 'minibuffer-mode)
-  (pushnew! (alist-get 'not global-completion-preview-modes) 'org-mode)
+  (pushnew! (alist-get 'not global-completion-preview-modes)
+            'org-mode
+            'text-mode)
 
   ;; Show the preview already after two symbol characters
   (setq completion-preview-minimum-symbol-length 2)
