@@ -30,7 +30,7 @@
 
   (setq! typst-ts-grammar-location (car (doom-glob (expand-file-name "tree-sitter/libtree-sitter-typst.*" user-emacs-directory))))
 
-  (setq! typst-ts-watch-options "--open"
+  (setq! typst-ts-watch-options '("--open")
          typst-ts-fontification-precision-level 'max)
   (after! dtrt-indent
     (add-to-list 'dtrt-indent-hook-mapping-list '(typst-ts-mode default typst-ts-indent-offset)))
