@@ -2597,6 +2597,28 @@ there's no need for `markdown-mode' to reduplicate the effort."
       (hl-line-mode (if hl-line-mode 1 -1))
       (pulsar-mode (if pulsar-mode 1 -1)))))
 
+;;; color-identifiers-mode
+
+(after! color-identifiers-mode
+  (defvar-local akn/color-idents--undoable-face-remaps '())
+  (add-hook! 'color-identifiers-mode-hook
+    (defun akn/color-identifiers-mode-disable-other-colors-h ()
+      (if (not color-identifiers-mode)
+          (mapc #'face-remap-remove-relative akn/color-idents--undoable-face-remaps)
+        (let ((faces '(font-lock-comment-face font-lock-comment-delimiter-face font-lock-constant-face font-lock-type-face font-lock-function-name-face font-lock-variable-name-face font-lock-keyword-face font-lock-string-face font-lock-builtin-face font-lock-preprocessor-face font-lock-warning-face font-lock-doc-face font-lock-negation-char-face font-lock-regexp-grouping-construct font-lock-regexp-grouping-backslash)))
+          (dolist (face faces)
+            (push (face-remap-add-relative face '(:inherit default)) akn/color-idents--undoable-face-remaps)))
+        (cl-callf append
+            akn/color-idents--undoable-face-remaps
+            (list
+             (face-remap-add-relative 'font-lock-keyword-face       '((:weight bold)))
+             (face-remap-add-relative 'font-lock-comment-face       '((:slant italic)))
+             (face-remap-add-relative 'font-lock-builtin-face       '((:weight bold)))
+             (face-remap-add-relative 'font-lock-preprocessor-face  '((:weight bold)))
+             (face-remap-add-relative 'font-lock-function-name-face '((:slant italic)))
+             (face-remap-add-relative 'font-lock-string-face        '((:slant italic)))
+             (face-remap-add-relative 'font-lock-constant-face      '((:weight bold)))))))))
+
 ;;; file-local variables
 
 ;; Local Variables:
