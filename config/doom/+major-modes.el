@@ -686,6 +686,30 @@ See URL `https://github.com/houmain/keymapper'."
   :init
   (add-to-list 'auto-mode-alist '("\\.plist$" . nxml-mode)))
 
+;; ;; https://www.emacswiki.org/emacs/MacOSXPlist
+;; (after! jka-compr
+;;   (when (executable-find "plutil")
+;;     ;; Allow editing of binary .plist files.
+;;     (add-to-list 'jka-compr-compression-info-list
+;;                  ["\\.plist$"                                ;REGEXP
+
+;;                   ;; I set this to cat because otherwise, it'll compress plist
+;;                   ;; files that aren't already compressed.
+;;                   nil ;"converting text XML to binary plist" ;COMPRESS-MSG
+;;                   "cat" ;nil ;"plutil"                       ;COMPRESS-PROGRAM (nil means visit read-only)
+;;                   nil ;("-convert" "binary1" "-o" "-" "-")   ;COMPRESS-ARGS
+
+;;                   "converting binary plist to text XML"      ;UNCOMPRESS-MSG
+;;                   "plutil"                                   ;UNCOMPRESS-PROGRAM
+;;                   ("-convert" "xml1" "-o" "-" "-")           ;UNCOMPRESS-ARGS
+
+;;                   nil                                        ;APPEND-FLAG
+;;                   nil                                        ;STRIP-EXTENSION-FLAG
+;;                   "bplist"                                   ;FILE-MAGIC-CHARS
+;;                   nil])                                      ;UNCOMPRESS-FUNCTION
+
+;;     (jka-compr-update)))
+
 (use-package! launchctl
   :config
   ;; https://github.com/syl20bnr/spacemacs/blob/a58a7d79b3713bcf693bb61d9ba83d650a6aba86/layers/%2Bos/osx/packages.el#L69C1-L88C32
