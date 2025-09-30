@@ -1883,6 +1883,31 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>pdf</string>
+				<string>tex</string>
+				<string>tiff</string>
+				<string>tif</string>
+				<string>png</string>
+				<string>jpeg</string>
+				<string>jpg</string>
+				<string>html</string>
+				<string>svg</string>
+				<string>tikz</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>MyDocumentType</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>MyDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>InMemory</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>*</string>
 			</array>
 			<key>CFBundleTypeName</key>
