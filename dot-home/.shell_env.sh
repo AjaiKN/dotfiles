@@ -63,6 +63,7 @@ export PATH="\
 $PATH:\
 /opt/R/arm64/gfortran/bin:\
 /Applications/Firefox.app/Contents/MacOS:\
+/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support:\
 $PLAN9/bin"
 
 export HOMEBREW_PREFIX="/opt/homebrew" # fallback so that HOMEBREW_PREFIX isn't blank
