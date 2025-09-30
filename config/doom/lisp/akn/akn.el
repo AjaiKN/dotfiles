@@ -692,13 +692,16 @@ This is so that when I add a hook on `doom-first-file-hook' (or similar)"
 (cl-defmacro akn/after-timer! ((seconds &key repeat) &rest body)
   "Run BODY after Emacs has been idle for SECONDS seconds.
 
-If REPEAT is non-nil, run BODY every time Emacs has been idle
-for 10 seconds."
+If REPEAT is non-nil, run BODY every time Emacs has been idle for REPEAT
+seconds (or SECONDS seconds, if REPEAT isn't a number)."
   (declare (indent 1))
-  `(run-with-timer
-    ,seconds
-    ,repeat
-    ,@(akn/function-body->function+args body)))
+  (cl-with-gensyms (secs rep)
+    `(let ((,secs ,seconds)
+           (,rep ,repeat))
+       (run-with-timer
+        ,secs
+        (and ,rep (if (numberp ,rep) ,rep ,secs))
+        ,@(akn/function-body->function+args body)))))
 
 ;;; akn/after-idle!
 (cl-defmacro akn/after-idle! ((seconds &key
