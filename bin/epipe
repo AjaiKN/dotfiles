@@ -15,6 +15,10 @@ cleanup() {
 }
 trap "cleanup" TERM INT EXIT
 
+# https://crowding.github.io/blog/2014/08/16/replace-less-with-emacs/
+the_command=$(ps -o 'command=' -p "$(ps -o 'ppid=' $$)" | sed -e 's/["\\]/\\&/g' -e 's/["\\]/\\&/g')
+>&2 echo "$the_command"
+
 # Create a named pipe
 dir=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
 out="$dir/pipe"

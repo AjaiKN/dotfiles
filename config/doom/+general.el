@@ -2621,15 +2621,16 @@ there's no need for `markdown-mode' to reduplicate the effort."
 
 ;;; reading from pipe
 
-(defun akn/pager-read-pipe (fname)
+(defun akn/pager-read-pipe (fname &optional cmd-name)
   "See https://stebalien.com/blog/epipe/"
-  (let ((buf (generate-new-buffer "*pager*"))
-        (pname (concat "pager-" fname)))
+  (let ((buf (generate-new-buffer (if cmd-name (format "*pager: %s*" cmd-name) "*pager*")))
+        (pname (concat "pager-" fname "-" cmd-name)))
     (with-current-buffer buf
       (akn/mark-buffer-real)
       (akn/new-file-mode)
-      (read-only-mode))
-    (pop-to-buffer-same-window buf)
+      (read-only-mode)
+      (view-mode))
+    (pop-to-buffer buf)
 
     (let ((proc (start-process pname buf "cat" fname)))
       (set-process-sentinel proc (lambda (_proc _e) ()))
@@ -2640,23 +2641,32 @@ there's no need for `markdown-mode' to reduplicate the effort."
                                        ;; Insert the text, advancing the process marker.
                                        (let ((inhibit-read-only t))
                                          (goto-char (process-mark proc))
-                                         (insert string)
-                                         (set-auto-mode)
+                                         (insert (if (fboundp 'xterm-color-filter-strip)
+                                                     (xterm-color-filter-strip string)
+                                                   string))
+                                         ;; (set-auto-mode)
                                          (set-marker (process-mark proc) (point))))))))
       (akn/focus-this-frame)
       proc)))
 
-(defun akn/pager-read-pipe-sync (fname)
-  (let ((buf (generate-new-buffer "*pager*")))
+(defun akn/pager-read-pipe-sync (fname &optional cmd-name)
+  (let ((buf (generate-new-buffer (if cmd-name (format "*pager: %s*" cmd-name) "*pager*"))))
     (with-current-buffer buf
       (akn/mark-buffer-real)
       (akn/new-file-mode)
-      (read-only-mode))
-    (pop-to-buffer-same-window buf)
+      (read-only-mode)
+      (view-mode))
+    (pop-to-buffer buf)
 
-    (let ((inhibit-read-only t))
-      (insert-file-contents fname))
-    (akn/focus-this-frame)))
+    (with-current-buffer buf
+      (let ((inhibit-read-only t))
+        (insert-file-contents fname)))
+    (akn/focus-this-frame)
+    (when (fboundp 'xterm-color-colorize-buffer)
+      (with-current-buffer buf
+        (let ((inhibit-read-only t)
+              (buffer-read-only nil))
+          (xterm-color-colorize-buffer))))))
 
 ;;; file-local variables
 
