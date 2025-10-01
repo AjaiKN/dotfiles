@@ -58,7 +58,7 @@
       akn/unstage-hunk           "u"
       +repeat/+vc-gutter/previous-hunk  "["
       +repeat/+vc-gutter/next-hunk      "]"
-      magit-stage-buffer-file   "S"
+      magit-file-stage          "S"
       magit-unstage-buffer-file "U"
       magit-commit              "c" :exitonly)
      ("akn/ligatures"
