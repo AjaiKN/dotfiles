@@ -9,15 +9,15 @@ cleanup() {
 	if [[ -O "$out" ]]; then
 		rm -f "$out" || :
 	fi
-	if [[ -O "$DIR" ]]; then
-		rmdir "$DIR" || :
+	if [[ -O "$dir" ]]; then
+		rmdir "$dir" || :
 	fi
 }
 trap "cleanup" TERM INT EXIT
 
 # Create a named pipe
-DIR=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
-out="$DIR/pipe"
+dir=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
+out="$dir/pipe"
 if [ -z "${EPIPE_USE_FILE:-}" ]; then
 	mkfifo -m 0600 "$out"
 
