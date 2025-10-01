@@ -2646,6 +2646,18 @@ there's no need for `markdown-mode' to reduplicate the effort."
       (akn/focus-this-frame)
       proc)))
 
+(defun akn/pager-read-pipe-sync (fname)
+  (let ((buf (generate-new-buffer "*pager*")))
+    (with-current-buffer buf
+      (akn/mark-buffer-real)
+      (akn/new-file-mode)
+      (read-only-mode))
+    (pop-to-buffer-same-window buf)
+
+    (let ((inhibit-read-only t))
+      (insert-file-contents fname))
+    (akn/focus-this-frame)))
+
 ;;; file-local variables
 
 ;; Local Variables:

@@ -1,12 +1,13 @@
 #!/bin/bash
-set -e
+set -eu
+set -x
 
 # https://stebalien.com/blog/epipe/
 
 cleanup() {
 	trap - TERM INT EXIT
-	if [[ -O "$FIFO" ]]; then
-		rm -f "$FIFO" || :
+	if [[ -O "$out" ]]; then
+		rm -f "$out" || :
 	fi
 	if [[ -O "$DIR" ]]; then
 		rmdir "$DIR" || :
@@ -16,12 +17,21 @@ trap "cleanup" TERM INT EXIT
 
 # Create a named pipe
 DIR=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
-FIFO="$DIR/fifo"
-mkfifo -m 0600 "$DIR/fifo"
+out="$DIR/pipe"
+if [ -z "${EPIPE_USE_FILE:-}" ]; then
+	mkfifo -m 0600 "$out"
 
-# Ask emacs to read from the names socket.
-emacsclient --eval "(akn/pager-read-pipe \"$FIFO\")" "$@" >/dev/null <&-
+	emacsclient --eval "(akn/pager-read-pipe \"$out\")" "$@" >/dev/null <&-
+else
+	(
+		umask 077
+		cat >"$out"
+	)
+	emacsclient --eval "(akn/pager-read-pipe-sync \"$out\")" "$@"
+fi
 
-exec 1>"$FIFO"
-cleanup # Cleanup early. Nobody needs the paths now...
-cat
+if [ -z "${EPIPE_USE_FILE:-}" ]; then
+	exec 1>"$out"
+	cleanup # Cleanup early. Nobody needs the paths now...
+	cat
+fi

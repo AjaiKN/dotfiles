@@ -1,8 +1,21 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 set -x
 # Use this for stuff like git commit messages
 # (if you want a GUI and it to be in a new Emacs instance)
+
+args=()
+for arg in "$@"; do
+	if [[ "$arg" == "-" ]]; then
+		DIR=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
+		out="$DIR/pipe"
+		( umask 077; cat >"$out"; )
+		args+=("$out")
+	else
+		args+=("$arg")
+	fi
+done
+set -- "${args[@]}"
 
 if [ -n "$INSIDE_EMACS" ]; then
 	exec emacsclient "$@"

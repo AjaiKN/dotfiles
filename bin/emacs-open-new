@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 # Use this when you want a file to be open in a new instance of Emacs
 # (Or you just want to launch a new instance of Emacs)
@@ -7,6 +7,19 @@
 # Don't wait for it to finish.
 
 set -x
+
+args=()
+for arg in "$@"; do
+	if [[ "$arg" == "-" ]]; then
+		DIR=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
+		out="$DIR/pipe"
+		( umask 077; cat >"$out"; )
+		args+=("$out")
+	else
+		args+=("$arg")
+	fi
+done
+set -- "${args[@]}"
 
 if [ -n "$INSIDE_EMACS" ]; then
 	exec emacsclient -n "$@"
