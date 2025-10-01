@@ -67,6 +67,12 @@ function superls {
 	ls -AeFGl
 }
 
+if [ -d /Users ] && command -v gsort >/dev/null 2>&1; then
+	alias lsize='gdu -a -h --max-depth=1 | gsort -hr'
+else
+	alias lsize='du -a -h --max-depth=1 | sort -hr'
+fi
+
 #### Enable colors
 
 # if command -v dircolors >/dev/null 2>&1; then # proxy for GNU coreutils vs BSD
