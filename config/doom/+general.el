@@ -2619,6 +2619,33 @@ there's no need for `markdown-mode' to reduplicate the effort."
              (face-remap-add-relative 'font-lock-string-face        '((:slant italic)))
              (face-remap-add-relative 'font-lock-constant-face      '((:weight bold)))))))))
 
+;;; reading from pipe
+
+(defun akn/pager-read-pipe (fname)
+  "See https://stebalien.com/blog/epipe/"
+  (let ((buf (generate-new-buffer "*pager*"))
+        (pname (concat "pager-" fname)))
+    (with-current-buffer buf
+      (akn/mark-buffer-real)
+      (akn/new-file-mode)
+      (read-only-mode))
+    (pop-to-buffer-same-window buf)
+
+    (let ((proc (start-process pname buf "cat" fname)))
+      (set-process-sentinel proc (lambda (_proc _e) ()))
+      (set-process-filter proc (lambda (proc string)
+                                 (when (buffer-live-p (process-buffer proc))
+                                   (with-current-buffer (process-buffer proc)
+                                     (save-excursion
+                                       ;; Insert the text, advancing the process marker.
+                                       (let ((inhibit-read-only t))
+                                         (goto-char (process-mark proc))
+                                         (insert string)
+                                         (set-auto-mode)
+                                         (set-marker (process-mark proc) (point))))))))
+      (akn/focus-this-frame)
+      proc)))
+
 ;;; file-local variables
 
 ;; Local Variables:

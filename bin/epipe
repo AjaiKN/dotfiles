@@ -1,0 +1,27 @@
+#!/bin/bash
+set -e
+
+# https://stebalien.com/blog/epipe/
+
+cleanup() {
+	trap - TERM INT EXIT
+	if [[ -O "$FIFO" ]]; then
+		rm -f "$FIFO" || :
+	fi
+	if [[ -O "$DIR" ]]; then
+		rmdir "$DIR" || :
+	fi
+}
+trap "cleanup" TERM INT EXIT
+
+# Create a named pipe
+DIR=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
+FIFO="$DIR/fifo"
+mkfifo -m 0600 "$DIR/fifo"
+
+# Ask emacs to read from the names socket.
+emacsclient --eval "(akn/pager-read-pipe \"$FIFO\")" "$@" >/dev/null <&-
+
+exec 1>"$FIFO"
+cleanup # Cleanup early. Nobody needs the paths now...
+cat
