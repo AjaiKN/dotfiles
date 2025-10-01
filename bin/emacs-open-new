@@ -6,7 +6,7 @@
 # Open a file in a new instance of graphical Emacs.
 # Don't wait for it to finish.
 
-set -x
+# set -x
 
 args=()
 for arg in "$@"; do

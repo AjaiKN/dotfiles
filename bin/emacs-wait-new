@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+# set -x
 # Use this for stuff like git commit messages
 # (if you want a GUI and it to be in a new Emacs instance)
 

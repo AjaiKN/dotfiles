@@ -5,6 +5,6 @@ set -euo pipefail
 trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 set -x
 
-emacsclient -e '(akn/restart-and-restore)'
-emacsclient -s term -e '(doom/restart)' || :
+emacsclient -e '(akn/restart-and-restore)' >/dev/null
+emacsclient -s term -e '(doom/restart)' >/dev/null || :
 # emacs-open-frame

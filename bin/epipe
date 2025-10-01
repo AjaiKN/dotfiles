@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eu
-set -x
+# set -x
 
 # https://stebalien.com/blog/epipe/
 
@@ -27,7 +27,7 @@ else
 		umask 077
 		cat >"$out"
 	)
-	emacsclient --eval "(akn/pager-read-pipe-sync \"$out\")" "$@"
+	emacsclient --eval "(akn/pager-read-pipe-sync \"$out\")" "$@" >/dev/null
 fi
 
 if [ -z "${EPIPE_USE_FILE:-}" ]; then
