@@ -2670,6 +2670,16 @@ there's no need for `markdown-mode' to reduplicate the effort."
               (buffer-read-only nil))
           (xterm-color-colorize-buffer))))))
 
+;;; editorconfig
+
+(use-package! editorconfig
+  :defer t
+  :config
+  ;; Set back from Doom's default, since the editorconfig maintainers say that
+  ;; the elisp implementation is "faster and more secure"
+  ;; (https://github.com/editorconfig/editorconfig-emacs/issues/230#issuecomment-701916590).
+  (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash))
+
 ;;; file-local variables
 
 ;; Local Variables:
