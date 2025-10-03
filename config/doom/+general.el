@@ -827,6 +827,8 @@ underscores in all modes."
 
 (setq-default tab-width 2)
 
+(setq! backward-delete-char-untabify-method nil)
+
 (defvar-local akn/evil-shift-width-different-from-tab-width nil
   "If this is non-nil, `evil-shift-width' won't be set equal to `tab-width'.")
 (define-advice +evil-adjust-shift-width-h (:before-while (&rest _) akn/a)
