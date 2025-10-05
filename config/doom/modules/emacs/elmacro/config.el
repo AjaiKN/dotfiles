@@ -37,14 +37,7 @@
          (list #'elmacro-processor-filter-unwanted
                #'elmacro-processor-prettify-inserts
                #'elmacro-processor-concatenate-inserts
-               (akn/defun akn/deep-unpropertize-strings (stuff)
-                 (cond
-                  ((stringp stuff) (substring-no-properties stuff))
-                  ((proper-list-p stuff) (mapcar #'akn/deep-unpropertize-strings stuff))
-                  ((consp stuff)
-                   (cons (akn/deep-unpropertize-strings (car stuff))
-                         (akn/deep-unpropertize-strings (cdr stuff))))
-                  (t stuff)))
+               #'akn/deep-unpropertize-strings
                (+elmacro--simple-processor
                  `(akn/evil-backward-char-cross-lines . ,args)
                  `(evil-backward-char . ,args))

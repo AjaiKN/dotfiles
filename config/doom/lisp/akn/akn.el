@@ -1199,6 +1199,21 @@ This function was created by `akn/mode-disabler'." mode))
 (defmacro akn/region-string ()
   `(buffer-substring (region-beginning) (region-end)))
 
+;;; akn/deep-unpropertize-strings
+
+;;;###autoload
+(defun akn/deep-unpropertize-strings (stuff)
+  "Unpropertize all strings within the object STUFF.
+
+Recurses inner lists to find strings to unpropertize."
+  (cond
+   ((stringp stuff) (substring-no-properties stuff))
+   ((proper-list-p stuff) (mapcar #'akn/deep-unpropertize-strings stuff))
+   ((consp stuff)
+    (cons (akn/deep-unpropertize-strings (car stuff))
+          (akn/deep-unpropertize-strings (cdr stuff))))
+   (t stuff)))
+
 ;;; window management
 
 ;; (defalias 'akn/this-window #'get-buffer-window)
