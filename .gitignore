@@ -1,5 +1,6 @@
 bin/roc
 bin/roc_language_server
+bin/pboard-types
 config/karabiner/automatic_backups
 config/karabiner/assets/complex_modifications
 *.log
