@@ -47,7 +47,7 @@
                                           :server-id 'typst_tinymist)))
 
   (when (executable-find "tinymist")
-    (set-eglot-client! 'typst-ts-mode '("tinymist")))
+    (set-eglot-client! 'typst-ts-mode "tinymist"))
 
   ;; (add-hook! 'typst-ts-mode-hook
   ;;   (defun +typst--turn-off-electric-indent ()
@@ -136,6 +136,7 @@
       (let ((display-buffer-overriding-action (cons nil '((inhibit-same-window . t) (window-width . 0.5))))
             (switch-to-buffer-obey-display-actions t))
         (akn/letf! ((define-advice xwidget-webkit-browse-url (:filter-args (args))
+                      ;; always new-session
                       (cons (car args)
                             (cons t
                                   (cddr args)))))
@@ -147,6 +148,6 @@
         "C-c C-o" #'+typst/preview-browser)
   :config
   (setq! typst-preview-browser "default")
-  (when (fboundp 'xwidget-webkit-browse-url)
-    (setq! typst-preview-browser "xwidget"))
+  ;; (when (fboundp 'xwidget-webkit-browse-url)
+  ;;   (setq! typst-preview-browser "xwidget"))
   (setq! typst-preview-invert-colors "never"))

@@ -105,7 +105,10 @@
 ;; Often when I have a pdf open in emacs, it's changing regularly and
 ;; I want it to update immediately when it changes.
 ;; (e.g. compiling from latex)
-(add-hook 'pdf-view-mode-hook #'auto-revert-mode)
+(add-hook! '(pdf-view-mode-hook doc-view-mode-hook)
+           #'auto-revert-mode)
+(setq-hook! '(pdf-view-mode-hook doc-view-mode-hook)
+  auto-revert-interval 0.4)
 
 
 (use-package! doc-view
@@ -118,7 +121,6 @@
         :nm "j" #'doc-view-next-page)
 
   (add-hook! 'doc-view-mode-hook
-             #'auto-revert-mode
              #'doc-view-fit-page-to-window)
   (setq-hook! 'doc-view-mode-hook
     doc-view-continuous t))
