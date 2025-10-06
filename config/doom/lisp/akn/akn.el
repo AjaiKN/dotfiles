@@ -1620,6 +1620,7 @@ See `general-key-dispatch' for what other arguments it accepts in BRANCHES."
 
 ;;;; akn-paragraph thing
 
+;;;###autoload
 (defun forward-akn-paragraph (&optional count)
   (interactive "^p")
   (setq count (or count 1))
@@ -1634,16 +1635,20 @@ See `general-key-dispatch' for what other arguments it accepts in BRANCHES."
              until (bobp)
              do (start-of-paragraph-text)
              finally (beginning-of-line)))))
+;;;###autoload
 (defun backward-akn-paragraph (&optional count)
   (interactive "^p")
   (forward-akn-paragraph (- (or count 1))))
 
+;;;###autoload
 (defun akn/transpose-paragraphs (arg)
   (interactive "*p")
   (akn/transpose-thing 'akn-paragraph arg))
+;;;###autoload
 (defun akn/drag-paragraph-down (arg)
   (interactive "*p")
   (akn/drag-thing-forward 'akn-paragraph arg))
+;;;###autoload
 (defun akn/drag-paragraph-up (arg)
   (interactive "*p")
   (akn/drag-thing-backward 'akn-paragraph arg))
