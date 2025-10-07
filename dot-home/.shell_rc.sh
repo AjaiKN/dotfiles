@@ -526,8 +526,11 @@ alias c-repl=cling
 alias clyde='occs'
 ssh_tmux () {
 	OPTIONS="-u"
-	if [ "$LC_TERMINAL" = "iTerm2" ]; then
-		OPTIONS="$OPTIONS -CC"
+	# terminals that support tmux control mode
+	if [ "$TERM_PROGRAM" = "iTerm2.app" ] || [ "$TERM_PROGRAM" = "WezTerm" ]; then
+		if [ -z "$tmux_no_cc" ]; then
+			OPTIONS="$OPTIONS -CC"
+		fi
 	fi
 	ssh -t "$@" "env ${tmux_env:-} tmux $OPTIONS attach || env ${tmux_env:-} tmux $OPTIONS new-session"
 }
