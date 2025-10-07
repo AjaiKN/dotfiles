@@ -9,10 +9,18 @@
   :defer-incrementally (which-key repeat)
   :ghook 'repeat-mode-hook
   :config
-  (setq! repeat-help-auto nil
-         ;; or 'which-key, or t
-         repeat-help-popup-type 'which-key)
-  (setq! repeat-echo-function #'repeat-echo-message))
+  (define-advice repeat-help-mode (:before (&rest _) +repeat)
+    "First remove the repeat-help hooks, in case we've already activated
+`repeat-help-mode', but `repeat-help-auto' has changed since then."
+    (advice-remove 'repeat-post-hook #'repeat-help--activate)
+    (advice-remove 'repeat-post-hook #'repeat-help--activate-auto))
+
+  (setq repeat-help-auto nil
+        ;; 'embark, 'which-key, or t
+        repeat-help-popup-type 'which-key)
+  (repeat-help-mode)
+  (unless repeat-help-auto
+    (setq! repeat-echo-function #'repeat-echo-message)))
 
 ;; or https://tildegit.org/acdw/define-repeat-map.el/src/branch/main/define-repeat-map.el
 (use-package! repeaters
@@ -59,7 +67,7 @@
       +repeat/+vc-gutter/previous-hunk  "["
       +repeat/+vc-gutter/next-hunk      "]"
       magit-file-stage          "S"
-      magit-unstage-buffer-file "U"
+      magit-file-unstage        "U"
       magit-commit              "c" :exitonly)
      ("akn/ligatures"
       prettify-symbols-mode    "e"
