@@ -616,11 +616,12 @@ underscores in all modes."
 ;;; tooltips
 
 ;; Doom disables this
-(use-package! tooltip
-  :defer 2.1
-  :unless akn/terminal-only-p
-  :config
-  (tooltip-mode))
+;; disabled because of bug when in fullscreen on Mac
+;; (use-package! tooltip
+;;   :defer 2.1
+;;   :unless akn/terminal-only-p
+;;   :config
+;;   (tooltip-mode))
 
 ;;; ligatures
 ;; Doom is now using #'mac-auto-operator-composition-mode on emacs-mac
