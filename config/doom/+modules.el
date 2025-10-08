@@ -87,7 +87,7 @@ returns true."
            ivy               ; a search engine for love and life
            *basic (vertico +icons)             ; the search engine of the future
            *extra p-search
-           *extra (:if (version<= "30" emacs-version) preview)
+           *extra (:if (versionp! emacs-version >= "30") preview)
 
            :ui
            *extra blamer
@@ -195,7 +195,7 @@ returns true."
            docker
            *basic dwim-shell-command
            *basic editorconfig      ; let someone else argue about tabs vs spaces
-           *basic (:if (version<= "30.1" emacs-version) vim-file-locals)
+           *basic (:if (versionp! emacs-version >= "30.1") vim-file-locals)
            ein               ; tame Jupyter notebooks with emacs
            *extra quarto
            *basic (eval +overlay)     ; run code, run (also, repls)
