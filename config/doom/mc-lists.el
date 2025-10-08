@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        +default/newline
         +fold/drag-stuff-up
         akn/backward-delete-char1
         akn/duplicate-down
