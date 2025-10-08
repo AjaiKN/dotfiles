@@ -145,6 +145,7 @@ returns true."
            *extra smart-tabs
            *basic snippets          ; my elves. They type so I don't have to
            *extra symex
+           things
            *extra titlecase
            *extra typing-the-word-blimpy-in-doom-emacs
            *basic (whitespace +guess +trim)  ; a butler for your whitespace

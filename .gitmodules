@@ -146,3 +146,8 @@
 	url = https://github.com/serialhex/nano-highlight
 	branch = master
 	shallow = true
+[submodule "config/doom/lisp/things"]
+	path = config/doom/lisp/things
+	url = https://github.com/AjaiKN/things.el
+	branch = master
+	shallow = true
