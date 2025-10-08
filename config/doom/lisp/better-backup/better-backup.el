@@ -59,9 +59,7 @@ This can either be a directory or a list in the format of
 
 ;;;; Choosing backup file names
 
-(defun better-backup--backup-file-name (&optional file-or-buffer-name)
-  (when (null file-or-buffer-name)
-    (setq file-or-buffer-name (current-buffer)))
+(cl-defun better-backup--backup-file-name (&optional (file-or-buffer-name (current-buffer)))
   (when (bufferp file-or-buffer-name)
     (setq file-or-buffer-name (or (buffer-file-name file-or-buffer-name)
                                   (buffer-name file-or-buffer-name))))
@@ -92,9 +90,8 @@ This can either be a directory or a list in the format of
 
 ;;;; Backup primitives
 
-(defun better-backup--write-buffer-sync (&optional file)
+(cl-defun better-backup--write-buffer-sync (&optional (file (better-backup--backup-file-name)))
   ""
-  (setq file (or file (better-backup--backup-file-name)))
   (mkdir (file-name-directory file) 'parents)
   (write-region nil nil file
                 nil 0 nil 'excl))
@@ -110,8 +107,7 @@ This can either be a directory or a list in the format of
   (unless (and (null (car better-backup--deferred-writes-out))
                (null (cdr better-backup--deferred-writes-out)))
     (pop better-backup--deferred-writes-out)))
-(defun better-backup--write-buffer-deferred (&optional file)
-  (setq file (or file (better-backup--backup-file-name)))
+(cl-defun better-backup--write-buffer-deferred (&optional (file (better-backup--backup-file-name)))
   ;; TODO: start idle timer
   (let ((str
          (without-restriction
@@ -125,24 +121,22 @@ This can either be a directory or a list in the format of
         (insert str)
         (better-backup--write-buffer-sync file)))))
 
-(defun better-backup--write-buffer (&optional file)
+(cl-defun better-backup--write-buffer (&optional (file (better-backup--backup-file-name)))
   (funcall (if better-backup-buffer-defer
                #'better-backup--write-buffer-deferred
              #'better-backup--write-buffer-sync)
            file))
 
-(defun better-backup--copy-file-async (from &optional to)
+(cl-defun better-backup--copy-file-async (from &optional (to (better-backup--backup-file-name from)))
   ""
-  (setq to (or to (better-backup--backup-file-name from)))
   (let ((process
          (make-process :name "better-backup"
                        :command `("cp" "-i" ,from ,to)
                        :connection-type 'pipe)))
     (process-send-eof process)))
 
-(defun better-backup--copy-file-sync (from &optional to)
+(cl-defun better-backup--copy-file-sync (from &optional (to (better-backup--backup-file-name from)))
   ""
-  (setq to (or to (better-backup--backup-file-name from)))
   (copy-file from to nil 'keep-mtime 'preserve-uid-gid 'preserve-permissions))
 
 ;;;; Main
@@ -152,7 +146,7 @@ This can either be a directory or a list in the format of
 (defvar-local better-backup--buffer-local-saved-state nil
   "")
 
-(defun better-backup--buffer-backup-maybe (&optional buffer)
+(cl-defun better-backup--buffer-backup-maybe (&optional (buffer (current-buffer)))
   ""
   (with-current-buffer (or buffer (current-buffer))
     (unless (equal (buffer-chars-modified-tick) better-backup--buffer-last-backup-tick)

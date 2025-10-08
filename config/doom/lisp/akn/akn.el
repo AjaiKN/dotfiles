@@ -879,28 +879,25 @@ packages, it can be applied to anything."
 
 Also see `tramp-file-name-regexp'.")
 
-(defun akn/file-remote-p (&optional file)
+(cl-defun akn/file-remote-p (&optional (file default-directory))
   "Approximate equivalent to `file-remote-p', but should be faster."
-  (setq file (or file default-directory))
   (and (stringp file)
        (string-match-p akn/file-remote-regexp file)))
 
 (defalias 'akn/tramp-p #'akn/file-remote-p)
 
-(defun akn/dir-slow-p (&optional d)
+(cl-defun akn/dir-slow-p (&optional (d default-directory))
   "Would this directory likely be slow to access?"
-  (setq d (or d default-directory))
   (and (stringp d)
        (akn/file-remote-p d)
        (not (string-match-p (rx ":" (or "utm" "localhost")) d))))
 
 (defvar akn/tramp-home-dir--truename-cache (make-hash-table :test #'equal))
 ;; TODO: see `tramp-handle-abbreviate-file-name'
-(defun akn/tramp-home-dir (&optional file)
+(cl-defun akn/tramp-home-dir (&optional (file (or buffer-file-name default-directory)))
   "Get the home directory on the host of FILE.
 
 FILE defaults to the current `buffer-file-name'."
-  (setq file (or file buffer-file-name default-directory))
   (if (akn/tramp-p file)
       (progn
         (require 'tramp)
@@ -1444,7 +1441,7 @@ Emacs will kill this process without querying."
      (sync
       (when stderr (error "akn/run-command: STDERR argument not yet supported for SYNC commands"))
       (with-temp-buffer
-        (setq output-buffer (or output-buffer (current-buffer)))
+        (or output-buffer (setq output-buffer (current-buffer)))
         (when (stringp output-buffer)
           (setq output-buffer (get-buffer-create output-buffer)))
         (with-current-buffer output-buffer
@@ -1621,27 +1618,25 @@ See `general-key-dispatch' for what other arguments it accepts in BRANCHES."
 ;;;; akn-defun thing
 
 ;;;###autoload
-(defun forward-akn-defun (&optional count)
+(cl-defun forward-akn-defun (&optional (count 1))
   (interactive "^p")
-  (setq count (or count 1))
   (if (>= count 0)
       (end-of-defun count)
     (beginning-of-defun (- count))))
 ;;;###autoload
-(defun forward-akn-defun-comments (&optional count)
+(cl-defun forward-akn-defun-comments (&optional (count 1))
   (interactive "^p")
-  (setq count (or count 1))
   (if (>= count 0)
       (end-of-defun count)
     (beginning-of-defun-comments (- count))))
 ;;;###autoload
-(defun backward-akn-defun (&optional count)
+(cl-defun backward-akn-defun (&optional (count 1))
   (interactive "^p")
-  (forward-akn-defun (- (or count 1))))
+  (forward-akn-defun (- count)))
 ;;;###autoload
-(defun backward-akn-defun-comments (&optional count)
+(cl-defun backward-akn-defun-comments (&optional (count 1))
   (interactive "^p")
-  (forward-akn-defun-comments (- (or count 1))))
+  (forward-akn-defun-comments (- count)))
 
 (put 'akn-defun 'beginning-op #'beginning-of-defun)
 (put 'akn-defun 'end-op       #'end-of-defun)
