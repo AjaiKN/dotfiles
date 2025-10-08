@@ -1618,6 +1618,53 @@ See `general-key-dispatch' for what other arguments it accepts in BRANCHES."
 (defun akn/drag-thing-backward (thing arg)
   (akn/drag-thing-forward thing (- (or arg 1))))
 
+;;;; akn-defun thing
+
+;;;###autoload
+(defun forward-akn-defun (&optional count)
+  (interactive "^p")
+  (setq count (or count 1))
+  (if (>= count 0)
+      (end-of-defun count)
+    (beginning-of-defun (- count))))
+;;;###autoload
+(defun forward-akn-defun-comments (&optional count)
+  (interactive "^p")
+  (setq count (or count 1))
+  (if (>= count 0)
+      (end-of-defun count)
+    (beginning-of-defun-comments (- count))))
+;;;###autoload
+(defun backward-akn-defun (&optional count)
+  (interactive "^p")
+  (forward-akn-defun (- (or count 1))))
+;;;###autoload
+(defun backward-akn-defun-comments (&optional count)
+  (interactive "^p")
+  (forward-akn-defun-comments (- (or count 1))))
+
+(put 'akn-defun 'beginning-op #'beginning-of-defun)
+(put 'akn-defun 'end-op       #'end-of-defun)
+(put 'akn-defun 'forward-op   #'forward-akn-defun)
+
+(put 'akn-defun-comments 'beginning-op #'beginning-of-defun-comments)
+(put 'akn-defun-comments 'end-op       #'end-of-defun)
+(put 'akn-defun-comments 'forward-op   #'forward-akn-defun-comments)
+
+;; TODO: still not quite right, swap vs. move
+;;;autoload
+(defun akn/drag-defun-up (arg)
+  (interactive "*p")
+  (akn/drag-thing-backward 'akn-defun-comments arg))
+;;;###autoload
+(defun akn/transpose-defuns (arg)
+  (interactive "*p")
+  (akn/transpose-thing 'akn-defun-comments arg))
+;;;###autoload
+(defun akn/drag-defun-down (arg)
+  (interactive "*p")
+  (akn/drag-thing-forward 'akn-defun-comments arg))
+
 ;;;; akn-paragraph thing
 
 ;;;###autoload

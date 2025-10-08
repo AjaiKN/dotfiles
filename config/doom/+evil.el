@@ -464,17 +464,13 @@ So to get the string deleted after a change, use M-y or C-p."
 
 ;;; text objects
 
-(put 'akn/defun-comments 'beginning-op #'beginning-of-defun-comments)
-(put 'akn/defun-comments 'end-op       #'end-of-defun)
-(put 'akn/defun-comments 'forward-op   #'end-of-defun)
-
 (map! :textobj "f" #'+evil:defun-txtobj #'akn/+evil:defun-outer-txtobj)
 
 (evil-define-text-object akn/+evil:defun-outer-txtobj (count &optional _beg _end type)
   "Text object to select the top-level Lisp form or function definition at
 point, including any comments above."
   (cl-destructuring-bind (beg . end)
-      (bounds-of-thing-at-point 'akn/defun-comments)
+      (bounds-of-thing-at-point 'akn-defun-comments)
     (evil-range beg end type)))
 
 ;;; file-local variables
