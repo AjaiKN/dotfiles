@@ -382,6 +382,11 @@ to normal state is deprioritized)."
    "M-<up>" #'+fold/drag-stuff-up
    "M-<down>" #'+fold/drag-stuff-down)
 
+ "s-<prior>"  #'akn/drag-paragraph-up   ; fn+cmd+up
+ "H-s-<up>"   #'akn/drag-paragraph-up
+ "s-<next>"   #'akn/drag-paragraph-down ; fn+cmd+down
+ "H-s-<down>" #'akn/drag-paragraph-down
+
  (:when (modulep! :editor multiple-cursors)
    ;; NOTE: most evil-mc bindings are g z _
    ;; https://github.com/gabesoft/evil-mc?tab=readme-ov-file#basic-usage
