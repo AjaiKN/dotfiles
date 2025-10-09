@@ -76,6 +76,8 @@ If nil, the value of `+fold-ellipsis' is used."
 ;;
 ;;; Packages
 
+;;;; hideshow
+
 (use-package! hideshow ; built-in
   :defer t
   :defer-incrementally t
@@ -129,6 +131,7 @@ If nil, the value of `+fold-ellipsis' is used."
            hs-special-modes-alist
            '((t))))))
 
+;;;; evil-vimish-fold
 
 (use-package! evil-vimish-fold
   :when (modulep! :editor evil)
@@ -142,11 +145,15 @@ If nil, the value of `+fold-ellipsis' is used."
   :config
   (vimish-fold-global-mode +1))
 
+;;;; treesit-fold
+
 ;; Will be autoloaded by fold commands
 (use-package! treesit-fold
   :when (modulep! :tools tree-sitter)
   :defer t
   :config (global-treesit-fold-mode +1))
+
+;;;; ts-fold
 
 (use-package! ts-fold
   :when (modulep! :tools tree-sitter)
@@ -162,18 +169,48 @@ If nil, the value of `+fold-ellipsis' is used."
   (setq ts-fold-replacement +fold-ellipsis)
   (global-ts-fold-mode +1))
 
+;;;; org
+
 (after! org
   (setq org-ellipsis +fold-ellipsis))
 
-;;outli mode
+;;;; outli mode
+
 ;;see speed keys
 (use-package! outli
   :defer t
   :defer-incrementally (outline color org-keys)
-  ;; `emacs-lisp-mode-hook' isn't strictly necessary here (`outline-minor-mode-hook' is enough),
-  ;; since Doom already enables `outline-minor-mode' for elisp, but we might as well add it so
-  ;; that `outline-minor-mode' doesn't get called twice (since `outli-mode' calls `outline-minor-mode').
-  :hook ((emacs-lisp-mode outline-minor-mode) . +fold/outli-mode)
+
+  :init
+  (add-hook! 'after-change-major-mode-hook
+    (defun +fold/outli-mode-maybe ()
+      (if (bound-and-true-p outline-minor-mode)
+          ;; Get file-local variables
+          (let ((local-regexp (alist-get 'outline-regexp file-local-variables-alist))
+                (local-stem (alist-get 'outli-heading-stem file-local-variables-alist))
+                (local-char (alist-get 'outli-heading-char file-local-variables-alist)))
+            (cond
+             ;; If outli-minor-mode is already enabled, don't enable it
+             ((bound-and-true-p outli-mode))
+             ;; conflicting minor modes -> don't enable it
+             ((bound-and-true-p outline-indent-minor-mode))
+             ((bound-and-true-p so-long-minor-mode))
+             ;; If outli-specific file-local variables are set, enable outli-mode while respecting them.
+             ((and local-stem local-char)
+              (let ((outli-heading-config `((t ,local-stem ,local-char))))
+                (outli-mode))
+              (when local-regexp
+                (setq-local outline-regexp local-regexp)))
+             ;; If `outline-regexp' is set, enabling `outli-mode' would override it, so don't.
+             (local-regexp)
+             ;; Otherwise, enable it.
+             (t
+              (outli-mode))))
+        (when (bound-and-true-p outli-mode)
+          (outli-mode -1)))))
+  (put 'outli-heading-stem 'safe-local-variable #'stringp)
+  (put 'outli-heading-char 'safe-local-variable #'integerp)
+
   :config
   (pushnew! outli-heading-config
             ;;MODE STEM REPEAT-CHAR [STYLE] [NO-BAR]
@@ -186,19 +223,14 @@ If nil, the value of `+fold-ellipsis' is used."
   ;; outli-mode-map includes this even for insert mode, but I want it only in normal mode
   (map! :map outli-mode-map
         "<backtab>" nil
-        "S-<tab>" nil)
-  (defun +fold/outli-mode ()
-    (if outline-minor-mode
-        ;; `outli-mode' calls `outline-minor-mode', so if we didn't check this first, we'd have infinite recursion
-        (unless (or (bound-and-true-p outli-mode)
-                    (bound-and-true-p outline-indent-minor-mode)
-                    (bound-and-true-p so-long-minor-mode))
-          (outli-mode))
-      (when (bound-and-true-p outli-mode)
-        (outli-mode -1)))))
+        "S-<tab>" nil))
+
+;;;; outline-indent
 
 (use-package! outline-indent
   :defer t)
+
+;;;; comint-fold
 
 (use-package! comint-fold
   :after-call comint-mode
