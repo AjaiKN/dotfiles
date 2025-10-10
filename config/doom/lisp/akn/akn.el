@@ -389,7 +389,7 @@ The def* forms accepted are:
                `(cl-letf ((,(car rest) (symbol-function #',(car rest))))
                   (ignore ,(car rest))
                   (cl-letf (((symbol-function #',(car rest))
-                             (lambda! ,(cadr rest) ,@(cddr rest))))
+                             (cl-function (lambda ,(cadr rest) ,@(cddr rest)))))
                     ,body)))
               (`defun*
                `(cl-labels ((,@rest)) ,body))
