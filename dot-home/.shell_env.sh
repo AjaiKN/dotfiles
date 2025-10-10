@@ -1,7 +1,11 @@
 # shellcheck shell=sh
 # shellcheck disable=SC2317
 
-# This gets run by bash, zsh, and sh.
+# .shell_env.sh - Setting basic environment variables
+# Loaded by bash, zsh, and sh shells.
+#   - ~/.zshenv (zsh)
+#   - ~/.bashrc (bash)
+#   - ~/.profile (sh and others)
 
 export ENV="$HOME/.shell_env.sh"
 export BASH_ENV="$HOME/.shell_env.sh"

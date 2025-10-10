@@ -1,5 +1,6 @@
-;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-;;; Configuration
+;;; $DOOMDIR/config.el - Main Doom Emacs Configuration -*- lexical-binding: t; -*-
+
+;; NOTE: Machine-specific settings should be placed in local.el (gitignored).
 
 (when init-file-debug
   (when (fboundp 'benchmark-init/activate)

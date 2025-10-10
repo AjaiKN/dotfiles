@@ -1,9 +1,31 @@
 #!/bin/sh
 
-# [ "$(ls -ld -- "$file" | awk '{print $3}')" != "$(id -un)"
-
-# This script is a best-effort attempt to check for security issues in $PATH and
-# remove the problematic directories. It definitely won't catch everything.
+# secure_path - This is a best-effort attempt to check for security issues in
+# $PATH and remove the problematic directories. It definitely won't catch
+# everything.
+#
+# USAGE:
+#   secure_path                    # Output cleaned PATH to stdout
+#   export PATH="$(secure_path)"   # Set PATH to cleaned version
+#
+# SECURITY CHECKS:
+#   - Removes relative paths (paths not starting with /)
+#   - Removes non-existent directories
+#   - Removes directories owned by untrusted users
+#   - Removes world-writable directories with world-executable ancestors
+#   - Removes empty directories that are world-deletable
+#   - Validates directory permissions format
+#
+# TRUSTED USERS:
+#   By default, only directories owned by you or root (uid 0) are trusted.
+#   To trust additional users, add their username or uid to:
+#   $DOTFILES/trusted_users.txt (one per line)
+#
+# NOTES:
+#   - Prints messages to stderr in some cases
+#   - Appends system default PATH from getconf PATH
+#   - Deduplicates the final PATH
+#   - Falls back to original PATH if result would be empty
 
 export LC_ALL=C
 

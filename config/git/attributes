@@ -1,3 +1,10 @@
+# Git attributes file - configures how Git handles different file types
+#
+# This file tells Git which diff driver to use for different file extensions,
+# providing better context headers in diffs by recognizing function/class boundaries.
+# Each line maps file patterns to diff drivers that understand the language structure.
+#
+# References:
 # https://gist.github.com/ruediger/5647207
 # https://gist.github.com/tekin/12500956bd56784728e490d8cef9cb81
 # https://tekin.co.uk/2020/10/better-git-diff-output-for-ruby-python-elixir-and-more
@@ -56,7 +63,7 @@
 *.mdx   diff=markdown
 # TODO: matlab and objc conflict for .m files
 # matlab suitable for source code in the MATLAB and Octave languages.
-*.m     diff=matlab 
+*.m     diff=matlab
 # objc suitable for source code in the Objective-C language.
 *.m     diff=objc
 *.mm    diff=objc

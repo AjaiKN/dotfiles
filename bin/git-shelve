@@ -1,5 +1,42 @@
 #!/usr/bin/env bash
 
+# git-shelve - Move a branch to shelved references for temporary storage
+#
+# DESCRIPTION:
+#   Shelves a branch by deleting it and creating a new reference under
+#   "refs/shelved/" pointing to the same commit. This is equivalent to
+#   Magit's magit-branch-shelve command.
+#
+#   This is useful when you want to move a branch out of sight but don't
+#   want to completely discard it. The branch can be restored later
+#   using git-unshelve.
+#
+# USAGE:
+#   git shelve <BRANCH-NAME>
+#
+# ARGUMENTS:
+#   BRANCH-NAME    The name of the branch to shelve (without refs/heads/)
+#
+# BEHAVIOR:
+#   1. Creates refs/shelved/BRANCH-NAME pointing to the same commit
+#   2. Preserves the branch's reflog as the shelved reference's reflog
+#   3. Removes branch-specific git config (like pushRemote)
+#   4. Deletes the original branch
+#
+# EXAMPLES:
+#   git shelve feature-experiment     # Shelve feature-experiment branch
+#   git shelved                       # List shelved branches
+#   git unshelve feature-experiment   # Restore the shelved branch
+#
+# NOTES:
+#   - The current branch cannot be shelved (git won't let you delete it)
+#   - Shelved branches are stored in .git/refs/shelved/
+#   - Use 'git unshelve' to restore a shelved branch
+#   - Use 'git shelved' to list all shelved branches
+#
+# SEE ALSO:
+#   git-unshelve(1), git-shelved(1)
+
 set -euo pipefail
 # shellcheck disable=SC2154
 trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR

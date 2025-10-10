@@ -1,22 +1,69 @@
 #+title: Ajai's Doom Modules
 
-* TODO Description
+* Description
+This directory contains my custom Doom Emacs modules. Some are forked from Doom's existing official modules, and others were develeoped from scratch. Some are meant to replace Doom's modules, some extend the functionality of existing Doom modules, and some provide new functionality. See the module descriptions below for more details.
 
-* TODO Installation
+The modules vary greatly in their levels maturity and reliability. In the list below, I've tried to mark which ones are more and less reliable.
+* Installation
+Doom v3, which hasn't been released yet, will include a convenient way to install third-party modules like these ones. In the meantime, if you want to use my modules, you'll have to copy or symlink my modules into your modules directory:
+
+1. Copy my modules (either the whole directory, or just the ones you want) into your modules directory:
+   #+begin_src bash
+   # Your Doom configuration is probably in one of these locations. Choose the correct one:
+   DOOMDIR="$HOME/.doom.d"
+   DOOMDIR="${XDG_CONFIG_HOME:-$HOME/.config}"/doom
+
+   # Make sure you're in this directory (my modules/ directory).
+   # Then you can symlink my entire modules directory to your modules directory:
+   ln -s "$(realpath .)" "$DOOMDIR"/
+
+   # OR, you can symlink individual modules:
+   mkdir -p "$DOOMDIR"/modules/{app,completion,config,editor,emacs,input,lang,os,term,tools,ui}
+   ln -s "$(realpath ./editor/words)" "$DOOMDIR"/modules/editor/
+   ln -s "$(realpath ./completion/fuzzy)" "$DOOMDIR"/modules/completion/
+   #+end_src
+
+2. Most of my modules have an implicit dependency on my utilities library, [[https://github.com/AjaiKN/dotfiles/blob/main/config/doom/lisp/akn/akn.el][akn.el]].
+   There are multiple ways to install it.
+
+   The simplest one is probably to add the following to your ~$DOOMDIR/packages.el~:
+   #+begin_src elisp
+   (package! akn
+     :recipe (:host github :repo "AjaiKN/dotfiles" :files ("config/doom/lisp/akn/*.el") :nonrecursive t))
+   #+end_src
+
+   Or if you have the [[https://github.com/AjaiKN/dotfiles/tree/main/config/doom/lisp/akn][akn directory]] on your machine, you can add the following instead:
+
+    #+begin_src elisp
+   (package! akn
+     :recipe (:local-repo "/path/to/akn"))
+   #+end_src
+
+   Or you can download [[https://github.com/AjaiKN/dotfiles/blob/main/config/doom/lisp/akn/akn.el][akn.el]], then add the following line to your ~$DOOMDIR/init.el~:
+   #+begin_src elisp
+   (load! "/path/to/akn.el")
+   #+end_src
+
+3. Enable the modules you want in your ~$DOOMDIR/init.el~.
+
+4. Sync Doom configuration:
+   #+begin_src bash
+   doom sync
+   #+end_src
+
+* Module Status Key
+
+| *Symbol* | *Meaning*                                                        |
+| ⭐    | I use this module very regularly and it works relatively well  |
+| 🕰    | I haven't used this in a while, so it might not work very well |
+| 🚧    | Half-baked, not very complete                                  |
+| 🐛    | Known bugs or issues                                           |
+| 🏢    | Large module with extensive functionality                      |
+| 🐁    | Tiny module that barely configures its packages                |
 
 * Module list
-
-Key:
-| ⭐ | I use this module very regularly and it works relatively well  |
-| 🕰 | I haven't used this in a while, so it might not work very well |
-| 🚧 | half-baked (not very complete)                                 |
-| 🐛 | buggy                                                          |
-| 🏢 | a relatively large module with a lot of functionality          |
-| 🐁 | a tiny module that barely configures its packages              |
-
 ** :app
 *** [[./app/everywhere][everywhere]]: adds system-wide popup Emacs windows for quick edits
-
 Similar to Doom's built-in ~:app everywhere~ module, except:
 - I made some tweaks to make it work better on my machine
 - adds support for [[https://github.com/alpha22jp/atomic-chrome][atomic-chrome]], which works better for me in the browser (including in Firefox, despite the name)
@@ -48,7 +95,7 @@ This module supports all the completion packages supported by [[https://github.c
 To /install/ all of these packages (e.g., to make it easier to try out the different packages), use [[doom-module::completion fuzzy +all][+all]]. (To choose which one will actually be /used/, add one of the flags above.)
 *** ⭐🐁 [[./completion/hippie][hippie]]: support for the built-in [[https://www.gnu.org/software/emacs/manual/html_node/autotype/Hippie-Expand.html][hippie-expand]]
 *** 🚧🐁 [[./completion/p-search][p-search]]: support for [[https://github.com/zkry/p-search][p-search]]
-*** ⭐ [[./completion/preview][preview]]
+*** ⭐ [[./completion/preview][preview]]: support for the built-in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Symbol-Completion.html][completion-preview-mode]]
 ** :config
 *** ⭐🏢 [[./config/akn-bindings][akn-bindings]]: my preferred keybindings (put this after Doom's [[doom-module::config default +bindings][:config default +bindings]])
 Flags:
@@ -57,27 +104,25 @@ Flags:
 **** +evil-insert: use my preferred bindings in evil insert state
 ** :editor
 *** ⭐🏢 [[./editor/fold][fold]]: marries [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html][hideshow]], [[https://github.com/mrkkrp/vimish-fold][vimish-fold]], [[https://github.com/emacs-tree-sitter/ts-fold][ts-fold]], [[https://github.com/emacs-tree-sitter/treesit-fold][treesit-fold]], [[https://github.com/jdtsmith/comint-fold][comint-fold]], and [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Outline-Minor-Mode.html][outline-minor-mode]] (enhanced with [[https://github.com/jdtsmith/outli][outli]] and [[https://github.com/jamescherti/outline-indent.el][outline-indent]]) to bring you marker-, indent- and syntax-based code folding for as many languages as possible.
-
 Similar to Doom's built-in ~:editor fold~ module, except:
 - adds support for more packages with more kinds of folds
 - for evil users, adds ~<tab>~ and ~S-<tab>~ bindings in normal state
 *** 🕰 [[./editor/license-headers][license-headers]]: inserting licenses and license headers
 *** 🕰 [[./editor/mindstream][mindstream]]: see [[https://github.com/countvajhula/mindstream][the mindstream package]]
 *** ⭐🏢 [[./editor/multiple-cursors][multiple-cursors]]:
-
 Forked from Doom's ~:editor multiple-cursors~.
 - I make an ambitious attempt to combine ~evil-mc~ with ~multiple-cursors~.
   I think ~multiple-cursors~ is generally better, except it doesn't work well with evil.
   So this module automatically switches to ~multiple-cursors~ when in insert/emacs state and ~evil-mc~ in all other evil states.
 - Added some extra commands and keybindings (e.g., for making a cursor below, and for super-clicking somewhere to create a cursor there)
-*** 🕰 [[./editor/smart-tabs][smart-tabs]]: see [[https://github.com/jcsalomon/smarttabs][the smart-tabs-mode package]]
+*** 🕰 [[./editor/smart-tabs][smart-tabs]]: see [[https://github.com/jcsalomon/smarttabs][the smart-tabs-mode package]] (tabs for indentation, spaces for alignment)
 *** 🕰 [[./editor/symex][symex]]: the evilest way to lisp, and the modalest way to evil
 *** 🐁 [[./editor/titlecase][titlecase]]: Switching a Sentence to Title Case
 *** ⭐ [[./editor/typing-the-word-blimpy-in-doom-emacs][typing-the-word-blimpy-in-doom-emacs]]: limpy b
-*** ⭐ [[./editor/words][words]]: TODO describe
+*** ⭐ [[./editor/words][words]]: toggling different ways of detecting word boundaries
 ** :emacs
 *** 🐁 [[./emacs/bookmark-in-project][bookmark-in-project]]: project-local bookmarks
-*** 🕰 [[./emacs/casual][casual]]: use [[https://github.com/kickingvegas/casual-suite][casual]]'s [[https://github.com/magit/transient][transient]] menus, modified to be closer to Doom's default keybindings
+*** 🕰 [[./emacs/casual][casual]]: use [[https://github.com/kickingvegas/casual-suite][casual]]'s user-friendly [[https://github.com/magit/transient][transient]] menus, modified to be closer to Doom's default keybindings
 *** ⭐ [[./emacs/electric-operator][electric-operator]]: automatically insert spaces around operators in many different programming languages (e.g., typing "3+3" produces "3 + 3")
 *** 🕰 [[./emacs/elmacro][elmacro]]: convert keyboard macros into Emacs Lisp functions
 *** ⭐🐁 [[./emacs/keyfreq][keyfreq]]: measure how often you use different commands, to help you optimize your keybindings
@@ -109,47 +154,46 @@ NOTE: On terminal emulators that support the [[https://sw.kovidgoyal.net/kitty/k
 ** :os
 *** 🕰 [[./os/emacs-mac][emacs-mac]]: stuff specific to [[https://bitbucket.org/mituharu/emacs-mac/][Mitsuharu Yamamoto's emacs-mac]] (a fork of Emacs for better Mac support, which can be installed [[https://github.com/railwaycat/homebrew-emacsmacport][with Homebrew]] or [[https://ports.macports.org/port/emacs-mac-app/][with MacPorts]])
 *** ⭐ [[./os/emacs-plus][emacs-plus]]: stuff I use on Mac with [[github.com/d12frosted/homebrew-emacs-plus][emacs-plus]]
-*** 🚧 [[./os/exwm][exwm]]: Emacs X Window Manager
+*** 🚧 [[./os/exwm][exwm]]: Emacs X Window Manager (for Linux)
 ** :term
 *** 🐛 [[./term/eat][eat]]: Emulate A Terminal with [[https://codeberg.org/akib/emacs-eat][eat]]
 *** 🐛🏢 [[./term/mistty][mistty]]: a fancier frontend for term.el
-
 I make some very invasive changes to mistty to make commands only act on the prompt
 ** :tools
 *** 🕰🐁 [[./tools/age][age]]: integration for [[https://github.com/FiloSottile/age][age]] file encryption
-*** 🐁🚧 [[./tools/dwim-shell-command][dwim-shell-command]]:
-*** [[./tools/fasd][fasd]]: integration for [[https://github.com/clvv/fasd][fasd]]
+*** 🐁🚧 [[./tools/dwim-shell-command][dwim-shell-command]]: support for [[https://github.com/xenodium/dwim-shell-command][dwim-shell-command]]
+*** [[./tools/fasd][fasd]]: integration for [[https://github.com/clvv/fasd][fasd]] (directory and file navigation based on frecency)
 *** 🚧🏢 [[./tools/llm-extra][llm-extra]]: stuff related to large language models
+Meant to be used in addition to Doom's ~:tools llm~ module.
 *** ⭐ [[./tools/pdf][pdf]]: viewing PDFs in Emacs
-
 Forked from Doom's ~:tools pdf~ module.
 *** ⭐ [[./tools/prodigy][prodigy]]: managing external services (e.g. starting a development server that you use all the time)
 Forked from Doom's deleted module of the same name
-*** 🐁🚧 [[./tools/quarto][quarto]]
+*** 🐁🚧 [[./tools/quarto][quarto]]: scientific publishing with Quarto
 *** [[./tools/regex][regex]]: tools for working with regular expressions - converting between Perl-style (PCRE) regex syntax, Emacs regex syntax, and Emacs [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Regular-Expressions.html][rx]] syntax
 *** 🕰 [[./tools/stgit][stgit]]: integration with [[https://stacked-git.github.io/][stacked git]].
 *** [[./tools/upload][upload]]: fork of doom's ~:tools upload~ module
 ** :ui
-*** ⭐🐁 [[./ui/blamer][blamer]]: [[https://github.com/Artawower/blamer.el][blamer]] package
+*** ⭐🐁 [[./ui/blamer][blamer]]: [[https://github.com/Artawower/blamer.el][blamer]] package (inline git blame for the current line)
 *** ⭐🐁 [[./ui/buffer-move][buffer-move]]: moving buffers between windows
 *** 🕰 [[./ui/emacs-dashboard][emacs-dashboard]]: an alternative to Doom's [[doom-module::ui doom-dashboard][:ui doom-dashboard]] module
 *** 🐁 [[./ui/extra-themes][extra-themes]]: some extra themes you can try or use
 *** 🕰🐁 [[./ui/golden-ratio][golden-ratio]]: auto-resize windows using the [[https://github.com/roman/golden-ratio.el][golden-ratio]] package, inspired by [[https://www.spacemacs.org/doc/DOCUMENTATION.html#golden-ratio][the Spacemacs integration]].
 *** ⭐🐁 [[./ui/highlight-numbers][highlight-numbers]]: highlight numbers in modes that don't highlight them
-
 This is taken from Doom's source code from before it was removed in [[https://github.com/doomemacs/doomemacs/commit/5cb34fa15155c6525ceb33a715b6c1944410bad3][this commit]].
 *** ⭐ [[./ui/highlight-symbol][highlight-symbol]]: highlight all instances of the symbol the cursor is on
 *** ⭐ [[./ui/modeline-minor-modes][modeline-minor-modes]]: show a menu of minor modes in the modeline
 *** ⭐🐁 [[./ui/modeline-scrollbar][modeline-scrollbar]]: show a mini scrollbar in the modeline
-*** ⭐ [[./ui/nav-flash][nav-flash]]: flash the line the cursor's line after big motions
-
+*** ⭐ [[./ui/nav-flash][nav-flash]]: flash the line the cursor's on after big motions
 Forked from Doom's ~nav-flash~ module, but uses the [[https://github.com/protesilaos/pulsar][pulsar]] package instead of the [[https://github.com/rolandwalker/nav-flash][nav-flash]] package.
 *** 🕰 [[./ui/prism][prism]]: color code by the nesting level it's in, not by its syntactic role
-*** ⭐🐁 [[./ui/rainbow-delimiters][rainbow-delimiters]]: highlight numbers in modes that don't highlight them
-
+*** ⭐🐁 [[./ui/rainbow-delimiters][rainbow-delimiters]]: highlight delimiters with rainbow colors
 This is taken from Doom's source code from before it was removed in [[https://github.com/doomemacs/doomemacs/commit/87b616e5d8dcb9763a8caf7b83e1e8e9016b6d1d][this commit]].
-*** [[./ui/read-aloud][read-aloud]]: read text out loud
+*** [[./ui/read-aloud][read-aloud]]: read text out loud (only macOS is supported)
 *** ⭐🏢 [[./ui/tab-bar][tab-bar]]: an alternative to Doom's [[doom-module::ui workspaces][:ui workspaces]] module using the Emacs built-in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Tab-Bars.html][tab-bar-mode]]
 - With the +bufferlo flag, this uses [[https://github.com/florommel/bufferlo][bufferlo]].
 - Otherwise, this uses [[https://github.com/mclear-tools/tabspaces][tabspaces]].
 *** ⭐🏢 [[./ui/tabs][tabs]]: an alternative to Doom's [[doom-module::ui tabs][:ui tabs]] module using the Emacs built-in [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Tab-Line.html][tab-line-mode]]
+* License
+
+These modules are part of my larger dotfiles repository and are released under GPL-3.0+ unless otherwise specified in individual module directories.

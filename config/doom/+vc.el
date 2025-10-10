@@ -1,4 +1,5 @@
-;;; +vc.el -*- lexical-binding: t; -*-
+;;; +vc.el - Version control integration and Git workflow enhancements -*- lexical-binding: t; -*-
+;; Configuration for vc (built-in), magit, and diff-hl
 
 ;; TODO: https://github.com/redguardtoo/vc-msg (port of vim's git-messenger)
 ;; make SPC g o b -> open blame link

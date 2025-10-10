@@ -1,4 +1,4 @@
-;;; +evil.el -*- lexical-binding: t; -*-
+;;; +evil.el - Evil mode (Vim emulation) customizations -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
 (require 'seq)

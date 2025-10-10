@@ -1,5 +1,7 @@
 ;;; +modules.el -*- lexical-binding: t; -*-
 
+;; NOTE: Machine-specific settings and `akn/tags' should be placed in local.el (gitignored).
+
 (defvar akn/tags '(*basic)
   "A list of tags whose modules should be enabled.
 

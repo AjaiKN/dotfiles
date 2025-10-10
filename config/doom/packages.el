@@ -9,6 +9,9 @@
 ;; or to pin a package if it's not pinned.
 ;; Also see `doom/bump-packages-in-buffer' (which doesn't seem to work right for adding a pin to an unpinned package).
 
+;; Local packages use this syntax, with the path relative to ~/.config/doom/lisp/:
+;;    :recipe (:local-repo "path")
+
 ;;; pinning ahead
 ;; stuff where I want to use a newer version than Doom goes here
 ;; https://github.com/doomemacs/doomemacs/issues/8287
