@@ -119,6 +119,17 @@
        :when (fboundp 'magit-todos-list)
        :desc "List project todos" "t" #'magit-todos-list))
 
+(map! :map magit-diff-section-map
+      "C-<return>" #'magit-diff-visit-worktree-file
+      "s-<return>" #'magit-diff-visit-worktree-file-other-window
+      :map magit-blob-mode-map
+      :mnie "RET"        #'magit-blob-visit-file
+      :mnie "<return>"   #'magit-blob-visit-file
+      :mnie "C-<return>" #'magit-blob-visit-file
+      :mnie "s-<return>" #'magit-blob-visit-file)
+(define-advice magit-diff-visit-file (:after (&rest _) akn/visit-worktree-message-a)
+  (when (bound-and-true-p magit-blob-mode)
+    (message (substitute-command-keys "To visit worktree file instead, use \\`C-<return>'"))))
 
 (after! which-key
   (akn/remove-from-list 'which-key-replacement-alist '(("\\`M-SPC t g\\'") nil . "Evil goggles"))
