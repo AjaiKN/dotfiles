@@ -140,7 +140,7 @@ NOTE: On terminal emulators that support the [[https://sw.kovidgoyal.net/kitty/k
 *** 🐁 [[./lang/hare][hare]]: [[https://harelang.org/][Hare]]
 *** [[./lang/jsonian][jsonian]]: like doom's json module, but uses [[https://github.com/iwahbe/jsonian][jsonian]]
 *** 🐁 [[./lang/kdl][kdl]]: KDL (JSON/YAML/XML alternative, used for serialization and configuration)
-*** [[./lang/linear-program][linear-program]]:
+*** [[./lang/linear-program][linear-program]]: editing files for linear programming tools like GLPK, Gurobi, and HiGHS (depeends on [[https://github.com/AjaiKN/dotfiles/blob/main/config/doom/lisp/linear-program-mode/linear-program-mode.el][linear-program-mode.el]])
 *** 🐁 [[./lang/log][log]]: dealing with log files
 *** [[./lang/maxima][maxima]]: [[https://maxima.sourceforge.io/][Maxima]] (computer algebra system)
 *** 🐁 [[./lang/mercury][mercury]]: [[https://mercurylang.org/][Mercury]] (logical + functional programming)

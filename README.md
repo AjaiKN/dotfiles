@@ -32,6 +32,67 @@ If you want to remove all the symlinks to my dotfiles, run `./uninstall`.
 
 NOTE: The `uninstall` script ONLY removes symlinks to my dotfiles. If you told the `install` script to delete, trash, or back up any of the original files, the `uninstall` script will not undo that; you'll have to undo it yourself.
 
+## Basic Repository Structure
+
+- `config/`: Files that belong in `~/.config/` (`$XDG_CONFIG_HOME`)
+- `dot-home/`: Files that go directly in my home directory (`~`)
+- `bin/`: Custom scripts and utilities that belong in my PATH
+- `scripts/`: Scripts that _don't_ need to be in my PATH
+- `launchd/`: macOS LaunchAgents for background tasks
+- `nix/`: Nix, NixOS, and Home Manager configurations
+- `vendor/`: Third-party dependencies
+- `private/`: A git submodule linking to a private repository containing configuration I haven't (yet) publicized
+
+## Highlights
+
+### Emacs
+
+My very customized Doom Emacs configuration is in `config/doom/`.
+See `config/doom/README.org`.
+
+I have a bunch of custom Doom modules in `config/doom/modules/`.
+See `config/doom/modules/README.org`.
+
+### Shell configuration
+
+- `dot-home/.shell_*.sh`: General shell configuration (for both bash and zsh)
+- `dot-home/.zshrc`, `config/zsh/`: Zsh configuration
+  - `config/zsh/plugin-manager.zsh`: My custom zsh plugin manager
+- `dot-home/.bashrc`: Bash configuration
+
+### Git
+- `config/git/config`: Git configuration
+- `config/gh/config.yml`: GitHub CLI configuration (including a bunch of aliases)
+- Custom Git Subcommands (in `bin/`)
+  - `git exclude`: Add to `.git/info/exclude`
+  - `git ignore`: Add to `.gitignore`
+  - `git force`: Force push relatively safely using `--force-with-lease` and `--force-if-includes`
+  - `git ff`: Do a fast-forward merge
+  - `git shelve`: Hide branches so they're not listed by `git branch` but are still accessible
+    - `git unshelve`: Unhide a branch
+    - `git shelved`: List hidden branches
+  - `git stash-unstaged`: Stash only unstaged changes
+  - `git undo-last-commit`: Safely undo the last commit while keeping changes
+    - `git redo-commit`: Re-commit the undone commit (starting with the same commit message)
+
+### Custom Scripts & Tools (in `bin/`)
+- `trash`: Move files to the trash instead of deleting (supports both macOS and Linux, no dependencies except bash)
+- `delete-ds-stores`: Clean up macOS .DS_Store files recursively
+- `scripts/secure_path`: A best-effort attempt to make my PATH cleaner and more secure by removing potentially dangerous directories
+- Emacs Integration
+  - `magit`: Launch Magit (Emacs git interface) from command line
+  - `calc`: Launch emacs [calc](https://www.gnu.org/software/emacs/manual/html_mono/calc.html) from the command line
+  - `dired`: Browse a directory using [Dired](https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html)
+  - `emacs-*`: Various ways of opening emacs
+
+### Vim
+- `dot-home/.vimrc`: Vim configuration (relatively minimal)
+- `config/nvim/`: Neovim configuration
+
+### Terminal
+- `config/wezterm/`: [WezTerm](https://wezterm.org/index.html) terminal emulator config
+- `dot-home/.tmux.conf`: tmux configuration
+
 ## License
 Copyright (C) 2025 Ajai Khatri Nelson
 

@@ -1,3 +1,83 @@
+# Ajai's Zsh Plugin Manager
+#
+# DESCRIPTION:
+#   A git submodule-based plugin manager for Zsh
+#
+# FEATURES:
+#   - Follows the Zsh Plugin Standard: https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html
+#   - Git submodule-based: Plugins are git submodules in my dotfiles repository
+#   - Automatic initialization: Missing plugins are initialized on first use
+#   - Performance tracking: Built-in timing for plugin load performance
+#   - Path management: Automatic fpath and PATH setup
+#
+# PLUGIN STORAGE:
+#   Plugins are stored in: $DOTFILES/config/zsh/plugins/USERNAME/REPO-NAME
+#
+# SUPPORTED PLUGIN FORMATS:
+#   - Standard zsh plugins: *.plugin.zsh files (https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html)
+#   - Oh My Zsh plugins: *.plugin.zsh files
+#   - Prezto modules: init.zsh files
+#   - Zim modules: init.zsh files
+#   - One-file plugins: Any .zsh or .plugin.zsh file in the plugin directory
+#
+# MAIN FUNCTIONS:
+#
+#   install_zsh_plugin USERNAME/REPO-NAME
+#     Install a new plugin from GitHub as a git submodule
+#
+#   update_zsh_plugin USERNAME/REPO-NAME
+#     Update an existing plugin to latest version
+#
+#   uninstall_zsh_plugin USERNAME/REPO-NAME
+#     Remove a plugin and its submodule
+#
+#   plugin USERNAME/REPO-NAME
+#   plugin PLUGIN-NAME
+#   plugin ohmyzsh/plugins/OMZ-PLUGIN-NAME
+#     Queue a plugin for loading (used in .zshrc)
+#
+#   load_plugins
+#     Load all queued plugins (call this after all plugin() calls)
+#
+#   print_plugin_times
+#     Show plugin load times for performance debugging
+#
+# USAGE IN .ZSHRC:
+#   source "$DOTFILES/config/zsh/plugin-manager.zsh"
+#
+#   ZSH_THEME="simple"
+#
+#   plugin ohmyzsh/plugins/vi-mode
+#   plugin zsh-users/zsh-syntax-highlighting
+#   plugin zsh-users/zsh-autosuggestions
+#
+#   load_plugins
+#
+# EXAMPLES:
+#   # Install a new plugin
+#   install_zsh_plugin zsh-users/zsh-completions
+#
+#   # Update all plugins
+#   cd $DOTFILES && git submodule update --remote
+#
+#   # Debug slow startup
+#   print_plugin_times
+#
+#   # Remove unused plugin
+#   uninstall_zsh_plugin old/unused-plugin
+#
+# ENVIRONMENT VARIABLES:
+#   ZSH_PLUGINS     - Directory containing plugin submodules
+#   ZSH_CACHE_DIR   - Cache directory for completions
+#   ZSH_CUSTOM      - Custom zsh configuration directory
+#   DOTFILES        - Root dotfiles directory
+#
+# ARRAYS POPULATED:
+#   zsh_loaded_plugins  - List of successfully loaded plugin names
+#   plugin_times        - Load times for each plugin (microseconds)
+#   plugins_failed      - List of plugins that failed to load
+#   plugins             - Queue of plugins to load
+
 function .set_zsh_plugin_default_branch {
 	local default_branch=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${1}" | jq -r .default_branch)
 	if [ -n "$default_branch" ] && [ "$default_branch" != null ]; then

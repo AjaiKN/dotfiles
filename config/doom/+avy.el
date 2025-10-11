@@ -1,4 +1,4 @@
-;;; +avy.el -*- lexical-binding: t; -*-
+;;; +avy.el - Avy jump navigation configuration -*- lexical-binding: t; -*-
 
 (require 'cl-lib)
 (require 'seq)

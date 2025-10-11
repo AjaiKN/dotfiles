@@ -1,5 +1,24 @@
 #!/usr/bin/env bash
 
+# git-undo-last-commit - Safely undo the last commit while preserving changes
+#
+# USAGE:
+#   git undo-last-commit
+#
+# DESCRIPTION:
+#   Undoes the most recent commit.
+#
+#   This script handles both regular commits and merge commits appropriately:
+#   - Regular commits: Uses 'git reset --soft HEAD~' to keep changes staged
+#   - Merge commits: Uses 'git reset --merge ORIG_HEAD' to undo the merge
+#
+# FILES CREATED:
+#   .git/MY_UNDONE_COMMIT_MSG - Contains the original commit message
+#
+# EXAMPLES:
+#   git undo-last-commit              # Undo the last commit
+#   git redo-commit                   # Re-commit, starting with the same message
+
 set -euo pipefail
 
 # https://stackoverflow.com/a/13956422

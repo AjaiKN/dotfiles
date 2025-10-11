@@ -54,6 +54,8 @@ Put each FILE in the trash. Currently supports macOS and Linux.
   dangerous_rm             Use rm
   dangerous_shred          Use GNU shred
 EOF
+	# SEE ALSO:
+	#   rm(1), mv(1), find(1), unlink(1)
 }
 
 urlencode_help() {
