@@ -340,11 +340,25 @@ The def* forms accepted are:
   (defmacro NAME (ARGS...) &rest BODY)
     Uses `cl-macrolet'.
   (defadvice! SYMBOL ARGLIST &optional DOCSTRING &rest [WHERE PLACES...] BODY)
-    Uses `defadvice!' (then `undefadvice!' afterwards).
+    Uses Doom's `defadvice!' (then `undefadvice!' afterwards).
   (advice-add FUNCTION WHERE ADVICE)
     Uses `advice-add' (then `advice-remove' afterwards).
   (define-advice FUNCTION (HOW LAMBDA-LIST &optional NAME DEPTH) &rest BODY)
-    Defines temporary advice with `define-advice'."
+    Defines temporary advice with `define-advice'.
+  (add-hook HOOK FUNCTION &optional DEPTH LOCAL)
+    Adds a hook temporarily using `add-hook' (then `remove-hook' afterwards).
+  (add-hook! HOOKS [:append :local [:depth N]] FUNCTIONS-OR-FORMS...)
+    Adds a hook temporarily using Doom's `add-hook!' (then `remove-hook!'
+    afterwards).
+  (defvar SYMBOL &optional INITVALUE)
+    Declares a temporary, dynamically-scoped variable, and if it's not already
+    bound, sets it temporarily to INITVALUE.
+  (defvar* SYMBOL VALUE)
+  (defconst SYMBOL VALUE)
+  (akn/defvar-setq SYMBOL VALUE)
+    Declares a temporary, dynamically-scoped variable, and sets it temporarily
+    to VALUE (even if it's already set). This is the same as just using
+    a (SYMBOL VALUE) form."
   (declare (indent defun))
   (setq body (macroexp-progn body))
   (when (memq (car bindings)
@@ -355,7 +369,12 @@ The def* forms accepted are:
                 akn/advise-letf!
                 add-hook add-hook!
                 defvar defvar* defconst akn/defvar-setq
-                set setq setf set-default setq-local setq-default setq-mode-local set-default-toplevel-value))
+                ;; not (yet?) implemented
+                set setf setq setq! setcar setcdr setenv setopt setplist
+                setq-hook! setq-local set-default set-register set-variable
+                setq-default setq-mode-local set-default-toplevel-value
+                defalias defclass defsubst defvar-1 defcustom define-inline
+                define-keymap defvar-keymap))
     (setq bindings (list bindings)))
   (dolist (binding (reverse bindings) body)
     (let ((type (car binding))
