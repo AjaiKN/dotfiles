@@ -247,12 +247,16 @@
             'completion-preview-mode
             'parinfer-rust-mode
             'akn/active-region-arrow-boundary-mode
+            'hl-line-mode
+            'symbol-overlay-mode
             'akn/line-move-visual-mode))
 (after! evil-mc
   (pushnew! evil-mc-incompatible-minor-modes
             'completion-preview-mode
             'parinfer-rust-mode
             'akn/active-region-arrow-boundary-mode
+            'hl-line-mode
+            'symbol-overlay-mode
             'akn/line-move-visual-mode
             ;; evil-escape's escape key leaves behind extraneous characters
             'evil-escape-mode

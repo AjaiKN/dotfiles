@@ -37,7 +37,6 @@
         evil-markdown-shift-left-line
         evil-markdown-shift-right-line
         evil-next-line
-        evil-normal-state
         evil-open-above
         evil-open-below
         evil-org-append-line
@@ -138,6 +137,7 @@
         evil-insert-state
         evil-mc-make-cursor-in-visual-selection-beg
         evil-mc-make-cursor-in-visual-selection-end
+        evil-normal-state
         evil-window-down
         evil-window-left
         evil-window-next
