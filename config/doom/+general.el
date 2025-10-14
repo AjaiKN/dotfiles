@@ -1160,8 +1160,7 @@ underscores in all modes."
          (cond
           ((null files) nil)
           ((null (cdr files)) (car files))
-          (t (akn/completing-read files
-                                  :prompt "choose a backup file: "
+          (t (akn/completing-read "choose a backup file: " files
                                   :default (file-newest-backup buffer-file-name)
                                   :category 'file))))))
 

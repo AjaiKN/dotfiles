@@ -780,10 +780,10 @@ See URL `https://github.com/houmain/keymapper'."
     (interactive
      (let ((current-system (when-let* ((f (sly-asdf-find-system-file default-directory)))
                              (file-name-base f))))
-       (list (akn/completing-read (append (if current-system (list current-system))
+       (list (akn/completing-read "QL system? "
+                                  (append (if current-system (list current-system))
                                           (sly-eval
                                            '(slynk-quicklisp:available-system-names)))
-                                  :prompt "QL system? "
                                   :default (if current-system (list current-system))))))
     (sly-quickload system)))
 

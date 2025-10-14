@@ -459,21 +459,23 @@ The def* forms accepted are:
 
 ;; also see https://kisaragi-hiu.com/emacs-completion-metadata/
 
-(cl-defmacro akn/completing-read (table &rest options
-                                        &key prompt predicate require-match history default
-                                        initial inherit-input-method
-                                        keymap category narrow add-history annotate state preview-key sort lookup group)
+(cl-defun akn/completing-read (prompt table
+                                      &rest options
+                                      &key predicate require-match history default
+                                      initial inherit-input-method
+                                      keymap category narrow add-history annotate state preview-key sort lookup group
+                                      command initial-narrow async-wrap)
   "Calls `completing-read', or `consult--read' if available."
-  (ignore keymap category narrow add-history annotate state preview-key sort lookup group) ;avoid unused variable warnings
-  `(if (fboundp 'consult--read)
-       (consult--read ,table ,@options)
-     (completing-read ,prompt ,table ,predicate ,require-match ,initial ,history ,default ,inherit-input-method)))
+  (ignore keymap category narrow add-history annotate state preview-key sort lookup group
+          command initial-narrow async-wrap) ;avoid unused variable warnings
+  (if (require 'consult nil 'noerror)
+      (apply 'consult--read table :prompt prompt options)
+    (completing-read prompt table predicate require-match initial history default inherit-input-method)))
 
 ;; https://www.howardism.org/Technical/Emacs/alt-completing-read.html
-;; TODO: not working
-(cl-defun akn/completing-read+ (collection &key prompt predicate require-match history default
-                                           initial inherit-input-method
-                                           keymap category narrow add-history annotate state preview-key sort lookup group)
+(cl-defun akn/completing-read+ (prompt collection
+                                       &rest args
+                                       &key default &allow-other-keys)
   "Calls `completing-read' but returns the value from COLLECTION.
 
 Simple wrapper around the `completing-read' function that assumes
@@ -493,11 +495,10 @@ We can use this function to `interactive' without needing to call
       \"Start a SSH session to a given HOSTNAME.\"
       (interactive
        (list
-        (akn/completing-read+ favorite-hosts :prompt \"Host: \")))
+        (akn/completing-read+ \"Host: \" favorite-hosts)))
       (message \"Rockin' and rollin' to %s\" hostname))"
   (let* ((choice
-          (akn/completing-read collection :prompt prompt :predicate predicate :require-match require-match :initial initial :history history :default default :inherit-input-method inherit-input-method
-                               :keymap keymap :category category :narrow narrow :add-history add-history :annotate annotate :state state :preview-key preview-key :sort sort :lookup lookup :group group))
+          (apply #'akn/completing-read prompt collection args))
          (results (cond
                    ((hash-table-p collection)     (gethash choice collection))
                    ((consp (car-safe collection)) (alist-get choice collection default nil #'equal))
@@ -595,26 +596,24 @@ is :around, :before, :after, :override, :after-until,
   (interactive
    (let* ((symbol
            (intern
-            (akn/completing-read
-             obarray
-             :prompt "Function to remove advice from: "
-             :predicate #'akn/advised-p)))
+            (akn/completing-read "Function to remove advice from: "
+                                 obarray
+                                 :predicate #'akn/advised-p)))
           (advices (akn/function-advices-with-how symbol))
           (function
            (intern
-            (akn/completing-read
-             advices
-             :prompt "Advice to remove: "
-             :category 'function
-             :annotate (lambda (candidate)
-                         (list candidate
-                               ;; prefix
-                               (propertize
-                                (let ((advice (intern candidate)))
-                                  (format "%-16s" (alist-get advice advices "" nil #'equal)))
-                                'face 'completions-annotations)
-                               ;; postfix
-                               nil))))))
+            (akn/completing-read "Advice to remove: "
+                                 advices
+                                 :category 'function
+                                 :annotate (lambda (candidate)
+                                             (list candidate
+                                                   ;; prefix
+                                                   (propertize
+                                                    (let ((advice (intern candidate)))
+                                                      (format "%-16s" (alist-get advice advices "" nil #'equal)))
+                                                    'face 'completions-annotations)
+                                                   ;; postfix
+                                                   nil))))))
      (list symbol nil function)))
   (advice-remove symbol (or (alist-get 'name props) function)))
 (akn/rotate-symbols! 'emacs-lisp-mode-hook "advice-add" "akn/advice-remove")
@@ -951,10 +950,10 @@ FILE defaults to the current `buffer-file-name'."
 (defun akn/choose-font-family (font-family)
   (interactive
    (list (akn/completing-read
+          "Font name: "
           (and window-system
                (fboundp #'font-family-list)
                (font-family-list))
-          :prompt (format-prompt "Font name" "")
           :predicate nil
           :require-match t
           :default (if (or (stringp doom-font) (null doom-font))
@@ -981,10 +980,10 @@ FILE defaults to the current `buffer-file-name'."
 (defun akn/choose-variable-pitch-font-family (font-family)
   (interactive
    (list (akn/completing-read
+          "Font name: "
           (and window-system
                (fboundp #'font-family-list)
                (font-family-list))
-          :prompt (format-prompt "Font name" "")
           :predicate nil
           :require-match t
           :default (if (stringp doom-variable-pitch-font)
