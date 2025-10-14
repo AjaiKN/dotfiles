@@ -363,11 +363,11 @@ The def* forms accepted are:
       (setq
        body (pcase type
               (`defmacro
-               `(cl-macrolet ((,@rest)) ,body))
+               `(cl-macrolet ((,@rest)) ,@(macroexp-unprogn body)))
               (`defadvice!
                `(unwind-protect
                     (progn (defadvice! ,@rest)
-                           ,body)
+                           ,@(macroexp-unprogn body))
                   (undefadvice! ,@rest)))
               (`advice-add
                (cl-destructuring-bind (target where fn-expr &optional props) rest
@@ -375,7 +375,7 @@ The def* forms accepted are:
                    `(let ((,fn ,fn-expr))
                       (unwind-protect
                           (progn (advice-add ,target ,where ,fn ,props)
-                                 ,body)
+                                 ,@(macroexp-unprogn body))
                         (advice-remove ,target ,(or (alist-get 'name props) fn)))))))
               ;; defadvice is for compatibility with doom
               ((or `define-advice `defadvice)
@@ -383,57 +383,58 @@ The def* forms accepted are:
                  (warn "akn/letf!: please use defadvice!, advice-add, or define-advice instead of defadvice"))
                `(unwind-protect
                     (progn (define-advice ,@rest)
-                           ,body)
+                           ,@(macroexp-unprogn body))
                   (akn/undefine-advice ,@rest)))
               (`defun
                `(cl-letf ((,(car rest) (symbol-function #',(car rest))))
                   (ignore ,(car rest))
                   (cl-letf (((symbol-function #',(car rest))
                              (cl-function (lambda ,(cadr rest) ,@(cddr rest)))))
-                    ,body)))
+                    ,@(macroexp-unprogn body))))
               (`defun*
-               `(cl-labels ((,@rest)) ,body))
+               `(cl-labels ((,@rest))
+                  ,@(macroexp-unprogn body)))
               (`akn/advise-letf!
                `(unwind-protect
                     (progn (akn/advise-letf! ,@rest)
-                           ,body)
+                           ,@(macroexp-unprogn body))
                   (akn/unadvise-letf! ,@rest)))
               (`add-hook
                `(unwind-protect
                     (progn (add-hook ,@rest)
-                           ,body)
+                           ,@(macroexp-unprogn body))
                   (akn/remove-hook ,@rest)))
               (`add-hook!
                `(unwind-protect (progn (add-hook! ,@rest)
-                                       ,body)
+                                       ,@(macroexp-unprogn body))
                   (remove-hook! ,@rest)))
               (`defvar
                (cl-destructuring-bind (symbol &optional initvalue _docstring) rest
                  `(progn
                     (defvar ,symbol)
-                    ,(if (length> rest 1)
-                         `(if (boundp ',symbol)
-                              ,body
-                            (let ((,symbol ,initvalue))
-                              ,body))
-                       body))))
+                    ,@(if (length> rest 1)
+                          `((if (boundp ',symbol)
+                                ,body
+                              (let ((,symbol ,initvalue))
+                                ,@(macroexp-unprogn body))))
+                        (macroexp-unprogn body)))))
               ((or `defvar* `defconst `akn/defvar-setq)
                (cl-destructuring-bind (symbol initvalue &optional _docstring) rest
                  `(progn
                     (defvar ,symbol)
                     (let ((,symbol ,initvalue))
-                      ,body))))
+                      ,@(macroexp-unprogn body)))))
               ((pred symbolp)
                (cl-destructuring-bind (symbol initvalue) binding
                  `(progn
                     (defvar ,symbol)
                     (let ((,symbol ,initvalue))
-                      ,body))))
+                      ,@(macroexp-unprogn body)))))
               (_
                (when (eq (car-safe type) 'function)
                  (setq type (list 'symbol-function type)))
                `(cl-letf ((,type ,@rest))
-                  ,body)))))))
+                  ,@(macroexp-unprogn body))))))))
 
 ;;; akn/completing-read
 
