@@ -164,8 +164,8 @@ WORKSPACE can be a string (name of a workspace) or a workspace (satisfies
                   (not (+workspace--current-p workspace))
                   (+workspace--index workspace))))
     (cl-loop for buffer in (+workspace--buffer-list nil ind)
-             when (and (doom-real-buffer-p buffer)
-                       (+workspace--local-buffer-p buffer))
+             when (and (doom-real-buffer-p buffer))
+                       ;; (+workspace--local-buffer-p buffer))
              collect buffer)))
 
 ;;;###autoload

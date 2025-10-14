@@ -1383,6 +1383,16 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   (pushnew! clean-buffer-list-kill-regexps
             (rx bos "magit-" (or "process" "diff"))
             (rx bos "*helpful"))
+  (akn/advise-letf! clean-buffer-list (akn/dont-kill-workspace-buffers-a)
+    (bufferlo-include-buried-buffers nil)
+    (clean-buffer-list-kill-never-buffer-names
+     (append clean-buffer-list-kill-never-buffer-names
+             (cl-loop for frame in (frame-list)
+                      append (and (fboundp '+workspace-list) (fboundp '+workspace-buffer-list)
+                                  (with-selected-frame frame
+                                    (cl-loop for workspace in (+workspace-list)
+                                             append (mapcar (lambda (b) (if (stringp b) b (buffer-name b)))
+                                                            (+workspace-buffer-list workspace)))))))))
   (akn/advice-remove #'clean-buffer-list :around #'doom-shut-up-a)
   (midnight-mode))
 

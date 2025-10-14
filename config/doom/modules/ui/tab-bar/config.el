@@ -165,7 +165,8 @@ new project directory.")
   ;; these must be set before the bufferlo package is loaded
   (setq bufferlo-prefer-local-buffers 'tabs)
   :config
-  (setq! bufferlo-mode-line-prefix "🐃" ; "🐮"
+  (setq! bufferlo-mode-line nil
+         bufferlo-mode-line-prefix "🐃" ; "🐮"
          bufferlo-mode-line-set-active-prefix "Ⓢ"
          bufferlo-mode-line-frame-prefix "Ⓕ"
          bufferlo-mode-line-tab-prefix "Ⓣ"
