@@ -144,6 +144,7 @@
         evil-window-right
         evil-window-up
         fill-paragraph
+        helpful-variable
         mac-mwheel-scroll
         mac-previous-buffer
         mc/mark-next-lines
