@@ -249,7 +249,10 @@
             'akn/active-region-arrow-boundary-mode
             'hl-line-mode
             'symbol-overlay-mode
-            'akn/line-move-visual-mode))
+            'akn/line-move-visual-mode)
+  (pushnew! mc/cursor-specific-vars
+            'evil-markers-alist 'evil-motion-marker 'evil-prev-visual-mark 'evil-prev-visual-point
+            'evil-visual-beginning 'evil-visual-end 'evil-visual-mark 'evil-visual-point))
 (after! evil-mc
   (pushnew! evil-mc-incompatible-minor-modes
             'completion-preview-mode
@@ -289,18 +292,26 @@
       (evil-adjust-cursor)))
 
   (map! :map evil-mc-key-map
-        :n "C" (kmacro "c$"))
-
-  (add-hook! 'evil-mc-mode-off-hook :depth 95
-    (defun +multiple-cursors--ensure-overlays-deleted ()
-      "Remove all `evil-mc' cursor overlays.
-
-The overlays should be deleted when `evil-mc-mode' is turned off,
-but due to bugs, that doesn't always happen."
-      (without-restriction
-        (remove-overlays (point-min) (point-max) 'type 'evil-mc-cursor)))))
+        :n "C" (kmacro "c$")))
 
 (after! (:or evil-mc multiple-cursors)
   (add-hook! 'doom-escape-hook #'+multiple-cursors-exit)
 
   (advice-add #'mouse-set-point :after #'+multiple-cursors-exit))
+
+(add-hook! '(evil-mc-mode-off-hook multiple-cursors-mode-disabled-hook) :depth 95
+  (defun +multiple-cursors--ensure-overlays-deleted ()
+    "Remove all `evil-mc' and `multiple-cursors' cursor overlays.
+
+The overlays should be deleted when `evil-mc-mode' or
+`multiple-cursors-mode' is turned off, but due to bugs, that doesn't
+always happen."
+    (without-restriction
+      ;; evil-mc
+      (unless (bound-and-true-p evil-mc-mode)
+        (remove-overlays (point-min) (point-max) 'type 'evil-mc-cursor))
+      ;; multiple-cursors
+      (unless (bound-and-true-p multiple-cursors-mode)
+        (remove-overlays (point-min) (point-max) 'type 'fake-cursor)
+        (remove-overlays (point-min) (point-max) 'type 'additional-region)
+        (remove-overlays (point-min) (point-max) 'type 'original-cursor)))))

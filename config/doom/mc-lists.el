@@ -24,6 +24,7 @@
         evil-backward-word-begin
         evil-beginning-of-line
         evil-change
+        evil-delete
         evil-delete-back-to-indentation
         evil-delete-backward-char-and-join
         evil-end-of-line
@@ -32,6 +33,7 @@
         evil-forward-WORD-begin
         evil-forward-char
         evil-forward-word-begin
+        evil-forward-word-end
         evil-insert
         evil-insert-line
         evil-markdown-shift-left-line
@@ -43,6 +45,7 @@
         evil-previous-line
         evil-quoted-insert
         evil-shift-right-line
+        evil-visual-char
         evil-yank
         forward-sexp
         ignore-preserving-kill-region
