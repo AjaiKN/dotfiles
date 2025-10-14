@@ -2690,7 +2690,7 @@ there's no need for `markdown-mode' to reduplicate the effort."
   ;; (https://github.com/editorconfig/editorconfig-emacs/issues/230#issuecomment-701916590).
   (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash))
 
-;;; don't add passwords in clipboard to kill ring
+;;; don't add passwords in clipboard to kill ring (macOS only for now)
 
 (defvar akn/mac-pboard-types-executable (concat (getenv-internal "DOTFILES") "/bin/pboard-types"))
 (defvar akn/pboard-record-always-allow nil)
@@ -2718,7 +2718,9 @@ Currently works on macOS. See URL `https://nspasteboard.org/'."
                                 out)))))
        (t t))))
 
-(when interprogram-paste-function
+(advice-add #'gui-selection-value :before-while #'akn/pboard-record-p)
+(when (and interprogram-paste-function (not (eq interprogram-paste-function #'gui-selection-value)))
+  ;; (shouldn't be necessary)
   (add-function :before-while interprogram-paste-function #'akn/pboard-record-p))
 
 (define-advice current-kill (:around (fn &optional n &rest args) akn/pboard-dont-record-a)
