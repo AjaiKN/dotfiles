@@ -720,20 +720,6 @@ off again if you're dealing with non-compressed plist files."
         (akn/remove-from-list 'jka-compr-compression-info-list akn/plist-compression-info-entry))
       (jka-compr-update))))
 
-    ;; (defmacro akn/with-plist-compression (&rest body)
-    ;;   (declare (indent defun))
-    ;;   `(unwind-protect
-    ;;        (let ((jka-compr-compression-info-list
-    ;;               (cons akn/plist-compression-info-entry jka-compr-compression-info-list)))
-    ;;          (jka-compr-update)
-    ;;          ,@body)
-    ;;      (jka-compr-update)))
-
-    ;; (defun akn/find-this-file-with-plist-compression ()
-    ;;   (interactive)
-    ;;   (akn/with-plist-compression
-    ;;     (akn/hard-reload-buffer)))
-
     ;; (defun akn/compressed-plist-magic-matcher ()
     ;;   (let ((case-fold-search nil))
     ;;    (and (stringp buffer-file-name)
