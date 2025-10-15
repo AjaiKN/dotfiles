@@ -20,6 +20,8 @@ set -x
 # To see default keybindings:
 #   plutil -convert xml1 -o - /System/Library/Frameworks/AppKit.framework/Resources/StandardKeyBinding.dict | bat --language xml
 
+# https://github.com/8ta4/plist
+
 ## ApplePressAndHold
 # By default, holding down a key lets you open accents instead of
 # repeating the key. But I want to try out vim keybindings, and I want
