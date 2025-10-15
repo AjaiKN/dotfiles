@@ -681,35 +681,66 @@ See URL `https://github.com/houmain/keymapper'."
       :modes '(akn/keymapper-conf-mode))
     (add-to-list 'flycheck-checkers 'akn/keymapper)))
 
-;;; launchctl
+;;; launchctl, macOS plists
 (use-package! nxml-mode
   :init
   (add-to-list 'auto-mode-alist '("\\.plist$" . nxml-mode)))
 
-;; ;; https://www.emacswiki.org/emacs/MacOSXPlist
-;; (after! jka-compr
-;;   (when (executable-find "plutil")
-;;     ;; Allow editing of binary .plist files.
-;;     ;;[regexp
-;;     ;; compr-message  compr-prog  compr-args
-;;     ;; uncomp-message uncomp-prog uncomp-args
-;;     ;; can-append strip-extension-flag file-magic-bytes
-;;     ;; uncompress-function]
-;;     (add-to-list 'jka-compr-compression-info-list
-;;                  ["\\.plist$"
+;; https://www.emacswiki.org/emacs/MacOSXPlist
+;; Allow editing of binary .plist files.
+(after! jka-compr
+  (when (executable-find "plutil")
+    (defconst akn/plist-compression-info-entry
+      ;;[regexp
+      ;; compr-message  compr-prog  compr-args
+      ;; uncomp-message uncomp-prog uncomp-args
+      ;; can-append strip-extension-flag file-magic-bytes
+      ;; uncompress-function]
+      `[,(rx (or ".plist" ".dict") eos)
+        ;; "plist compressing" "plutil" ("-convert" "binary1" "-o" "-" "-")
+        nil nil nil ;not setting a compression program so compressed things become read-only
+        "plist uncompressing" "plutil" ("-convert" "xml1" "-o" "-" "-")
+        nil nil "bplist"
+        nil]
+      "Entry for decompressing/compressing macOS binary plist files.
 
-;;                   ;; I set this to cat because otherwise, it'll compress plist
-;;                   ;; files that aren't already compressed.
-;;                   nil "cat" nil
-;;                   ;; nil nil nil
-;;                   ;; "plist compressing" "plutil" ("-convert" "binary1" "-o" "-" "-")
+This is an entry for `jka-compr-compression-info-list'. But I don't want
+to permanently add this to `jka-compr-compression-info-list', since that
+would cause Emacs to compress plist files that wern't already
+compressed.")
+    ;; (add-to-list 'jka-compr-compression-info-list akn/plist-compression-info-entry)
 
-;;                   "plist uncompressing" "plutil" ("-convert" "xml1" "-o" "-" "-")
+    (define-minor-mode akn/plist-decompression-global-mode
+      "Decompress macOS binary plist files. Note that you should turn this mode
+off again if you're dealing with non-compressed plist files."
+      :global t
+      :group 'compression
+      (if akn/plist-decompression-global-mode
+          (add-to-list 'jka-compr-compression-info-list akn/plist-compression-info-entry)
+        (akn/remove-from-list 'jka-compr-compression-info-list akn/plist-compression-info-entry))
+      (jka-compr-update))))
 
-;;                   nil nil "bplist"
-;;                   nil])
+    ;; (defmacro akn/with-plist-compression (&rest body)
+    ;;   (declare (indent defun))
+    ;;   `(unwind-protect
+    ;;        (let ((jka-compr-compression-info-list
+    ;;               (cons akn/plist-compression-info-entry jka-compr-compression-info-list)))
+    ;;          (jka-compr-update)
+    ;;          ,@body)
+    ;;      (jka-compr-update)))
 
-;;     (jka-compr-update)))
+    ;; (defun akn/find-this-file-with-plist-compression ()
+    ;;   (interactive)
+    ;;   (akn/with-plist-compression
+    ;;     (akn/hard-reload-buffer)))
+
+    ;; (defun akn/compressed-plist-magic-matcher ()
+    ;;   (let ((case-fold-search nil))
+    ;;    (and (stringp buffer-file-name)
+    ;;         (string-match-p (rx (or ".plist" ".dict") eos) buffer-file-name)
+    ;;         (not (member akn/plist-compression-info-entry jka-compr-compression-info-list))
+    ;;         (save-excursion
+    ;;           (search-forward-regexp (rx buffer-start "bplist") nil 'noerror)))))))
 
 (use-package! launchctl
   :config
