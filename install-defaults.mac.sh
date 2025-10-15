@@ -10,6 +10,16 @@ set -x
 # https://github.com/kevinSuttle/macOS-Defaults/blob/master/REFERENCE.md
 # https://github.com/mathiasbynens/dotfiles/blob/master/.macos
 
+# TODO:
+# https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/EventOverview/TextDefaultsBindings/TextDefaultsBindings.html
+# http://yummymelon.com/devnull/an-accidental-lock-in-feature-of-the-apple-ecosystem.html
+# defaults write NSGlobalDomain NSTextKillRingSize 5
+# NSMnemonicsWorkInText
+# https://brettterpstra.com/projects/keybindings/
+# https://brettterpstra.com/2023/12/18/macos-keybinding-tricks-the-kill-ring/
+# To see default keybindings:
+#   plutil -convert xml1 -o - /System/Library/Frameworks/AppKit.framework/Resources/StandardKeyBinding.dict | bat --language xml
+
 ## ApplePressAndHold
 # By default, holding down a key lets you open accents instead of
 # repeating the key. But I want to try out vim keybindings, and I want
