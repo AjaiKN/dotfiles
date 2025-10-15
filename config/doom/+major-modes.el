@@ -690,23 +690,24 @@ See URL `https://github.com/houmain/keymapper'."
 ;; (after! jka-compr
 ;;   (when (executable-find "plutil")
 ;;     ;; Allow editing of binary .plist files.
+;;     ;;[regexp
+;;     ;; compr-message  compr-prog  compr-args
+;;     ;; uncomp-message uncomp-prog uncomp-args
+;;     ;; can-append strip-extension-flag file-magic-bytes
+;;     ;; uncompress-function]
 ;;     (add-to-list 'jka-compr-compression-info-list
-;;                  ["\\.plist$"                                ;REGEXP
+;;                  ["\\.plist$"
 
 ;;                   ;; I set this to cat because otherwise, it'll compress plist
 ;;                   ;; files that aren't already compressed.
-;;                   nil ;"converting text XML to binary plist" ;COMPRESS-MSG
-;;                   "cat" ;nil ;"plutil"                       ;COMPRESS-PROGRAM (nil means visit read-only)
-;;                   nil ;("-convert" "binary1" "-o" "-" "-")   ;COMPRESS-ARGS
+;;                   nil "cat" nil
+;;                   ;; nil nil nil
+;;                   ;; "plist compressing" "plutil" ("-convert" "binary1" "-o" "-" "-")
 
-;;                   "converting binary plist to text XML"      ;UNCOMPRESS-MSG
-;;                   "plutil"                                   ;UNCOMPRESS-PROGRAM
-;;                   ("-convert" "xml1" "-o" "-" "-")           ;UNCOMPRESS-ARGS
+;;                   "plist uncompressing" "plutil" ("-convert" "xml1" "-o" "-" "-")
 
-;;                   nil                                        ;APPEND-FLAG
-;;                   nil                                        ;STRIP-EXTENSION-FLAG
-;;                   "bplist"                                   ;FILE-MAGIC-CHARS
-;;                   nil])                                      ;UNCOMPRESS-FUNCTION
+;;                   nil nil "bplist"
+;;                   nil])
 
 ;;     (jka-compr-update)))
 
