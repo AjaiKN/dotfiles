@@ -7,6 +7,7 @@ export HISTFILE="$HOME/.zsh_my_history"
 if [ ! -f ~/.zsh_my_history_backup ]; then
 	# echo_if_interactive "Creating ~/.zsh_my_history_backup"
 	touch ~/.zsh_my_history_backup
+	chmod 600 ~/.zsh_my_history_backup
 fi
 # if ruby is installed
 if command -v ruby >/dev/null 2>&1; then
