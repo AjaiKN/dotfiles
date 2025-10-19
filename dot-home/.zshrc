@@ -22,24 +22,30 @@ function zsh_compile_if_zwc_exists {
 		zcompile -R -- "$1"
 	fi
 }
+# TODO: this shouldn't actually be necessary? zsh only loads zwc if it's newer
 function safe_source {
 	zsh_compile_if_zwc_exists "$1"
-	builtin source "$1"
+	builtin source "$@"
+}
+function safe_source_dot {
+	zsh_compile_if_zwc_exists "$1"
+	builtin . "$@"
 }
 function compile_and_source {
 	zsh_compile "$1"
-	builtin source "$1"
+	builtin source "$@"
 }
 function clean_zwc_files {
 	set -x
-	rm -f ~/*.zwc(.ND) ~/*zsh*/**/*.zwc(.ND) ~/.{config,cache}/*zsh*/**/*.zwc(.ND)
+	rm -f ~/*.zwc(.ND) ~/*zsh*/**/*.zwc(.ND) ~/.{config,cache}/*zsh*/**/*.zwc(.ND) \
+		$DOTFILES/dot-home/*.zwc(.ND) $DOTFILES/config/zsh/**/*.zwc(.ND)
 	set +x
 }
 
 alias source=safe_source
-alias .=safe_source
+alias .=safe_source_dot
 function source { safe_source "$@" }
-function . { safe_source "$@" }
+function . { safe_source_dot "$@" }
 
 ### Profiling prologue
 # SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
