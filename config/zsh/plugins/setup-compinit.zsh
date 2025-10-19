@@ -50,14 +50,15 @@ fi
   if is-at-least 5.2; then
     # Check if dumpfile is up-to-date by comparing the full path and
     # last modification time of all the completion functions in fpath.
-    local zdumpfile zstats zold_dat
+    local zdumpfile zold_dat
+    local -a zmtimes
     local -i zdump_dat=1
     local zdumpfile="$ZSH_CACHE_DIR/zcompdump"
     LC_ALL=C local -r zcomps=(${^fpath}/^([^_]*|*~|*.zwc)(N))
     if (( ${#zcomps} )); then
-      zmodload -F zsh/stat b:zstat && zstat -A zstats +mtime ${zcomps} || return 1
+      zmodload -F zsh/stat b:zstat && zstat -A zmtimes +mtime ${zcomps} || return 1
     fi
-    local -r znew_dat=${ZSH_VERSION}$'\0'${(pj:\0:)zcomps}$'\0'${(pj:\0:)zstats}
+    local -r znew_dat=${ZSH_VERSION}$'\0'${(pj:\0:)zcomps}$'\0'${(pj:\0:)zmtimes}
     if [[ -e ${zdumpfile}.dat ]]; then
       zmodload -F zsh/system b:sysread && sysread -s ${#znew_dat} zold_dat <${zdumpfile}.dat || return 1
       if [[ ${zold_dat} == ${znew_dat} ]] zdump_dat=0
@@ -67,7 +68,7 @@ fi
     fi
 
     # Load and initialize the completion system
-    autoload -Uz compinit && compinit -C -d ${zdumpfile} || return 1
+    autoload -Uz compinit && compinit -C -d ${zdumpfile} && [[ -e ${zdumpfile} ]] || return 1
 
     if [[ ! ${zdumpfile}.dat -nt ${zdumpfile} ]]; then
       >! ${zdumpfile}.dat <<<${znew_dat}
