@@ -149,6 +149,7 @@ plugin bindings
 plugin edit-command-line
 plugin emacs
 plugin autocorrect
+(( $+commands[atuin] )) && plugin atuin
 
 if ! [[ -n "$INSIDE_EMACS" ]] || [[ "$INSIDE_EMACS" = "vterm"* ]] || [[ "$TERM" = "eterm-color" ]] && { ! [[ "$TERM" = "dumb" ]] }; then
 	is-at-least 4.3.11 && plugin zsh-users/zsh-syntax-highlighting
