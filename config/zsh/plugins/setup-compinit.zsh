@@ -46,14 +46,15 @@ fi
 () {
   builtin emulate -L zsh -o EXTENDED_GLOB
 
+  local zdumpfile="$ZSH_CACHE_DIR/zcompdump"
+
   # the extended glob we need doesn't seem to be supported in earlier zsh versions
   if is-at-least 5.2; then
     # Check if dumpfile is up-to-date by comparing the full path and
     # last modification time of all the completion functions in fpath.
-    local zdumpfile zold_dat
+    local zold_dat
     local -a zmtimes
     local -i zdump_dat=1
-    local zdumpfile="$ZSH_CACHE_DIR/zcompdump"
     LC_ALL=C local -r zcomps=(${^fpath}/^([^_]*|*~|*.zwc)(N))
     if (( ${#zcomps} )); then
       zmodload -F zsh/stat b:zstat && zstat -A zmtimes +mtime ${zcomps} || return 1
@@ -78,7 +79,7 @@ fi
       zcompile ${zdumpfile}
     fi
   else
-    command rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) || return 1
+    # command rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) || return 1
     autoload -Uz compinit && compinit -d ${zdumpfile} || return 1
   fi
 }
