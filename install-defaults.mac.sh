@@ -21,6 +21,7 @@ set -x
 #   plutil -convert xml1 -o - /System/Library/Frameworks/AppKit.framework/Resources/StandardKeyBinding.dict | bat --language xml
 
 # https://github.com/8ta4/plist
+# https://developer.okta.com/blog/2021/07/19/discover-macos-settings-with-plistwatch
 
 ## ApplePressAndHold
 # By default, holding down a key lets you open accents instead of
