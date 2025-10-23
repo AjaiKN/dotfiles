@@ -12,11 +12,17 @@ if : ; then
 	confirm() {
 		set +x
 		printf '%s (y/n) ' "$1"
-		read -r REPLY
-		case "$REPLY" in
-			y*) : ;;
-			*) return 2 ;;
-		esac
+		if [ -t 0 ]; then
+			read -r REPLY
+			case "$REPLY" in
+				y*) : ;;
+				Y*) : ;;
+				*) return 2 ;;
+			esac
+		else
+			printf '(tty not available, assuming no)\n'
+			return 3
+		fi
 		set -x
 	}
 
