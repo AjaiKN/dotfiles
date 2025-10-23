@@ -133,7 +133,7 @@ ForegroundPositive=39,174,96
 ForegroundVisited=155,89,182
 
 [General]
-ColorSchemeHash=f13a5f93a8d2186748a87eaf56ec9fcef24073d5
+ColorSchemeHash=9f63c7711a13123582e720791ea0f8c0172977d2
 TerminalApplication=wezterm start --cwd .
 TerminalService=org.wezfurlong.wezterm.desktop
 
