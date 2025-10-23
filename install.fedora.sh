@@ -12,18 +12,20 @@ sudo dnf -y install git gh stow zsh curl wget make
 sudo dnf -y install bsdtar fzf fd-find curl cmake editorconfig xclip tree ripgrep neovim shellcheck
 sudo dnf -y install spice-vdagent qemu-guest-agent spice-webdavd
 
-if ! gh auth token >/dev/null 2>&1; then
-	gh auth login
-fi
+# touch ~/.gitconfig
+# if ! gh auth token >/dev/null 2>&1; then
+# 	gh auth login
+# fi
+# gh auth setup-git
 
-mkdir -p ~/prog
-cd ~/prog
-if ! [ -d ~/prog/dotfiles ]; then
-	gh repo clone AjaiKN/dotfiles -- --depth=1
-fi
-cd dotfiles
+# mkdir -p ~/prog
+# cd ~/prog
+# if ! [ -d ~/prog/dotfiles ]; then
+# 	gh repo clone AjaiKN/dotfiles -- --depth=1
+# fi
+# cd dotfiles
 
-./install-dot-home.sh
+./install
 
 if [ "$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd)" != "$(command -v zsh)" ]; then
 	chsh -s "$(command -v zsh)" "$USER" || echo "unable to change default shell to zsh"

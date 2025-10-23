@@ -17,6 +17,10 @@ confirm() {
 
 ./install-dot-home.sh
 
+if [ ! -e ~/.gitconfig ]; then
+	touch ~/.gitconfig
+fi
+
 if [ "$(uname -s)" = "Darwin" ]; then
 	echo
 	echo
