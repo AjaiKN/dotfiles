@@ -49,7 +49,12 @@ else
 			done
 			emacsclient -e "(progn (akn/focus-this-frame) (mapc #'find-file '($file_list)) nil)" --no-wait >/dev/null
 		else
-			TERM=xterm-256color emacsclient -c -n "$@"
+			if [ "$(uname -s)" = "Linux" ]; then
+				# For some reason, emacsclient -c -n wasn't working on my Asahi Linux
+				TERM=xterm-256color nohup emacsclient -c "$@" </dev/null >/dev/null 2>&1 &
+			else
+				TERM=xterm-256color emacsclient -c -n "$@"
+			fi
 			emacsclient -e '(akn/focus-this-frame)' >/dev/null
 		fi
 	fi
