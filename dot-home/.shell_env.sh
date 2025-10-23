@@ -73,7 +73,7 @@ $PLAN9/bin"
 export HOMEBREW_PREFIX="/opt/homebrew" # fallback so that HOMEBREW_PREFIX isn't blank
 if command -v brew >/dev/null 2>&1; then
 	eval "$(brew shellenv)" # this modifies PATH; to see the script, just run the command in the parens
-elif ! [ -e /Users ] && [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+elif ! [ -e /System ] && [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
 	# NOTE: Don't add anything with /home to PATH on Mac. /home exists on Mac
 	# (not sure why) and is symlinked to /System/Volumes/Data/home, which is slow
 	# to access for some reason. So if it's on PATH, it'll slow down every

@@ -67,7 +67,7 @@ function superls {
 	ls -AeFGl
 }
 
-if [ -d /Users ] && command -v gsort >/dev/null 2>&1; then
+if [ -e /System ] && command -v gsort >/dev/null 2>&1; then
 	alias lsize='gdu -a -h --max-depth=1 | gsort -hr'
 else
 	alias lsize='du -a -h --max-depth=1 | sort -hr'
