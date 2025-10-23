@@ -1,0 +1,14 @@
+# systemctl --user daemon-reload
+# systemctl --user start --now keymapper
+# systemctl --user enable keymapper
+
+[Unit]
+Description=keymapper user part
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/keymapper -u -v
+Restart=always
+
+[Install]
+WantedBy=default.target
