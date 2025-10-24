@@ -84,6 +84,31 @@ elif ! [ -e /System ] && [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
 	eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# # https://github.com/romkatv/zsh4humans/blob/cd6c4770c802c3a17b4c43e5587adabb9a370a75/main.zsh#L67-L87
+# export HOMEBREW_PREFIX="/opt/homebrew" # fallback so that HOMEBREW_PREFIX isn't blank
+# if [ -e /System ]; then
+# 	if [ -x /opt/homebrew/bin/brew ]; then HOMEBREW_PREFIX=/opt/homebrew
+# 	elif [ -x /usr/local/bin/brew ]; then HOMEBREW_PREFIX=/usr/local
+# 	fi
+# else
+# 	if [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
+# 	elif [ -x "$HOME"/.linuxbrew/bin/brew ]; then HOMEBREW_PREFIX="$HOME"/.linuxbrew
+# 	fi
+# fi
+# export HOMEBREW_PREFIX
+# export HOMEBREW_CELLAR="$HOMEBREW_PREFIX"/Cellar
+# if [ -e "$HOMEBREW_PREFIX"/Homebrew/Library ]; then
+# 	export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX"/Homebrew
+# else
+# 	export HOMEBREW_REPOSITORY="$HOMEBREW_PREFIX"
+# fi
+# if [ -d "$HOMEBREW_PREFIX" ]; then
+# 	export PATH="$HOMEBREW_PREFIX"/bin:"$HOMEBREW_PREFIX"/sbin:"$PATH"
+# 	[ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
+# 	export INFOPATH="${HOMEBREW_PREFIX}/share/info:${INFOPATH:-}";
+# fi
+# # TODO: zsh fpath
+
 if [ -d "$HOMEBREW_PREFIX" ]; then
 	# use homebrew's llvm
 	export LDFLAGS="-L$HOMEBREW_PREFIX/opt/llvm/lib/c++ -L$HOMEBREW_PREFIX/opt/llvm/lib -lunwind"
