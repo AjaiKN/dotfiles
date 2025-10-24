@@ -1370,12 +1370,14 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
          (rx     (backref 1                    ) "." (or "spec" "test" (+ anychar)) "." (backref            2) eos))))
 
 ;;; midnight-mode
+;; maybe try https://github.com/jamescherti/buffer-terminator.el instead
+;; or just use `bufferlo-kill-orphan-buffers' instead
 (use-package! midnight
-  :defer 3600
-  :init
-  (let ((newval "5:00am"))
-    (unless (equal (bound-and-true-p midnight-delay) newval)
-      (setq! midnight-delay newval)))
+  ;; :defer 3600
+  ;; :init
+  ;; (let ((newval "5:00am"))
+  ;;   (unless (equal (bound-and-true-p midnight-delay) newval)
+  ;;     (setq! midnight-delay newval)))
   :config
   (setq! clean-buffer-list-delay-special (* 60 60 6))
   ;; https://old.reddit.com/r/emacs/comments/15rubhr/til_midnight_mode/
@@ -1386,14 +1388,21 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
     (bufferlo-include-buried-buffers nil)
     (clean-buffer-list-kill-never-buffer-names
      (append clean-buffer-list-kill-never-buffer-names
+             (let ((orphan-buffers
+                    (and (bound-and-true-p bufferlo-mode)
+                         (fboundp 'bufferlo--get-orphan-buffers)
+                         (bufferlo--get-orphan-buffers))))
+               (cl-loop for buffer in (buffer-list)
+                        unless (and (memq buffer orphan-buffers)
+                                    (not (tab-bar-get-buffer-tab buffer t)))
+                        collect (buffer-name buffer)))
              (cl-loop for frame in (frame-list)
                       append (and (fboundp '+workspace-list) (fboundp '+workspace-buffer-list)
                                   (with-selected-frame frame
                                     (cl-loop for workspace in (+workspace-list)
                                              append (mapcar (lambda (b) (if (stringp b) b (buffer-name b)))
-                                                            (+workspace-buffer-list workspace)))))))))
-  (akn/advice-remove #'clean-buffer-list :around #'doom-shut-up-a)
-  (midnight-mode))
+                                                            (+workspace-buffer-list workspace))))))))))
+  ;; (midnight-mode))
 
 ;;; deft
 (use-package! deft
