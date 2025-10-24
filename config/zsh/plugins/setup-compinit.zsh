@@ -59,12 +59,13 @@ fi
     if (( ${#zcomps} )); then
       zmodload -F zsh/stat b:zstat && zstat -A zmtimes +mtime ${zcomps} || return 1
     fi
-    local -r znew_dat=${ZSH_VERSION}$'\0'${(pj:\0:)zcomps}$'\0'${(pj:\0:)zmtimes}
+    local -r znew_dat=${ZSH_VERSION}${ZSH_PATCHLEVEL}$'\0'${(pj:\0:)zcomps}$'\0'${(pj:\0:)zmtimes}
     if [[ -e ${zdumpfile}.dat ]]; then
       zmodload -F zsh/system b:sysread && sysread -s ${#znew_dat} zold_dat <${zdumpfile}.dat || return 1
       if [[ ${zold_dat} == ${znew_dat} ]] zdump_dat=0
     fi
     if (( zdump_dat )); then
+      # echo removing
       command rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) || return 1
     fi
 

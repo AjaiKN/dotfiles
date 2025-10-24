@@ -26,7 +26,7 @@ if [ "$TERM" != "eterm-color" ]; then
 		bindkey "^[c" fzf-cd-widget
 	fi
 	bindkey "^S" history-incremental-search-forward
-  #Conflict: In vim, this deletes until the beginning of the line, not the whole line
+	#Conflict: In vim, this deletes until the beginning of the line, not the whole line
 	# bindkey "^U" kill-whole-line
 	bindkey "^V" quoted-insert
 	bindkey "^W" backward-kill-word
@@ -145,7 +145,7 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey "^[|" vi-goto-column
 	bindkey "^[~" _bash_complete-word
   # alt-backspace
-	bindkey "^[^?" backward-kill-word
+	bindkey "^[^?" backward-delete-word
 	bindkey "^_" undo
 	bindkey " " magic-space
 	# bindkey -R "!"-"~" self-insert
@@ -172,6 +172,9 @@ if [ "$TERM" != "eterm-color" ]; then
 		# bindkey -M vicmd 'j' history-substring-search-down
 	fi
 fi
+
+# affects behavior of forward-word, backward-delete-word, etc.
+WORDCHARS=''
 
 zmodload zsh/complist
 # https://old.reddit.com/r/zsh/comments/w8su9x/make_zsh_tab_completion_menu_close_and_cancel/

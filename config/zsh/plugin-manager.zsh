@@ -227,7 +227,7 @@ function load_plugins {
 
 	unset -f plugin
 
-	mkdir -p "$ZSH_CACHE_DIR/completions"
+	mkdir -p -m 0700 "$ZSH_CACHE_DIR/completions"
 	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
 
 	# setup fpath and path

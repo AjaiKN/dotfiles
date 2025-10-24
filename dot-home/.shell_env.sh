@@ -10,6 +10,9 @@
 export ENV="$HOME/.shell_env.sh"
 export BASH_ENV="$HOME/.shell_env.sh"
 
+## umask
+umask o-w
+
 ## Nix prologue
 OLD_PATH_SHELL_ENV=$PATH
 
