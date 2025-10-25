@@ -189,7 +189,7 @@ config.mouse_bindings = {
 }
 
 -- config.font = wezterm.font('Iosevka Term') -- crazy slow for some reason
-if wezterm.hostname() == 'Ajais-MacBook-Air.local' then
+if wezterm.hostname() == 'Ajais-M5-MacBook-Pro.local' then
   config.font = wezterm.font('M PLUS Code Latin')
 else
   config.font = wezterm.font('JetBrains Mono')

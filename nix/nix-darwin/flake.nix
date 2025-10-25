@@ -18,7 +18,7 @@
     {
       # Build darwin flake using:
       # $ darwin-rebuild build --flake .#simple
-      darwinConfigurations."Ajais-MacBook-Air" = nix-darwin.lib.darwinSystem {
+      darwinConfigurations."Ajais-M5-MacBook-Pro" = nix-darwin.lib.darwinSystem {
         modules = [ ./configuration.nix ];
       };
     };
