@@ -73,6 +73,8 @@ else
 	alias lsize='du -a -h --max-depth=1 | sort -hr'
 fi
 
+alias ports=somo
+
 #### Enable colors
 
 # if command -v dircolors >/dev/null 2>&1; then # proxy for GNU coreutils vs BSD
