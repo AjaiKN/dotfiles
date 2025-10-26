@@ -129,6 +129,11 @@ function clipcopy clippaste {
 	"$0" "$@"
 }
 
+if [[ "${OSTYPE}" != darwin* ]]; then
+	alias pbcopy=clipcopy
+	alias pbpaste=clippaste
+fi
+
 ## me: make the rest of the copying commands use the system clipboard
 # This is largely copied from the ohmyzsh-vi-mode plugin, which only does this for the vi commands:
 #   https://github.com/ohmyzsh/ohmyzsh/blob/f17aa2ffa8c12b71518f1b0233edca3a0dd7cade/plugins/vi-mode/vi-mode.plugin.zsh#L121-L162
