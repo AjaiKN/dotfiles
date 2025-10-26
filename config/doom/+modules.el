@@ -82,7 +82,7 @@ returns true."
            :completion
            (company +childframe)           ; the ultimate code completion backend
            *basic (corfu +orderless +icons +dabbrev)  ; complete with cap(f), cape and a flying feather!
-           *extra (fuzzy +fuz-bin +all)
+           *native (fuzzy +fuz-bin +all)
            *basic hippie
            helm              ; the *other* search engine for love and life
            ido               ; the other *other* search engine...
@@ -142,7 +142,7 @@ returns true."
            *basic multiple-cursors  ; editing in many places at once
            objed             ; text object editing for the innocent
            lispy             ; vim for lisp, for people who don't like vim
-           *extra parinfer          ; turn lisp into python, sort of
+           *native parinfer          ; turn lisp into python, sort of
            *basic rotate-text       ; cycle region at point between text candidates
            *extra smart-tabs
            *basic snippets          ; my elves. They type so I don't have to
