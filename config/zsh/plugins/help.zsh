@@ -56,11 +56,16 @@ bash-help() {
 unalias which 2>/dev/null
 
 my_which() {
-	# If it's more than one thing, show all of them.
-	builtin whence -av $@
-	local ret=$?
-	# If it's a function, show both the source location and the definition.
-	builtin typeset -f $@
-	return $ret
+	if [ -t 1 ]; then
+		# If it's more than one thing, show all of them.
+		builtin whence -av $@ | sed -E -e 's|^([^ ]+) is /|/|' -e 's|^([^ ]+) is an? |\1: |' -e "s|$HOME|~|g"
+		local ret=$?
+		[[ $1 != -* ]] && (( $# == 1 )) &&
+			# If it's a function, show the function definition in addition to the file it's defined in.
+			builtin typeset -f $1 2>/dev/null
+		return $ret
+	else
+		builtin which $@
+	fi
 }
 alias which=my_which
