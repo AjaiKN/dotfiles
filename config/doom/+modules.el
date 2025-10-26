@@ -203,7 +203,7 @@ returns true."
            *basic (eval +overlay)     ; run code, run (also, repls)
            *basic fasd
            *basic lookup              ; navigate your code and its documentation
-           *extra (lsp +eglot +booster)  ; lsp-mode (default) or +eglot              ; M-x vscode
+           *extra (:if (executable-find "emacs-lsp-booster") (lsp +eglot +booster) (lsp +eglot))  ; M-x vscode
            *basic (magit +forge)             ; a git porcelain for Emacs
            *extra stgit
            *extra llm

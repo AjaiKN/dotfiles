@@ -51,8 +51,6 @@
 (package! applescript-mode        :pin "3dbbb8b48e519a5208ce237db577056c7a5a5943" :disable (not (modulep! :os macos)))
 (package! eshell-vterm            :pin "20f4b246fa605a1533cdfbe3cb7faf31a24e3d2e" :disable (not (and (modulep! :term eshell) (modulep! :term vterm))))
 (package! coterm                  :pin "6f04b2e7151db862c85b1cbdcf523bdeae27c006" :disable (not (modulep! :term shell)))
-(package! lsp-booster             :pin "5f702a2699f306a3958ff1996a2b1a625f0cee0b" :recipe (:host github :repo "blahgeek/emacs-lsp-booster"))
-(package! eglot-booster           :pin "1260d2f7dd18619b42359aa3e1ba6871aa52fd26" :disable (not (modulep! :tools lsp +eglot))       :recipe (:host github :repo "jdtsmith/eglot-booster"))
 (package! magit-delta             :pin "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616" :disable (not (modulep! :tools magit)))
 (package! magit-todos             :pin "bd27c57eada0fda1cc0a813db04731a9bcc51b7b" :disable (not (modulep! :tools magit)))
 ;;;; :ui
