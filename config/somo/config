@@ -1,0 +1,19 @@
+# somo configuration file
+# Each line is either a flag or a comment.
+# Flags listed here are automatically added when running somo.
+# Lines starting with '#' are ignored.
+
+# View compact version of the table (-c)
+--compact
+
+# Sort by a specific field (proto, local_port, remote_address, remote_port, program, pid, state)
+# --sort=pid
+
+# Only include established connections (-e)
+# --established
+
+# Show service names next to remote port (-a)
+--annotate-remote-port
+
+# Only include TCP connections (-t)
+# --tcp
