@@ -41,6 +41,9 @@ config.prefer_to_spawn_tabs = true
 local function bind(mods, key, action)
   return { mods = mods, key = key, action = action }
 end
+local function add_bind(mods, key, action)
+  table.insert(config.keys, { mods = mods, key = key, action = action })
+end
 
 local act = wezterm.action
 
@@ -119,6 +122,12 @@ config.keys = {
   bind('SHIFT|SUPER', 'UpArrow', if_kkp(kkp_super_shift_up, act.ScrollToPrompt(-1))),
   bind('SHIFT|SUPER', 'DownArrow', if_kkp(kkp_super_shift_up, act.ScrollToPrompt(1))),
 }
+
+if not string.find(wezterm.target_triple, 'darwin') then
+  -- add_bind('CTRL', 'v', if_kkp(act.SendKey{mods='CTRL', key='v'}, act.PasteFrom 'Clipboard'))
+  add_bind('CTRL', 'w', if_kkp(act.SendKey{mods='CTRL', key='w'}, act.CloseCurrentTab{confirm=true}))
+  add_bind('CTRL', 't', if_kkp(act.SendKey{mods='CTRL', key='t'}, act.SpawnTab 'CurrentPaneDomain'))
+end
 
 -- https://github.com/wez/wezterm/issues/1988
 -- https://github.com/wez/wezterm/issues/5952
