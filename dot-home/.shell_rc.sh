@@ -106,8 +106,19 @@ export LS_COLORS="di=1;36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=
 # 		source <(dircolors -b)
 # fi
 
-function test-ls-args {
-	command "$@" /dev/null &>/dev/null
+function akn_try_ls_args {
+	if command "$@" /dev/null &>/dev/null; then
+		# shellcheck disable=SC2139
+		if [ "$1" = ls ]; then
+			alias ls="$*"
+		else
+			alias "$1"="$*"
+			alias ls="$1"
+		fi
+		return 0
+	else
+		return 1
+	fi
 }
 
 unalias ls 2>/dev/null
@@ -116,36 +127,30 @@ case "$OSTYPE" in
 	(netbsd*)
 		# On NetBSD, test if `gls` (GNU ls) is installed (this one supports colors);
 		# otherwise, leave ls as is, because NetBSD's ls doesn't support -G
-		test-ls-args gls --color && alias ls='gls --color=tty'
+		akn_try_ls_args gls --color=tty
 		;;
 	(openbsd*)
 		# On OpenBSD, `gls` (ls from GNU coreutils) and `colorls` (ls from base,
 		# with color and multibyte support) are available from ports.
 		# `colorls` will be installed on purpose and can't be pulled in by installing
-		# coreutils (which might be installed for ), so prefer it to `gls`.
-		test-ls-args gls --color && alias ls='gls --color=tty'
-		test-ls-args colorls -G && alias ls='colorls -G'
+		# coreutils (which might be installed for other reasons), so prefer it to `gls`.
+		akn_try_ls_args gls --color=tty
+		akn_try_ls_args colorls -G
 		;;
 	(darwin*|freebsd*)
-		# This alias works by default just using $LSCOLORS
-		test-ls-args ls -G && alias ls='ls -G'
 		# OMZ only uses GNU ls if installed and there are user defaults for
 		# $LS_COLORS, as the default coloring scheme is not very pretty.
 		# But I like that GNU ls is more compact.
-		# zstyle -t ':omz:lib:theme-and-appearance' gnu-ls &&
-		test-ls-args gls --color &&
-			alias ls='gls --color=tty'
+		akn_try_ls_args gls --color=tty ||
+			# This alias works by default just using $LSCOLORS
+			akn_try_ls_args ls -G
 		;;
 	(*)
-		if test-ls-args ls --color; then
-			alias ls='ls --color=tty'
-		elif test-ls-args ls -G; then
-			alias ls='ls -G'
-		fi
+		akn_try_ls_args ls --color=tty ||
+			akn_try_ls_args ls -G
 		;;
 esac
-
-command -v gls >/dev/null 2>&1 && alias gls='gls --color=tty'
+unset -f akn_try_ls_args
 
 ##### diff colors
 
