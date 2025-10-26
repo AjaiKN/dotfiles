@@ -53,7 +53,7 @@ bash-help() {
 
 ## which (equivalent in zsh to whence -c)
 # Fedora creates an alias for clippaste, which is helpful in bash but not in zsh.
-unalias which
+unalias which 2>/dev/null
 
 my_which() {
 	# If it's more than one thing, show all of them.
