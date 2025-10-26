@@ -50,3 +50,17 @@ bash-help() {
 }
 
 # Some help methods: man; run-help (help); info; tldr; curl cheat.sh/<command>
+
+## which (equivalent in zsh to whence -c)
+# Fedora creates an alias for clippaste, which is helpful in bash but not in zsh.
+unalias which
+
+my_which() {
+	# If it's more than one thing, show all of them.
+	builtin whence -av $@
+	local ret=$?
+	# If it's a function, show both the source location and the definition.
+	builtin typeset -f $@
+	return $ret
+}
+alias which=my_which
