@@ -28,7 +28,7 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey "^S" history-incremental-search-forward
 	#Conflict: In vim, this deletes until the beginning of the line, not the whole line
 	# bindkey "^U" kill-whole-line
-	bindkey "^V" quoted-insert
+	bindkey "^V" yank # quoted-insert
 	bindkey "^W" backward-kill-word
 	bindkey "^X^B" vi-match-bracket
 	bindkey "^X^E" edit-command-line
