@@ -96,8 +96,14 @@
 [commit]
 	verbose = true
 [submodule]
-	recurse = true
 	fetchJobs = 0
+	recurse = true
+[fetch]
+	recurseSubmodules = on-demand
+[push]
+	# Set `git config push.recurseSubmodules on-demand` for projects where you
+	# often want to push submodules.
+	recurseSubmodules = check
 # [credential "https://dev.azure.com"]
 # 	useHttpPath = true
 [rerere]
