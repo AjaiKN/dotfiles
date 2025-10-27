@@ -1,8 +1,7 @@
--/oh-my-zsh-custom
--/brightness
--/fasd
--/dot-home/.oh-my-zsh
+-/vendor
+-/private/vendor
 -/config/talon/user/community/
+-/private/config/talon/user/community/
 -/config/zsh/plugins/BronzeDeer/
 -/config/zsh/plugins/QuarticCat/
 -/config/zsh/plugins/chisui/
@@ -19,3 +18,11 @@
 -/config/zsh/plugins/zsh-vi-more/
 -/config/emacs/modules/editor/file-templates/templates/
 -/config/zsh/themes/powerlevel10k/
+!/config/trusted_users.txt
+!/private/config/trusted_users.txt
+!/config/doom/*.el
+!/private/config/doom/*.el
+!/backing-up/**/*
+!/private/backing-up/**/*
+!/config/iterm2/*
+!/private/config/iterm2/*
