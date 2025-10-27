@@ -73,7 +73,11 @@ else
 	alias lsize='du -a -h --max-depth=1 | sort -hr'
 fi
 
-alias ports=somo
+if command -v "somo" >/dev/null 2>&1; then
+	alias ports='somo'
+else
+	alias ports='netstat -tuapn' # maybe no -n?
+fi
 
 #### Enable colors
 
