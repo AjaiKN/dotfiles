@@ -643,6 +643,8 @@ to normal state is deprioritized)."
  "C-<triple-wheel-up>" (kbd "<up>")
  "C-<triple-wheel-down>" (kbd "<down>")
 
+ "<pinch>" nil ; by default, `text-scale-pinch'
+
  ;; can also see these in `key-translation-map'
  "C-x 8 C-h" (cmd! (describe-bindings (kbd "C-x 8")) (akn/after-timer! (0) (outline-show-all)))
 
