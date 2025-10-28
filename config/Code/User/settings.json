@@ -314,8 +314,8 @@
   "coq-lsp.show_notices_as_diagnostics": true,
   "coq-lsp.show_stats_on_hover": true,
   "files.associations": {
-    ".stow-local-ignore": "ignore",
     "flake.lock": "json",
+    ".stow-local-ignore": "ignore",
     ".env*": "dotenv",
     "iostream": "cpp",
     "source_location": "cpp",
