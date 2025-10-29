@@ -8,6 +8,7 @@
 [misc]
 # Run specific steps - same options as the command line flag
 only = [
+  "aqua",
   "brew_cask",
   "brew_formula",
   # "containers",
@@ -18,8 +19,9 @@ only = [
   "mise",
   # "nix",
   # "shell",
-  # "system",
+  "system",
   "tldr",
+  # "typst",
 
   #Languages
   "bun",
@@ -56,14 +58,14 @@ only = [
   "pipx",
   # "poetry",
   # "pyenv",
-  # "uv",
+  "uv",
 
   #Editors
   # "emacs",
   "helix",
   "kakoune",
   "micro",
-  "vim",
+  # "vim",
   "vscode",
 
   #Don't have
@@ -95,11 +97,11 @@ only = [
   "dkp_pacman",
   "pacdef",
   "pacstall",
+  "restarts",
   "snap",
 
   # "app_man",
-  # "aqua",
-  "audit",
+  # "audit",
   # "bin",
   # "bob",
   # "choosenim",
@@ -127,7 +129,6 @@ only = [
   # "protonup",
   # "rcm",
   # "remotes",
-  # "restarts",
   # "rtcl",
   # "rye",
   # "scoop",
