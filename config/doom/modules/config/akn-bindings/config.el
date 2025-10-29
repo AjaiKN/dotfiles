@@ -643,6 +643,9 @@ to normal state is deprioritized)."
  "C-<triple-wheel-up>" (kbd "<up>")
  "C-<triple-wheel-down>" (kbd "<down>")
 
+ "C-<next>" #'tab-next
+ "C-<prior>" #'tab-previous
+
  "<pinch>" nil ; by default, `text-scale-pinch'
 
  ;; can also see these in `key-translation-map'
