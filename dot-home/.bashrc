@@ -225,8 +225,8 @@ source "$HOME/.shell_rc.sh"
 
 ## fasd
 if command -v fasd >/dev/null 2>&1; then
-	fasd_cache="$HOME/.fasd-init-bash"
-	if [ "$(command -v fasd)" -nt "$fasd_cache" -o ! -s "$fasd_cache" ]; then
+	fasd_cache="${XDG_CACHE_HOME:-$HOME/.cache}/fasd-init-bash"
+	if [ "$(command -v fasd)" -nt "$fasd_cache" ] || [ ! -s "$fasd_cache" ]; then
 		fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasd_cache"
 	fi
 	source "$fasd_cache"
