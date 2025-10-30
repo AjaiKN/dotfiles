@@ -218,7 +218,10 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 
 ## fzf
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if command -v fzf >/dev/null 2>&1; then
+	# Set up fzf key bindings and fuzzy completion
+	eval "$(fzf --bash)"
+fi
 
 ## .shell_rc.sh
 source "$HOME/.shell_rc.sh"

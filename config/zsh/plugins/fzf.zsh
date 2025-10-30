@@ -1,2 +1,5 @@
 ### fzf
-[ -f ~/.fzf.zsh ] && safe_source ~/.fzf.zsh
+if command -v fzf >/dev/null 2>&1; then
+	# Set up fzf key bindings and fuzzy completion
+	source <(fzf --zsh)
+fi
