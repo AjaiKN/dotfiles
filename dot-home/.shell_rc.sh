@@ -473,7 +473,7 @@ alias tar-create='tar caf'
 alias tar-ls='tar tvf'
 # bsdtar "can extract from tar, pax, cpio, zip, jar, ar, xar, rpm, 7-zip, and ISO 9660 cdrom images and can create tar, pax, cpio, ar, zip, 7-zip, and shar archives."
 alias archive='bsdtar caf'
-alias unarchive='bsdtar caf'
+alias unarchive='bsdtar xf'
 alias archive-ls='bsdtar tvf'
 
 if command -v wget >/dev/null 2>&1; then
