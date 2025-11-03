@@ -1034,6 +1034,10 @@ or creates it if it does not exist."
   (when (modulep! :editor evil)
     (add-to-list 'evil-insert-state-modes 'inf-ruby-mode)))
 
+(map! :after ruby-mode
+      :map ruby-base-mode-map
+      "C-c C-c" #'ruby-send-buffer)
+
 ;;; rust
 ;; https://github.com/doomemacs/doomemacs/issues/7588
 ;; https://github.com/radian-software/apheleia/issues/278
