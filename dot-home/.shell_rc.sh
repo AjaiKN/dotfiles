@@ -12,19 +12,19 @@ echo_if_interactive() {
 
 # echo_if_interactive "Loading ~/.shell_rc.sh"
 
-### Nix Prologue
+## Nix Prologue
 OLD_PATH_SHELL_RC=$PATH
 
-### Rosetta 2
+## Rosetta 2
 # Open Rosetta 2 version of zsh
 alias i="arch -x86_64 /bin/zsh"
 
-### Mise
+## Mise
 # https://mise.jdx.dev/lang/ruby.html#configuration
 # ruby-build was being super slow, so use ruby-install instead
 # export MISE_RUBY_INSTALL=true
 
-### Pagers
+## Pagers
 
 # syntax highlighting for less using GNU source-highlight
 # https://superuser.com/a/71593
@@ -37,8 +37,8 @@ if [ -z "$LESSOPEN" ] && [ -n "$lesspipe" ]; then
 fi
 unset lesspipe
 
-### Functions and Aliases
-#### Changing/making/removing directories
+## Functions and Aliases
+### Changing/making/removing directories
 alias -- -='cd -'
 alias 1='cd -1'
 alias 2='cd -2'
@@ -79,7 +79,7 @@ else
 	alias ports='netstat -tuapn' # maybe no -n?
 fi
 
-#### Enable colors
+### Enable colors
 
 # if command -v dircolors >/dev/null 2>&1; then # proxy for GNU coreutils vs BSD
 # 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -96,7 +96,7 @@ fi
 # LS_COLORS+='pi=01;33:so=01;33:do=01;33:bd=01;33:cd=01;33:su=01;35:sg=01;35:ca=01;35:ex=01;32'
 # export LSCOLORS='ExGxDxDxCxDxDxFxFxexEx'
 
-##### ls colors (from ohmyzsh)
+#### ls colors (from ohmyzsh)
 
 # Default coloring for BSD-based ls:
 export LSCOLORS="Gxfxcxdxbxegedabagacad"
@@ -161,7 +161,7 @@ case "$OSTYPE" in
 esac
 unset -f akn_try_ls_args
 
-##### diff colors
+#### diff colors
 
 function diff {
 	if command diff --color /dev/null /dev/null >/dev/null 2>&1; then
@@ -171,7 +171,7 @@ function diff {
 	fi
 }
 
-#### git aliases
+### git aliases
 
 #from ohmyzsh
 
@@ -459,7 +459,7 @@ alias gZl='git stash list'
 alias gZv='git stash show'
 alias gZb='git stash branch'
 
-#### tar aliases
+### tar aliases
 
 # also see ohmyzsh `takeurl` (or just `take`)
 
@@ -507,7 +507,7 @@ function download-extract {
 	fi
 }
 
-#### Misc
+### Misc
 
 alias _='sudo '
 
@@ -669,7 +669,7 @@ alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
 
 alias c='a -e code'
 
-### GPG
+## GPG
 # if $TTY is defined and not empty
 if [ -n "$TTY" ]; then
 	# faster but only works in zsh
@@ -680,7 +680,7 @@ else
 fi
 export GPG_TTY
 
-### fasd
+## fasd
 # Override fasd builtin interactive aliases to use fzf
 # https://github.com/clvv/fasd#introduction
 unalias sf sd zz 2>/dev/null
@@ -698,13 +698,13 @@ zz () {
 }
 alias e='f -e "$EDITOR"'
 
-### bad package.json files
+## bad package.json files
 # check if there are any package.json files that shouldn't be there
 (if [ -f /package.json ] || [ -f /Users/package.json ] || [ -f ~/package.json ] || [ -f ~/prog/package.json ]; then
 	>&2 echo_if_interactive "Warning: package.json found in a location where it probably shouldn't be"
 fi &)
 
-### thefuck
+## thefuck
 # output of `thefuck --alias`
 # could also use the ohmyzsh plugin
 fuck () {
@@ -724,7 +724,7 @@ fuck () {
 	test -n "$TF_CMD" && print -s $TF_CMD
 }
 
-### wezterm integration
+## wezterm integration
 if [ -n "$WEZTERM_EXECUTABLE_DIR" ]; then
 	WEZTERM_SHELL_INTEGRATION="$WEZTERM_EXECUTABLE_DIR"/../Resources/wezterm.sh
 	if [ -f "$WEZTERM_SHELL_INTEGRATION" ]; then
@@ -733,7 +733,7 @@ if [ -n "$WEZTERM_EXECUTABLE_DIR" ]; then
 	fi
 fi
 
-### Nix Epilogue
+## Nix Epilogue
 if [ -n "$IN_NIX_SHELL" ]; then
 	echo_if_interactive "We're in Nix!"
 	# If we're in a Nix shell, make sure the stuff Nix added to the PATH
