@@ -59,7 +59,7 @@ alias po='popd'
 alias lsa='ls -lah'
 alias l='ls -lAh'
 alias ll='ls -lh'
-alias la='ls -lah'
+alias la='ls -lAh'
 
 function superls {
 	# shellcheck disable=SC2028
@@ -150,6 +150,9 @@ case "$OSTYPE" in
 		akn_try_ls_args gls --color=tty ||
 			# This alias works by default just using $LSCOLORS
 			akn_try_ls_args ls -G
+		alias macls="\ls -G"
+		# alias l="\ls -G -lAh -eOW" #-@
+		alias getfacl="\ls -G -lde@"
 		;;
 	(*)
 		akn_try_ls_args ls --color=tty ||
