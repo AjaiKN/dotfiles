@@ -219,6 +219,8 @@ are exactly the same too."
   ;; similar to https://news.ycombinator.com/item?id=33186412
   (setq recentf-save-file (concat doom-cache-dir "my_recentf"))
 
+  (advice-add #'recentf-save-list :around #'akn/always-steal-lock-a)
+
   ;; Doom wants to do this on emacs quit, but I don't.
   (remove-hook 'kill-emacs-hook #'recentf-cleanup)
   (setq! recentf-auto-cleanup (* 22 60))
@@ -235,7 +237,9 @@ are exactly the same too."
     (savehist-autosave))
 
   ;; similar to https://news.ycombinator.com/item?id=33186412
-  (setq savehist-file (concat doom-cache-dir "my_savehist")))
+  (setq savehist-file (concat doom-cache-dir "my_savehist"))
+
+  (advice-add #'savehist-save :around #'akn/always-steal-lock-a))
 
 ;;; input methods
 (defadvice! akn/say-input-method-a (&rest _)
@@ -1253,6 +1257,13 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 (let ((dir "~/.cache/doom/lockfiles/"))
   (make-directory dir t)
   (setq lock-file-name-transforms `((".*" ,dir t))))
+
+(define-advice ask-user-about-lock (:around (fn file opponent &rest args) akn/a)
+  (cond
+   ((file-in-directory-p file doom-cache-dir)
+    t)
+   (t
+    (apply fn file opponent args))))
 
 ;;; formatting
 (setq-hook! (html-mode

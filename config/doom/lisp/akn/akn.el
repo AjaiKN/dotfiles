@@ -620,24 +620,31 @@ is :around, :before, :after, :override, :after-until,
 
 ;;; advices
 
-(defun akn/shut-up-a (fn &rest args)
-  (let ((shut-upper (cond ((fboundp 'shut-up) #'shut-up)
-                          ((fboundp 'quiet!) #'quiet!)
-                          (t #'progn))))
-    `(,shut-upper
-      (apply ,fn ,args))))
-
+;;;###autoload
 (defun akn/ignore-errors-a (fn &rest args)
   (ignore-errors (apply fn args)))
+;;;###autoload
 (defun akn/demote-errors-a (fn &rest args)
   (with-demoted-errors "demoted error: %S" (apply fn args)))
 
+;;;###autoload
 (defun akn/save-selected-window-a (fn &rest args)
   (save-selected-window
     (apply fn args)))
 
+;;;###autoload
 (defun akn/inhibit-read-only-a (fn &rest args)
   (let ((inhibit-read-only t))
+    (apply fn args)))
+
+;;;###autoload
+(defun akn/always-steal-lock-a (fn &rest args)
+  (akn/letf! ((#'ask-user-about-lock #'always))
+    (apply fn args)))
+
+;;;###autoload
+(defun akn/always-ignore-lock-a (fn &rest args)
+  (akn/letf! ((#'ask-user-about-lock #'ignore))
     (apply fn args)))
 
 ;;; function for prioritizing keymaps
