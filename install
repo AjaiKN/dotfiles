@@ -18,7 +18,7 @@ confirm() {
 	esac
 }
 
-./install-dot-home.sh
+./install-dot-home.sh "$@"
 
 if [ ! -e ~/.gitconfig ]; then
 	touch ~/.gitconfig

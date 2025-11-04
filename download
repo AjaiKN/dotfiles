@@ -59,8 +59,13 @@ if : ; then
 	fi
 
 	if [ -e "$DOTFILES"/install ]; then
-		set +x; confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?" || exit 0
-		exec "$DOTFILES"/install
+		set +x
+		if confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?"; then
+			exec "$DOTFILES"/install -v
+		else
+			echo "To install, run:"
+			echo "$DOTFILES/install -v"
+		fi
 	else
 		echo "Failed to download"
 		exit 1

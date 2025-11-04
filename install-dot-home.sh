@@ -111,7 +111,7 @@ handle_file() {
 				my_echo "${red}UNLINK (because ignored): $1 -> $(readlink "$1")${reset}"
 				rm "$1"
 			elif [ -e "$2" ] && [ "$(readlink "$1")" = "$(get_planned_link_source "$1" "$2")" ] && ! is_unfold "$2"; then
-				my_echo "ALREADY LINKED: $1 -> $(readlink "$1")"
+				[ -z "$verbose" ] || my_echo "ALREADY LINKED: $1 -> $(readlink "$1")"
 				return
 			else
 				my_echo "${red}UNLINK: $1 -> $(readlink "$1")${reset}"
@@ -124,7 +124,7 @@ handle_file() {
 	fi
 
 	if is_ignored "$1"; then
-		my_echo "IGNORING: $2"
+		[ -z "$verbose" ] || my_echo "IGNORING: $2"
 		return
 	fi
 
@@ -142,7 +142,7 @@ handle_file() {
 				fi
 			done
 
-			my_echo "Checking for orphaned symlinks in $1..."
+			[ -z "$verbose" ] || my_echo "Checking for orphaned symlinks in $1..."
 			cd "$1" || exit 51
 			for file in * .*; do
 				if ! [ "$file" = "." ] && ! [ "$file" = ".." ]; then
@@ -203,6 +203,22 @@ $1 should not exist.
 		fi
 	fi
 }
+
+## parse arguments
+
+verbose=
+while [ $# -gt 0 ]; do
+	case "$1" in
+		-v|--verbose)
+			verbose=1
+			shift
+			;;
+		*)
+			echo "ERROR: Unknown option: $1" >&2
+			exit 1
+			;;
+	esac
+done
 
 ## Uninstalling
 
