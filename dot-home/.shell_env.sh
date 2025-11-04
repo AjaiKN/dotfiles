@@ -9,9 +9,6 @@
 export ENV="$HOME/.shell_env.sh"
 export BASH_ENV="$HOME/.shell_env.sh"
 
-## Nix prologue
-OLD_PATH_SHELL_ENV=$PATH
-
 ## umask
 umask o-w || :
 
@@ -33,11 +30,4 @@ umask o-w || :
 if [ -n "$BASH_VERSION" ]; then #|| [ -n "$ZSH_VERSION" ]; then
 	PS4='$(printf "+%.0s" $(seq ${SHLVL:-1})) '
 	# Don't export so it doesn't get inherited by shells like dash.
-fi
-
-## Nix epilogue
-if [ -n "$IN_NIX_SHELL" ]; then
-	# If we're in a Nix shell, make sure the stuff Nix added to the PATH
-	# is ahead of all my stuff.
-	PATH=$OLD_PATH_SHELL_ENV:$PATH
 fi

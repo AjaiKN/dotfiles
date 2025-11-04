@@ -9,10 +9,6 @@
 # commands that produce output or assume the shell is attached to a tty.
 #
 
-## Nix prologue
-OLD_PATH_ZSHENV=$PATH
-
-## Stuff
 if [[ -o interactive ]] && ! (( $+functions[_git] )); then
 	# make sure we use the git completion that ships with zsh, which is better than the one that ships with git
 	autoload -Uzr _git
@@ -36,10 +32,3 @@ source "$HOME/.shell_env.sh"
 # if [[ $SHLVL == 1 && ! -o LOGIN ]]; then
 # 	source ~/.zpath
 # fi
-
-## Nix epilogue
-if [ -n "$IN_NIX_SHELL" ]; then
-	# If we're in a Nix shell, make sure the stuff Nix added to the PATH
-	# is ahead of all my stuff.
-	PATH=$OLD_PATH_ZSHENV:$PATH
-fi
