@@ -15,6 +15,9 @@ echo_if_interactive() {
 ## Nix Prologue
 OLD_PATH_SHELL_RC=$PATH
 
+## Load envvars (in case they've changed)
+. "$HOME/.shell_envvars.sh" || :
+
 ## Rosetta 2
 # Open Rosetta 2 version of zsh
 alias i="arch -x86_64 /bin/zsh"

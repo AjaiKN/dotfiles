@@ -10,6 +10,10 @@ umask go-rwx
 ## Nix prologue
 OLD_PATH_SHELL_PROFILE=$PATH
 
+## env vars
+
+. "$HOME/.shell_envvars.sh"
+
 ## Stuff
 
 # from FreeBSD's .profile: Let sh(1) know it's at home, despite /home being a symlink.
