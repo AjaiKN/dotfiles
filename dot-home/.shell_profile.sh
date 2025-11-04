@@ -2,8 +2,6 @@
 
 # This file is loaded by ~/.profile, ~/.bash_profile, and ~/.zprofile.
 
-. "$HOME/.shell_env.sh"
-
 ## umask
 umask go-rwx
 
@@ -11,8 +9,10 @@ umask go-rwx
 OLD_PATH_SHELL_PROFILE=$PATH
 
 ## env vars
-
 . "$HOME/.shell_envvars.sh"
+
+## shell_env
+. "$HOME/.shell_env.sh"
 
 ## Stuff
 
