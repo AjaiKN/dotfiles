@@ -50,8 +50,9 @@
 ;;; conf-mode
 ;; https://docs.netlify.com/manage/routing/redirects/overview/
 (add-to-list 'auto-mode-alist '("/_redirects\\'" . conf-space-mode))
-;; systemd service files
+;; systemd files
 (add-to-list 'auto-mode-alist '("\\.service\\'" . conf-unix-mode) 'append)
+(add-to-list 'auto-mode-alist '("\\.timer\\'" . conf-unix-mode) 'append)
 
 ;;; csv
 
