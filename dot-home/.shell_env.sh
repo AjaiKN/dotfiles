@@ -35,18 +35,6 @@ if [ -n "$BASH_VERSION" ]; then #|| [ -n "$ZSH_VERSION" ]; then
 	# Don't export so it doesn't get inherited by shells like dash.
 fi
 
-## Secure PATH
-
-if [ -x "$DOTFILES/scripts/secure_path" ]; then
-	if [ -t 0 ]; then
-		PATH="$("$DOTFILES/scripts/secure_path" || printf '%s' "$PATH")"
-	else
-		# if not interactive, don't let it print anything
-		PATH="$("$DOTFILES/scripts/secure_path" 2>/dev/null || printf '%s' "$PATH")"
-	fi
-	export PATH
-fi
-
 ## Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then
 	# If we're in a Nix shell, make sure the stuff Nix added to the PATH
