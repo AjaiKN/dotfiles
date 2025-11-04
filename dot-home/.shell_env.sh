@@ -2,9 +2,9 @@
 
 # .shell_env.sh
 # Loaded by bash, zsh, and sh shells.
-#   - ~/.zshenv (zsh)
-#   - ~/.bash_profile and ~/.bashrc (bash)
-#   - ~/.profile (sh and others)
+#   - zsh:  ~/.zshenv
+#   - bash: $BASH_ENV, ~/.bash_profile, and ~/.bashrc
+#   - sh:   $ENV, ~/.profile
 
 export ENV="$HOME/.shell_env.sh"
 export BASH_ENV="$HOME/.shell_env.sh"
