@@ -12,7 +12,7 @@ if [ -x "private/sync" ]; then
 fi
 
 git rev-parse HEAD
-git pull --no-edit --autostash origin/main
+git pull --no-edit --autostash origin main
 
 echo
 ./install
