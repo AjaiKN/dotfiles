@@ -81,6 +81,10 @@
 function .set_zsh_plugin_default_branch {
 	local default_branch=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${1}" | jq -r .default_branch)
 	if [ -n "$default_branch" ] && [ "$default_branch" != null ]; then
+		if (( _akn_dangerous_root )); then
+			>&2 echo "Refusing because root"
+			return 1
+		fi
 		(
 			set -x
 			git -C "$DOTFILES" submodule set-branch -b "$default_branch" -- "config/zsh/plugins/${1}"
@@ -102,6 +106,10 @@ function .zsh_plugin__is_nonempty_dir {
 }
 
 function install_zsh_plugin {
+	if (( _akn_dangerous_root )); then
+		>&2 echo "Refusing because root"
+		return 1
+	fi
 	init_zsh_plugin "$@" || {
 		local url="https://github.com/${1}"
 		(
@@ -114,6 +122,10 @@ function install_zsh_plugin {
 }
 
 function uninstall_zsh_plugin {
+	if (( _akn_dangerous_root )); then
+		>&2 echo "Refusing because root"
+		return 1
+	fi
 	(
 		set -x
 		git -C "$DOTFILES" rm -f "config/zsh/plugins/${1}"
@@ -121,6 +133,10 @@ function uninstall_zsh_plugin {
 }
 
 function update_zsh_plugin {
+	if (( _akn_dangerous_root )); then
+		>&2 echo "Refusing because root"
+		return 1
+	fi
 	.set_zsh_plugin_default_branch "$1"
 	(
 		set -x
@@ -129,6 +145,10 @@ function update_zsh_plugin {
 }
 
 function init_zsh_plugin {
+	if (( _akn_dangerous_root )); then
+		>&2 echo "Refusing because root"
+		return 1
+	fi
 	if [[ $1 == ohmyzsh/* ]]; then
 		init_zsh_plugin ohmyzsh
 		return $?
@@ -227,7 +247,9 @@ function load_plugins {
 
 	unset -f plugin
 
-	mkdir -p -m 0700 "$ZSH_CACHE_DIR/completions"
+	if (( ! _akn_dangerous_root )); then
+		mkdir -p -m 0700 "$ZSH_CACHE_DIR/completions"
+	fi
 	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
 
 	# setup fpath and path

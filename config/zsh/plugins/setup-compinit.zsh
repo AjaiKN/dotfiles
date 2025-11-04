@@ -46,10 +46,12 @@ fi
 () {
   builtin emulate -L zsh -o EXTENDED_GLOB
 
-  local zdumpfile="$ZSH_CACHE_DIR/zcompdump"
+  local zdumpfile="$ZSH_CACHE_DIR/zcompdump-$EUID-$ZSH_VERSION"
 
-  # the extended glob we need doesn't seem to be supported in earlier zsh versions
-  if is-at-least 5.2; then
+  if (( _akn_dangerous_root )); then
+    # -i: ignore/skip insecure directories
+    autoload -Uz compinit && compinit -d $zdumpfile -i || return 1
+  elif is-at-least 5.2; then
     # Check if dumpfile is up-to-date by comparing the full path and
     # last modification time of all the completion functions in fpath.
     local zold_dat
@@ -80,6 +82,7 @@ fi
       zcompile ${zdumpfile}
     fi
   else
+    # the extended glob we need doesn't seem to be supported in earlier zsh versions
     # command rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) || return 1
     autoload -Uz compinit && compinit -d ${zdumpfile} || return 1
   fi

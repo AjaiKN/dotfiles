@@ -16,6 +16,13 @@ fi
 
 source "$HOME/.shell_env.sh"
 
+# from zsh4humans
+if [[ $EUID == 0 ]]; then # && -z ~(#qNU) && $DOTFILES == ~/* ]]; then
+	typeset -gri _akn_dangerous_root=1
+else
+	typeset -gri _akn_dangerous_root=0
+fi
+
 # This kludge can be used to override some installations that put aliases for
 # rm, mv, etc. into the system profiles.  Just be sure to put "unalias alias"
 # in your own rc file(s) if you use this.

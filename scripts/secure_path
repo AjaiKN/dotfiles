@@ -164,6 +164,12 @@ done
 all_perms_and_uids="$(follow=follow get_perms_and_uid "$@")"
 
 my_user="$(id -u)"
+if [ "$my_user" = 0 ]; then
+	my_user="${SUDO_UID:-$(id -u "$(logname)")}"
+fi
+if [ -z "$my_user" ]; then
+	my_user=0
+fi
 
 IFS="$newline"
 if command -v realpath >/dev/null 2>&1; then
