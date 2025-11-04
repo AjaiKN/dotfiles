@@ -4,6 +4,9 @@ set -eu
 
 DOTFILES=$(realpath "$(dirname "$0")")
 export DOTFILES
+
+umask go-rwx
+
 cd "$DOTFILES"
 
 confirm() {

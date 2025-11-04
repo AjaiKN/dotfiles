@@ -2,6 +2,8 @@
 
 set -eu
 
+umask go-rwx
+
 DOTFILES=$(realpath "$(dirname "$0")")
 export DOTFILES
 

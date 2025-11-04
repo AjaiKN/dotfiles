@@ -4,6 +4,9 @@
 
 . "$HOME/.shell_env.sh"
 
+## umask
+umask go-rwx
+
 ## Nix prologue
 OLD_PATH_SHELL_PROFILE=$PATH
 

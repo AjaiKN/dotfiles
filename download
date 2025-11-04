@@ -9,6 +9,8 @@ if : ; then
 	set -eu
 	set -x
 
+	umask go-rwx
+
 	confirm() {
 		set +x
 		printf '%s (y/n) ' "$1"
