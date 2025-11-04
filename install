@@ -26,7 +26,6 @@ fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
 	echo
-	echo
 	if [ -e "$HOME/.local/share/akn-dotfiles-confirmed-install-defaults" ] || confirm "Do you want to install my macOS defaults? This can't be undone by the uninstall script."; then
 		./install-defaults.mac.sh
 		if ! [ -e "$HOME/.local/share/akn-dotfiles-confirmed-install-defaults" ]; then
@@ -37,3 +36,6 @@ if [ "$(uname -s)" = "Darwin" ]; then
 		fi
 	fi
 fi
+
+echo
+./install-permissions.sh
