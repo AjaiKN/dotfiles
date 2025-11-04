@@ -348,7 +348,7 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
         (hs-life-goes-on
          (hs-hide-all))
         (when (fboundp 'outline-hide-sublevels)
-          (if outline-indent-minor-mode
+          (if (bound-and-true-p outline-indent-minor-mode)
               (outline--show-headings-up-to-level 1)
             (outline-show-only-headings))))))))
 
