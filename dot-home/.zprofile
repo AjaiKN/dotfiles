@@ -4,3 +4,6 @@
 # https://code.visualstudio.com/docs/setup/mac#_alternative-manual-instructions
 
 source "$HOME/.shell_profile.sh" || return 1
+
+# Ensure path arrays do not contain duplicates.
+typeset -gU cdpath fpath mailpath path

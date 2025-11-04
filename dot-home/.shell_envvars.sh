@@ -192,7 +192,11 @@ unset -f was_set_by_emacs_witheditor
 
 ## Pagers
 
-export LESS='-R'
+# -R: color
+# -i: case-insensitive search unless search string contains uppercase letters
+# -x4: tabs are 4 instead of 8
+# -z-4: default scrolling window size = screen height - 4
+export LESS='-R -i -x4 -z-4'
 export PAGER=less
 export GIT_PAGER="less -FX"
 
