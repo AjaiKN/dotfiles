@@ -26,8 +26,6 @@
 
 _akn_omz_grep() {
     unalias grep
-    unalias egrep
-    unalias fgrep
 
     grep-flags-available() {
         command grep "$@" "" &>/dev/null <<< ""
