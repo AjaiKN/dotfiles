@@ -56,35 +56,11 @@ function . { safe_source_dot "$@" }
 ### Nix prologue
 OLD_PATH_ZSHRC=$PATH
 
-### Cursor style
-# immediately change cursor style so that it looks like insert mode when the Powerlevel10k instant prompt starts
-# (6 = non-blinking bar cursor)
-echo_if_interactive -ne '\e[6 q'
-
 ### Basic variables
 
 ZSH_CUSTOM="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 ZSH_PLUGINS="$ZSH_CUSTOM/plugins"
-
-### choosing a theme
-
-# version at least 5.1
-if ! [[ $ZSH_VERSION != (5.<1->*|<6->.*) ]] && ! [[ -n "$RSTUDIO" ]] && { ! [[ -n "$INSIDE_EMACS" ]] || [[ "$INSIDE_EMACS" == "vterm"* ]] } && { ! [[ "$TERM" = "dumb" ]] }; then
-	ZSH_THEME="powerlevel10k/powerlevel10k"
-else
-	ZSH_THEME="simple"
-fi
-
-### Powerlevel10k instant prompt
-if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" ]]; then
-	# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-	# Initialization code that may require console input (password prompts, [y/n]
-	# confirmations, etc.) must go above this block; everything else may go below.
-	if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-		safe_source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-	fi
-fi
 
 ### Plugin customization
 # speed up zsh-syntax-highlighting in zsh 5.8 and below
