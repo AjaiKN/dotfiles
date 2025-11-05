@@ -90,7 +90,6 @@ plugin scriptingosx/mac-zsh-completions
 plugin clarketm/zsh-completions
 plugin ziglang/shell-completions
 plugin prezto-completion
-plugin setup-compinit
 plugin tabtab
 # plugin zimfw/completion # calls compinit
 is-at-least 4.3 && plugin zsh-users/zsh-history-substring-search

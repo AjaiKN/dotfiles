@@ -184,7 +184,7 @@ function add_to_path {
 }
 
 function autoload_from {
-	setopt LOCAL_OPTIONS EXTENDED_GLOB
+	builtin emulate -L zsh -o EXTENDED_GLOB
 	for dir in "$@"; do
 		if [ -d "$dir" ]; then
 			local function_glob='^([_.]*|prompt_*_setup|README*|*~)(-.N:t)' # from prezto
@@ -295,4 +295,14 @@ function load_plugins {
 	if [[ -n "$ZSH_THEME" ]]; then
 		compile_and_source "$ZSH_CUSTOM/themes/$ZSH_THEME.zsh-theme"
 	fi
+
+	akn-setup-compinit
+}
+
+# from zsh4humans: defer compdef calls for later
+function compdef() {
+	emulate -L zsh &&
+		setopt typeset_silent pipe_fail extended_glob prompt_percent no_prompt_subst &&
+		setopt no_prompt_bang no_bg_nice no_aliases
+	_akn_compdef+=("${(pj:\0:)@}")
 }
