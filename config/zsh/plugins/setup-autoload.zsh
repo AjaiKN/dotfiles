@@ -34,6 +34,6 @@ function autoload_from {
 }
 
 autoload_from "$ZSH_CUSTOM/functions"
-for plugin in $all_plugins; do
+for plugin in $plugins; do
 	autoload_from "$ZSH_PLUGINS/${plugin:t}/functions"(/N) # zim modules, prezto modules
 done

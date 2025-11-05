@@ -76,7 +76,7 @@
 #   zsh_loaded_plugins  - List of successfully loaded plugin names
 #   plugin_times        - Load times for each plugin (microseconds)
 #   plugins_failed      - List of plugins that failed to load
-#   plugins             - Queue of plugins to load
+#   plugins             - List of plugins to load
 
 function .set_zsh_plugin_default_branch {
 	local default_branch=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${1}" | jq -r .default_branch)
