@@ -16,4 +16,4 @@ git submodule --quiet sync --recursive
 git submodule init config/nano vendor/fasd config/zsh/themes "$@"
 
 # update all submodules
-git -c submodule.fetchJobs=0 submodule update --depth=1 --recursive
+git -c submodule.fetchJobs=0 submodule update --recursive # --depth=1
