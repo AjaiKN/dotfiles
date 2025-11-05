@@ -39,8 +39,8 @@ zmodload zsh/langinfo
 # Returns nonzero if encoding failed.
 #
 # Usage:
-#   urldecode <urlstring>  - prints decoded string followed by a newline
-function urldecode {
+#   omz_urldecode <urlstring>  - prints decoded string followed by a newline
+function omz_urldecode {
   emulate -L zsh
   local encoded_url=$1
 

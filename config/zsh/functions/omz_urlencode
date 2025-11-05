@@ -43,14 +43,14 @@ zmodload zsh/langinfo
 # Returns nonzero if encoding failed.
 #
 # Usage:
-#  urlencode [-r] [-m] [-P] <string> [<string> ...]
+#  omz_urlencode [-r] [-m] [-P] <string> [<string> ...]
 #
 #    -r causes reserved characters (;/?:@&=+$,) to be escaped
 #
 #    -m causes "mark" characters (_.!~*''()-) to be escaped
 #
 #    -P causes spaces to be encoded as '%20' instead of '+'
-function urlencode() {
+function omz_urlencode() {
   emulate -L zsh
   setopt norematchpcre
 
