@@ -95,7 +95,6 @@ plugin tabtab
 # plugin zimfw/completion # calls compinit
 is-at-least 4.3 && plugin zsh-users/zsh-history-substring-search
 plugin omz-clipboard
-plugin omz-functions
 plugin omz-grep
 plugin omz-history
 plugin omz-key-bindings
