@@ -18,27 +18,24 @@ if [[ -o interactive ]]; then
 		ZSH_THEME="simple"
 	fi
 
-	# EXPERIMENTAL: load powerlevel10k instant prompt super early
 	if [ -t 0 ] && [ -t 1 ] && [ -t 2 ]; then
 		### Cursor style
 		# immediately change cursor style so that it looks like insert mode when the Powerlevel10k instant prompt starts
 		# (6 = non-blinking bar cursor)
 		echo -ne '\e[6 q'
 
-		### Powerlevel10k instant prompt
-		if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" ]]; then
-			_akn_p10k="${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-			# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-			# Initialization code that may require console input (password prompts, [y/n]
-			# confirmations, etc.) must go above this block; everything else may go below.
-			if [[ -r $_akn_p10k ]]; then
-				if [[ ${_akn_p10k}.zwc -ot $_akn_p10k ]]; then
-					zcompile -R -- $_akn_p10k
-				fi
-				. $_akn_p10k && _akn_loaded_p10k_instant_prompt_early=1
+		# EXPERIMENTAL: load powerlevel10k instant prompt super early
+		() {
+			local p10k_instant="${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+			### Powerlevel10k instant prompt
+			if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" ]] && [[ -r $p10k_instant ]]; then
+				# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+				# Initialization code that may require console input (password prompts, [y/n]
+				# confirmations, etc.) must go above this block; everything else may go below.
+				[[ ${p10k_instant}.zwc -ot $p10k_instant ]] && zcompile -R -- $p10k_instant
+				. $p10k_instant && _akn_loaded_p10k_instant_prompt_early=1
 			fi
-			unset _akn_p10k
-		fi
+		}
 	fi
 fi
 
