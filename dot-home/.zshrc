@@ -135,7 +135,7 @@ plugin emacs
 plugin autocorrect
 (( $+commands[atuin] )) && plugin atuin
 
-if ! [[ -n "$INSIDE_EMACS" ]] || [[ "$INSIDE_EMACS" = "vterm"* ]] || [[ "$TERM" = "eterm-color" ]] && { ! [[ "$TERM" = "dumb" ]] }; then
+if [[ $TERM != dumb && ( -z $INSIDE_EMACS || $INSIDE_EMACS = vterm* || $TERM = eterm-color ) ]]; then
 	is-at-least 4.3.11 && plugin zsh-users/zsh-syntax-highlighting
 	ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 	# this should be the very last plugin, since I'm setting ZSH_AUTOSUGGEST_MANUAL_REBIND=1

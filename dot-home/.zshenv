@@ -11,8 +11,8 @@
 
 if [[ -o interactive ]]; then
 	### choosing a theme
-	# version at least 5.1
-	if ! [[ $ZSH_VERSION != (5.<1->*|<6->.*) ]] && ! [[ -n "$RSTUDIO" ]] && { ! [[ -n "$INSIDE_EMACS" ]] || [[ "$INSIDE_EMACS" == "vterm"* ]] } && { ! [[ "$TERM" = "dumb" ]] }; then
+	# version >= 5.1
+	if [[ $ZSH_VERSION == (5.<1->*|<6->.*) && $TERM != dumb && -z $RSTUDIO && ( -z $INSIDE_EMACS || $INSIDE_EMACS == vterm* ) ]]; then
 		ZSH_THEME="powerlevel10k/powerlevel10k"
 	else
 		ZSH_THEME="simple"
