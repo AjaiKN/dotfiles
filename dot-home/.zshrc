@@ -86,9 +86,9 @@ zstyle ':zim:input' double-dot-expand yes
 compile_and_source "$ZSH_CUSTOM"/plugin-manager.zsh
 
 # plugin zsh-users/zsh-completions
-plugin scriptingosx/mac-zsh-completions
+[[ "${OSTYPE}" == darwin* ]] && plugin scriptingosx/mac-zsh-completions
 plugin clarketm/zsh-completions
-plugin ziglang/shell-completions
+(( $+commands[zig] )) && plugin ziglang/shell-completions
 plugin prezto-completion
 plugin tabtab
 # plugin zimfw/completion # calls compinit
