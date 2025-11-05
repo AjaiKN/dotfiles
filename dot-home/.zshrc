@@ -105,9 +105,7 @@ fi
 plugin zimfw/input
 # plugin zimfw/archive # unalias archive unarchive lsarchive 2>/dev/null
 (( $+commands[direnv] )) && plugin zimfw/direnv
-(( $+commands[mise] )) && rm -f $ZSH_PLUGINS/joke/zim-mise/mise-activate.zsh{,.zwc} # because PATH might have changed
-(( $+commands[mise] )) && plugin joke/zim-mise-modified
-# (( $+commands[mise] )) && plugin mise
+(( $+commands[mise] )) && plugin mise
 plugin omz-termsupport
 plugin omz-vcs_info
 plugin ohmyzsh/plugins/fasd
