@@ -5,10 +5,6 @@
 # options, key bindings, etc.
 #
 
-### Profiling prologue
-# SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
-[ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
-
 ### helpers
 echo_if_interactive() {
 	if [ -t 0 ]; then
@@ -53,6 +49,13 @@ alias .=safe_source_dot
 function source { safe_source "$@" }
 function . { safe_source_dot "$@" }
 
+### Profiling prologue
+# SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
+[ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
+
+### Nix prologue
+OLD_PATH_ZSHRC=$PATH
+
 ### Cursor style
 # immediately change cursor style so that it looks like insert mode when the Powerlevel10k instant prompt starts
 # (6 = non-blinking bar cursor)
@@ -82,21 +85,6 @@ if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" ]]; then
 		safe_source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 	fi
 fi
-
-### Secure PATH
-
-if [ -x "$DOTFILES/scripts/secure_path" ]; then
-	if [[ -o interactive ]]; then
-		PATH="$("$DOTFILES/scripts/secure_path" || printf '%s' "$PATH")"
-	else
-		# if not interactive, don't let it print anything
-		PATH="$("$DOTFILES/scripts/secure_path" 2>/dev/null || printf '%s' "$PATH")"
-	fi
-	export PATH
-fi
-
-### Nix prologue
-OLD_PATH_ZSHRC=$PATH
 
 ### Plugin customization
 # speed up zsh-syntax-highlighting in zsh 5.8 and below

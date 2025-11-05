@@ -124,7 +124,7 @@ $HOME/.poetry/bin:\
 $PATH"
 
 ### Secure PATH
-if [ -x "$DOTFILES/scripts/secure_path" ] && [ -z "${skip_secure_path:-}" ]; then
+if [ -x "$DOTFILES/scripts/secure_path" ]; then
 	if [ -t 0 ]; then
 		PATH="$("$DOTFILES/scripts/secure_path" || printf '%s' "$PATH")"
 	else
