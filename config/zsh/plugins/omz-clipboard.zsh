@@ -134,6 +134,24 @@ if [[ "${OSTYPE}" != darwin* ]]; then
 	alias pbpaste=clippaste
 fi
 
+### ohmyzsh copypath plugin
+
+# Copies the path of given directory or file to the system or X Windows clipboard.
+# Copy current directory if no parameter.
+function copypath {
+	# If no argument passed, use current directory
+	local file="${1:-.}"
+
+	# If argument is not an absolute path, prepend $PWD
+	[[ $file = /* ]] || file="$PWD/$file"
+
+	# Copy the absolute path without resolving symlinks
+	# If clipcopy fails, exit the function with an error
+	print -n "${file:a}" | clipcopy || return 1
+
+	echo ${(%):-"%B${file:a}%b copied to clipboard."}
+}
+
 ## me: make the rest of the copying commands use the system clipboard
 # This is largely copied from the ohmyzsh-vi-mode plugin, which only does this for the vi commands:
 #   https://github.com/ohmyzsh/ohmyzsh/blob/f17aa2ffa8c12b71518f1b0233edca3a0dd7cade/plugins/vi-mode/vi-mode.plugin.zsh#L121-L162

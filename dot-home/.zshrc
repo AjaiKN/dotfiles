@@ -105,33 +105,38 @@ if [ "$TERM" != "eterm-color" ]; then
 	is-at-least 5.2 && plugin zsh-vi-more/vi-motions
 fi
 plugin zimfw/input
-plugin zimfw/direnv
-rm -f $ZSH_PLUGINS/joke/zim-mise/mise-activate.zsh{,.zwc} # because PATH might have changed
-plugin joke/zim-mise-modified
-# plugin mise
+# plugin zimfw/archive # unalias archive unarchive lsarchive 2>/dev/null
+(( $+commands[direnv] )) && plugin zimfw/direnv
+(( $+commands[mise] )) && rm -f $ZSH_PLUGINS/joke/zim-mise/mise-activate.zsh{,.zwc} # because PATH might have changed
+(( $+commands[mise] )) && plugin joke/zim-mise-modified
+# (( $+commands[mise] )) && plugin mise
 plugin omz-termsupport
 plugin omz-vcs_info
 plugin setup-autoload
 plugin ohmyzsh/plugins/fasd
-plugin ohmyzsh/plugins/macos
+[[ "${OSTYPE}" == darwin* ]] && plugin ohmyzsh/plugins/macos
+(( $+commands[systemctl] )) && plugin ohmyzsh/plugins/systemd
+# plugin ohmyzsh/plugins/colored-man-pages
 # plugin ohmyzsh/plugins/mise
-plugin lukechilds/zsh-better-npm-completion
+# plugin ohmyzsh/plugins/gnu-utils
+# plugin prezto/modules/gnu-utility
+(( $+commands[npm] )) && plugin lukechilds/zsh-better-npm-completion
 plugin help
 plugin bash_zsh_shared_rc
 plugin options
 plugin aliases
 plugin compdef
-plugin iterm
+[ "$TERM_PROGRAM" = "iTerm.app" ] && plugin iterm
 # plugin google-cloud-sdk
-plugin ocaml
+# plugin ocaml
 # plugin conda
-plugin nix
+[[ -e /nix ]] && plugin nix
 # plugin direnv
 (( $+commands[fzf] )) && plugin fzf
 plugin history
 plugin bindings
 plugin edit-command-line
-plugin emacs
+(( $+commands[emacs] )) && plugin emacs
 plugin autocorrect
 (( $+commands[atuin] )) && plugin atuin
 

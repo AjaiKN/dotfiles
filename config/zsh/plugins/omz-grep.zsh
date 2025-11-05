@@ -22,6 +22,7 @@
 # SOFTWARE.
 
 ## COPIED FROM OH-MY-ZSH
+# TODO: use a functions directory
 
 _akn_omz_grep() {
     unalias grep
