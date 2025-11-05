@@ -111,7 +111,6 @@ plugin zimfw/input
 # (( $+commands[mise] )) && plugin mise
 plugin omz-termsupport
 plugin omz-vcs_info
-plugin setup-autoload
 plugin ohmyzsh/plugins/fasd
 [[ "${OSTYPE}" == darwin* ]] && plugin ohmyzsh/plugins/macos
 (( $+commands[systemctl] )) && plugin ohmyzsh/plugins/systemd

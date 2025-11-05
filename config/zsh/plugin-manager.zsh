@@ -183,6 +183,18 @@ function add_to_path {
 	done
 }
 
+function autoload_from {
+	setopt LOCAL_OPTIONS EXTENDED_GLOB
+	for dir in "$@"; do
+		if [ -d "$dir" ]; then
+			local function_glob='^([_.]*|prompt_*_setup|README*|*~)(-.N:t)' # from prezto
+			for func in "${dir}"/$~function_glob; do
+				autoload -Uz "$func"
+			done
+		fi
+	done
+}
+
 function load_plugin {
 	local possible_paths plugin_file
 	possible_paths=(
@@ -250,7 +262,6 @@ function load_plugins {
 	if (( ! _akn_dangerous_root )); then
 		mkdir -p -m 0700 "$ZSH_CACHE_DIR/completions"
 	fi
-	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
 
 	# setup fpath and path
 	for plugin in $plugins; do
@@ -261,6 +272,13 @@ function load_plugins {
 		fi
 		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#bin-dir
 		add_to_path "$ZSH_PLUGINS/${plugin}/bin"(/N)
+	done
+
+	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
+	autoload_from "$ZSH_CUSTOM/functions"
+	for plugin in $plugins; do
+		# zim modules and prezto modules expect their functions to be autoloaded
+		autoload_from "$ZSH_PLUGINS/${plugin:t}/functions"(/N)
 	done
 
 	# actually load the plugins
