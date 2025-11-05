@@ -14,7 +14,12 @@ if [[ -o interactive ]] && ! (( $+functions[_git] )); then
 	autoload -Uzr _git
 fi
 
-source "$HOME/.shell_env.sh"
+if [[ -o interactive ]]; then
+	# so we can wait until after the instant prompt loads (in zshrc) before running secure_path
+	skip_secure_path=1 source "$HOME/.shell_env.sh"
+else
+	source "$HOME/.shell_env.sh"
+fi
 
 # from zsh4humans
 if [[ $EUID == 0 ]]; then # && -z ~(#qNU) && $DOTFILES == ~/* ]]; then
