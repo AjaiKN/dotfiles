@@ -197,24 +197,25 @@ function autoload_from {
 
 function load_plugin {
 	local possible_paths plugin_file
+	local plugin=$1
 	possible_paths=(
 		# ":t" gets the basename, in case the plugin name includes the full repo name
-		"$ZSH_PLUGINS/${1}/${1:t}.plugin.zsh"(.N) # regular plugins, ohmyzsh plugins
-		"$ZSH_PLUGINS/${1}/init.zsh"(.N) # prezto modules, zim modules
-		"$ZSH_PLUGINS/${1}.zsh"(.N)
-		"$ZSH_PLUGINS/${1}.plugin.zsh"(.N)
-		"$ZSH_PLUGINS/${1}"/*.plugin.zsh(.N)
-		"$ZSH_PLUGINS/${1}"/*.zsh(.N)
+		"$ZSH_PLUGINS/${plugin}/${plugin:t}.plugin.zsh"(.N) # regular plugins, ohmyzsh plugins
+		"$ZSH_PLUGINS/${plugin}/init.zsh"(.N) # prezto modules, zim modules
+		"$ZSH_PLUGINS/${plugin}.zsh"(.N)
+		"$ZSH_PLUGINS/${plugin}.plugin.zsh"(.N)
+		"$ZSH_PLUGINS/${plugin}"/*.plugin.zsh(.N)
+		"$ZSH_PLUGINS/${plugin}"/*.zsh(.N)
 	)
 	if [ ${#possible_paths[@]} -eq 0 ]; then
 		if [[ -o interactive ]]; then
-			if [ -z $retrying_after_submodule_init ] && init_zsh_plugin "$1"; then
+			if [ -z $retrying_after_submodule_init ] && init_zsh_plugin $plugin; then
 				retrying_after_submodule_init=1 load_plugin "$@"
 				return $?
 			else
-				>&2 echo "Plugin not found: ${1}"
+				>&2 echo "Plugin not found: ${plugin}"
 				>&2 echo "To add it as a submodule, run:"
-				>&2 echo "install_zsh_plugin ${1}"
+				>&2 echo "install_zsh_plugin ${plugin}"
 				>&2 echo
 				return 1
 			fi
@@ -222,29 +223,28 @@ function load_plugin {
 			return 1
 		fi
 	else
-		zsh_loaded_plugins+=( "${1:t}" )
+		zsh_loaded_plugins+=( "${plugin:t}" )
 		plugin_file="${possible_paths[@]:0:1}"
 		typeset -F start_time=EPOCHREALTIME
 		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
 		ZERO="$plugin_file" compile_and_source "$plugin_file"
 		typeset -F end_time=EPOCHREALTIME
-		plugin_times+=( $((end_time - start_time)) )
+		plugin_times[$plugin]=$((end_time - start_time))
 		return
 	fi
 }
 
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#indicator
 typeset -ga zsh_loaded_plugins
-typeset -ga plugin_times
+typeset -gA plugin_times
 
 typeset -gaU plugins_failed
 typeset -gaU plugins
 
 function print_plugin_times {
 	(
-		local count=${#plugins[@]}
-		for i in $(seq 1 $count); do
-			printf '%7d %s\n' $(( 1000000 * ${plugin_times[$i]} )) "${plugins[$i]}"
+		for plugin in $plugins; do
+			printf "%'9dμs %s\n" $(( 1000000 * ${plugin_times[$plugin]} )) $plugin
 		done
 	) | sort -n --reverse
 }
