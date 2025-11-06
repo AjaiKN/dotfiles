@@ -78,9 +78,10 @@
 #   plugins_failed      - List of plugins that failed to load
 #   plugins             - List of plugins to load
 
-zmodload -F zsh/files b:zf_mkdir
+builtin zmodload -F zsh/files b:zf_mkdir
 
 function .set_zsh_plugin_default_branch {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	local default_branch=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${1}" | jq -r .default_branch)
 	if [ -n "$default_branch" ] && [ "$default_branch" != null ]; then
 		if (( _akn_dangerous_root )); then
@@ -95,6 +96,7 @@ function .set_zsh_plugin_default_branch {
 }
 
 function .zsh_plugin__is_empty_dir {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	[[ -d "$1" ]] || return 2
 	for file in "$1"/*(N); do
 		return 1
@@ -103,13 +105,15 @@ function .zsh_plugin__is_empty_dir {
 }
 
 function .zsh_plugin__is_nonempty_dir {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	[[ -d "$1" ]] || return 2
 	! .zsh_plugin__is_empty_dir "$@"
 }
 
 function install_zsh_plugin {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	if (( _akn_dangerous_root )); then
-		>&2 echo "Refusing because root"
+		>&2 echo "Refusing to init zsh plugin $1 because root"
 		return 1
 	fi
 	init_zsh_plugin "$@" || {
@@ -124,8 +128,9 @@ function install_zsh_plugin {
 }
 
 function uninstall_zsh_plugin {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	if (( _akn_dangerous_root )); then
-		>&2 echo "Refusing because root"
+		>&2 echo "Refusing to init zsh plugin $1 because root"
 		return 1
 	fi
 	(
@@ -135,8 +140,9 @@ function uninstall_zsh_plugin {
 }
 
 function update_zsh_plugin {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	if (( _akn_dangerous_root )); then
-		>&2 echo "Refusing because root"
+		>&2 echo "Refusing to init zsh plugin $1 because root"
 		return 1
 	fi
 	.set_zsh_plugin_default_branch "$1"
@@ -147,8 +153,9 @@ function update_zsh_plugin {
 }
 
 function init_zsh_plugin {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	if (( _akn_dangerous_root )); then
-		>&2 echo "Refusing because root"
+		>&2 echo "Refusing to init zsh plugin $1 because root"
 		return 1
 	fi
 	if [[ $1 == ohmyzsh/* ]]; then
@@ -169,6 +176,7 @@ function init_zsh_plugin {
 }
 
 function add_to_fpath {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	(( $# == 0 )) && return 1
 	for dir in "$@"; do
 		if [[ -d "$dir" ]]; then
@@ -177,6 +185,7 @@ function add_to_fpath {
 	done
 }
 function add_to_path {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	(( $# == 0 )) && return 1
 	for dir in "$@"; do
 		if [[ -d "$dir" ]]; then
@@ -186,7 +195,7 @@ function add_to_path {
 }
 
 function autoload_from {
-	builtin emulate -L zsh -o EXTENDED_GLOB
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	for dir in "$@"; do
 		if [ -d "$dir" ]; then
 			local function_glob='^([_.]*|prompt_*_setup|README*|*~)(-.N:t)' # from prezto
@@ -198,7 +207,8 @@ function autoload_from {
 }
 
 function load_plugin {
-	builtin emulate -L zsh
+	# Don't do `emulate -L zsh` here! Or else plugins won't be able to set options.
+
 	local plugin=$1
 	zsh_loaded_plugins+=($plugin_shortnames[$plugin])
 	local plugin_file=${plugin_files[$plugin]:-}
@@ -226,6 +236,7 @@ typeset -gaU plugins_failed
 typeset -gaU plugins
 
 function plugin_info {
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	printf "%'11s %-40s %-20s %-20s\n" "TIME" "ID" "TYPE" "SHORTNAME"
 	(
 		for plugin in $plugins; do
@@ -235,7 +246,7 @@ function plugin_info {
 }
 
 function .plugin_file {
-	builtin emulate -L zsh -o EXTENDED_GLOB
+	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
 	local plugin=$1; shift
 	local plugin_type=$1; shift
 	if (( $# > 0 )); then
@@ -267,15 +278,15 @@ function .plugin_file {
 # - absolute paths
 # - eval/cmd (maybe with optional cache)
 function plugin {
-	builtin emulate -L zsh -o EXTENDED_GLOB
+	builtin emulate -L zsh -o EXTENDED_GLOB -o NO_CASE_GLOB
 	local plugin=$1
-	.plugin_file   $plugin regular        $ZSH_PLUGINS/${plugin}/${plugin:t}.plugin.zsh(NY1^/) ||
-		.plugin_file $plugin regular        $ZSH_PLUGINS/${plugin}/*.plugin.zsh(NY1^/) ||
-		.plugin_file $plugin prezto_or_zim  $ZSH_PLUGINS/${plugin}/init.zsh(NY1^/) ||
-		.plugin_file $plugin nonstandard    $ZSH_PLUGINS/${plugin}/*.zsh(NY1^/) ||
+	.plugin_file   $plugin regular        $ZSH_PLUGINS/${plugin}/${plugin:t}.plugin.ZSH(NY1^/) ||
+		.plugin_file $plugin regular        $ZSH_PLUGINS/${plugin}/*.plugin.ZSH(NY1^/) ||
+		.plugin_file $plugin prezto_or_zim  $ZSH_PLUGINS/${plugin}/init.ZSH(NY1^/) ||
+		.plugin_file $plugin nonstandard    $ZSH_PLUGINS/${plugin}/*.ZSH(NY1^/) ||
 		.plugin_file $plugin nonstandard_sh $ZSH_PLUGINS/${plugin}/*.sh(NY1^/) ||
-		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.plugin.zsh(NY1^/) ||
-		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.zsh(NY1^/) ||
+		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.plugin.ZSH(NY1^/) ||
+		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.ZSH(NY1^/) ||
 		# .plugin_file $plugin dir_only       $ZSH_PLUGINS/${plugin}(NY1F) ||
 		{
 			if [[ -o interactive ]]; then
@@ -298,7 +309,7 @@ function plugin {
 export PMSPEC=0fbis
 
 function load_plugins {
-	builtin emulate -L zsh -o EXTENDED_GLOB
+	# Don't do `emulate -L zsh` here! Or else plugins won't be able to set options.
 
 	unset -f plugin
 
@@ -349,7 +360,7 @@ function load_plugins {
 
 # from zsh4humans: defer compdef calls for later
 function compdef() {
-	emulate -L zsh &&
+	builtin emulate -L zsh &&
 		setopt typeset_silent pipe_fail extended_glob prompt_percent no_prompt_subst &&
 		setopt no_prompt_bang no_bg_nice no_aliases
 	_akn_compdef+=("${(pj:\0:)@}")
