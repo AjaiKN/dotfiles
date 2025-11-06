@@ -11,20 +11,8 @@ umask go-rwx
 
 ## DOTFILES
 
-if [ -L ~/.zshenv ] && command -v realpath >/dev/null 2>&1; then
-	DOTFILES="$(dirname -- "$(dirname -- "$(realpath ~/.zshenv)")")"
-elif [ -L ~/.zshenv ] && command -v perl >/dev/null 2>&1; then
-	# from comment in https://unix.stackexchange.com/questions/720080/how-do-i-resolve-a-relative-path-in-a-posix-shell-if-readlink-realpath-is-not-av
-	DOTFILES="$(dirname -- "$(dirname -- "$(perl -MCwd=realpath -le 'print realpath(shift)' ~/.zshenv)")")"
-elif [ -L ~/.zshenv ] && command -v readlink >/dev/null 2>&1; then
-	case $(readlink ~/.zshenv) in
-		/*) # absolute path
-			DOTFILES="$(dirname -- "$(dirname -- "$(readlink ~/.zshenv)")")"
-			;;
-		*) # relative path
-			DOTFILES="$(dirname -- "$(dirname -- "$HOME/$(readlink ~/.zshenv)")")"
-			;;
-	esac
+if [ -d "$HOME/.dotfiles" ] && command -v realpath >/dev/null 2>&1; then
+	DOTFILES="$(realpath "$HOME/.dotfiles")"
 elif [ -d "$HOME/prog/dotfiles" ]; then
 	DOTFILES="$HOME/prog/dotfiles"
 elif [ -d "$HOME/dotfiles" ]; then
@@ -33,7 +21,7 @@ elif [ -d "$HOME/.dotfiles" ]; then
 	DOTFILES="$HOME/.dotfiles"
 else
 	[ -t 0 ] && echo "Unable to locate DOTFILES directory" >&2
-	DOTFILES="$HOME/prog/dotfiles"
+	DOTFILES="$HOME/.dotfiles"
 fi
 export DOTFILES
 

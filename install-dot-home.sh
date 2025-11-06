@@ -4,6 +4,51 @@ set -eu
 
 umask go-rwx
 
+indent=''
+my_echo() {
+	if [ $# -eq 0 ]; then
+		echo
+	else
+		first="${indent}$1"
+		shift
+		echo "$first" "$@"
+	fi
+}
+
+red=$(printf '\033[31m')
+green=$(printf '\033[32m')
+# yellow=$(printf '\033[33m')
+blue=$(printf '\033[34m')
+# bold=$(printf '\033[1m')
+reset=$(printf '\033[0m')
+
+# symlink ~/.dotfiles -> the directory this script is in
+dotfiles_orig="$(realpath "$(dirname "$0")")"
+if ! [ -e "$HOME/.dotfiles" ] || [ "$(realpath "$HOME/.dotfiles")" != "$dotfiles_orig" ]; then
+	real_home=$(realpath "$HOME" || exit 22)
+	dotfiles_relative_path=$(echo "$DOTFILES" | sed "s|^$real_home/||" | sed "s|^$HOME/||")
+	cd "$HOME"
+
+	if [ -L .dotfiles ]; then
+		my_echo "${red}UNLINK: $HOME/.dotfiles -> $(readlink .dotfiles)${reset}"
+		rm .dotfiles
+	fi
+	if [ -e .dotfiles ]; then
+		echo "$HOME/.dotfiles already exists!"
+		exit 1
+	fi
+	if ! [ -d "$dotfiles_relative_path" ]; then
+		echo "The relative path $dotfiles_relative_path (from ~) doesn't seem to exist!"
+		exit 1
+	fi
+
+	my_echo "${green}LINK:   $HOME/.dotfiles -> $dotfiles_relative_path${reset}"
+	ln -s "$dotfiles_relative_path" .dotfiles
+
+	unset real_home dotfiles_relative_path
+fi
+cd "$dotfiles_orig"
+
 DOTFILES=$(realpath "$(dirname "$0")")
 export DOTFILES
 
@@ -85,24 +130,6 @@ is_ignored() {
 is_unfold() {
 	[ -e "$1/.unfold" ] # && ! [ -L "$1" ]
 }
-
-indent=''
-my_echo() {
-	if [ $# -eq 0 ]; then
-		echo
-	else
-		first="${indent}$1"
-		shift
-		echo "$first" "$@"
-	fi
-}
-
-red=$(printf '\033[31m')
-green=$(printf '\033[32m')
-# yellow=$(printf '\033[33m')
-blue=$(printf '\033[34m')
-# bold=$(printf '\033[1m')
-reset=$(printf '\033[0m')
 
 handle_file() {
 	if [ -L "$1" ]; then
