@@ -11,8 +11,8 @@ umask go-rwx
 
 ## DOTFILES
 
-if [ -d "$HOME/.dotfiles" ] && command -v realpath >/dev/null 2>&1; then
-	DOTFILES="$(realpath "$HOME/.dotfiles")"
+if [ -d "$HOME/.dotfiles" ]; then
+	DOTFILES="$( (cd "$HOME/.dotfiles" >/dev/null && pwd -P) )"
 elif [ -d "$HOME/prog/dotfiles" ]; then
 	DOTFILES="$HOME/prog/dotfiles"
 elif [ -d "$HOME/dotfiles" ]; then
