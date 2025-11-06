@@ -62,6 +62,16 @@ ZSH_CUSTOM="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 ZSH_PLUGINS="$ZSH_CUSTOM/plugins"
 
+if (( _akn_dangerous_root )); then
+	if (( $+commands[mktemp] )); then
+		ZSH_CACHE_DIR=$(mktemp -d)
+	else
+		ZSH_CACHE_DIR=/tmp/zsh-cache-dir-$EUID-$RANDOM
+		zmodload -F zsh/files b:zf_mkdir
+		zf_mkdir -m 0700 $ZSH_CACHE_DIR
+	fi
+fi
+
 ### Plugin customization
 # speed up zsh-syntax-highlighting in zsh 5.8 and below
 # https://github.com/zsh-users/zsh-syntax-highlighting/issues/513
