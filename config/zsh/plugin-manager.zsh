@@ -196,89 +196,134 @@ function autoload_from {
 }
 
 function load_plugin {
-	local possible_paths plugin_file
+	builtin emulate -L zsh
 	local plugin=$1
-	possible_paths=(
-		# ":t" gets the basename, in case the plugin name includes the full repo name
-		"$ZSH_PLUGINS/${plugin}/${plugin:t}.plugin.zsh"(.N) # regular plugins, ohmyzsh plugins
-		"$ZSH_PLUGINS/${plugin}/init.zsh"(.N) # prezto modules, zim modules
-		"$ZSH_PLUGINS/${plugin}.zsh"(.N)
-		"$ZSH_PLUGINS/${plugin}.plugin.zsh"(.N)
-		"$ZSH_PLUGINS/${plugin}"/*.plugin.zsh(.N)
-		"$ZSH_PLUGINS/${plugin}"/*.zsh(.N)
-	)
-	if [ ${#possible_paths[@]} -eq 0 ]; then
-		if [[ -o interactive ]]; then
-			if [ -z $retrying_after_submodule_init ] && init_zsh_plugin $plugin; then
-				retrying_after_submodule_init=1 load_plugin "$@"
-				return $?
-			else
-				>&2 echo "Plugin not found: ${plugin}"
-				>&2 echo "To add it as a submodule, run:"
-				>&2 echo "install_zsh_plugin ${plugin}"
-				>&2 echo
-				return 1
-			fi
-		else
-			return 1
-		fi
-	else
-		zsh_loaded_plugins+=( "${plugin:t}" )
-		plugin_file="${possible_paths[@]:0:1}"
+	zsh_loaded_plugins+=($plugin_shortnames[$plugin])
+	local plugin_file=${plugin_files[$plugin]:-}
+	if [[ -n $plugin_file ]]; then
 		typeset -F start_time=EPOCHREALTIME
 		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
 		ZERO="$plugin_file" compile_and_source "$plugin_file"
+		local ret=$?
 		typeset -F end_time=EPOCHREALTIME
 		plugin_times[$plugin]=$((end_time - start_time))
-		return
+		return $ret
 	fi
+	return
 }
 
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#indicator
 typeset -ga zsh_loaded_plugins
+typeset -gA plugin_files
+typeset -gA plugin_types
+typeset -gA plugin_shortnames
+typeset -gA plugin_dirs
 typeset -gA plugin_times
 
 typeset -gaU plugins_failed
 typeset -gaU plugins
 
-function print_plugin_times {
+function plugin_info {
+	printf "%'11s %-40s %-20s %-20s\n" "TIME" "ID" "TYPE" "SHORTNAME"
 	(
 		for plugin in $plugins; do
-			printf "%'9dμs %s\n" $(( 1000000 * ${plugin_times[$plugin]} )) $plugin
+			printf "%'9dμs %-40s %-20s %-20s\n" $(( 1000000 * ${plugin_times[$plugin]:-0} )) $plugin $plugin_types[$plugin] $plugin_shortnames[$plugin]
 		done
 	) | sort -n --reverse
 }
 
-function plugin {
-	plugins+=("$1")
+function .plugin_file {
+	builtin emulate -L zsh -o EXTENDED_GLOB
+	local plugin=$1; shift
+	local plugin_type=$1; shift
+	if (( $# > 0 )); then
+		local plugin_filename=$1
+		plugins+=($plugin)
+		plugin_types[$plugin]=$plugin_type
+		if [[ $plugin_type == dir_only ]]; then
+			plugin_shortnames[$plugin]=${plugin:t}
+			plugin_dirs[$plugin]=${plugin_filename}
+			return
+		fi
+		plugin_files[$plugin]=$plugin_filename
+		if [[ $plugin_type == regular ]]; then
+			plugin_shortnames[$plugin]=${${plugin_filename:t}%.plugin.zsh}
+		else
+			plugin_shortnames[$plugin]=${plugin:t}
+		fi
+		if [[ $plugin_type != single_file ]]; then
+			plugin_dirs[$plugin]=${plugin_filename:h}
+		fi
+	else
+		return 2
+	fi
 }
 
-function load_plugins {
-	# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#pmspec
-	export PMSPEC=0fbis
+# probably eventually want commands similar to https://zimfw.sh/docs/commands/
+# TODO:
+# - full git URLs
+# - absolute paths
+# - eval/cmd (maybe with optional cache)
+function plugin {
+	builtin emulate -L zsh -o EXTENDED_GLOB
+	local plugin=$1
+	.plugin_file   $plugin regular        $ZSH_PLUGINS/${plugin}/${plugin:t}.plugin.zsh(NY1^/) ||
+		.plugin_file $plugin regular        $ZSH_PLUGINS/${plugin}/*.plugin.zsh(NY1^/) ||
+		.plugin_file $plugin prezto_or_zim  $ZSH_PLUGINS/${plugin}/init.zsh(NY1^/) ||
+		.plugin_file $plugin nonstandard    $ZSH_PLUGINS/${plugin}/*.zsh(NY1^/) ||
+		.plugin_file $plugin nonstandard_sh $ZSH_PLUGINS/${plugin}/*.sh(NY1^/) ||
+		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.plugin.zsh(NY1^/) ||
+		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.zsh(NY1^/) ||
+		# .plugin_file $plugin dir_only       $ZSH_PLUGINS/${plugin}(NY1F) ||
+		{
+			if [[ -o interactive ]]; then
+				if [ -z $retrying_after_submodule_init ] && init_zsh_plugin $plugin; then
+					retrying_after_submodule_init=1 plugin "$@"
+					return $?
+				else
+					>&2 echo "Plugin not found: ${plugin}"
+					>&2 echo "To add it as a submodule, run:"
+					>&2 echo "install_zsh_plugin ${plugin}"
+					>&2 echo
+				fi
+			fi
+			plugins_failed+=("$plugin")
+			return 1
+		}
+}
 
+# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#pmspec
+export PMSPEC=0fbis
+
+function load_plugins {
 	unset -f plugin
 
 	if (( ! _akn_dangerous_root )); then
 		mkdir -p -m 0700 "$ZSH_CACHE_DIR/completions"
 	fi
 
-	# setup fpath and path
-	for plugin in $plugins; do
-		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#funcs-dir
-		if ! add_to_fpath "$ZSH_PLUGINS/${plugin}/functions"(/N); then
-			add_to_fpath "$ZSH_PLUGINS/${plugin}"(/N)           # omz modules
-			add_to_fpath "$ZSH_PLUGINS/${plugin}/src"(/N)       # zsh-users/zsh-completions
-		fi
-		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#bin-dir
-		add_to_path "$ZSH_PLUGINS/${plugin}/bin"(/N)
-	done
-
 	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
 	autoload_from "$ZSH_CUSTOM/functions"
+
+	local plugin
+
+	# setup fpath and path
 	for plugin in $plugins; do
-		# zim modules and prezto modules expect their functions to be autoloaded
-		autoload_from "$ZSH_PLUGINS/${plugin:t}/functions"(/N)
+		local plugin_dir=${plugin_dirs[$plugin]:-}
+		if [[ -n $plugin_dir && -d $plugin_dir ]]; then
+			# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#funcs-dir
+			if ! add_to_fpath $plugin_dir/functions(/N); then
+				add_to_fpath $plugin_dir(/N)           # omz modules
+				add_to_fpath $plugin_dir/src(/N)       # zsh-users/zsh-completions
+			fi
+			# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#bin-dir
+			add_to_path $plugin_dir/bin(/N)
+
+			if [[ $plugin_types[$plugin] == prezto_or_zim ]]; then
+				# zim and prezto modules expect their functions to be autoloaded
+				autoload_from $plugin_dir/functions(/N)
+			fi
+		fi
 	done
 
 	# actually load the plugins
@@ -289,7 +334,6 @@ function load_plugins {
 			plugins_failed+=("$plugin")
 		}
 	done
-	unset plugin
 
 	# load the theme
 	if [[ -n "$ZSH_THEME" ]]; then
