@@ -12,6 +12,7 @@ chmod go-rwx "${XDG_DESKTOP_DIR:-Desktop}" "${XDG_DOCUMENTS_DIR:-Documents}" "${
 chmod go-rwx work projects project github 2>/dev/null
 chmod go-rwx ./*.gpg .*.gpg 2>/dev/null
 chmod go-rwx ./*history .*history 2>/dev/null
+chmod go-rwx ./*history_backup .*history_backup 2>/dev/null
 chmod go-rwx Zotero ZotMoov 2>/dev/null
 chmod go-rwx .config .local .local/bin .local/share .local/state .cache 2>/dev/null
 chmod go-rwx "${XDG_CONFIG_HOME:-.cache}" "${XDG_STATE_HOME:-.local/state}" "${XDG_DATA_HOME:-.local/share}" "${XDG_CACHE_HOME:-.cache}" 2>/dev/null
