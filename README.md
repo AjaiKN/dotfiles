@@ -55,10 +55,10 @@ See `config/doom/modules/README.org`.
 
 ### Shell configuration
 
-- `dot-home/.shell_*.sh`: General shell configuration (for both bash and zsh)
-- `dot-home/.zshrc`, `config/zsh/`: Zsh configuration
+- `config/shell/shared/*.sh`: General shell configuration (for both bash and zsh)
+- `config/zsh/`: Zsh configuration
   - `config/zsh/plugin-manager.zsh`: My custom zsh plugin manager
-- `dot-home/.bashrc`: Bash configuration
+- `config/bash/`: Bash configuration
 
 ### Git
 - `config/git/config`: Git configuration

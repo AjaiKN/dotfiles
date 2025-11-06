@@ -10,13 +10,13 @@ echo_if_interactive() {
 	fi
 }
 
-# echo_if_interactive "Loading ~/.shell_rc.sh"
+# echo_if_interactive "Loading ~/.config/shell/shared/rc.sh"
 
 ## Nix Prologue
 OLD_PATH_SHELL_RC=$PATH
 
 ## Load envvars (in case they've changed)
-. "$HOME/.shell_envvars.sh" || :
+. "$HOME/.config/shell/shared/envvars.sh" || :
 
 ## Rosetta 2
 # Open Rosetta 2 version of zsh
@@ -521,12 +521,12 @@ alias _='sudo '
 
 alias spacemacs='emacs-open-new --profile spacemacs'
 
-alias reload_shared='. ${ZDOTDIR:-"$HOME"}/.shell_rc.sh'
+alias reload_shared='. ${ZDOTDIR:-"$HOME"}/.config/shell/shared/rc.sh'
 
 function cdls { cd "$1" && ls; }
 
 #remember: no space between name and '='
-alias edit_shared='vim ${ZDOTDIR:-"$HOME"}/.shell_rc.sh; . ${ZDOTDIR:-"$HOME"}/.shell_rc.sh'
+alias edit_shared='vim ${ZDOTDIR:-"$HOME"}/.config/shell/shared/rc.sh; . ${ZDOTDIR:-"$HOME"}/.config/shell/shared/rc.sh'
 alias edit_vimrc='vim ~/.vimrc'
 alias gitbook='open http://git-scm.com/book/en/v2'
 alias matlab-orig='/Applications/MATLAB_*.app/bin/matlab'
@@ -747,4 +747,4 @@ if [ -n "$IN_NIX_SHELL" ]; then
 	PATH=$OLD_PATH_SHELL_RC:$PATH
 fi
 
-# echo_if_interactive "Loaded ~/.shell_rc.sh"
+# echo_if_interactive "Loaded ~/.config/shell/shared/rc.sh"

@@ -1,10 +1,10 @@
 # shellcheck shell=sh
 # shellcheck disable=SC2317
 
-# ~/.shell_envvars.sh is loaded by:
-# - ~/.shell_profile.sh: at login (this is the most important!)
-# - ~/.shell_rc.sh: in interactive bash and zsh (for convenience in case this file has changed since login)
-# - ~/.shell_env.sh ONLY IF THIS FILE HASN'T BEEN LOADED ALREADY: whenever zsh starts (for convenience in case dotfiles weren't installed yet when I logged in)
+# ~/.config/shell/shared/envvars.sh is loaded by:
+# - ~/.config/shell/shared/profile.sh: at login (this is the most important!)
+# - ~/.config/shell/shared/rc.sh: in interactive bash and zsh (for convenience in case this file has changed since login)
+# - ~/.config/shell/shared/env.sh ONLY IF THIS FILE HASN'T BEEN LOADED ALREADY: whenever zsh starts (for convenience in case dotfiles weren't installed yet when I logged in)
 
 ## umask
 umask go-rwx

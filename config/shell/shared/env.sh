@@ -1,20 +1,20 @@
 # shellcheck shell=sh
 
-# .shell_env.sh
+# ~/.config/shell/shared/env.sh
 # Loaded by bash, zsh, and sh shells.
 #   - zsh:  ~/.zshenv
 #   - bash: $BASH_ENV, ~/.bash_profile, and ~/.bashrc
 #   - sh:   $ENV, ~/.profile
 
-export ENV="$HOME/.shell_env.sh"
-export BASH_ENV="$HOME/.shell_env.sh"
+export ENV="$HOME/.config/shell/shared/env.sh"
+export BASH_ENV="$HOME/.config/shell/shared/env.sh"
 
 ## umask
 umask o-w || :
 
-## Load .shell_envvars.sh if not already loaded
+## Load ~/.config/shell/shared/envvars.sh if not already loaded
 
-[ -n "${AKN_SHELL_ENVVARS_LOADED:-}" ] || . "$HOME/.shell_envvars.sh" || :
+[ -n "${AKN_SHELL_ENVVARS_LOADED:-}" ] || . "$HOME/.config/shell/shared/envvars.sh" || :
 
 ## PS4 (used by set -x and bash -x)
 # $PS4 is the prefix used by `set -x`, and it's '+ ' by default.

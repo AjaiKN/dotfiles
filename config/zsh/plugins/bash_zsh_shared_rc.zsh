@@ -1,2 +1,1 @@
-safe_source "$HOME"/.shell_rc.sh
-
+safe_source "$HOME"/.config/shell/shared/rc.sh
