@@ -78,6 +78,8 @@
 #   plugins_failed      - List of plugins that failed to load
 #   plugins             - List of plugins to load
 
+zmodload -F zsh/files b:zf_mkdir
+
 function .set_zsh_plugin_default_branch {
 	local default_branch=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" "https://api.github.com/repos/${1}" | jq -r .default_branch)
 	if [ -n "$default_branch" ] && [ "$default_branch" != null ]; then
@@ -114,7 +116,7 @@ function install_zsh_plugin {
 		local url="https://github.com/${1}"
 		(
 			set -x
-			mkdir -p "$DOTFILES/config/zsh/plugins/${1:h}"
+			zf_mkdir -p "$DOTFILES/config/zsh/plugins/${1:h}"
 			git -C "$DOTFILES" submodule add --depth=1 "$url" "config/zsh/plugins/${1}"
 		)
 		.set_zsh_plugin_default_branch "$1"
@@ -296,10 +298,12 @@ function plugin {
 export PMSPEC=0fbis
 
 function load_plugins {
+	builtin emulate -L zsh -o EXTENDED_GLOB
+
 	unset -f plugin
 
 	if (( ! _akn_dangerous_root )); then
-		mkdir -p -m 0700 "$ZSH_CACHE_DIR/completions"
+		zf_mkdir -p -m 0700 "$ZSH_CACHE_DIR/completions"
 	fi
 
 	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
