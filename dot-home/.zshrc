@@ -13,15 +13,53 @@ echo_if_interactive() {
 }
 
 function zsh_compile {
-	# if $1.zwc doesn't exist or is outdated
-	if [[ ! "$1".zwc -nt "$1" ]]; then
-		zcompile -R -- "$1"
-	fi
+	# copied from zsh4humans -z4h-compile (license: MIT)
+
+	# Runs with user options.
+	#
+	# Precondition: [[ -e $1 ]].
+
+	local -a stat
+
+	# Checking [[ -e "$1".zwc ]] is faster than redirecting stderr of zstat to /dev/null.
+	[[ -e "$1".zwc ]] && zstat +mtime -A stat -- "$1" "$1".zwc && {
+		# Negative indices to handle ksh_arrays.
+		(( stat[-1] == stat[-2] + 1 )) && return  # common case
+		stat[-1]=()
+	} || {
+		zstat +mtime -A stat -- "$1" || return
+	}
+
+	[[ -w "${1:h}" ]] || return
+
+	local t
+	builtin strftime -s t '%Y%m%d%H%M.%S' $((stat + 1))
+
+	local tmp="$1".tmp."${sysparams[pid]}".zwc
+	{
+		# This zf_rm is to work around bugs in NTFS and/or WSL. The following code fails there:
+		#
+		#   touch a b
+		#   chmod -w b
+		#   zf_rm -f a b
+		#
+		# The last command produces this error:
+		#
+		#   zf_mv: a: permission denied
+		(( !_akn_dangerous_root ))                   &&
+			builtin zcompile -R -- "$tmp" "$1"         &&
+			command touch -ct $t -- "$tmp"             &&
+			builtin zmodload -F zsh/files b:zf_{rm,mv} &&
+			zf_rm -f -- "$1".zwc                       &&
+			zf_mv -f -- "$tmp" "$1".zwc
+	} always {
+		(( $? )) && zf_rm -f -- "$tmp" "$1".zwc 2>/dev/null
+	}
 }
+
 function zsh_compile_if_zwc_exists {
-	# if $1.zwc exists and is outdated
-	if [[ "$1".zwc -ot "$1" ]]; then
-		zcompile -R -- "$1"
+	if [[ -e "$1".zwc ]]; then
+		zsh_compile "$1"
 	fi
 }
 # TODO: this shouldn't actually be necessary? zsh only loads zwc if it's newer
@@ -38,10 +76,9 @@ function compile_and_source {
 	builtin source "$@"
 }
 function clean_zwc_files {
-	set -x
+	emulate -L zsh -o extended_glob -o no_case_glob -x
 	rm -f ~/*.zwc(.ND) ~/*zsh*/**/*.zwc(.ND) ~/.{config,cache}/*zsh*/**/*.zwc(.ND) \
 		$DOTFILES/dot-home/*.zwc(.ND) $DOTFILES/config/zsh/**/*.zwc(.ND)
-	set +x
 }
 
 alias source=safe_source
