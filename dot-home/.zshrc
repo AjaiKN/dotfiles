@@ -12,7 +12,6 @@ echo_if_interactive() {
 	fi
 }
 
-zmodload -F zsh/stat b:zstat
 function zsh_compile {
 	# copied from zsh4humans -z4h-compile (license: MIT)
 
@@ -20,40 +19,45 @@ function zsh_compile {
 	#
 	# Precondition: [[ -e $1 ]].
 
-	# The trick: whenever we compile, set mtime(file.zwc) <- 1 + mtime(file).
-	# We always recompile unless mtime(file.zwc) == 1 + mtime(file).
-	# This is more robust than just checking if mtime(file.zwc) >= mtime(file), and it's fast.
+	local file="$1"
+
+	# The trick: whenever we compile, set mtime($file.zwc) <- 1 + mtime($file).
+	# We always recompile unless mtime($file.zwc) == 1 + mtime($file).
+	# This is more robust than just checking if mtime($file.zwc) >= mtime($file), and it's fast.
 
 	local -a stat
 
-	# Checking [[ -e "$1".zwc ]] is faster than redirecting stderr of zstat to /dev/null.
-	[[ -e "$1".zwc ]] &&
-		# Use zstat to get mtime of the regular file and the zwc file.
-		zstat +mtime -A stat -- "$1" "$1".zwc &&
+	# Checking [[ -e "$file".zwc ]] is faster than redirecting stderr of zstat to /dev/null.
+	[[ -e "$file".zwc ]] &&
+		# Use zstat to get mtime of the regular $file and the zwc $file.
+		zmodload -F zsh/stat b:zstat &&
+		zstat +mtime -A stat -- "$file" "$file".zwc &&
 		{
 			# Negative indices to handle ksh_arrays:
-			#   stat[1] = stat[-2] = mtime($1)
-			#   stat[2] = stat[-1] = mtime($1.zwc)
-			# If mtime(file.zwc) == 1 + mtime(file), we can return.
+			#   stat[1] = stat[-2] = mtime(${file})
+			#   stat[2] = stat[-1] = mtime(${file}.zwc)
+			# If mtime($file.zwc) == 1 + mtime($file), we can return.
 			(( stat[-1] == stat[-2] + 1 )) && return
 			# If we reach here, that means we'll need to recompile.
-			# Remove the second element, mtime($1.zwc), from the array.
+			# Remove the second element, mtime(${file}.zwc), from the array.
 			stat[-1]=()
 			# Now $stat has just one value and can basically be treated like a scalar.
 		} || {
-			zstat +mtime -A stat -- "$1" || return
+			# If we reach here, $file.zwc doesn't exist.
+			zstat +mtime -A stat -- "$file" || return
 		}
+	# $stat = mtime($file)
 
 	# Check that the directory is writable
 	[[ -w "${1:h}" ]] || return
 
-	# t <- 1 + mtime(file)
+	# t = formatted($stat) = formatted(1 + mtime($file))
 	local t
 	builtin strftime -s t '%Y%m%d%H%M.%S' $((stat + 1))
 
 	# Do the compiling. We first compile it to a tmp file so we can atomically
-	# replace file.zwc only if the compiling is successful.
-	local tmp="$1".tmp."${sysparams[pid]}".zwc
+	# replace $file.zwc only if the compiling is successful.
+	local tmp="$file".tmp."${sysparams[pid]}".zwc
 	{
 		# This zf_rm is to work around bugs in NTFS and/or WSL. The following code fails there:
 		#
@@ -65,14 +69,14 @@ function zsh_compile {
 		#
 		#   zf_mv: a: permission denied
 		(( !_akn_dangerous_root ))                   &&
-			builtin zcompile -R -- "$tmp" "$1"         &&
+			builtin zcompile -R -- "$tmp" "$file"      &&
 			command touch -ct $t -- "$tmp"             &&
 			builtin zmodload -F zsh/files b:zf_{rm,mv} &&
-			zf_rm -f -- "$1".zwc                       &&
-			zf_mv -f -- "$tmp" "$1".zwc
+			zf_rm -f -- "$file".zwc                    &&
+			zf_mv -f -- "$tmp" "$file".zwc
 	} always {
 		# If it's unsuccessful, delete the tmp file.
-		(( $? )) && zf_rm -f -- "$tmp" "$1".zwc 2>/dev/null
+		(( $? )) && zf_rm -f -- "$tmp" "$file".zwc 2>/dev/null
 	}
 }
 
@@ -81,7 +85,6 @@ function zsh_compile_if_zwc_exists {
 		zsh_compile "$1"
 	fi
 }
-# TODO: this shouldn't actually be necessary? zsh only loads zwc if it's newer
 function safe_source {
 	zsh_compile_if_zwc_exists "$1"
 	builtin source "$@"
