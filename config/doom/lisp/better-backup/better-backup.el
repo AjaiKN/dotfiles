@@ -75,7 +75,7 @@ This can either be a directory or a list in the format of
                                    i-str))
                             (directory (file-name-directory path))
                             (nondirectory (file-name-nondirectory path)))
-                       (if (length> nondirectory 255)
+                       (if (length> nondirectory 200)
                            (let ((nondirectory (concat time
                                                        "--"
                                                        (substring (file-name-nondirectory file-or-buffer-name) -30)

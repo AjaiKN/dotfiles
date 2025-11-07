@@ -1256,7 +1256,7 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;; https://github.com/emacscollective/no-littering/blob/main/README.org#lock-files
 (let ((dir "~/.cache/doom/lockfiles/"))
   (make-directory dir t)
-  (setq lock-file-name-transforms `((".*" ,dir t))))
+  (setq lock-file-name-transforms `((".*" ,dir sha1))))
 
 (define-advice ask-user-about-lock (:around (fn file opponent &rest args) akn/a)
   (cond
