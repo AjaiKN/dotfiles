@@ -1361,8 +1361,37 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;;; displaying page breaks / form feeds (^L)
 ;; https://en.wikipedia.org/wiki/Page_break#Form_feed
 ;; "This convention is predominantly used in Lisp code, and is also seen in C and Python source code."
+;; BUG: When page-break-lines-mode and adaptive-wrap-prefix-mode are both
+;; enabled in an elisp buffer with a ^L that's not surrounded by newlines (e.g.,
+;; in /opt/homebrew/Cellar/emacs-plus@30/30.2/share/emacs/30.2/lisp/emacs-lisp/lisp-mnt.el),
+;; Emacs crashes.
+;; So I enable page-break-lines-mode only if a ^L appears, and I make sure
+;; page-break-lines-mode and adaptive-wrap-prefix-mode are never both enabled.
 (use-package! page-break-lines
-  :ghook '(akn/lisp-like-mode-hook c-mode-hook c++-mode-hook python-mode-hook))
+  :init
+  (add-hook! '(akn/lisp-like-mode-hook c-mode-hook c++-mode-hook python-mode-hook)
+    (defun akn/page-break-lines-maybe ()
+      "Enable page-break-lines-mode only if a ^L appears in the buffer."
+      (when (and (not (bound-and-true-p so-long-minor-mode))
+                 (not (bound-and-true-p vlf-mode))
+                 (save-excursion
+                   (without-restriction
+                     (goto-char (point-min))
+                     (search-forward (string ?\^L) nil 'noerror))))
+        (when (bound-and-true-p adaptive-wrap-prefix-mode)
+          (adaptive-wrap-prefix-mode -1))
+        (page-break-lines-mode +1))))
+  :config
+  (define-advice +word-wrap--enable-global-mode (:before-while (&rest _) akn/no-adaptive-wrap-if-page-break-lines-mode-a)
+    (not page-break-lines-mode))
+  (add-hook! 'page-break-lines-mode-on-hook
+    (defun akn/disable-adaptive-wrap-h ()
+      (when (bound-and-true-p adaptive-wrap-prefix-mode)
+        (adaptive-wrap-prefix-mode -1))))
+  (add-hook! 'adaptive-wrap-prefix-mode-on-hook
+    (defun akn/disable-page-break-lines-h ()
+      (when page-break-lines-mode
+        (page-break-lines-mode -1)))))
 
 ;;; sibling files
 (akn/incrementally! ()
