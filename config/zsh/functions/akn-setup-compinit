@@ -76,7 +76,7 @@ function akn-setup-compinit {
     if (( zdump_dat )); then
       # echo removing
       zmodload -F zsh/files b:zf_rm
-      zf_rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N)
+      zf_rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) 2>/dev/null
     fi
 
     # Load and initialize the completion system

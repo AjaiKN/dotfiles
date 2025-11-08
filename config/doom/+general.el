@@ -824,7 +824,7 @@ underscores in all modes."
 
 (when (modulep! :editor whitespace)
   ;; might want to turn this off at some point
-  (setq! +whitespace-guess-in-projects t)
+  (setq! +whitespace-guess-in-projects nil)
   (pushnew! +whitespace-guess-excluded-modes
             'elm-mode))
 
