@@ -824,7 +824,7 @@ underscores in all modes."
 
 (when (modulep! :editor whitespace)
   ;; might want to turn this off at some point
-  (setq! +whitespace-guess-in-projects nil)
+  (setq! +whitespace-guess-in-projects t)
   (pushnew! +whitespace-guess-excluded-modes
             'elm-mode))
 
@@ -944,16 +944,46 @@ underscores in all modes."
 
 ;;;; whitespace-style
 
-;; comes after `+emacs-highlight-non-default-indentation-h'
-(add-hook! 'after-change-major-mode-hook :depth 92
-  (defun akn/modify-doom-whitespace-style-h ()
-    (when (and (local-variable-p 'whitespace-style) (bound-and-true-p whitespace-mode))
-      (setq-local whitespace-style
-                  (append whitespace-style
-                          '(space-before-tab)
-                          (unless (bound-and-true-p smart-tabs-mode)
-                            '(space-after-tab))))
-      (whitespace-mode))))
+(when (modulep! :editor whitespace)
+  ;; comes after `+whitespace-highlight-incorrect-indentation-h'
+  (add-hook! 'after-change-major-mode-hook :depth 92
+    (defun akn/modify-doom-whitespace-style-h ()
+      (when (and (local-variable-p 'whitespace-style) (bound-and-true-p whitespace-mode))
+        (setq-local whitespace-style
+                    (append whitespace-style
+                            '(space-before-tab)
+                            (unless (bound-and-true-p smart-tabs-mode)
+                              '(space-after-tab))))
+        (whitespace-mode)))))
+
+  ;; trying to fix https://github.com/doomemacs/doomemacs/issues/8573
+  ;; (after! editorconfig
+  ;;   (defvar akn--whitespace-style-do-edit nil)
+  ;;   (defadvice! akn/uuirueiuriueiwuriweui3-a (&rest _)
+  ;;     :before-while #'+whitespace-highlight-incorrect-indentation-h
+  ;;     :before-while #'akn/modify-doom-whitespace-style-h
+  ;;     (let ((ret (or akn--whitespace-style-do-edit
+  ;;                    (not editorconfig-mode))))
+  ;;       (message "%s" (if ret "runnning" "not running"))
+  ;;       ret))
+  ;;   ;; (add-hook! 'editorconfig-after-apply-functions :append)
+  ;;   (defadvice! akn/efjiwjfiejwifjeiwjfij-a (&rest _)
+  ;;     :after #'editorconfig--advice-find-file-noselect
+  ;;     ;; :after #'editorconfig-major-mode-hook
+  ;;     (message "akn/efjiwjfiejwifjeiwjfij-a")
+  ;;     (unless (or (eq major-mode 'fundamental-mode)
+  ;;                 (bound-and-true-p global-whitespace-mode)
+  ;;                 (null buffer-file-name)
+  ;;                 buffer-read-only)
+  ;;       (message "akn/efjiwjfiejwifjeiwjfij-a yes")
+  ;;       (whitespace-mode -1)
+  ;;       (kill-local-variable 'whitespace-style)
+  ;;       (kill-local-variable 'whitespace-active-style)
+
+  ;;       (let ((akn--whitespace-style-do-edit t))
+  ;;         (+whitespace-highlight-incorrect-indentation-h)
+
+  ;;         (akn/modify-doom-whitespace-style-h))))))
 
 ;;; parinfer-rust
 
