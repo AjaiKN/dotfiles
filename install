@@ -18,15 +18,20 @@ confirm() {
 	esac
 }
 
+echo "Installing files..."
 ./install-dot-home.sh "$@"
 
 if [ ! -e ~/.gitconfig ]; then
-	touch ~/.gitconfig
+	(
+		set -x
+		touch ~/.gitconfig
+	)
 fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
 	echo
 	if [ -e "$HOME/.local/state/akn-dotfiles-confirmed-install-defaults" ] || confirm "Do you want to install my macOS defaults? This can't be undone by the uninstall script."; then
+		echo "Setting macOS defaults..."
 		./install-defaults.mac.sh
 		if ! [ -e "$HOME/.local/state/akn-dotfiles-confirmed-install-defaults" ]; then
 			echo
@@ -38,4 +43,5 @@ if [ "$(uname -s)" = "Darwin" ]; then
 fi
 
 echo
+echo "Setting permissions..."
 ./install-permissions.sh
