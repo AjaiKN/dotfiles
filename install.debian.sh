@@ -45,7 +45,7 @@ installcmd() {
 
 installcmd stow
 
-./install-dot-home.sh
+./install-files.sh
 
 # (not required)
 installcmd curl

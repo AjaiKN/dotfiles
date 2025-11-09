@@ -19,7 +19,7 @@ confirm() {
 }
 
 echo "Installing files..."
-./install-dot-home.sh "$@"
+./install-files.sh "$@"
 
 if [ ! -e ~/.gitconfig ]; then
 	(
