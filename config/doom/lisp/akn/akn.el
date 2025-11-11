@@ -429,7 +429,7 @@ The def* forms accepted are:
                   (remove-hook! ,@rest)))
               (`defvar
                (cl-destructuring-bind (symbol &optional initvalue _docstring) rest
-                 `(progn
+                 `(let (_)
                     (defvar ,symbol)
                     ,@(if (length> rest 1)
                           `((if (boundp ',symbol)
@@ -439,16 +439,12 @@ The def* forms accepted are:
                         (macroexp-unprogn body)))))
               ((or `defvar* `defconst `akn/defvar-setq)
                (cl-destructuring-bind (symbol initvalue &optional _docstring) rest
-                 `(progn
-                    (defvar ,symbol)
-                    (let ((,symbol ,initvalue))
-                      ,@(macroexp-unprogn body)))))
+                 `(dlet ((,symbol ,initvalue))
+                    ,@(macroexp-unprogn body))))
               ((pred symbolp)
                (cl-destructuring-bind (symbol initvalue) binding
-                 `(progn
-                    (defvar ,symbol)
-                    (let ((,symbol ,initvalue))
-                      ,@(macroexp-unprogn body)))))
+                 `(dlet ((,symbol ,initvalue))
+                    ,@(macroexp-unprogn body))))
               (_
                (when (eq (car-safe type) 'function)
                  (setq type (list 'symbol-function type)))

@@ -117,7 +117,7 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
       (Info-revert-buffer-function nil t))
      ((derived-mode-p 'treemacs-mode)
       (message "Refreshing treemacs...")
-      (akn/letf! ((treemacs-silent-refresh nil))
+      (dlet ((treemacs-silent-refresh nil))
         (treemacs-refresh)))
      ((derived-mode-p 'elfeed-search-mode)
       (message "Updating elfeed-search-mode buffer...")
