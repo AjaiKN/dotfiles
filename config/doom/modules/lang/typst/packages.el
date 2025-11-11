@@ -1,8 +1,8 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/typst/packages.el
 
-(package! typst-ts-mode :pin "fa03e477dfc57ea498ef9a624b2ec7bf655dc25c"
+(package! typst-ts-mode :pin "7c2ef0d5bd2b5a8727fe6d00938c47ba562e0c94"
   :recipe (:type git :host codeberg :repo "meow_king/typst-ts-mode"))
 
-(package! typst-preview :pin "4f3decb8d9b85b1a06b0dfbd0fccaa0d2d2c24b4"
+(package! typst-preview :pin "c685857f2d61133fc268509b39796b2718728f29"
   :recipe (:host github :repo "havarddj/typst-preview.el"))

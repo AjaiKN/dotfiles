@@ -5,11 +5,6 @@
   (interactive)
   (setq-local tab-width 2))
 
-(defvar akn/obsidian-vault "~/Documents/obsidian-vault")
-(defun akn/obsidian-vault ()
-  (interactive)
-  (require 'projectile)
-  (projectile-switch-project-by-name akn/obsidian-vault))
 ;; (after! (:or markdown-mode evil-markdown))
 (use-package! markdown-mode
   :defer t
@@ -17,10 +12,11 @@
 
 (use-package! obsidian
   :defer t
-  :after-call (akn/obsidian-vault markdown-mode-hook evil-markdown-mode)
-  :commands (akn/obsidian-capture)
+  :after-call (markdown-mode-hook evil-markdown-mode)
+  :commands (akn/obsidian-vault akn/obsidian-capture)
   :defer-incrementally (f dash s cl-lib markdown-mode yaml)
   :custom
+  (obsidian-directory "~/Documents/obsidian-vault")
   ;; This directory will be used for `obsidian-capture' if set.
   (obsidian-inbox-directory "capture")
   ;; Create missing files in inbox? - when clicking on a wiki link
@@ -34,7 +30,10 @@
   ;; Daily Note template name - requires a template directory. Default: Daily Note Template.md
   ;;(setq obsidian-daily-note-template "Daily Note Template.md")
   :config
-  (obsidian-specify-path akn/obsidian-vault)
+  (defun akn/obsidian-vault ()
+    (interactive)
+    (require 'projectile)
+    (projectile-switch-project-by-name obsidian-directory))
   (when (not global-obsidian-mode)
     (global-obsidian-mode t))
   (map!
@@ -52,7 +51,7 @@
     (interactive)
     (shell-command
      (format "open -a Obsidian %s"
-             (if (and buffer-file-name (file-in-directory-p buffer-file-name akn/obsidian-vault))
+             (if (and buffer-file-name (file-in-directory-p buffer-file-name obsidian-directory))
                  (shell-quote-argument buffer-file-name)
                ""))))
   (add-hook 'obsidian-mode-hook #'indent-tabs-mode)

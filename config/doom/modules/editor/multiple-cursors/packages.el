@@ -1,7 +1,7 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; editor/multiple-cursors/packages.el
 
-(package! multiple-cursors :pin "89f1a8df9b1fc721b1672b4c7b6d3ab451e7e3ef")
+(package! multiple-cursors :pin "9017f3be6b00c1d82e33409db4a178133fb39d47")
 
 (when (modulep! :editor evil)
   (package! evil-multiedit :pin "23b53bc8743fb82a8854ba907b1d277374c93a79")
