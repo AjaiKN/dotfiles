@@ -21,6 +21,7 @@
   :init
   (set-tree-sitter! 'typst-mode 'typst-ts-mode
     '((typst :url "https://github.com/uben0/tree-sitter-typst")))
+  (add-to-list 'auto-mode-alist '("\\.typ\\'" . typst-ts-mode))
   :config
   (map! :map typst-ts-mode-map
        "C-c C-w" #'typst-ts-watch-mode
