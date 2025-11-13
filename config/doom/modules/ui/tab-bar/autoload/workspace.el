@@ -143,6 +143,9 @@ error if NAME doesn't exist."
   (+workspace--name (+workspace-current)))
 
 ;;;###autoload
+(defalias '+workspaces-current-name #'+workspace-current-name)
+
+;;;###autoload
 (defun +workspace-list-names ()
   "Return the list of names of open workspaces."
   (mapcar #'+workspace--name (tab-bar-tabs)))
