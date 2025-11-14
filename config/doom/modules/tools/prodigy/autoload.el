@@ -42,9 +42,11 @@
 (defun defservice! (&rest args)
   "Wrapper for `prodigy-define-service' (see `prodigy-services')"
   (after! prodigy
-    (when (not (plist-get args :cwd))
+    (let ((cwd (plist-get args :cwd)))
       (when-let* ((project (plist-get args :project)))
-        (plist-put! args :cwd project)))
+        (plist-put! args :cwd (if cwd
+                                  (expand-file-name cwd project)
+                                project))))
     (when (not (plist-get args :name))
       (if-let* ((command-or-tags (or (plist-get args :command)
                                      (when-let* ((tags (plist-get args :tags)))
