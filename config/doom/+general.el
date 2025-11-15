@@ -632,33 +632,20 @@ underscores in all modes."
 ;;
 
 (when (modulep! :ui ligatures)
-  (plist-put! +ligatures-extra-symbols
-              ;; (first one is regular lambda, the default)
-              ;; λx 𝛌x 𝜆x \x 𝝀x 𝝺x 𝞴x
-              ;; :lambda "𝜆"
-              ;; remove ligature +extra symbols I don't want in any mode
-              :def nil
-              :return nil :yield nil
-              :false nil :true nil
-              :dot nil
-              :map nil
-              ;; maybe
-              ;; :for nil
-              :composition nil
-              :int nil :float nil :str nil :bool nil :list nil :tuple nil)
-
-  (akn/after-hook! 'doom-first-buffer-hook
-    (lambda ()
-      (dolist (feature '(rjsx-mode typescript-mode web-mode (nodejs-repl-mode . nodejs-repl)
-                         csharp-mode dart-mode scala-mode
-                         (sh-mode . sh-script) (c++-mode . cc-mode) (c-mode . cc-mode)
-                         (python-mode . python) (python-ts-mode . python) (python-base-mode . python)))
-        (let ((pkg  (or (cdr-safe feature) feature))
-              (mode (or (car-safe feature) feature)))
-          (with-eval-after-load pkg
-            (dolist (thing '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
-              (setf (alist-get mode +ligatures-extra-alist)
-                    (assoc-delete-all thing (alist-get mode +ligatures-extra-alist)))))))))
+  (dolist (feature '(rjsx-mode typescript-mode web-mode (nodejs-repl nodejs-repl-mode)
+                     (js js-base-mode)
+                     (typescript-ts-mode typescript-ts-mode typescript-ts-base-mode)
+                     csharp-mode dart-mode scala-mode
+                     (sh-script sh-base-mode sh-mode)
+                     (cc-mode c++-mode cc-mode)
+                     (python python-mode python-ts-mode python-base-mode)))
+    (let ((pkg  (or (car-safe feature) feature))
+          (modes (or (cdr-safe feature) (list feature))))
+      (dolist (mode modes)
+        (with-eval-after-load pkg
+          (dolist (thing '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
+            (setf (alist-get mode +ligatures-extra-alist)
+                  (assoc-delete-all thing (alist-get mode +ligatures-extra-alist))))))))
 
   ;; Disable `prettify-symbols-mode' in terminal buffers, since it seems to
   ;; cause a bug where lines get duplicated when I'm moving between lines.
