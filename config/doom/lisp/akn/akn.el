@@ -820,6 +820,16 @@ If you leave Emacs idle for 20 minutes all at once, a
   (declare (indent 0))
   `(lambda (&rest _) ,@body))
 
+;;; akn/with-done-message
+(defmacro akn/with-done-message (message &rest body)
+  (declare (indent 1))
+  (cl-with-gensyms (msg)
+    `(let ((,msg (format-message ,message)))
+       (prog2
+           (message "%s" ,msg)
+           ,(macroexp-progn body)
+         (message "%sdone" ,msg)))))
+
 ;;; incrementally doing stuff to speed up emacs initial load
 ;; eventually switch to https://github.com/emacs-magus/once ?
 
