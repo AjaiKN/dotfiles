@@ -632,20 +632,22 @@ underscores in all modes."
 ;;
 
 (when (modulep! :ui ligatures)
-  (dolist (feature '(rjsx-mode typescript-mode web-mode (nodejs-repl nodejs-repl-mode)
-                     (js js-base-mode)
-                     (typescript-ts-mode typescript-ts-mode typescript-ts-base-mode)
+  (dolist (feature '(rjsx-mode typescript-mode (web-mode web-mode web-mode-prog-mode) (nodejs-repl nodejs-repl-mode)
+                     (js js-base-mode js-mode js-ts-mode js-json-mode js-jsx-mode)
+                     (typescript-ts-mode typescript-ts-mode typescript-ts-base-mode tsx-ts-mode)
                      csharp-mode dart-mode scala-mode
-                     (sh-script sh-base-mode sh-mode)
-                     (cc-mode c++-mode cc-mode)
+                     (sh-script sh-base-mode sh-mode bash-ts-mode)
+                     (cc-mode c++-mode cc-mode c-mode objc-mode java-mode idl-mode pike-mode awk-mode)
+                     (c-ts-mode c-ts-mode c-ts-base-mode c++-ts-mode)
                      (python python-mode python-ts-mode python-base-mode)))
     (let ((pkg  (or (car-safe feature) feature))
           (modes (or (cdr-safe feature) (list feature))))
-      (dolist (mode modes)
-        (with-eval-after-load pkg
-          (dolist (thing '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
-            (setf (alist-get mode +ligatures-extra-alist)
-                  (assoc-delete-all thing (alist-get mode +ligatures-extra-alist))))))))
+      (with-eval-after-load pkg
+        (dolist (mode modes)
+          (when (assq mode +ligatures-extra-alist)
+            (dolist (thing '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
+              (setf (alist-get mode +ligatures-extra-alist)
+                    (assoc-delete-all thing (alist-get mode +ligatures-extra-alist)))))))))
 
   ;; Disable `prettify-symbols-mode' in terminal buffers, since it seems to
   ;; cause a bug where lines get duplicated when I'm moving between lines.
