@@ -632,22 +632,18 @@ underscores in all modes."
 ;;
 
 (when (modulep! :ui ligatures)
-  (dolist (feature '(rjsx-mode typescript-mode (web-mode web-mode web-mode-prog-mode) (nodejs-repl nodejs-repl-mode)
-                     (js js-base-mode js-mode js-ts-mode js-json-mode js-jsx-mode)
-                     (typescript-ts-mode typescript-ts-mode typescript-ts-base-mode tsx-ts-mode)
-                     csharp-mode dart-mode scala-mode
-                     (sh-script sh-base-mode sh-mode bash-ts-mode)
-                     (cc-mode c++-mode cc-mode c-mode objc-mode java-mode idl-mode pike-mode awk-mode)
-                     (c-ts-mode c-ts-mode c-ts-base-mode c++-ts-mode)
-                     (python python-mode python-ts-mode python-base-mode)))
-    (let ((pkg  (or (car-safe feature) feature))
-          (modes (or (cdr-safe feature) (list feature))))
-      (with-eval-after-load pkg
-        (dolist (mode modes)
-          (when (assq mode +ligatures-extra-alist)
-            (dolist (thing '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
-              (setf (alist-get mode +ligatures-extra-alist)
-                    (assoc-delete-all thing (alist-get mode +ligatures-extra-alist)))))))))
+  (defvar akn/ligatures-i-dont-want
+    '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
+  (defun akn/remove-ligatures-i-dont-want (&rest _)
+    (pcase-dolist (mode-and-mappings +ligatures-extra-alist)
+      (dolist (lig akn/ligatures-i-dont-want)
+        (setf (cdr mode-and-mappings)
+              (assoc-delete-all lig (cdr mode-and-mappings))))))
+  (defadvice! akn/remove-ligatures-i-dont-want-a (&rest _)
+    :before #'+ligatures-init-extra-symbols-h
+    (when (+ligatures--enable-p +ligatures-extras-in-modes)
+      (akn/remove-ligatures-i-dont-want)))
+  ;; or maybe do after `set-ligatures!'
 
   ;; Disable `prettify-symbols-mode' in terminal buffers, since it seems to
   ;; cause a bug where lines get duplicated when I'm moving between lines.
