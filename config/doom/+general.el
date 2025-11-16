@@ -1315,13 +1315,30 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
                                                       (not (eq (alist-get 'prettier json 'not-found)
                                                                'not-found))))))))
 
-(add-hook! '(html-mode-hook
-             css-mode-hook
-             web-mode-hook
-             markdown-mode-hook
-             js-mode-hook
-             json-mode-hook
-             typescript-mode-hook)
+(add-hook! (html-mode html-ts-mode
+            mhtml-mode mhtml-ts-mode
+            css-mode css-ts-mode
+            scss-mode scss-ts-mode
+            sass-mode sass-ts-mode
+            web-mode web-ts-mode
+            js2-mode js2-ts-mode
+            js3-mode js3-ts-mode
+            jsx-mode jsx-ts-mode
+            rjsx-mode rjsx-ts-mode
+            js-mode js-base-mode
+            angular-mode angular-ts-mode
+            +web-angularjs-mode
+            vue-mode vue-ts-mode
+            less-css-mode less-css-ts-mode
+            less-mode less-ts-mode
+            typescript-mode typescript-ts-base-mode
+            typescript-tsx-mode typescript-tsx-ts-mode
+            graphql-mode graphql-ts-mode
+            json-mode json-ts-mode
+            markdown-mode markdown-ts-mode
+            yaml-mode yaml-ts-mode
+            svelte-mode svelte-ts-mode
+            astro-mode astro-ts-mode)
            :append
            (defun akn/maybe-prettier ()
              (when (and (not (bound-and-true-p akn/format-on-save-mode))
@@ -1340,14 +1357,26 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
     (or (require 'lsp-tailwindcss nil t)
         (message "(lsp-tailwindcss not installed)")))
 
-  (add-hook! '(html-mode-hook
-               css-mode-hook
-               web-mode-hook
-               markdown-mode-hook
-               js-mode-hook
-               json-mode-hook
-               typescript-mode-hook
-               typescript-tsx-mode-hook)
+  (add-hook! (html-mode html-ts-mode
+              mhtml-mode mhtml-ts-mode
+              css-mode css-ts-mode
+              scss-mode scss-ts-mode
+              sass-mode sass-ts-mode
+              web-mode web-ts-mode
+              js2-mode js2-ts-mode
+              js3-mode js3-ts-mode
+              jsx-mode jsx-ts-mode
+              rjsx-mode rjsx-ts-mode
+              js-mode js-base-mode
+              angular-mode angular-ts-mode
+              +web-angularjs-mode
+              vue-mode vue-ts-mode
+              less-css-mode less-css-ts-mode
+              less-mode less-ts-mode
+              typescript-mode typescript-ts-base-mode
+              typescript-tsx-mode typescript-tsx-ts-mode
+              svelte-mode svelte-ts-mode
+              astro-mode astro-ts-mode)
     (defun akn/maybe-require-tailwind ()
       (when (or (locate-dominating-file default-directory "tailwind.config.js")
                 (locate-dominating-file default-directory "tailwind.config.cjs")
