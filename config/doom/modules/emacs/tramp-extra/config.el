@@ -189,7 +189,7 @@
       ret)))
 
 (after! projectile
-  (defun akn/add-tramp-home-dir-to-stop-dir-a (fn file name &rest args)
+  (defadvice! akn/add-tramp-home-dir-to-stop-dir-a (fn file name &rest args)
     :around #'projectile-locate-dominating-file
     (if-let* (((stringp file))
               ((akn/file-remote-p file))
@@ -198,8 +198,7 @@
                 (rx (or (regexp locate-dominating-stop-dir-regexp)
                         (seq bos (literal home) (? "/") eos)))))
           (apply fn file name args))
-      (apply fn file name args)))
-  (advice-add #'projectile-locate-dominating-file :around #'akn/add-tramp-home-dir-to-stop-dir-a))
+      (apply fn file name args))))
 (after! project
   (akn/advise-letf! project-try-vc (akn/add-tramp-home-dir-to-stop-dir-a)
     (advice-add #'locate-dominating-file :around #'akn/add-tramp-home-dir-to-stop-dir-a)))
