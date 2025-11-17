@@ -394,7 +394,7 @@
    #'goto-addr-mode--turn-on@akn/a
    #'parinfer-rust--check-for-issues@akn/a
    #'polymode-eval-buffer@akn/redisplay-a
-   #'project-try-vc@akn/add-tramp-home-dir-to-locate-dominating-stop-dir-regexp-a
+   #'project-try-vc@akn/add-tramp-home-dir-to-stop-dir-a
    #'projectile-ignored-projects@akn/fast-a
    #'projectile-project-root@akn/tramp-speed-up-a
    #'projectile-root-marked@akn/a
