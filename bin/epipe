@@ -2,7 +2,14 @@
 set -eu
 # set -x
 
-# https://stebalien.com/blog/epipe/
+# https://blog0.steelcandy.org/2022-03-14-paging.html - https://github.com/steelcandy2/empager/
+# https://eless.scripter.co/ - https://github.com/kaushalmodi/eless
+# https://karthinks.com/software/more-less-emacs/
+# https://stebalien.com/blog/epipe/ - https://github.com/Stebalien/named-pipe.el
+# https://crowding.github.io/blog/2014/08/16/replace-less-with-emacs/
+# https://write.as/mnmlmnl/tid-setting-emacsclient-up-as-a-pager-with-kitty
+# https://github.com/lewang/e-sink
+# https://old.reddit.com/r/emacs/comments/fk7p49/piping_stdout_to_emacs/
 
 cleanup() {
 	trap - TERM INT EXIT
@@ -15,9 +22,17 @@ cleanup() {
 }
 trap "cleanup" TERM INT EXIT
 
+# for arg in "$@"; do
+# 	case "$arg" in
+# 		-nw|-t|--tty|--no-window-system)
+# 			EPIPE_USE_FILE=1
+# 			;;
+# 	esac
+# done
+
 # https://crowding.github.io/blog/2014/08/16/replace-less-with-emacs/
-the_command=$(ps -o 'command=' -p "$(ps -o 'ppid=' $$)" | sed -e 's/["\\]/\\&/g' -e 's/["\\]/\\&/g')
->&2 echo "$the_command"
+# the_command=$(ps -o 'command=' -p "$(ps -o 'ppid=' $$)" | sed -e 's/["\\]/\\&/g' -e 's/["\\]/\\&/g')
+# >&2 echo "$the_command"
 
 # Create a named pipe
 dir=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
@@ -31,7 +46,7 @@ else
 		umask 077
 		cat >"$out"
 	)
-	emacsclient --eval "(akn/pager-read-pipe-sync \"$out\")" "$@" >/dev/null
+	emacsclient --eval "(akn/pager-read-pipe-sync \"$out\")" "$@"
 fi
 
 if [ -z "${EPIPE_USE_FILE:-}" ]; then
