@@ -22,13 +22,13 @@ cleanup() {
 }
 trap "cleanup" TERM INT EXIT
 
-# for arg in "$@"; do
-# 	case "$arg" in
-# 		-nw|-t|--tty|--no-window-system)
-# 			EPIPE_USE_FILE=1
-# 			;;
-# 	esac
-# done
+for arg in "$@"; do
+	case "$arg" in
+		(-nw|-t|--tty|--no-window-system)
+			EPIPE_USE_FILE=1
+			;;
+	esac
+done
 
 # https://crowding.github.io/blog/2014/08/16/replace-less-with-emacs/
 # the_command=$(ps -o 'command=' -p "$(ps -o 'ppid=' $$)" | sed -e 's/["\\]/\\&/g' -e 's/["\\]/\\&/g')
@@ -38,19 +38,29 @@ trap "cleanup" TERM INT EXIT
 dir=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
 out="$dir/pipe"
 if [ -z "${EPIPE_USE_FILE:-}" ]; then
-	mkfifo -m 0600 "$out"
-
-	emacsclient --eval "(akn/pager-read-pipe \"$out\")" "$@" >/dev/null <&-
+	if [ -t 1 ]; then
+		# stdout is a tty
+		mkfifo -m 0600 "$out"
+		emacsclient --eval "(akn/pager-read-pipe \"$out\")" "$@" >/dev/null <&-
+		exec 1>"$out"
+		cleanup # Cleanup early. Nobody needs the paths now...
+		cat
+	else
+		(umask 077; cat >"$out")
+		emacsclient "$@" "$out" </dev/tty >&2
+		cat "$out"
+	fi
 else
-	(
-		umask 077
-		cat >"$out"
-	)
-	emacsclient --eval "(akn/pager-read-pipe-sync \"$out\")" "$@"
-fi
-
-if [ -z "${EPIPE_USE_FILE:-}" ]; then
-	exec 1>"$out"
-	cleanup # Cleanup early. Nobody needs the paths now...
-	cat
+	if [ -t 1 ]; then
+		# stdout is a tty
+		(umask 077; cat >"$out")
+		emacsclient --eval "(akn/pager-read-pipe-sync \"$out\")" "$@"
+	elif [ -t 2 ]; then
+		# stdout isn't a tty but stderr is
+		(umask 077; cat >"$out")
+		emacsclient "$@" "$out" </dev/tty >&2
+		cat "$out"
+	else
+		cat
+	fi
 fi
