@@ -15,6 +15,7 @@
 (require 'map)
 (eval-when-compile
   (require 'tramp)
+  (require 'macroexp)
   (require 'doom nil t)
   (require 'akn-doom-use-package nil t)
   ;; (require 'doom-packages)
@@ -717,13 +718,16 @@ This is so that when I add a hook on `doom-first-file-hook' (or similar)"
 If REPEAT is non-nil, run BODY every time Emacs has been idle for REPEAT
 seconds (or SECONDS seconds, if REPEAT isn't a number)."
   (declare (indent 1))
-  (cl-with-gensyms (secs rep)
-    `(let ((,secs ,seconds)
-           (,rep ,repeat))
-       (run-with-timer
-        ,secs
-        (and ,rep (if (numberp ,rep) ,rep ,secs))
-        ,@(akn/function-body->function+args body)))))
+  (macroexp-let2* nil (seconds
+                       (repeat (cond
+                                ((numberp repeat) repeat)
+                                ((eq repeat nil) nil)
+                                ((eq repeat t) seconds)
+                                (`(and ,repeat (if (numberp ,repeat) ,repeat ,seconds))))))
+    `(run-with-timer
+      ,seconds
+      ,repeat
+      ,@(akn/function-body->function+args body))))
 
 ;;; akn/after-idle!
 (cl-defmacro akn/after-idle! ((seconds &key
