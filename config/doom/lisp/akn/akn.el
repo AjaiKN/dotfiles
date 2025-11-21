@@ -391,7 +391,7 @@ The def* forms accepted are:
                   (undefadvice! ,@rest)))
               (`advice-add
                (cl-destructuring-bind (target where fn &optional props) rest
-                 (macroexp-let2* nil (target fn)
+                 (macroexp-let2* (target fn)
                    `(unwind-protect
                         (progn (advice-add ,target ,where ,fn ,props)
                                ,@(macroexp-unprogn body))
@@ -717,12 +717,12 @@ This is so that when I add a hook on `doom-first-file-hook' (or similar)"
 If REPEAT is non-nil, run BODY every time Emacs has been idle for REPEAT
 seconds (or SECONDS seconds, if REPEAT isn't a number)."
   (declare (indent 1))
-  (macroexp-let2* nil (seconds
-                       (repeat (cond
-                                ((numberp repeat) repeat)
-                                ((eq repeat nil) nil)
-                                ((eq repeat t) seconds)
-                                (`(and ,repeat (if (numberp ,repeat) ,repeat ,seconds))))))
+  (macroexp-let2* (seconds
+                   (repeat (cond
+                            ((numberp repeat) repeat)
+                            ((eq repeat nil) nil)
+                            ((eq repeat t) seconds)
+                            (`(and ,repeat (if (numberp ,repeat) ,repeat ,seconds))))))
     `(run-with-timer
       ,seconds
       ,repeat
@@ -754,25 +754,22 @@ in 10 seconds (assuming Emacs stays idle)."
   (if repeat
       `(akn/after-idle-repeat! (,seconds :timer-name ,timer-name)
          ,@body)
-    (cl-with-gensyms (the-idle-time the-seconds)
-      ;; TODO: check if starting-now is actually working
-      ;; TODO: handle :starting-now t with :each-idle t
-      `(progn
-         (defvar ,timer-name nil)
-         ,(when cancel-old-timer
-            `(when (timerp ,timer-name)
-               (cancel-timer ,timer-name)))
-         (setq ,timer-name
-               (run-with-idle-timer
-                ,(if (and starting-now (not each-idle))
-                     `(let ((,the-idle-time (current-idle-time))
-                            (,the-seconds ,seconds))
-                        (if (and ,the-idle-time (time-less-p 0 ,the-idle-time))
-                            (time-add ,the-idle-time ,the-seconds)
-                          ,the-seconds))
-                   seconds)
-                ,each-idle
-                ,@(akn/function-body->function+args body)))))))
+    ;; TODO: check if starting-now is actually working
+    ;; TODO: handle :starting-now t with :each-idle t
+    `(progn
+       (defvar ,timer-name nil)
+       ,(when cancel-old-timer
+          `(when (timerp ,timer-name)
+             (cancel-timer ,timer-name)))
+       (setq ,timer-name
+             (run-with-idle-timer
+              ,(if starting-now
+                   `(time-add (or (and ,starting-now (not ,each-idle) (current-idle-time))
+                                  0)
+                              ,seconds)
+                 seconds)
+              ,each-idle
+              ,@(akn/function-body->function+args body))))))
 
 (defun akn/timer-activated-p (timer &optional type)
   (or (unless (eq type 'timer) (memq timer timer-idle-list))
@@ -780,7 +777,8 @@ in 10 seconds (assuming Emacs stays idle)."
 
 ;;; akn/after-idle-repeat!
 ;; TODO: add back INITIAL-SECONDS and STARTING-NOW
-(cl-defmacro akn/after-idle-repeat! ((seconds &key (timer-name (gensym "akn/timer")))
+(cl-defmacro akn/after-idle-repeat! ((seconds &key
+                                              (timer-name (gensym "akn/timer")))
                                      &rest body)
   "Run BODY every time Emacs is idle for SECONDS seconds.
 
