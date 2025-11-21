@@ -167,7 +167,7 @@ the variables instead of replacing them."
   (declare (indent defun))
   (when (akn--simple-modulep! :editor rotate-text)
     (dolist (hook (ensure-list hooks))
-      (let ((fn-name (cl-gensym (format "akn/+rotate-text-init-h/%s" hook))))
+      (let ((fn-name (gensym (format "akn/+rotate-text-init-h/%s" hook))))
         (fset fn-name
               (lambda ()
                 (setq-local rotate-text-local-symbols (append symbols (bound-and-true-p rotate-text-local-symbols)))
@@ -390,13 +390,12 @@ The def* forms accepted are:
                            ,@(macroexp-unprogn body))
                   (undefadvice! ,@rest)))
               (`advice-add
-               (cl-destructuring-bind (target where fn-expr &optional props) rest
-                 (cl-with-gensyms (fn)
-                   `(let ((,fn ,fn-expr))
-                      (unwind-protect
-                          (progn (advice-add ,target ,where ,fn ,props)
-                                 ,@(macroexp-unprogn body))
-                        (advice-remove ,target ,(or (alist-get 'name props) fn)))))))
+               (cl-destructuring-bind (target where fn &optional props) rest
+                 (macroexp-let2* nil (target fn)
+                   `(unwind-protect
+                        (progn (advice-add ,target ,where ,fn ,props)
+                               ,@(macroexp-unprogn body))
+                      (advice-remove ,target ,(or (alist-get 'name props) fn))))))
               ;; defadvice is for compatibility with doom
               ((or `define-advice `defadvice)
                (when (eq type `defadvice)
@@ -734,7 +733,7 @@ seconds (or SECONDS seconds, if REPEAT isn't a number)."
                                       each-idle
                                       repeat
                                       starting-now
-                                      timer-name
+                                      (timer-name (gensym "akn/timer"))
                                       (cancel-old-timer t))
                               &rest body)
   "Run BODY after Emacs has been idle for SECONDS seconds.
@@ -759,22 +758,21 @@ in 10 seconds (assuming Emacs stays idle)."
       ;; TODO: check if starting-now is actually working
       ;; TODO: handle :starting-now t with :each-idle t
       `(progn
-         ,(when timer-name
-            `(defvar ,timer-name nil))
-         ,(when (and cancel-old-timer timer-name)
-            `(when (and ,timer-name (timerp ,timer-name))
+         (defvar ,timer-name nil)
+         ,(when cancel-old-timer
+            `(when (timerp ,timer-name)
                (cancel-timer ,timer-name)))
-         ,(akn/macro/setq-if (or timer-name (gensym "akn/timer"))
-                            `(run-with-idle-timer
-                              ,(if (and starting-now (not each-idle))
-                                   `(let ((,the-idle-time (current-idle-time))
-                                          (,the-seconds ,seconds))
-                                      (if (and ,the-idle-time (time-less-p 0 ,the-idle-time))
-                                          (time-add ,the-idle-time ,the-seconds)
-                                        ,the-seconds))
-                                 seconds)
-                              ,each-idle
-                              ,@(akn/function-body->function+args body)))))))
+         (setq ,timer-name
+               (run-with-idle-timer
+                ,(if (and starting-now (not each-idle))
+                     `(let ((,the-idle-time (current-idle-time))
+                            (,the-seconds ,seconds))
+                        (if (and ,the-idle-time (time-less-p 0 ,the-idle-time))
+                            (time-add ,the-idle-time ,the-seconds)
+                          ,the-seconds))
+                   seconds)
+                ,each-idle
+                ,@(akn/function-body->function+args body)))))))
 
 (defun akn/timer-activated-p (timer &optional type)
   (or (unless (eq type 'timer) (memq timer timer-idle-list))
