@@ -196,5 +196,10 @@ if command -v bat >/dev/null 2>&1 || command -v batcat >/dev/null 2>&1; then
 	fi
 fi
 
+## Misc
+
+# https://aquaproj.github.io/docs/tutorial/global-config
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml"
+
 ## AKN_SHELL_ENVVARS_LOADED
 export AKN_SHELL_ENVVARS_LOADED=1
