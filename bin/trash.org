@@ -1,19 +1,12 @@
 #+title: trash
 
-|                     | trash | trash-cli |   |   |
-|---------------------+-------+-----------+---+---|
-| Language            | bash  | Python    |   |   |
-| Single file script? | ✅      | ❌          |   |   |
-| macOS support       | ✅   | ❌          |   |   |
-| Linux support       | ✅   | ✅          |   |   |
-| Windows support     | ❌   | ❌          |   |   |
-
-https://github.com/umlx5h/gtrash/blob/main/doc/alternatives.md?plain=1
-https://github.com/rushsteve1/trash-d?tab=readme-ov-file
+* trash: a bash CLI for putting files in the trash (WIP)
+** Comparison table
+Based on [[https://github.com/umlx5h/gtrash/blob/main/doc/alternatives.md?plain=1][gtrash's comparison table]].
 
 |                                                            | AjaiKN/trash  | [[https://github.com/umlx5h/gtrash][gtrash]]                            | [[https://github.com/andreafrancia/trash-cli][trash-cli]]        | [[https://github.com/oberblastmeister/trashy][trashy]]                            | [[https://github.com/rushsteve1/trash-d][trash-d]]                     | [[https://github.com/sindresorhus/trash-cli][sindresorhus/trash-cli]]                   | [[https://github.com/ali-rantakari/trash][ali-rantakari/trash]]                    | [[https://github.com/nateshmbhat/rm-trash][nateshmbhat/rm-trash]]                         | [[https://github.com/robrwo/bashtrash][bashtrash]]     | [[https://github.com/babarot/gomi][gomi]]                        |
 | Supports Linux?                                            | ✅           | ✅                               | ✅              | ✅                               | ✅                         | ✅ ([[https://github.com/sindresorhus/trash]["not very good and not maintained"]]) | ❌                                    | ✅ (but doesn't use ~$XDG_DATA_HOME~ env var) | ✅           | ✅                         |
-| Supports Mac system trash can?                             | ✅           | ❌                               | ❌              | ❌                               | ❌                         | ✅                                      | ✅                                    | ❌                                          | ❌           | ❌ (previously supported?) |
+| Supports macOS system trash can?                           | ✅           | ❌                               | ❌              | ❌                               | ❌                         | ✅                                      | ✅                                    | ❌                                          | ❌           | ❌ (previously supported?) |
 | Supports Windows?                                          | ❌           | ❌                               | ❌              | ✅                               | ❌                         | ✅                                      | ❌                                    | ❌                                          | ❌           | ✅                         |
 | Language                                                   | Bash          | Go                                | Python           | Rust                              | D                           | JavaScript (+ [[https://github.com/sindresorhus/macos-trash][Swift binary]] on Mac)       | Objective-C                            | Bash                                         | Bash          | Go                          |
 | Architecture                                               | Single script | Single binary & Multi subcommands | Multi commands   | Single binary & Multi subcommands | Single binary               | Single command                           | Single binary                          | Single script                                | Single script | Single binary               |
