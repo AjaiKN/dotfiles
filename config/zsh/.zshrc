@@ -162,6 +162,7 @@ plugin prezto-completion
 plugin tabtab
 # plugin zimfw/completion # calls compinit
 is-at-least 4.3 && plugin zsh-users/zsh-history-substring-search
+plugin $DOTFILES/vendor/trash
 plugin omz-clipboard
 plugin omz-functions
 plugin omz-grep

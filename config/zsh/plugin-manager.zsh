@@ -275,19 +275,22 @@ function .plugin_file {
 # probably eventually want commands similar to https://zimfw.sh/docs/commands/
 # TODO:
 # - full git URLs
-# - absolute paths
 # - eval/cmd (maybe with optional cache)
 function plugin {
 	builtin emulate -L zsh -o EXTENDED_GLOB -o NO_CASE_GLOB
 	local plugin=$1
-	.plugin_file   $plugin regular        $ZSH_PLUGINS/${plugin}/${plugin:t}.plugin.ZSH(NY1^/) ||
-		.plugin_file $plugin regular        $ZSH_PLUGINS/${plugin}/*.plugin.ZSH(NY1^/) ||
-		.plugin_file $plugin prezto_or_zim  $ZSH_PLUGINS/${plugin}/init.ZSH(NY1^/) ||
-		.plugin_file $plugin nonstandard    $ZSH_PLUGINS/${plugin}/*.ZSH(NY1^/) ||
-		.plugin_file $plugin nonstandard_sh $ZSH_PLUGINS/${plugin}/*.sh(NY1^/) ||
-		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.plugin.ZSH(NY1^/) ||
-		.plugin_file $plugin single_file    $ZSH_PLUGINS/${plugin}.ZSH(NY1^/) ||
-		# .plugin_file $plugin dir_only       $ZSH_PLUGINS/${plugin}(NY1F) ||
+	local plugin_basic_path=$ZSH_PLUGINS/${plugin}
+	if [[ $plugin == /* || $plugin = '~'* ]]; then
+		plugin_basic_path=$plugin
+	fi
+	.plugin_file   $plugin regular        $plugin_basic_path/${plugin:t}.plugin.zsh(NY1^/) ||
+		.plugin_file $plugin regular        $plugin_basic_path/*.plugin.zsh(NY1^/) ||
+		.plugin_file $plugin prezto_or_zim  $plugin_basic_path/init.zsh(NY1^/) ||
+		.plugin_file $plugin nonstandard    $plugin_basic_path/*.zsh(NY1^/) ||
+		.plugin_file $plugin nonstandard_sh $plugin_basic_path/*.sh(NY1^/) ||
+		.plugin_file $plugin single_file    $plugin_basic_path.plugin.zsh(NY1^/) ||
+		.plugin_file $plugin single_file    $plugin_basic_path.zsh(NY1^/) ||
+		.plugin_file $plugin dir_only       $plugin_basic_path(NY1F) ||
 		{
 			if [[ -o interactive ]]; then
 				if [ -z $retrying_after_submodule_init ] && init_zsh_plugin $plugin; then
