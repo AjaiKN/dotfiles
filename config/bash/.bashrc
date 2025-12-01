@@ -229,6 +229,7 @@ if command -v fasd >/dev/null 2>&1; then
 fi
 
 ## mise
+unset __MISE_ORIG_PATH # Leaving this set has resulted in some confusing behavior sometimes
 hash mise 2>/dev/null && eval "$(mise activate bash)"
 
 ## tabtab completions
