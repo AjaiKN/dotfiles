@@ -162,8 +162,8 @@
 
 If a prefix argument is provided, ask before reverting hunk."
   (interactive "P")
-  (akn/letf! ((diff-hl-ask-before-revert-hunk (or (akn/undo-disabled-p)
-                                                  ask-before-revert-hunk)))
+  (dlet ((diff-hl-ask-before-revert-hunk (or (akn/undo-disabled-p)
+                                             ask-before-revert-hunk)))
     (+vc-gutter/revert-hunk t)))
 
 (defvar akn/after-stage-hook nil)

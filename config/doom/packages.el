@@ -42,7 +42,7 @@
 (package! page-break-lines        :pin "84b872a056404f11cacbf3fc2b0788aa7feac635" :disable (not (or (modulep! :lang cc) (modulep! :lang emacs-lisp))))
 (package! elisp-indent-docstrings                   :disable (not (modulep! :lang emacs-lisp))        :recipe (:local-repo "lisp/elisp-indent-docstrings"))
 (package! valign                  :pin "8b0002844cb6012ac4f8952e255c165e0e3be5b6" :disable (not (modulep! :lang org)))
-(package! org-wc                  :pin "dbbf794e4ec6c4080d945f43338185e34a4a582d" :disable (not (modulep! :lang org)))
+(package! org-wc                  :pin "65e2caaeaeea01b4ab3ab3cd964c911297885a0f" :disable (not (modulep! :lang org)))
 (package! org-appear              :pin "32ee50f8fdfa449bbc235617549c1bccb503cb09" :disable (not (modulep! :lang org)))
 (package! org-super-agenda        :pin "fb20ad9c8a9705aa05d40751682beae2d094e0fe" :disable (not (modulep! :lang org)))
 (package! lsp-tailwindcss         :pin "8574cb3ad2e669eebb34b4d57c3cdef5a424a9b5" :disable (not (modulep! :lang web))               :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
@@ -52,7 +52,7 @@
 (package! eshell-vterm            :pin "20f4b246fa605a1533cdfbe3cb7faf31a24e3d2e" :disable (not (and (modulep! :term eshell) (modulep! :term vterm))))
 (package! coterm                  :pin "6f04b2e7151db862c85b1cbdcf523bdeae27c006" :disable (not (modulep! :term shell)))
 (package! magit-delta             :pin "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616" :disable (not (modulep! :tools magit)))
-(package! magit-todos             :pin "bd27c57eada0fda1cc0a813db04731a9bcc51b7b" :disable (not (modulep! :tools magit)))
+(package! magit-todos             :pin "7294a95580bddf7232f2d205efae312dc24c5f61" :disable (not (modulep! :tools magit)))
 ;;;; :ui
 (package! color-identifiers-mode  :pin "162e56caa183c16f252b3e0a9dc816e5baaaea28")
 (package! framemove               :pin "0faa8a4937f398e4971fc877b1c294100506b645" :disable nil                                      :recipe (:host github :repo "emacsmirror/framemove"))

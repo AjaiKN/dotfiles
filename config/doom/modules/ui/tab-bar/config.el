@@ -160,7 +160,6 @@ new project directory.")
   :when (modulep! +bufferlo)
   :defer t
   :defer-incrementally (seq tab-bar desktop bookmark ibuffer ibuf-ext)
-  :config
   :init
   ;; these must be set before the bufferlo package is loaded
   (setq bufferlo-prefer-local-buffers 'tabs)
@@ -285,6 +284,9 @@ new project directory.")
 
   (advice-add #'doom/quicksave-session :override #'+tab-bar:doom-save-session)
   (advice-add #'doom/quickload-session :override #'+workspace/restore-last-session)
+
+  (akn/advise-letf! +vterm/toggle (+tab-bar--bufferlo)
+    (tabspaces-mode bufferlo-mode))
 
   (bufferlo-mode)
   ;; (bufferlo-anywhere-mode) ; this seems to be slow by default

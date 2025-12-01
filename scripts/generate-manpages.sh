@@ -13,7 +13,7 @@ mkdir -p ./man/man1 || exit 1
 PATH="$PWD/bin:$PATH"
 export PATH
 
-commands=(trash git-ff delete-ds-stores concatpdf)
+commands=(git-ff delete-ds-stores concatpdf)
 for c in "${commands[@]}"; do
 	outfile=./man/man1/"$c.1"
 	help2man --no-info --output="$outfile" "$c"

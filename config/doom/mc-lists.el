@@ -5,6 +5,7 @@
       '(
         +default/newline
         +fold/drag-stuff-up
+        +org/return
         akn/backward-delete-char1
         akn/duplicate-down
         akn/evilnc-comment-or-uncomment-lines

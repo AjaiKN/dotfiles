@@ -18,24 +18,30 @@ confirm() {
 	esac
 }
 
-./install-dot-home.sh "$@"
+echo "Installing files..."
+./install-files.sh "$@"
 
 if [ ! -e ~/.gitconfig ]; then
-	touch ~/.gitconfig
+	(
+		set -x
+		touch ~/.gitconfig
+	)
 fi
 
 if [ "$(uname -s)" = "Darwin" ]; then
 	echo
-	if [ -e "$HOME/.local/share/akn-dotfiles-confirmed-install-defaults" ] || confirm "Do you want to install my macOS defaults? This can't be undone by the uninstall script."; then
+	if [ -e "$HOME/.local/state/akn-dotfiles-confirmed-install-defaults" ] || confirm "Do you want to install my macOS defaults? This can't be undone by the uninstall script."; then
+		echo "Setting macOS defaults..."
 		./install-defaults.mac.sh
-		if ! [ -e "$HOME/.local/share/akn-dotfiles-confirmed-install-defaults" ]; then
+		if ! [ -e "$HOME/.local/state/akn-dotfiles-confirmed-install-defaults" ]; then
 			echo
-			echo "In the future, my macOS defaults will always be installed without asking when you run this script. If you don't want that, delete the file $HOME/.local/share/akn-dotfiles-confirmed-install-defaults"
-			mkdir -p "$HOME/.local/share"
-			touch "$HOME/.local/share/akn-dotfiles-confirmed-install-defaults"
+			echo "In the future, my macOS defaults will always be installed without asking when you run this script. If you don't want that, delete the file $HOME/.local/state/akn-dotfiles-confirmed-install-defaults"
+			mkdir -p "$HOME/.local/state"
+			touch "$HOME/.local/state/akn-dotfiles-confirmed-install-defaults"
 		fi
 	fi
 fi
 
 echo
+echo "Setting permissions..."
 ./install-permissions.sh

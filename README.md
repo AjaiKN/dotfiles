@@ -4,12 +4,14 @@
 
 To download my dotfiles, you can run either of the following commands:
 
+<!-- sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)" -->
 ``` sh
-sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)"
+curl https://dotfiles.ajai.dev | sh
 ```
 
+<!-- sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)" -->
 ``` sh
-sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)"
+wget -O - https://dotfiles.ajai.dev | sh
 ```
 
 By default, it will download to `~/prog/dotfiles`. If you want it to download to a different directory, set the `DOTFILES` environment variable to the location the repository should go.
@@ -55,10 +57,10 @@ See `config/doom/modules/README.org`.
 
 ### Shell configuration
 
-- `dot-home/.shell_*.sh`: General shell configuration (for both bash and zsh)
-- `dot-home/.zshrc`, `config/zsh/`: Zsh configuration
+- `config/shell/shared/*.sh`: General shell configuration (for both bash and zsh)
+- `config/zsh/`: Zsh configuration
   - `config/zsh/plugin-manager.zsh`: My custom zsh plugin manager
-- `dot-home/.bashrc`: Bash configuration
+- `config/bash/`: Bash configuration
 
 ### Git
 - `config/git/config`: Git configuration

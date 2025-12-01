@@ -1,30 +1,18 @@
 # shellcheck shell=sh
 # shellcheck disable=SC2317
 
-# ~/.shell_envvars.sh is loaded by:
-# - ~/.shell_profile.sh: at login (this is the most important!)
-# - ~/.shell_rc.sh: in interactive bash and zsh (for convenience in case this file has changed since login)
-# - ~/.shell_env.sh ONLY IF THIS FILE HASN'T BEEN LOADED ALREADY: whenever zsh starts (for convenience in case dotfiles weren't installed yet when I logged in)
+# ~/.config/shell/shared/envvars.sh is loaded by:
+# - ~/.config/shell/shared/profile.sh: at login (this is the most important!)
+# - ~/.config/shell/shared/rc.sh: in interactive bash and zsh (for convenience in case this file has changed since login)
+# - ~/.config/shell/shared/env.sh ONLY IF THIS FILE HASN'T BEEN LOADED ALREADY: whenever zsh starts (for convenience in case dotfiles weren't installed yet when I logged in)
 
 ## umask
 umask go-rwx
 
 ## DOTFILES
 
-if [ -L ~/.zshenv ] && command -v realpath >/dev/null 2>&1; then
-	DOTFILES="$(dirname -- "$(dirname -- "$(realpath ~/.zshenv)")")"
-elif [ -L ~/.zshenv ] && command -v perl >/dev/null 2>&1; then
-	# from comment in https://unix.stackexchange.com/questions/720080/how-do-i-resolve-a-relative-path-in-a-posix-shell-if-readlink-realpath-is-not-av
-	DOTFILES="$(dirname -- "$(dirname -- "$(perl -MCwd=realpath -le 'print realpath(shift)' ~/.zshenv)")")"
-elif [ -L ~/.zshenv ] && command -v readlink >/dev/null 2>&1; then
-	case $(readlink ~/.zshenv) in
-		/*) # absolute path
-			DOTFILES="$(dirname -- "$(dirname -- "$(readlink ~/.zshenv)")")"
-			;;
-		*) # relative path
-			DOTFILES="$(dirname -- "$(dirname -- "$HOME/$(readlink ~/.zshenv)")")"
-			;;
-	esac
+if [ -d "$HOME/.dotfiles" ]; then
+	DOTFILES="$( (cd "$HOME/.dotfiles" >/dev/null && pwd -P) )"
 elif [ -d "$HOME/prog/dotfiles" ]; then
 	DOTFILES="$HOME/prog/dotfiles"
 elif [ -d "$HOME/dotfiles" ]; then
@@ -33,7 +21,7 @@ elif [ -d "$HOME/.dotfiles" ]; then
 	DOTFILES="$HOME/.dotfiles"
 else
 	[ -t 0 ] && echo "Unable to locate DOTFILES directory" >&2
-	DOTFILES="$HOME/prog/dotfiles"
+	DOTFILES="$HOME/.dotfiles"
 fi
 export DOTFILES
 
@@ -207,6 +195,11 @@ if command -v bat >/dev/null 2>&1 || command -v batcat >/dev/null 2>&1; then
 		export GIT_PAGER="delta"
 	fi
 fi
+
+## Misc
+
+# https://aquaproj.github.io/docs/tutorial/global-config
+export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml"
 
 ## AKN_SHELL_ENVVARS_LOADED
 export AKN_SHELL_ENVVARS_LOADED=1

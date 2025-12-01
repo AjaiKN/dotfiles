@@ -15,6 +15,7 @@
 (require 'map)
 (eval-when-compile
   (require 'tramp)
+  (require 'macroexp)
   (require 'doom nil t)
   (require 'akn-doom-use-package nil t)
   ;; (require 'doom-packages)
@@ -166,7 +167,7 @@ the variables instead of replacing them."
   (declare (indent defun))
   (when (akn--simple-modulep! :editor rotate-text)
     (dolist (hook (ensure-list hooks))
-      (let ((fn-name (cl-gensym (format "akn/+rotate-text-init-h/%s" hook))))
+      (let ((fn-name (gensym (format "akn/+rotate-text-init-h/%s" hook))))
         (fset fn-name
               (lambda ()
                 (setq-local rotate-text-local-symbols (append symbols (bound-and-true-p rotate-text-local-symbols)))
@@ -389,13 +390,12 @@ The def* forms accepted are:
                            ,@(macroexp-unprogn body))
                   (undefadvice! ,@rest)))
               (`advice-add
-               (cl-destructuring-bind (target where fn-expr &optional props) rest
-                 (cl-with-gensyms (fn)
-                   `(let ((,fn ,fn-expr))
-                      (unwind-protect
-                          (progn (advice-add ,target ,where ,fn ,props)
-                                 ,@(macroexp-unprogn body))
-                        (advice-remove ,target ,(or (alist-get 'name props) fn)))))))
+               (cl-destructuring-bind (target where fn &optional props) rest
+                 (macroexp-let2* (target fn)
+                   `(unwind-protect
+                        (progn (advice-add ,target ,where ,fn ,props)
+                               ,@(macroexp-unprogn body))
+                      (advice-remove ,target ,(or (alist-get 'name props) fn))))))
               ;; defadvice is for compatibility with doom
               ((or `define-advice `defadvice)
                (when (eq type `defadvice)
@@ -429,7 +429,7 @@ The def* forms accepted are:
                   (remove-hook! ,@rest)))
               (`defvar
                (cl-destructuring-bind (symbol &optional initvalue _docstring) rest
-                 `(progn
+                 `(let (_)
                     (defvar ,symbol)
                     ,@(if (length> rest 1)
                           `((if (boundp ',symbol)
@@ -439,16 +439,12 @@ The def* forms accepted are:
                         (macroexp-unprogn body)))))
               ((or `defvar* `defconst `akn/defvar-setq)
                (cl-destructuring-bind (symbol initvalue &optional _docstring) rest
-                 `(progn
-                    (defvar ,symbol)
-                    (let ((,symbol ,initvalue))
-                      ,@(macroexp-unprogn body)))))
+                 `(dlet ((,symbol ,initvalue))
+                    ,@(macroexp-unprogn body))))
               ((pred symbolp)
                (cl-destructuring-bind (symbol initvalue) binding
-                 `(progn
-                    (defvar ,symbol)
-                    (let ((,symbol ,initvalue))
-                      ,@(macroexp-unprogn body)))))
+                 `(dlet ((,symbol ,initvalue))
+                    ,@(macroexp-unprogn body))))
               (_
                (when (eq (car-safe type) 'function)
                  (setq type (list 'symbol-function type)))
@@ -721,20 +717,23 @@ This is so that when I add a hook on `doom-first-file-hook' (or similar)"
 If REPEAT is non-nil, run BODY every time Emacs has been idle for REPEAT
 seconds (or SECONDS seconds, if REPEAT isn't a number)."
   (declare (indent 1))
-  (cl-with-gensyms (secs rep)
-    `(let ((,secs ,seconds)
-           (,rep ,repeat))
-       (run-with-timer
-        ,secs
-        (and ,rep (if (numberp ,rep) ,rep ,secs))
-        ,@(akn/function-body->function+args body)))))
+  (macroexp-let2* (seconds
+                   (repeat (cond
+                            ((numberp repeat) repeat)
+                            ((eq repeat nil) nil)
+                            ((eq repeat t) seconds)
+                            (`(and ,repeat (if (numberp ,repeat) ,repeat ,seconds))))))
+    `(run-with-timer
+      ,seconds
+      ,repeat
+      ,@(akn/function-body->function+args body))))
 
 ;;; akn/after-idle!
 (cl-defmacro akn/after-idle! ((seconds &key
                                       each-idle
                                       repeat
                                       starting-now
-                                      timer-name
+                                      (timer-name (gensym "akn/timer"))
                                       (cancel-old-timer t))
                               &rest body)
   "Run BODY after Emacs has been idle for SECONDS seconds.
@@ -755,26 +754,22 @@ in 10 seconds (assuming Emacs stays idle)."
   (if repeat
       `(akn/after-idle-repeat! (,seconds :timer-name ,timer-name)
          ,@body)
-    (cl-with-gensyms (the-idle-time the-seconds)
-      ;; TODO: check if starting-now is actually working
-      ;; TODO: handle :starting-now t with :each-idle t
-      `(progn
-         ,(when timer-name
-            `(defvar ,timer-name nil))
-         ,(when (and cancel-old-timer timer-name)
-            `(when (and ,timer-name (timerp ,timer-name))
-               (cancel-timer ,timer-name)))
-         ,(akn/macro/setq-if (or timer-name (gensym "akn/timer"))
-                            `(run-with-idle-timer
-                              ,(if (and starting-now (not each-idle))
-                                   `(let ((,the-idle-time (current-idle-time))
-                                          (,the-seconds ,seconds))
-                                      (if (and ,the-idle-time (time-less-p 0 ,the-idle-time))
-                                          (time-add ,the-idle-time ,the-seconds)
-                                        ,the-seconds))
-                                 seconds)
-                              ,each-idle
-                              ,@(akn/function-body->function+args body)))))))
+    ;; TODO: check if starting-now is actually working
+    ;; TODO: handle :starting-now t with :each-idle t
+    `(progn
+       (defvar ,timer-name nil)
+       ,(when cancel-old-timer
+          `(when (timerp ,timer-name)
+             (cancel-timer ,timer-name)))
+       (setq ,timer-name
+             (run-with-idle-timer
+              ,(if starting-now
+                   `(time-add (or (and ,starting-now (not ,each-idle) (current-idle-time))
+                                  0)
+                              ,seconds)
+                 seconds)
+              ,each-idle
+              ,@(akn/function-body->function+args body))))))
 
 (defun akn/timer-activated-p (timer &optional type)
   (or (unless (eq type 'timer) (memq timer timer-idle-list))
@@ -782,7 +777,8 @@ in 10 seconds (assuming Emacs stays idle)."
 
 ;;; akn/after-idle-repeat!
 ;; TODO: add back INITIAL-SECONDS and STARTING-NOW
-(cl-defmacro akn/after-idle-repeat! ((seconds &key (timer-name (gensym "akn/timer")))
+(cl-defmacro akn/after-idle-repeat! ((seconds &key
+                                              (timer-name (gensym "akn/timer")))
                                      &rest body)
   "Run BODY every time Emacs is idle for SECONDS seconds.
 
@@ -823,6 +819,16 @@ If you leave Emacs idle for 20 minutes all at once, a
 (defmacro akn/thunk* (&rest body)
   (declare (indent 0))
   `(lambda (&rest _) ,@body))
+
+;;; akn/with-done-message
+(defmacro akn/with-done-message (message &rest body)
+  (declare (indent 1))
+  (cl-with-gensyms (msg)
+    `(let ((,msg (format-message ,message)))
+       (prog2
+           (message "%s" ,msg)
+           ,(macroexp-progn body)
+         (message "%sdone" ,msg)))))
 
 ;;; incrementally doing stuff to speed up emacs initial load
 ;; eventually switch to https://github.com/emacs-magus/once ?

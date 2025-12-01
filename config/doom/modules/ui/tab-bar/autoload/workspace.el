@@ -3,6 +3,7 @@
 (require 'cl-lib)
 (require 'seq)
 (require 'tab-bar)
+(require 'akn)
 (eval-when-compile
   (require 'macroexp))
 
@@ -143,6 +144,9 @@ error if NAME doesn't exist."
   (+workspace--name (+workspace-current)))
 
 ;;;###autoload
+(defalias '+workspaces-current-name #'+workspace-current-name)
+
+;;;###autoload
 (defun +workspace-list-names ()
   "Return the list of names of open workspaces."
   (mapcar #'+workspace--name (tab-bar-tabs)))
@@ -250,15 +254,35 @@ throws an error."
 workspace to delete.")
 
 ;;;###autoload
-(defun +workspace/new (&optional name clone-p)
+(defun +workspace/new (&optional name clone-p interactivep)
   "Create a new workspace named NAME. If CLONE-P is non-nil, clone the current
 workspace, otherwise the new workspace is blank."
-  (interactive (list nil current-prefix-arg))
+  (interactive (list nil current-prefix-arg t))
   (let ((tab-bar-new-tab-choice (if clone-p 'clone tab-bar-new-tab-choice)))
     (tab-bar-new-tab)
     (when name
       (tab-bar-rename-tab name))
-    (+workspace-current)))
+    ;; Sometimes, when I swipe over to Firefox with 3 fingers on Mac, I
+    ;; press command-tab to open a new Firefox tab before the focus has
+    ;; switched to Firefox.
+    (let ((frame (selected-frame))
+          (new-tab (+workspace-current)))
+      (when (and (not name) (not clone-p) interactivep (featurep :system 'macos))
+        (akn/after-timer! (0.8)
+          (when (and (eq (selected-frame) frame)
+                     (not (frame-focus-state))
+                     (equal (+workspace-current) new-tab)
+                     (+workspace-empty-p new-tab)
+                     (current-idle-time))
+                     ;; (string-match-p (rx "firefox")
+                     ;;                 (do-applescript "tell application \"System Events\"
+                     ;;                                      set x to get name of application processes whose frontmost is true and visible is true
+                     ;;                                      x as text
+                     ;;                                  end tell")))
+            (+workspace/kill)
+            (message "(new tab was probably accidental, undoing)")
+            (message nil))))
+      new-tab)))
 
 ;;;###autoload
 (defun +workspace/switch-to (index)

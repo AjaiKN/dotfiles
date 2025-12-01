@@ -394,7 +394,8 @@
    #'goto-addr-mode--turn-on@akn/a
    #'parinfer-rust--check-for-issues@akn/a
    #'polymode-eval-buffer@akn/redisplay-a
-   #'project-try-vc@akn/add-tramp-home-dir-to-locate-dominating-stop-dir-regexp-a
+   #'akn/add-tramp-home-dir-to-stop-dir-a
+   #'project-try-vc@akn/add-tramp-home-dir-to-stop-dir-a
    #'projectile-ignored-projects@akn/fast-a
    #'projectile-project-root@akn/tramp-speed-up-a
    #'projectile-root-marked@akn/a
@@ -414,7 +415,7 @@
 (akn/after-idle! ((* 60 12) :timer-name akn/func-compile-timer :cancel-old-timer t)
   (akn/after-idle! (10 :repeat t :timer-name akn/func-compile-timer2 :cancel-old-timer t)
     (if-let* ((fn (pop akn/funcs-to-compile)))
-        (akn/letf! ((shut-up-ignore doom-debug-mode))
+        (dlet ((shut-up-ignore doom-debug-mode))
           (doom-log "compile-functions: %s" fn)
           (shut-up
             (let (byte-compile-warnings)

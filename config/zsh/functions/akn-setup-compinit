@@ -55,7 +55,8 @@ function akn-setup-compinit {
     autoload -Uz compinit && compinit -d $zdumpfile -i || return 1
   elif ! is-at-least 5.2; then
     # the extended glob we need doesn't seem to be supported in earlier zsh versions
-    # command rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) || return 1
+    # zmodload -F zsh/files b:zf_rm
+    # zf_rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N)
     autoload -Uz compinit && compinit -d ${zdumpfile} || return 1
   else
     # Check if dumpfile is up-to-date by comparing the full path and
@@ -74,7 +75,8 @@ function akn-setup-compinit {
     fi
     if (( zdump_dat )); then
       # echo removing
-      command rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) || return 1
+      zmodload -F zsh/files b:zf_rm
+      zf_rm -f ${zdumpfile}(|.dat|.zwc(|.old))(N) 2>/dev/null
     fi
 
     # Load and initialize the completion system
@@ -84,9 +86,10 @@ function akn-setup-compinit {
       >! ${zdumpfile}.dat <<<${znew_dat}
     fi
     # Compile the completion dumpfile; significant speedup
-    if [[ ! ${zdumpfile}.zwc -nt ${zdumpfile} ]]; then
-      zcompile ${zdumpfile}
-    fi
+    # if [[ ! ${zdumpfile}.zwc -nt ${zdumpfile} ]]; then
+    #   zcompile ${zdumpfile}
+    # fi
+    zsh_compile ${zdumpfile}
   fi
 
   # from zsh4humans: Replay compdef calls.

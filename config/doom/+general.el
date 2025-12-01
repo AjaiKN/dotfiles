@@ -632,33 +632,18 @@ underscores in all modes."
 ;;
 
 (when (modulep! :ui ligatures)
-  (plist-put! +ligatures-extra-symbols
-              ;; (first one is regular lambda, the default)
-              ;; λx 𝛌x 𝜆x \x 𝝀x 𝝺x 𝞴x
-              ;; :lambda "𝜆"
-              ;; remove ligature +extra symbols I don't want in any mode
-              :def nil
-              :return nil :yield nil
-              :false nil :true nil
-              :dot nil
-              :map nil
-              ;; maybe
-              ;; :for nil
-              :composition nil
-              :int nil :float nil :str nil :bool nil :list nil :tuple nil)
-
-  (akn/after-hook! 'doom-first-buffer-hook
-    (lambda ()
-      (dolist (feature '(rjsx-mode typescript-mode web-mode (nodejs-repl-mode . nodejs-repl)
-                         csharp-mode dart-mode scala-mode
-                         (sh-mode . sh-script) (c++-mode . cc-mode) (c-mode . cc-mode)
-                         (python-mode . python) (python-ts-mode . python) (python-base-mode . python)))
-        (let ((pkg  (or (cdr-safe feature) feature))
-              (mode (or (car-safe feature) feature)))
-          (with-eval-after-load pkg
-            (dolist (thing '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
-              (setf (alist-get mode +ligatures-extra-alist)
-                    (assoc-delete-all thing (alist-get mode +ligatures-extra-alist)))))))))
+  (defvar akn/ligatures-i-dont-want
+    '("() =>" "null" "None" "for" "nullptr" "not" "or" "and"))
+  (defun akn/remove-ligatures-i-dont-want (&rest _)
+    (pcase-dolist (mode-and-mappings +ligatures-extra-alist)
+      (dolist (lig akn/ligatures-i-dont-want)
+        (setf (cdr mode-and-mappings)
+              (assoc-delete-all lig (cdr mode-and-mappings))))))
+  (defadvice! akn/remove-ligatures-i-dont-want-a (&rest _)
+    :before #'+ligatures-init-extra-symbols-h
+    (when (+ligatures--enable-p +ligatures-extras-in-modes)
+      (akn/remove-ligatures-i-dont-want)))
+  ;; or maybe do after `set-ligatures!'
 
   ;; Disable `prettify-symbols-mode' in terminal buffers, since it seems to
   ;; cause a bug where lines get duplicated when I'm moving between lines.
@@ -944,16 +929,46 @@ underscores in all modes."
 
 ;;;; whitespace-style
 
-;; comes after `+emacs-highlight-non-default-indentation-h'
-(add-hook! 'after-change-major-mode-hook :depth 92
-  (defun akn/modify-doom-whitespace-style-h ()
-    (when (and (local-variable-p 'whitespace-style) (bound-and-true-p whitespace-mode))
-      (setq-local whitespace-style
-                  (append whitespace-style
-                          '(space-before-tab)
-                          (unless (bound-and-true-p smart-tabs-mode)
-                            '(space-after-tab))))
-      (whitespace-mode))))
+(when (modulep! :editor whitespace)
+  ;; comes after `+whitespace-highlight-incorrect-indentation-h'
+  (add-hook! 'after-change-major-mode-hook :depth 92
+    (defun akn/modify-doom-whitespace-style-h ()
+      (when (and (local-variable-p 'whitespace-style) (bound-and-true-p whitespace-mode))
+        (setq-local whitespace-style
+                    (append whitespace-style
+                            '(space-before-tab)
+                            (unless (bound-and-true-p smart-tabs-mode)
+                              '(space-after-tab))))
+        (whitespace-mode)))))
+
+  ;; trying to fix https://github.com/doomemacs/doomemacs/issues/8573
+  ;; (after! editorconfig
+  ;;   (defvar akn--whitespace-style-do-edit nil)
+  ;;   (defadvice! akn/uuirueiuriueiwuriweui3-a (&rest _)
+  ;;     :before-while #'+whitespace-highlight-incorrect-indentation-h
+  ;;     :before-while #'akn/modify-doom-whitespace-style-h
+  ;;     (let ((ret (or akn--whitespace-style-do-edit
+  ;;                    (not editorconfig-mode))))
+  ;;       (message "%s" (if ret "runnning" "not running"))
+  ;;       ret))
+  ;;   ;; (add-hook! 'editorconfig-after-apply-functions :append)
+  ;;   (defadvice! akn/efjiwjfiejwifjeiwjfij-a (&rest _)
+  ;;     :after #'editorconfig--advice-find-file-noselect
+  ;;     ;; :after #'editorconfig-major-mode-hook
+  ;;     (message "akn/efjiwjfiejwifjeiwjfij-a")
+  ;;     (unless (or (eq major-mode 'fundamental-mode)
+  ;;                 (bound-and-true-p global-whitespace-mode)
+  ;;                 (null buffer-file-name)
+  ;;                 buffer-read-only)
+  ;;       (message "akn/efjiwjfiejwifjeiwjfij-a yes")
+  ;;       (whitespace-mode -1)
+  ;;       (kill-local-variable 'whitespace-style)
+  ;;       (kill-local-variable 'whitespace-active-style)
+
+  ;;       (let ((akn--whitespace-style-do-edit t))
+  ;;         (+whitespace-highlight-incorrect-indentation-h)
+
+  ;;         (akn/modify-doom-whitespace-style-h))))))
 
 ;;; parinfer-rust
 
@@ -1256,7 +1271,7 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;; https://github.com/emacscollective/no-littering/blob/main/README.org#lock-files
 (let ((dir "~/.cache/doom/lockfiles/"))
   (make-directory dir t)
-  (setq lock-file-name-transforms `((".*" ,dir t))))
+  (setq lock-file-name-transforms `((".*" ,dir sha1))))
 
 (define-advice ask-user-about-lock (:around (fn file opponent &rest args) akn/a)
   (cond
@@ -1285,12 +1300,16 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
         (locate-dominating-file default-directory ".prettierrc.json5")
         (locate-dominating-file default-directory ".prettierrc.js")
         (locate-dominating-file default-directory "prettier.config.js")
+        (locate-dominating-file default-directory ".prettierrc.ts")
+        (locate-dominating-file default-directory "prettier.config.ts")
         (locate-dominating-file default-directory ".prettierrc.mjs")
         (locate-dominating-file default-directory "prettier.config.mjs")
+        (locate-dominating-file default-directory ".prettierrc.mts")
+        (locate-dominating-file default-directory "prettier.config.mts")
         (locate-dominating-file default-directory ".prettierrc.cjs")
         (locate-dominating-file default-directory "prettier.config.cjs")
-        (locate-dominating-file default-directory ".prettierrc.js")
-        (locate-dominating-file default-directory ".prettierrc.js")
+        (locate-dominating-file default-directory ".prettierrc.cts")
+        (locate-dominating-file default-directory "prettier.config.cts")
         (locate-dominating-file default-directory ".prettierrc.toml")
         (locate-dominating-file default-directory (lambda (dir)
                                                     (when-let* ((package-json (akn/existing-file (expand-file-name "package.json" dir)))
@@ -1298,13 +1317,30 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
                                                       (not (eq (alist-get 'prettier json 'not-found)
                                                                'not-found))))))))
 
-(add-hook! '(html-mode-hook
-             css-mode-hook
-             web-mode-hook
-             markdown-mode-hook
-             js-mode-hook
-             json-mode-hook
-             typescript-mode-hook)
+(add-hook! (html-mode html-ts-mode
+            mhtml-mode mhtml-ts-mode
+            css-mode css-ts-mode
+            scss-mode scss-ts-mode
+            sass-mode sass-ts-mode
+            web-mode web-ts-mode
+            js2-mode js2-ts-mode
+            js3-mode js3-ts-mode
+            jsx-mode jsx-ts-mode
+            rjsx-mode rjsx-ts-mode
+            js-mode js-base-mode
+            angular-mode angular-ts-mode
+            +web-angularjs-mode
+            vue-mode vue-ts-mode
+            less-css-mode less-css-ts-mode
+            less-mode less-ts-mode
+            typescript-mode typescript-ts-base-mode
+            typescript-tsx-mode typescript-tsx-ts-mode
+            graphql-mode graphql-ts-mode
+            json-mode json-ts-mode
+            markdown-mode markdown-ts-mode
+            yaml-mode yaml-ts-mode
+            svelte-mode svelte-ts-mode
+            astro-mode astro-ts-mode)
            :append
            (defun akn/maybe-prettier ()
              (when (and (not (bound-and-true-p akn/format-on-save-mode))
@@ -1323,14 +1359,26 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
     (or (require 'lsp-tailwindcss nil t)
         (message "(lsp-tailwindcss not installed)")))
 
-  (add-hook! '(html-mode-hook
-               css-mode-hook
-               web-mode-hook
-               markdown-mode-hook
-               js-mode-hook
-               json-mode-hook
-               typescript-mode-hook
-               typescript-tsx-mode-hook)
+  (add-hook! (html-mode html-ts-mode
+              mhtml-mode mhtml-ts-mode
+              css-mode css-ts-mode
+              scss-mode scss-ts-mode
+              sass-mode sass-ts-mode
+              web-mode web-ts-mode
+              js2-mode js2-ts-mode
+              js3-mode js3-ts-mode
+              jsx-mode jsx-ts-mode
+              rjsx-mode rjsx-ts-mode
+              js-mode js-base-mode
+              angular-mode angular-ts-mode
+              +web-angularjs-mode
+              vue-mode vue-ts-mode
+              less-css-mode less-css-ts-mode
+              less-mode less-ts-mode
+              typescript-mode typescript-ts-base-mode
+              typescript-tsx-mode typescript-tsx-ts-mode
+              svelte-mode svelte-ts-mode
+              astro-mode astro-ts-mode)
     (defun akn/maybe-require-tailwind ()
       (when (or (locate-dominating-file default-directory "tailwind.config.js")
                 (locate-dominating-file default-directory "tailwind.config.cjs")
@@ -1361,8 +1409,37 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;;; displaying page breaks / form feeds (^L)
 ;; https://en.wikipedia.org/wiki/Page_break#Form_feed
 ;; "This convention is predominantly used in Lisp code, and is also seen in C and Python source code."
+;; BUG: When page-break-lines-mode and adaptive-wrap-prefix-mode are both
+;; enabled in an elisp buffer with a ^L that's not surrounded by newlines (e.g.,
+;; in /opt/homebrew/Cellar/emacs-plus@30/30.2/share/emacs/30.2/lisp/emacs-lisp/lisp-mnt.el),
+;; Emacs crashes.
+;; So I enable page-break-lines-mode only if a ^L appears, and I make sure
+;; page-break-lines-mode and adaptive-wrap-prefix-mode are never both enabled.
 (use-package! page-break-lines
-  :ghook '(akn/lisp-like-mode-hook c-mode-hook c++-mode-hook python-mode-hook))
+  :init
+  (add-hook! '(akn/lisp-like-mode-hook c-mode-hook c++-mode-hook python-mode-hook)
+    (defun akn/page-break-lines-maybe ()
+      "Enable page-break-lines-mode only if a ^L appears in the buffer."
+      (when (and (not (bound-and-true-p so-long-minor-mode))
+                 (not (bound-and-true-p vlf-mode))
+                 (save-excursion
+                   (without-restriction
+                     (goto-char (point-min))
+                     (search-forward (string ?\^L) nil 'noerror))))
+        (when (bound-and-true-p adaptive-wrap-prefix-mode)
+          (adaptive-wrap-prefix-mode -1))
+        (page-break-lines-mode +1))))
+  :config
+  (define-advice +word-wrap--enable-global-mode (:before-while (&rest _) akn/no-adaptive-wrap-if-page-break-lines-mode-a)
+    (not page-break-lines-mode))
+  (add-hook! 'page-break-lines-mode-on-hook
+    (defun akn/disable-adaptive-wrap-h ()
+      (when (bound-and-true-p adaptive-wrap-prefix-mode)
+        (adaptive-wrap-prefix-mode -1))))
+  (add-hook! 'adaptive-wrap-prefix-mode-on-hook
+    (defun akn/disable-page-break-lines-h ()
+      (when page-break-lines-mode
+        (page-break-lines-mode -1)))))
 
 ;;; sibling files
 (akn/incrementally! ()

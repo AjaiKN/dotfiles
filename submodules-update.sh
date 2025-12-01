@@ -13,7 +13,7 @@ git submodule --quiet sync --recursive
 # init some submodules
 # If you want to init private,     then run `./submodules-update.sh private`
 # If you want to init emacs stuff, then run `./submodules-update.sh config/emacs config/doom`
-git submodule init config/nano vendor/fasd config/zsh/themes "$@"
+git submodule init config/nano vendor config/zsh/themes "$@"
 
 # update all submodules
 git -c submodule.fetchJobs=0 submodule update --recursive # --depth=1

@@ -2,8 +2,12 @@
 
 # set -x
 
-args=()
 needs_pipe=
+if (( $# == 0 )) && [[ ! -t 0 ]] && [[ -t 2 ]]; then
+	# No args, stdin isn't a tty but stderr is -> something is probably being piped to us
+	needs_pipe=1
+fi
+args=()
 for arg in "$@"; do
 	if [[ "$arg" == "-" ]]; then
 		needs_pipe=1

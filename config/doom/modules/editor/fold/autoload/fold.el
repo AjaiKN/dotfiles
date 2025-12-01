@@ -154,7 +154,7 @@
        (outline-show-subtree))
   (hs-life-goes-on
    ;; from `hs-show-all'
-   (akn/letf! ((hs-allow-nesting nil))
+   (dlet ((hs-allow-nesting nil))
      (hs-discard-overlays beg end))
    (run-hooks 'hs-show-hook))
   (when (+fold--treesit-fold-p)

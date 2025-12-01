@@ -4,6 +4,63 @@ set -eu
 
 umask go-rwx
 
+indent=''
+my_echo() {
+	if [ $# -eq 0 ]; then
+		echo
+	else
+		first="${indent}$1"
+		shift
+		echo "$first" "$@"
+	fi
+}
+
+command -v realpath >/dev/null 2>&1 || exit 11
+command -v readlink >/dev/null 2>&1 || exit 12
+
+if [ -t 1 ] && ncolors="$(tput colors 2>/dev/null)" && [ -n "$ncolors" ] && [ "$ncolors" -ge 8 ]; then
+	red=$(printf '\033[31m')
+	green=$(printf '\033[32m')
+	# yellow=$(printf '\033[33m')
+	blue=$(printf '\033[34m')
+	# bold=$(printf '\033[1m')
+	reset=$(printf '\033[0m')
+else
+	red=
+	green=
+	# yellow=
+	blue=
+	# bold=
+	reset=
+fi
+
+# symlink ~/.dotfiles -> the directory this script is in
+dotfiles_orig="$(realpath "$(dirname "$0")")"
+if ! [ -e "$HOME/.dotfiles" ] || [ "$(realpath "$HOME/.dotfiles")" != "$dotfiles_orig" ]; then
+	real_home=$(realpath "$HOME") || exit 22
+	dotfiles_relative_path=$(echo "$DOTFILES" | sed "s|^$real_home/||" | sed "s|^$HOME/||")
+	cd "$HOME"
+
+	if [ -L .dotfiles ]; then
+		my_echo "${red}UNLINK: $HOME/.dotfiles -> $(readlink .dotfiles)${reset}"
+		rm .dotfiles
+	fi
+	if [ -e .dotfiles ]; then
+		echo "$HOME/.dotfiles already exists!"
+		exit 1
+	fi
+	if ! [ -d "$dotfiles_relative_path" ]; then
+		echo "The relative path $dotfiles_relative_path (from ~) doesn't seem to exist!"
+		exit 1
+	fi
+
+	my_echo "${green}LINK:   $HOME/.dotfiles -> $dotfiles_relative_path${reset}"
+	ln -s "$dotfiles_relative_path" .dotfiles
+
+	unset real_home dotfiles_relative_path
+fi
+cd "$dotfiles_orig"
+
 DOTFILES=$(realpath "$(dirname "$0")")
 export DOTFILES
 
@@ -12,9 +69,9 @@ cd "$DOTFILES"
 dotfiles_relative_to_dir() {
 	# NOTE: dir must exist
 	[ -d "$1" ] || exit 10
-	dir=$(realpath "$1" || exit 21)
+	dir=$(realpath "$1")|| exit 21
 	res=""
-	real_home=$(realpath "$HOME" || exit 22)
+	real_home=$(realpath "$HOME") || exit 22
 	while true; do
 		if [ "$dir" = "/" ]; then
 			# printf "%s" "${res}${DOTFILES}"
@@ -27,7 +84,7 @@ dotfiles_relative_to_dir() {
 			return
 		else
 			res="../$res"
-			dir=$(dirname "$dir" || exit 23)
+			dir=$(dirname "$dir") || exit 23
 		fi
 	done
 }
@@ -35,8 +92,8 @@ dotfiles_relative_to_dir() {
 get_planned_link_source() {
 	case "$2" in
 		"$DOTFILES"/*)
-			base=$(dotfiles_relative_to_dir "$(dirname "$1" || exit 27)" || exit 24)
-			trimmed=$(echo "$2" | sed "s|^$DOTFILES/||" || exit 26)
+			base=$(dotfiles_relative_to_dir "$(dirname "$1")") || exit 27
+			trimmed=$(echo "$2" | sed "s|^$DOTFILES/||") || exit 26
 			printf "%s/%s" "$base" "$trimmed"
 			;;
 		/*)
@@ -51,8 +108,8 @@ get_planned_link_source() {
 
 is_dotfiles_link() {
 	[ -L "$1" ] || return 1
-	relative=$(dotfiles_relative_to_dir "$(dirname "$1" || exit 28)" || exit 25)
-	link=$(readlink "$1" || exit 29)
+	relative=$(dotfiles_relative_to_dir "$(dirname "$1")") || exit 28
+	link=$(readlink "$1") || exit 29
 	case "$link" in
 		"$DOTFILES"/*|"$relative"/*|./"$relative"/*) return 0 ;;
 		*) return 1 ;;
@@ -61,8 +118,8 @@ is_dotfiles_link() {
 
 is_self_link() {
 	[ -L "$1" ] || return 1
-	link=$(readlink "$1" || exit 30)
-	base=$(basename "$1" || exit 31)
+	link=$(readlink "$1") || exit 30
+	base=$(basename "$1") || exit 31
 	[ "$link" = "$base" ] || [ "$link" = "$1" ]
 }
 
@@ -75,7 +132,7 @@ make_backup() {
 }
 
 is_ignored() {
-	base=$(basename "$1" || exit 34)
+	base=$(basename "$1") || exit 34
 	case "$base" in
 		.DS_Store|.unfold|.#*|*~|'#'*'#') return 0 ;;
 		*) return 1 ;;
@@ -85,24 +142,6 @@ is_ignored() {
 is_unfold() {
 	[ -e "$1/.unfold" ] # && ! [ -L "$1" ]
 }
-
-indent=''
-my_echo() {
-	if [ $# -eq 0 ]; then
-		echo
-	else
-		first="${indent}$1"
-		shift
-		echo "$first" "$@"
-	fi
-}
-
-red=$(printf '\033[31m')
-green=$(printf '\033[32m')
-# yellow=$(printf '\033[33m')
-blue=$(printf '\033[34m')
-# bold=$(printf '\033[1m')
-reset=$(printf '\033[0m')
 
 handle_file() {
 	if [ -L "$1" ]; then

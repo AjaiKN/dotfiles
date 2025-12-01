@@ -2,6 +2,15 @@
 
 # set -x
 
+if
+	# No args, stdin isn't a tty but stderr is -> something is probably being piped to us
+	{ (( $# == 0 )) && [[ ! -t 0 ]] && [[ -t 2 ]]; } ||
+		# Single argument: -
+		{ (( $# == 1 )) && [[ "$1" == "-" ]]; }
+then
+	exec epipe -nw -s term
+fi
+
 args=()
 for arg in "$@"; do
 	if [[ "$arg" == "-" ]]; then
@@ -21,11 +30,6 @@ fi
 
 # Emacs in the terminal
 
-# If Emacs.app isn't already running, ...
-if [ -n "$EMACS_MAC" ] && ! pgrep -f Emacs.app >/dev/null; then
-	# ...open Emacs.app (which also launches the daemon) in the background.
-	open -g -j -a Emacs
-fi
 emacs-daemon-wait term
 # if no arguments, open dired in the current directory
 exec emacsclient -s term -nw "${@:-.}"
