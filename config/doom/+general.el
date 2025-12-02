@@ -1275,7 +1275,15 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 
 (define-advice ask-user-about-lock (:around (fn file opponent &rest args) akn/a)
   (cond
-   ((file-in-directory-p file doom-cache-dir)
+   ((or (file-in-directory-p file doom-cache-dir)
+        (file-in-directory-p file doom-data-dir)
+        (file-in-directory-p file doom-state-dir)
+        (file-in-directory-p file doom-emacs-dir)
+        (file-in-directory-p file doom-local-dir)
+        (file-in-directory-p file doom-profile-cache-dir)
+        (file-in-directory-p file doom-profile-data-dir)
+        (file-in-directory-p file doom-profile-state-dir)
+        (string-match-p (rx "/.emacs.keyfreq" eos) file))
     t)
    (t
     (apply fn file opponent args))))
