@@ -242,3 +242,12 @@
           (file-in-directory-p project-root doom-local-dir))
     (or (string-prefix-p temporary-file-directory project-root)
         (string-prefix-p doom-local-dir project-root))))
+
+;;; PERF: tramp-hlo
+
+(use-package! tramp-hlo
+  :when (modulep! +hlo)
+  :after tramp
+  :demand t
+  :config
+  (tramp-hlo-setup))
