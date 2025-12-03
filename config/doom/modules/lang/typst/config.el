@@ -29,7 +29,7 @@
        (:localleader "w" #'typst-ts-watch-mode))
                      ;; "o" #'typst-ts-compile))
 
-  (setq! typst-ts-grammar-location (car (doom-glob (expand-file-name "tree-sitter/libtree-sitter-typst.*" user-emacs-directory))))
+  (setq! typst-ts-grammar-location (car (doom-glob doom-cache-dir "tree-sitter/libtree-sitter-typst.*")))
 
   (setq! typst-ts-watch-options '("--open")
          typst-ts-fontification-precision-level 'max)
