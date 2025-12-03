@@ -284,7 +284,7 @@ returns true."
            qt                ; the 'cutest' gui framework ever
            *extra (racket +lsp +xp)            ; a DSL for DSLs
            *extra raku              ; the artist formerly known as perl6
-           *basic rest              ; Emacs as a REST client
+           *basic (rest +jq)              ; Emacs as a REST client
            *extra roc
            *basic rst               ; ReST in peace
            *extra (ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
