@@ -8,9 +8,9 @@
   (package! evil-vimish-fold :pin "b6e0e6b91b8cd047e80debef1a536d9d49eef31a"))
 
 (when (modulep! :tools tree-sitter)
-  (package! treesit-fold :pin "b44cdf3a15af1cff0d886a96637b89046b5aeac7"
+  (package! treesit-fold :pin "8182ae243a57c3f418ea64ac1e594a210f5dcf16"
     :recipe (:host github :repo "emacs-tree-sitter/treesit-fold"))
-  (package! ts-fold :pin "f7bb6a26f1b38ee507bd93ed2b083672b4a1620d"
+  (package! ts-fold :pin "9ccab656670b66bba853a1e41d2e27d9c497ee0c"
     :recipe (:host github :repo "emacs-tree-sitter/ts-fold")))
 
 (package! outli :pin "009e74c1757143040a0427f477ae882107b14592"

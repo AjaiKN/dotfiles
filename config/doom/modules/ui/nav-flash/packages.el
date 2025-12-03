@@ -1,4 +1,4 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; ui/nav-flash/packages.el
 
-(package! pulsar :pin "cc8fe14e0dac711f45af93769df718c475bd9093")
+(package! pulsar :pin "21d4ca46cf0d9187c0a282cb9b132be6b52f82b2")
