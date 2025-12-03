@@ -82,7 +82,7 @@ In the `obsidian-inbox-directory' if set otherwise in `obsidian-directory' root.
                               default-directory)))))
     (rename-visited-file new-file-name)
     (akn/set-base-file-name))
-  (when (modulep! :ui modeline +light)
+  (static-when (modulep! :ui modeline +light)
     (def-modeline-var! akn/base-file-name nil))
   (defun akn/set-base-file-name () (when (modulep! :ui modeline +light) (setq-local akn/base-file-name (file-name-base buffer-file-name))))
   (def-project-mode! akn/obsidian-header-line-mode
