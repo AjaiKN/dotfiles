@@ -176,6 +176,7 @@ returns true."
 
            :term
            *basic eshell            ; the elisp shell that works everywhere
+           *basic eshell-extra
            *basic shell             ; simple shell REPL for Emacs
            *basic term              ; basic terminal emulator for Emacs
            *basic vterm             ; the best terminal emulation in Emacs
