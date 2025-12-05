@@ -36,11 +36,12 @@
 ;;;###autoload
 (defun +mason/install-all-lsps (&optional reinstall)
   (interactive)
-  (print! "installing all lsps")
-  (mason-after-ensured!
-    (pcase-dolist (`(,language . ,packages) +mason-lsp-programs)
-      (dolist (package packages)
-        (if (and (not reinstall) (file-exists-p! (file-name-concat mason-dir "packages" package)))
-            (print! "%s already installed" package)
-          (when (eval `(modulep! :lang ,language) t)
-            (mason-install! package)))))))
+  (when (modulep! :tools lsp)
+    (print! "installing all lsps")
+    (mason-after-ensured!
+      (pcase-dolist (`(,language . ,packages) +mason-lsp-programs)
+        (dolist (package packages)
+          (if (and (not reinstall) (file-exists-p! (file-name-concat mason-dir "packages" package)))
+              (print! "%s already installed" package)
+            (when (eval `(modulep! :lang ,language +lsp) t)
+              (mason-install! package))))))))
