@@ -1881,6 +1881,12 @@ Use \\[visible-mode] to show the full hashes."
             '(tab-line-tabs-function . nil)))
 
 ;;; Projectile
+
+;; At least for the projects I've been working on lately, the speedup from
+;; caching isn't worth the annoyance of having to manually run
+;; `projectile-invalidate-cache' (<leader> p i) all the time.
+(setq! projectile-enable-caching nil)
+
 (use-package! projectile
   :init
   ;; projectile-switch-project is usually the first thing I do, so I want it to be the first
