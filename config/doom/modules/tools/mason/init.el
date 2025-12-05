@@ -1,7 +1,5 @@
 ;;; tools/mason/init.el -*- lexical-binding: t; -*-
 
-(message "init")
-
 (defvar +mason--ensured nil)
 
 (defcustom +mason-lsp-programs
@@ -15,7 +13,7 @@
     (fortran "fortls")
     (go "gopls")
     (graphql "graphql-language-service-cli")
-    (haskell "haskell-language-server")
+    ;; (haskell "haskell-language-server")
     (java "jdtls")
     (javascript "typescript-language-server")
     (json "json-lsp")
@@ -63,5 +61,3 @@
 ;;     (message "Installing LSPs...")
 ;;     (+mason/install-all-lsps)
 ;;     (message "Installing LSPs...")))
-
-(message "init done")
