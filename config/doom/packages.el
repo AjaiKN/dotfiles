@@ -58,6 +58,7 @@
 (package! framemove               :pin "0faa8a4937f398e4971fc877b1c294100506b645" :disable nil                                      :recipe (:host github :repo "emacsmirror/framemove"))
 (package! hercules                :pin "557da39878d0637395fdded91243b340c37eff7b" :disable nil)
 (package! evil-quickscope :recipe (:local-repo "lisp/evil-quickscope") :disable (or t (not (modulep! :editor evil))))
+(package! evil-owl                :pin "a41a6d28e26052b25f3d21da37ccf1d8fde1e6aa" :disable (not (modulep! :editor evil)))
 (package! rainbow-mode            :pin "2e6b18609c2fdd1a2dc513937a64d276fd6cf24c" :disable nil)
 (package! vdiff                   :pin "170e968c6a46a572b30c52c1b038232d418734cc" :disable nil)
 (package! xterm-color             :pin "2ad407c651e90fff2ea85d17bf074cee2c022912" :disable nil)
