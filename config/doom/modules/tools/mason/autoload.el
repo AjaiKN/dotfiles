@@ -43,14 +43,14 @@
                        (+mason--print-progress))))))
 
 ;;;###autoload
-(defun +mason/install-all-lsps (&optional reinstall)
+(defun +mason/install-all-lsps (&optional reinstall?)
   (interactive)
   (when (modulep! :tools lsp)
     (mason-after-ensured!
       (pcase-dolist (`(,language . ,packages) +mason-lsp-programs)
         (let ((suffix (format " (:lang %s)" language)))
           (dolist (package packages)
-            (if (and (not reinstall)
+            (if (and (not reinstall?)
                      (file-exists-p! (file-name-concat mason-dir "packages" package))
                      (not (directory-empty-p (file-name-concat mason-dir "packages" package))))
                 (print! (success "%s already installed%s") package suffix)
