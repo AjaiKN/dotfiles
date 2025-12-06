@@ -20,9 +20,10 @@
 (defun +mason--print-progress ()
   (when +mason--packages-pending
     (princ "\r")
-    (print! (item "Installing %d Mason packages: %s\e[1A")
+    (print! (item "Installing %d Mason packages: %s%s")
             (length +mason--packages-pending)
-            (truncate (string-trim (format "%s" +mason--packages-pending) "(" ")")))))
+            (truncate (string-trim (format "%s" +mason--packages-pending) "(" ")"))
+            (if (or init-file-debug (not noninteractive)) "" "\e[1A"))))
 
 ;;;###autodef
 (defun mason-install! (package &optional suffix)
