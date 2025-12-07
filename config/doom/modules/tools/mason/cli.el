@@ -42,10 +42,11 @@ updated if they're out of date).")
   (dlet ((doom-print-indent 6))
     (print! (warn "Mason log file: %s") (path +mason-log-file))))
 
-;; (defcli! ((sync s))
-;;     ((reinstall? ("-u" "--update" "-f" "--force" "--reinstall") "Reinstall all Mason packages"))
-;;   "Install all Mason packages that correspond to enabled language modules."
-;;   (+mason--sync reinstall?))
+(defcli! ((sync s))
+    ((reinstall? ("-u" "--update" "-f" "--force" "--reinstall") "Reinstall all Mason packages"))
+  "Install all Mason packages that correspond to enabled language modules."
+  (doom-packages-ensure)
+  (+mason--sync reinstall?))
 
 (define-advice doom-packages-update (:before (&optional pinned-only-p &rest _) +mason--sync-on-update)
   (unless pinned-only-p (setq +mason--need-update t)))
