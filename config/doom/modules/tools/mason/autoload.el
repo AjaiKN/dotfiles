@@ -1,23 +1,74 @@
 ;;; tools/mason/autoload.el -*- lexical-binding: t; -*-
 
-(require 'mason)
+(defcustom +mason-lsp-programs
+  '((ada "ada-language-server")
+    (beancount "beancount-language-server")
+    (cc "clangd" "cmake-language-server")
+    (clojure "clojure-lsp")
+    (csharp "omnisharp")
+    (elixir "elixir-ls")
+    (elm "elm-language-server")
+    (fortran "fortls")
+    (go "gopls")
+    (graphql "graphql-language-service-cli")
+    ;; (haskell "haskell-language-server")
+    (java "jdtls")
+    (javascript "typescript-language-server")
+    (json "json-lsp")
+    (julia "julia-lsp")
+    (kotlin "kotlin-language-server")
+    (latex "digestif" "texlab")
+    (lua "emmylua_ls" "lua-language-server")
+    (nix "nil" "rnix-lsp")
+    (ocaml "ocaml-lsp")
+    (php "intelephense")
+    (purescript "purescript-language-server")
+    (python "pyright" "basedpyright")
+    (qt "qmlls")
+    (ruby "ruby-lsp" "solargraph")
+    (rust "rust-analyzer")
+    (sh "bash-language-server")
+    (sml "millet")
+    (web "html-lsp" "css-lsp" "lemminx")
+    (yaml "yaml-language-server")
+    (zig "zls")
 
-(defvar +mason--ensured nil)
+    ;; (jsonian "json-lsp")
+    ;; (obsidian "markdown-oxide")
+    ;; (vimrc "vim-language-server")
+    (roc "roc_language_server")
+    (typst "tinymist"))
+  "A mapping of languages to LSP packages.
 
-(defvar +mason--packages-pending nil)
-(defvar +mason--packages-failed nil)
+This is a list of lists of the form (LANG PKG...), where LANG is the
+name of a Doom language module (e.g., :lang clojure), and each PKG is a
+Mason package that will be installed if the language model is enabled."
+  :group '+mason
+  :type '(alist :key-type symbol :value-type (repeat string)))
+
+(defvar +mason--ensured nil
+  "Non-nil if mason has already been ensured.")
+
+(defvar +mason--packages-pending nil
+  "Packages that we've asked to install but haven't finished installing.")
+(defvar +mason--packages-failed nil
+  "Packages that failed to install.")
 
 ;;;###autodef
 (defmacro mason-after-ensured! (&rest body)
+  "Run BODY after Mason has been ensured."
   (declare (indent 0))
   `(if +mason--ensured
        ,(macroexp-progn body)
+     (require 'mason)
      (mason-ensure
       (lambda ()
         (setq +mason--ensured t)
         ,@body))))
 
 (defun +mason--print-progress ()
+  "Print a temporary message with the list of packages that are currently
+being installed."
   (when +mason--packages-pending
     (princ "\r")
     (print! (item "Installing %d Mason packages: %s%s")
@@ -29,7 +80,7 @@
 (defun mason-install! (package &optional suffix)
   (push package +mason--packages-pending)
   (mason-after-ensured!
-    (ignore-errors ;with-demoted-errors "Mason error: %S"
+    (with-demoted-errors "Mason error: %S"
       (mason-install package
                      'force nil
                      (lambda (success)

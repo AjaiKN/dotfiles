@@ -1,16 +1,21 @@
 ;;; tools/mason/cli.el -*- lexical-binding: t; -*-
 
-(defvar +mason-log-file (expand-file-name "logs/mason.log" doom-state-dir))
-(defvar +mason--need-update nil)
+;; Autoloads don't work in the CLI.
+(load! "./autoload.el")
 
-(load! "./init.el")
+(defcustom +mason-log-file (expand-file-name "logs/mason.log" doom-state-dir)
+  "The file where Mason logs are sent when installing packages with the CLI.
 
-(defun +mason--abort-warning-h ()
-  (dlet ((doom-print-indent 6))
-    (print! (warn "Mason log file: %s") (path +mason-log-file))))
+This holds the content of the `mason-buffer'."
+  :group '+mason
+  :type 'file)
+
+(defvar +mason--need-update nil
+  "If non-nil, all Mason packages will be reinstalled (and therefore
+updated if they're out of date).")
+(defvar +mason--ensured nil)
 
 (defun +mason--sync (&optional reinstall?)
-  (load! "./autoload.el")
   (print! (start "Installing LSPs..."))
   (mkdir (file-name-directory +mason-log-file) 'parents)
   (with-temp-buffer (write-file +mason-log-file))
@@ -32,6 +37,10 @@
       (print! (warn "Failed to install some LSPs: %s") +mason--packages-failed)
       (print! (warn "Mason log file: %s") (path +mason-log-file))
       (exit! 68))))
+
+(defun +mason--abort-warning-h ()
+  (dlet ((doom-print-indent 6))
+    (print! (warn "Mason log file: %s") (path +mason-log-file))))
 
 ;; (defcli! ((sync s))
 ;;     ((reinstall? ("-u" "--update" "-f" "--force" "--reinstall") "Reinstall all Mason packages"))
