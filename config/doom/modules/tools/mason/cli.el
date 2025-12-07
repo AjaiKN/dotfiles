@@ -10,12 +10,10 @@ This holds the content of the `mason-buffer'."
   :group '+mason
   :type 'file)
 
-(defvar +mason--need-update nil
-  "If non-nil, all Mason packages will be reinstalled (and therefore
-updated if they're out of date).")
 (defvar +mason--ensured nil)
 
 (defun +mason--sync (&optional reinstall?)
+  "Synchronously install all needed Mason packages."
   (print! (start "Installing LSPs..."))
   (mkdir (file-name-directory +mason-log-file) 'parents)
   (with-temp-buffer (write-file +mason-log-file))
@@ -23,10 +21,13 @@ updated if they're out of date).")
   (print-group!
     (print! (item "Loading Mason...\e[1A"))
     (mason-ensure (lambda () (setq +mason--ensured t)))
+    ;; Wait until Mason is ensured.
     (while (not +mason--ensured)
       (sit-for 0.05))
     (print! (success "\rLoading Mason...done"))
+
     (+mason/install-all-lsps reinstall?)
+    ;; Wait until Mason finishes installing the LSPs.
     (while +mason--packages-pending
       (sit-for 0.05)
       (when (get-buffer mason-buffer)
@@ -48,6 +49,11 @@ updated if they're out of date).")
   (doom-packages-ensure)
   (+mason--sync reinstall?))
 
+;;;; +sync flag
+
+(defvar +mason--need-update nil)
+
+;; Keep track of whether the -u flag for doom sync is enabled.
 (define-advice doom-packages-update (:before (&optional pinned-only-p &rest _) +mason--sync-on-update)
   (unless pinned-only-p (setq +mason--need-update t)))
 

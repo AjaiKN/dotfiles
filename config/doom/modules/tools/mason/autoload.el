@@ -78,6 +78,7 @@ being installed."
 
 ;;;###autodef
 (defun mason-install! (package &optional suffix)
+  "Install the Mason package PACKAGE."
   (push package +mason--packages-pending)
   (mason-after-ensured!
     (with-demoted-errors "Mason error: %S"
@@ -95,6 +96,9 @@ being installed."
 
 ;;;###autoload
 (defun +mason/install-all-lsps (&optional reinstall?)
+  "Install all LSP packages corresponding to enabled Doom modules.
+
+If REINSTALL? is non-nil, reinstall all of the LSP packages."
   (interactive)
   (when (modulep! :tools lsp)
     (mason-after-ensured!
