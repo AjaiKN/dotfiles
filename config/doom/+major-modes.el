@@ -956,34 +956,7 @@ or creates it if it does not exist."
 (use-package! pet
   :ghook ('python-base-mode-hook #'pet-mode -10)
   :config
-  (setq! pet-debug t)
-  (add-hook! 'pet-after-buffer-local-vars-setup
-    (defun akn/print-python-pet-vars (&optional interactivep)
-      (interactive (list 'interactive))
-      (akn/after-timer! (0.02))
-      (let ((root (pet-project-root)))
-        (akn/letf! (defun path* (path)
-                     (propertize
-                      (cond
-                       ((or (null path) (string-empty-p path)) "")
-                       ((akn/file-remote-p path) path)
-                       ((not (file-exists-p path)) path)
-                       ((null root) (abbreviate-file-name path))
-                       ((string-match-p (rx "../") (file-relative-name path root)) (abbreviate-file-name path))
-                       (t (file-relative-name path root)))
-                      'face 'match))
-          (message "pet: root=%s venv=%s python=%s %s"
-                   (propertize (abbreviate-file-name root) 'face 'match)
-                   (path* (or (pet-virtualenv-root) ""))
-                   (path* (or (pet-executable-find "python") ""))
-                   (if (not interactivep)
-                       ""
-                     (cl-loop for thing in '(pre-commit conda mamba pixi poetry pyenv pipenv)
-                              concat (let* ((fn (intern (format "pet-use-%s-p" thing)))
-                                            (res (ignore-errors (shut-up (funcall fn)))))
-                                       (if res
-                                           (format "%s=%s " thing (path* res))
-                                         ""))))))))))
+  (defalias akn/python-verify-vars-setup #'pet-verify-setup))
 
 ;;; racket
 ;; This has precedence over the file extension (#'auto-afadsfm) magic-fallback-mode-alist.
