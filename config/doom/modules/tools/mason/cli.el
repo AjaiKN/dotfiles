@@ -11,6 +11,7 @@ This holds the content of the `mason-buffer'."
   :type 'file)
 
 (defvar +mason--ensured nil)
+(defvar +mason--updated nil)
 
 (defun +mason--sync (&optional reinstall?)
   "Synchronously install all needed Mason packages."
@@ -25,6 +26,13 @@ This holds the content of the `mason-buffer'."
     (while (not +mason--ensured)
       (sit-for 0.05))
     (print! (success "\rLoading Mason...done"))
+
+    (when reinstall?
+      (print! (item "Updating Mason registry...\e[1A"))
+      (mason-update-registry (lambda () (setq +mason--updated t)))
+      (while (not +mason--updated)
+        (sit-for 0.05))
+      (print! (success "\rUpdating Mason registry...done")))
 
     (+mason/install-all-lsps reinstall?)
     ;; Wait until Mason finishes installing the LSPs.
