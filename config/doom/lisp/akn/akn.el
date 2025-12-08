@@ -690,7 +690,7 @@ This is so that when I add a hook on `doom-first-file-hook' (or similar)"
 (eval-and-compile
   (defun akn/function-body->function+args (fbody &optional prohibit-args)
     (cond
-     ((null fbody) (list #'ignore))
+     ((null fbody) (list `#'ignore))
      ((and (null (cdr fbody)) ;length < 1
            (if prohibit-args
                (null (cdar fbody))
