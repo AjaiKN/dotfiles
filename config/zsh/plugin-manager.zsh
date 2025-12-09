@@ -237,10 +237,10 @@ typeset -gaU plugins
 
 function plugin_info {
 	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
-	printf "%'11s %-40s %-20s %-20s\n" "TIME" "ID" "TYPE" "SHORTNAME"
+	printf "%'11s %-45s %-20s %-20s\n" "TIME" "ID" "TYPE" "SHORTNAME"
 	(
 		for plugin in $plugins; do
-			printf "%'9dμs %-40s %-20s %-20s\n" $(( 1000000 * ${plugin_times[$plugin]:-0} )) $plugin $plugin_types[$plugin] $plugin_shortnames[$plugin]
+			printf "%'9dμs %-45s %-20s %-20s\n" $(( 1000000 * ${plugin_times[$plugin]:-0} )) $plugin $plugin_types[$plugin] $plugin_shortnames[$plugin]
 		done
 	) | sort -n --reverse
 }
