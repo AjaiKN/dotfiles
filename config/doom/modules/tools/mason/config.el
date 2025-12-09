@@ -7,4 +7,9 @@
   (add-to-list 'exec-path bin-dir))
 
 (use-package! mason
-  :hook (doom-first-input . mason-ensure))
+  :hook (doom-first-input . mason-ensure)
+  :config
+  (pushnew! set-message-functions #'inhibit-message)
+  (pushnew! inhibit-message-regexps
+            (rx bos "Mason ready" eos)
+            "Emacs(.*): Calling"))
