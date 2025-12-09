@@ -309,7 +309,7 @@ function plugin {
 }
 
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#pmspec
-export PMSPEC=0fbis
+PMSPEC=0fbis
 
 function load_plugins {
 	# Don't do `emulate -L zsh` here! Or else plugins won't be able to set options.
