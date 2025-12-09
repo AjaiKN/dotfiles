@@ -247,6 +247,20 @@ fi
 ### Nix thing
 [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 
+### make cursor less conspicuous while prompt is being drawn
+
+if [[ $TERM != "dumb" ]]; then
+	function →set_cursor_before_prompt {
+		echo -ne '\e[6 q' # bar cursor
+		echo -ne '\e[?25l' # invisible cursor
+	}
+	function →set_cursor_after_prompt {
+		echo -ne '\e[?25h' # visible cursor
+	}
+	typeset -ga precmd_functions
+	precmd_functions=(→set_cursor_before_prompt $precmd_functions →set_cursor_after_prompt)
+fi
+
 ### Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then
 	# If we're in a Nix shell, make sure the stuff Nix added to the PATH
