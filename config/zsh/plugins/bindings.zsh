@@ -2,7 +2,7 @@
 # alt-left and alt-right
 if [ "$TERM" != "eterm-color" ]; then
 	# run `bindkey -LM emacs` to see emacs bindings
-  # run `bindkey -LM viins` to see vi insert bindings
+	# run `bindkey -LM viins` to see vi insert bindings
 	bindkey "^@" set-mark-command
 	bindkey "^A" beginning-of-line
 	bindkey "^B" backward-char
@@ -144,7 +144,7 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey "^[z" execute-last-named-cmd
 	bindkey "^[|" vi-goto-column
 	bindkey "^[~" _bash_complete-word
-  # alt-backspace
+	# alt-backspace
 	bindkey "^[^?" backward-delete-word
 	bindkey "^_" undo
 	bindkey " " magic-space
