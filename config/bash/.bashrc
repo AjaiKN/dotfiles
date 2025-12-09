@@ -260,6 +260,12 @@ esac
 
 [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 
+## direnv
+
+if command -v direnv >/dev/null 2>&1; then
+	eval "$(direnv hook bash)"
+fi
+
 ## Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then
 	# If we're in a Nix shell, make sure the stuff Nix added to the PATH
