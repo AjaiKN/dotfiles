@@ -155,3 +155,7 @@
 	path = vendor/trash
 	url = https://github.com/AjaiKN/trash
 	branch = main
+[submodule "config/zsh/plugins/zdharma-continuum/fast-syntax-highlighting"]
+	path = config/zsh/plugins/zdharma-continuum/fast-syntax-highlighting
+	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
+	branch = master

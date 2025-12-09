@@ -208,6 +208,7 @@ plugin autocorrect
 
 if [[ $TERM != dumb && ( -z $INSIDE_EMACS || $INSIDE_EMACS = vterm* || $TERM = eterm-color ) ]]; then
 	is-at-least 4.3.11 && plugin zsh-users/zsh-syntax-highlighting
+	# is-at-least 4.3.11 && plugin zdharma-continuum/fast-syntax-highlighting
 	ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 	# this should be the very last plugin, since I'm setting ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 	is-at-least 5.0.8 && plugin zsh-users/zsh-autosuggestions
