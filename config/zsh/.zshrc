@@ -200,7 +200,6 @@ plugin compdef
 # plugin direnv
 (( $+commands[fzf] )) && plugin fzf
 plugin history
-plugin bindings
 plugin edit-command-line
 (( $+commands[emacs] )) && plugin emacs
 plugin autocorrect
@@ -213,6 +212,8 @@ if [[ $TERM != dumb && ( -z $INSIDE_EMACS || $INSIDE_EMACS = vterm* || $TERM = e
 	# this should be the very last plugin, since I'm setting ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 	is-at-least 5.0.8 && plugin zsh-users/zsh-autosuggestions
 fi
+
+plugin bindings
 
 load_plugins
 
