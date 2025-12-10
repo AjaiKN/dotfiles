@@ -2,7 +2,7 @@
 ;; General
 (use-package! roc-ts-mode
   :defer t
-  :mode ("\\.roc-ts\\'" . roc-ts-mode)
+  :mode ("\\.roc\\'" . roc-ts-mode)
   :config
   (map! :map roc-ts-mode-map
         (:localleader
