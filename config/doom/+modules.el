@@ -287,7 +287,7 @@ returns true."
            *extra (racket +lsp +xp)            ; a DSL for DSLs
            *extra raku              ; the artist formerly known as perl6
            *basic (rest +jq)              ; Emacs as a REST client
-           *extra roc
+           *extra (roc +lsp)
            *basic rst               ; ReST in peace
            *extra (ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
            *extra (rust +lsp +tree-sitter)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
@@ -298,7 +298,7 @@ returns true."
            solidity          ; do you need a blockchain? No.
            *extra swift             ; who asked for emoji variables?
            terra             ; Earth and Moon in alignment for performance.
-           *extra typst
+           *extra (typst +lsp)
            *extra (web +lsp +tree-sitter)               ; the tubes
            *basic (yaml) ; +tree-sitter              ; JSON, but readable
            *extra (zig +lsp +tree-sitter)               ; C, but simpler

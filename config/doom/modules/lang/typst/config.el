@@ -13,7 +13,7 @@
                         compile typst-ts-compile typst-ts-watch-mode
                         typst-ts-embedding-lang-settings edit-indirect typst-ts-edit-indirect
                         outline typst-ts-editing
-                        eglot typst-ts-lsp
+                        eglot
                         typst-ts-misc-commands
                         ;; transient typst-ts-transient ;was causing an error
                         typst-ts-compile typst-ts-misc-commands)
@@ -40,21 +40,20 @@
   (after! lsp-mode
     (add-to-list 'lsp--formatting-indent-alist '(typst-ts-mode . typst-ts-indent-offset)))
 
-  (after! lsp-mode
-    (add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
-    (lsp-register-client (make-lsp-client :new-connection (lsp-stdio-connection "tinymist")
-                                          :activation-fn (lsp-activate-on "typst")
-                                          :major-modes '(typst-ts-mode)
-                                          :server-id 'typst_tinymist)))
-
-  (when (executable-find "tinymist")
-    (set-eglot-client! 'typst-ts-mode "tinymist"))
+  (when (modulep! +lsp)
+    (after! lsp-mode
+      (add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
+      (lsp-register-client (make-lsp-client :new-connection (lsp-stdio-connection "tinymist")
+                                            :activation-fn (lsp-activate-on "typst")
+                                            :major-modes '(typst-ts-mode)
+                                            :server-id 'typst_tinymist)))
+    (set-eglot-client! 'typst-ts-mode "tinymist")
+    (add-hook 'typst-ts-mode-local-vars-hook #'lsp!))
 
   ;; (add-hook! 'typst-ts-mode-hook
   ;;   (defun +typst--turn-off-electric-indent ()
   ;;     (electric-indent-local-mode -1)))
 
-  (add-hook 'typst-ts-mode-local-vars-hook #'lsp!)
 
   (defadvice! +typst-ts--watch-process-filter-revert-a (_proc output)
     :after #'typst-ts--watch-process-filter
