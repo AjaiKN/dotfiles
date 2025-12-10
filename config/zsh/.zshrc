@@ -222,6 +222,28 @@ load_plugins
 # Sets color variable such as $fg, $bg, $color and $reset_color
 # autoload -U colors && colors
 
+# TODO: read about these functions
+autoload -Uz promptinit \
+	zsh-mime-setup zsh-mime-handler pick-web-browser \
+	zcalc \
+	zargs zmv \
+	colors tetriscurses nslookup regexp-replace
+
+# so zsh's zed doesn't shadow the https://zed.dev/ editor
+zedit() {
+	(
+		autoload -Uz zed
+		zed "$@"
+	)
+}
+
+alias zcp="zmv -C"
+alias zln="zmv -L"
+alias fned="zedit -f"
+alias histed="zedit -h"
+
+(( $+commands[tetris] )) || alias tetris=tetriscurses
+
 ### ~p = ~/prog, ~d = ~/prog/dotfiles
 # https://stackoverflow.com/a/28732211
 hash -d p=$HOME/prog
