@@ -250,7 +250,7 @@ returns true."
            *extra (ess)               ; emacs speaks statistics (R) ; seems to work better without +tree-sitter
            factor
            faust             ; dsp, but you get to keep your soul
-           fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
+           *extra (fortran +lsp)           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
            *extra fsharp            ; ML stands for Microsoft's Language
            fstar             ; (dependent) types and (monadic) effects and Z3
            gdscript          ; the language you waited for
