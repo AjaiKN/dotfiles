@@ -27,7 +27,7 @@ if : ; then
 		mkdir -p "$(dirname "$DOTFILES")"
 		cd "$(dirname "$DOTFILES")"
 		echo "Installing to $DOTFILES..."
-		if command -v git >/dev/null 2>&1; then
+		if command -v git >/dev/null 2>&1 && [ -z "${NO_GIT:-}" ]; then
 			git clone --depth=1 "https://github.com/AjaiKN/dotfiles"
 		else
 			set +x; confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
