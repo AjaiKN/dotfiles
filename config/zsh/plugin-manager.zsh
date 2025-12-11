@@ -213,18 +213,20 @@ function load_plugin {
 	# Don't do `emulate -L zsh` here! Or else plugins won't be able to set options.
 
 	local plugin=$1
-	zsh_loaded_plugins+=($plugin_shortnames[$plugin])
-	local plugin_file=${plugin_files[$plugin]:-}
-	if [[ -n $plugin_file ]]; then
-		typeset -F start_time=EPOCHREALTIME
-		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
-		ZERO="$plugin_file" compile_and_source "$plugin_file"
-		local ret=$?
+	typeset -F start_time=EPOCHREALTIME
+	{
+		zsh_loaded_plugins+=($plugin_shortnames[$plugin])
+		local plugin_file=${plugin_files[$plugin]:-}
+		if [[ -n $plugin_file ]]; then
+			# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
+			ZERO="$plugin_file" compile_and_source "$plugin_file"
+			local ret=$?
+			return $ret
+		fi
+	} always {
 		typeset -F end_time=EPOCHREALTIME
 		plugin_times[$plugin]=$((end_time - start_time))
-		return $ret
-	fi
-	return
+	}
 }
 
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#indicator
