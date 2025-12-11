@@ -160,6 +160,7 @@ plugin clarketm/zsh-completions
 (( $+commands[zig] )) && plugin ziglang/shell-completions
 plugin prezto-completion
 plugin tabtab
+plugin zsh-functions
 # plugin zimfw/completion # calls compinit
 is-at-least 4.3 && plugin zsh-users/zsh-history-substring-search
 plugin $DOTFILES/vendor/trash
@@ -217,32 +218,14 @@ plugin bindings
 
 load_plugins
 
+### Plugin customization (after)
+
+ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
+
 ### Misc
 
 # Sets color variable such as $fg, $bg, $color and $reset_color
 # autoload -U colors && colors
-
-# TODO: read about these functions
-autoload -Uz promptinit \
-	zsh-mime-setup zsh-mime-handler pick-web-browser \
-	zcalc \
-	zargs zmv \
-	colors tetriscurses nslookup regexp-replace
-
-# so zsh's zed doesn't shadow the https://zed.dev/ editor
-zedit() {
-	(
-		autoload -Uz zed
-		zed "$@"
-	)
-}
-
-alias zcp="zmv -C"
-alias zln="zmv -L"
-alias fned="zedit -f"
-alias histed="zedit -h"
-
-(( $+commands[tetris] )) || alias tetris=tetriscurses
 
 ### ~p = ~/prog, ~d = ~/prog/dotfiles
 # https://stackoverflow.com/a/28732211
