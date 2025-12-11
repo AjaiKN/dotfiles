@@ -72,11 +72,11 @@ function zsh_compile {
 			builtin zcompile -R -- "$tmp" "$file"      &&
 			command touch -ct $t -- "$tmp"             &&
 			builtin zmodload -F zsh/files b:zf_{rm,mv} &&
-			zf_rm -f -- "$file".zwc                    &&
+			zf_rm -fs -- "$file".zwc                   &&
 			zf_mv -f -- "$tmp" "$file".zwc
 	} always {
 		# If it's unsuccessful, delete the tmp file.
-		(( $? )) && zf_rm -f -- "$tmp" "$file".zwc 2>/dev/null
+		(( $? )) && zf_rm -fs -- "$tmp" "$file".zwc 2>/dev/null
 	}
 }
 
