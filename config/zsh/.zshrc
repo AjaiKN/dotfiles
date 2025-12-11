@@ -5,6 +5,10 @@
 # options, key bindings, etc.
 #
 
+### Profiling prologue
+# SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
+[ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
+
 ### helpers
 echo_if_interactive() {
 	if [ -t 0 ]; then
@@ -107,10 +111,6 @@ alias source=safe_source
 alias .=safe_source_dot
 function source { safe_source "$@" }
 function . { safe_source_dot "$@" }
-
-### Profiling prologue
-# SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
-[ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
 
 ### Nix prologue
 OLD_PATH_ZSHRC=$PATH
