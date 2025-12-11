@@ -27,7 +27,8 @@ jobs:
       run:
         printf 'tagname=release_%s_%s_%s' "$(date -u +'%Y-%m-%d')" "$(git rev-parse HEAD)" "$RANDOM" >> "$GITHUB_OUTPUT"
     - name: Remove .git
-      run: rm -rf dotfiles/**/.git
+      shell: bash
+      run: shopt -s dotglob && rm -rf dotfiles/**/.git
     - name: Tar files
       run: tar caf dotfiles.tar.gz dotfiles
     - name: Upload artifact
