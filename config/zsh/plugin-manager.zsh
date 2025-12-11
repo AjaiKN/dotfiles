@@ -317,6 +317,9 @@ PMSPEC=0fbis
 function load_plugins {
 	# Don't do `emulate -L zsh` here! Or else plugins won't be able to set options.
 
+	# This should always be the last plugin.
+	plugin __compinit
+
 	unset -f plugin
 
 	if (( ! _akn_dangerous_root )); then
@@ -360,8 +363,6 @@ function load_plugins {
 	if [[ -n "$ZSH_THEME" ]]; then
 		compile_and_source "$ZSH_CUSTOM/themes/$ZSH_THEME.zsh-theme"
 	fi
-
-	akn-setup-compinit
 }
 
 # from zsh4humans: defer compdef calls for later
