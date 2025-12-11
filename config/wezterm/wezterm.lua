@@ -192,7 +192,7 @@ config.mouse_bindings = {
 
   {
     mods = 'NONE',
-    event = { Down = { streak = 5, button = 'Left' } },
+    event = { Down = { streak = 4, button = 'Left' } },
     action = act.SelectTextAtMouseCursor 'SemanticZone',
   },
 }
