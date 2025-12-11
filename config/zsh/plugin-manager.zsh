@@ -78,7 +78,9 @@
 #   plugins_failed      - List of plugins that failed to load
 #   plugins             - List of plugins to load
 
-builtin zmodload -F zsh/files b:zf_mkdir
+builtin zmodload -F zsh/files b:zf_mkdir || {
+	function zf_mkdir { mkdir $@ }
+}
 
 function .set_zsh_plugin_default_branch {
 	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
