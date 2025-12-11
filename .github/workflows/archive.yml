@@ -1,0 +1,47 @@
+name: Release archive
+
+# https://roborooter.com/post/releasing-on-github-actions/
+
+on:
+  push:
+    branches: [ main ]
+jobs:
+  archive:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout without submodules
+      uses: actions/checkout@v6
+      with:
+        path: dotfiles
+        submodules: false
+    - name: Get submodules
+      run:
+        # not including private submodule
+        dotfiles/submodules-update.sh bin config dot-home launchd man nix scripts vendor
+    - name: Generate tag-name
+      id: generate_tagname
+      working-directory: dotfiles
+      shell: bash
+      run:
+        printf 'tagname=release_%s_%s_%s' "$(date -u +'%Y-%m-%d')" "$(git rev-parse HEAD)" "$RANDOM" >> "$GITHUB_OUTPUT"
+    - name: Remove .git
+      run: rm -rf dotfiles/**/.git
+    - name: Tar files
+      run: tar caf dotfiles.tar.gz dotfiles
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        if-no-files-found: error
+        path: ./dotfiles.tar.gz
+        name: dotfiles.tar.gz
+    - name: Create a GitHub release
+      uses: ncipollo/release-action@v1.20.0
+      with:
+        commit: main
+        tag: ${{ steps.generate_tagname.outputs.tagname }}
+        artifacts: ./dotfiles.tar.gz
+        artifactErrorsFailBuild: true
+        makeLatest: true
+        removeArtifacts: true
