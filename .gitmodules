@@ -43,11 +43,6 @@
 	url = https://github.com/mroth/evalcache
 	branch = master
 	shallow = true
-[submodule "dot-home/.config/zsh/plugins/zsh-completions"]
-	path = config/zsh/plugins/zsh-users/zsh-completions
-	url = https://github.com/zsh-users/zsh-completions
-	branch = master
-	shallow = true
 [submodule "dot-home/.config/zsh/plugins/completion"]
 	path = config/zsh/plugins/zimfw/completion
 	url = https://github.com/zimfw/completion
@@ -155,7 +150,3 @@
 	path = vendor/trash
 	url = https://github.com/AjaiKN/trash
 	branch = main
-[submodule "config/zsh/plugins/zdharma-continuum/fast-syntax-highlighting"]
-	path = config/zsh/plugins/zdharma-continuum/fast-syntax-highlighting
-	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
-	branch = master
