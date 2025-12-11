@@ -91,6 +91,7 @@ function .set_zsh_plugin_default_branch {
 		(
 			set -x
 			git -C "$DOTFILES" submodule set-branch -b "$default_branch" -- "config/zsh/plugins/${1}"
+			git -C "$DOTFILES" add .gitmodules
 		)
 	fi
 }
