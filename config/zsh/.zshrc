@@ -12,6 +12,8 @@ echo_if_interactive() {
 	fi
 }
 
+builtin zmodload -F zsh/stat b:zstat
+builtin zmodload -F zsh/files b:{zf_rm,zf_mv,zf_mkdir}
 function zsh_compile {
 	# copied from zsh4humans -z4h-compile (license: MIT)
 
@@ -30,7 +32,6 @@ function zsh_compile {
 	# Checking [[ -e "$file".zwc ]] is faster than redirecting stderr of zstat to /dev/null.
 	[[ -e "$file".zwc ]] &&
 		# Use zstat to get mtime of the regular $file and the zwc $file.
-		zmodload -F zsh/stat b:zstat &&
 		zstat +mtime -A stat -- "$file" "$file".zwc &&
 		{
 			# Negative indices to handle ksh_arrays:
@@ -71,7 +72,6 @@ function zsh_compile {
 		(( !_akn_dangerous_root ))                   &&
 			builtin zcompile -R -- "$tmp" "$file"      &&
 			command touch -ct $t -- "$tmp"             &&
-			builtin zmodload -F zsh/files b:zf_{rm,mv} &&
 			zf_rm -fs -- "$file".zwc                   &&
 			zf_mv -f -- "$tmp" "$file".zwc
 	} always {
@@ -126,7 +126,6 @@ if (( _akn_dangerous_root )); then
 		ZSH_CACHE_DIR=$(mktemp -d)
 	else
 		ZSH_CACHE_DIR=/tmp/zsh-cache-dir-$EUID-$RANDOM
-		zmodload -F zsh/files b:zf_mkdir
 		zf_mkdir -m 0700 $ZSH_CACHE_DIR
 	fi
 fi
