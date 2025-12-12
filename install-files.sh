@@ -2,7 +2,7 @@
 
 set -eu
 
-umask go-rwx
+umask 077
 
 indent=''
 my_echo() {

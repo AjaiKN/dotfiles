@@ -9,7 +9,7 @@ if : ; then
 	set -eu
 	set -x
 
-	umask go-rwx
+	umask 077
 
 	confirm() {
 		(
