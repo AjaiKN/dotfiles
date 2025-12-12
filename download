@@ -56,7 +56,7 @@ if : ; then
 	if [ -e "$DOTFILES"/install ]; then
 		set +x
 		if confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?"; then
-			exec "$DOTFILES"/install -v
+			"$DOTFILES"/install -v </dev/tty
 		else
 			echo "To install, run:"
 			echo "$DOTFILES/install -v"
