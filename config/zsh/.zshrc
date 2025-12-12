@@ -16,8 +16,9 @@ echo_if_interactive() {
 	fi
 }
 
-builtin zmodload -F zsh/stat b:zstat || return 1
-builtin zmodload -F zsh/files b:{zf_rm,zf_mv,zf_mkdir} || return 1
+zmodload -F zsh/stat b:zstat                   || return 1
+zmodload -F zsh/files b:{zf_rm,zf_mv,zf_mkdir} || return 1
+zmodload zsh/datetime                          || return 1
 function zsh_compile {
 	# copied from zsh4humans -z4h-compile (license: MIT)
 

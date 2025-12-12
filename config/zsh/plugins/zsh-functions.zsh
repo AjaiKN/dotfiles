@@ -4,6 +4,7 @@ function func_rename {
 }
 
 zmodload -m -F zsh/files b:zf_\*
+zmodload zsh/{datetime,langinfo,parameter,system,terminfo,zutil}
 
 # TODO: read about these functions
 autoload -Uz promptinit \
