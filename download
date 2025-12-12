@@ -12,15 +12,16 @@ if : ; then
 	umask go-rwx
 
 	confirm() {
-		set +x
-		printf '%s (y/n) ' "$1"
-		read -r REPLY </dev/tty
-		case "$REPLY" in
-			y*) : ;;
-			Y*) : ;;
-			*) return 2 ;;
-		esac
-		set -x
+		(
+			set +x
+			printf '%s (y/n) ' "$1"
+			read -r REPLY </dev/tty
+			case "$REPLY" in
+				y*) : ;;
+				Y*) : ;;
+				*) return 2 ;;
+			esac
+		)
 	}
 
 	if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
@@ -30,7 +31,7 @@ if : ; then
 		if command -v git >/dev/null 2>&1 && [ -z "${NO_GIT:-}" ]; then
 			git clone --depth=1 "https://github.com/AjaiKN/dotfiles"
 		else
-			set +x; confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
+			confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
 
 			if command -v wget >/dev/null 2>&1; then
 				wget 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
@@ -56,7 +57,14 @@ if : ; then
 	if [ -e "$DOTFILES"/install ]; then
 		set +x
 		if confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?"; then
-			"$DOTFILES"/install -v </dev/tty
+			"$DOTFILES"/install -v </dev/tty || {
+				ret=$?
+				echo
+				echo "Installing failed!"
+				echo "To try again, run:"
+				echo "$DOTFILES/install -v"
+				exit $ret
+			}
 		else
 			echo "To install, run:"
 			echo "$DOTFILES/install -v"
