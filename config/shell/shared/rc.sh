@@ -651,6 +651,8 @@ alias copy="cp -i"
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/cp/cp.plugin.zsh
 alias cpv='rsync -pogbr -hhh --backup-dir="/tmp/rsync-${USERNAME}" -e /dev/null --progress'
 
+alias trash=zap
+
 # ensure that we're using corepack (https://github.com/nodejs/corepack, https://nodejs.org/api/corepack.html)
 # This shouldn't actually be necessary.
 # alias yarn="corepack yarn"

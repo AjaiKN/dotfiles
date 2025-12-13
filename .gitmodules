@@ -147,6 +147,6 @@
 	branch = master
 	shallow = true
 [submodule "vendor/trash"]
-	path = vendor/trash
-	url = https://github.com/AjaiKN/trash
+	path = vendor/zap
+	url = https://github.com/AjaiKN/zap
 	branch = main

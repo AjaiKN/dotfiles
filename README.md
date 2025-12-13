@@ -26,13 +26,13 @@ git clone --depth=1 https://github.com/AjaiKN/dotfiles
 
 To install the dotfiles to your home directory, run `./install`.
 (The download script will also offer to run this for you.)
-If any of the relevant dotfiles already exist in the home directory, don't worry: the install script will prompt to ask you whether to skip that file, delete the original file, back up the original file, or move the original file to the trash.
+If any of the relevant dotfiles already exist in the home directory, don't worry: the install script will prompt to ask you whether to skip that file, delete the original file, back up the original file, or [zap](https://github.com/AjaiKN/zap.sh) the original file to the trash.
 
 ## Uninstalling
 
 If you want to remove all the symlinks to my dotfiles, run `./uninstall`.
 
-NOTE: The `uninstall` script ONLY removes symlinks to my dotfiles. If you told the `install` script to delete, trash, or back up any of the original files, the `uninstall` script will not undo that; you'll have to undo it yourself.
+NOTE: The `uninstall` script ONLY removes symlinks to my dotfiles. If you told the `install` script to delete, zap/trash, or back up any of the original files, the `uninstall` script will not undo that; you'll have to undo it yourself.
 
 ## Basic Repository Structure
 
@@ -78,7 +78,7 @@ See `config/doom/modules/README.org`.
     - `git redo-commit`: Re-commit the undone commit (starting with the same commit message)
 
 ### Custom Scripts & Tools (in `bin/`)
-- `trash`: Move files to the trash instead of deleting (supports both macOS and Linux, no dependencies except bash)
+- `zap`: Move files to the trash instead of deleting (supports both macOS and Linux, no dependencies except bash)
 - `delete-ds-stores`: Clean up macOS .DS_Store files recursively
 - `scripts/secure_path`: A best-effort attempt to make my PATH cleaner and more secure by removing potentially dangerous directories
 - Emacs Integration

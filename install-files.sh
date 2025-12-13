@@ -158,7 +158,7 @@ handle_file() {
 			fi
 		else
 			my_echo "${red}TRASH:  $1 -> $(readlink "$1")${reset}"
-			"$DOTFILES"/bin/trash "$1"
+			"$DOTFILES"/bin/zap "$1"
 		fi
 	fi
 
@@ -198,7 +198,7 @@ handle_file() {
 $1 should not exist.
 (1) Backup $1 to $1.bak
 (2) Adopt: move $1 to $(realpath "$2" 2>/dev/null || echo "$2")
-(3) Trash $1
+(3) Zap $1 into the Trash
 (4) do Nothing
 (5) Skip $1
 (6) Cancel
@@ -212,11 +212,11 @@ $1 should not exist.
 					make_backup "$1"
 					;;
 				2|a)
-					"$DOTFILES"/bin/trash -v "$2"
+					"$DOTFILES"/bin/zap -v "$2"
 					mv -nv "$1" "$2"
 					;;
-				3|t)
-					"$DOTFILES"/bin/trash -v "$1"
+				3|z|t)
+					"$DOTFILES"/bin/zap -v "$1"
 					;;
 				4|n)
 					;;
