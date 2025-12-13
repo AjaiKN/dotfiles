@@ -36,6 +36,8 @@
 	<dict>
 		<key>TERMINFO_DIRS</key>
 		<string>/Applications/Ghostty.app/Contents/Resources/terminfo</string>
+		<key>EMACS_PLUS_NO_PATH_INJECTION</key>
+		<string>1</string>
 	</dict>
 </dict>
 </plist>
