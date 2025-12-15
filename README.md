@@ -1,17 +1,17 @@
 # Ajai's dotfiles
 
-## Quick start
+## Downloading
 
 To download my dotfiles, you can run either of the following commands:
 
 <!-- sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)" -->
 ``` sh
-curl https://dotfiles.ajai.dev | sh
+curl https://dotfiles.ajai.dev/download | sh
 ```
 
 <!-- sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)" -->
 ``` sh
-wget -O - https://dotfiles.ajai.dev | sh
+wget -O - https://dotfiles.ajai.dev/download | sh
 ```
 
 By default, it will download to `~/prog/dotfiles`. If you want it to download to a different directory, set the `DOTFILES` environment variable to the location the repository should go.
@@ -20,6 +20,14 @@ Or you can just clone it yourself:
 
 ``` sh
 git clone --depth=1 https://github.com/AjaiKN/dotfiles
+```
+
+If you don't have git installed, you should probably install it. But you can also download my dotfiles without git:
+
+```sh
+curl -LO 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
+# OR: wget 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
+tar xf dotfiles.tar.gz
 ```
 
 ## Installation
