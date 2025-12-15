@@ -210,6 +210,11 @@ If a prefix argument is provided, ask before reverting hunk."
     (ignore-errors
       (magit-map-sections #'magit-section-hide)))
 
+  (add-hook! 'magit-status-sections-hook :append
+             #'magit-insert-modules
+             #'magit-insert-worktrees)
+  (setq! magit-module-sections-nested nil)
+
   ;; if I try to commit and nothing is staged, then stage everything without asking
   (setq! magit-commit-ask-to-stage 'stage)
   (setq! git-commit-style-convention-checks (remove 'overlong-summary-line git-commit-style-convention-checks))
