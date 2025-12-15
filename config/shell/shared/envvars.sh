@@ -56,6 +56,7 @@ $PLAN9/bin"
 
 if [ -z "$HOMEBREW_PREFIX" ] || ! [ -e "$HOMEBREW_PREFIX"/bin/brew ]; then
 	if [ -e /System ]; then
+		# macOS
 		if [ -e /opt/homebrew/bin/brew ]; then HOMEBREW_PREFIX=/opt/homebrew
 		elif [ -e /usr/local/bin/brew ]; then HOMEBREW_PREFIX=/usr/local
 		fi
