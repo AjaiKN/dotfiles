@@ -473,14 +473,19 @@ alias untar='tar xf'
 # [c]reate a [f]ile, with format determined [a]utomatically from destination file extension
 # first arg: destination
 # rest of args: source files
-alias mktar='tar caf'
-alias tar-create='tar caf'
+# (GNU tar uses the gnu format by default, so make sure it uses the more compatible and more flexible pax format)
+alias mktar='tar -c --format=pax -af'
+alias tar-create='tar -c --format=pax -af'
 # list
 alias tar-ls='tar tvf'
 # bsdtar "can extract from tar, pax, cpio, zip, jar, ar, xar, rpm, 7-zip, and ISO 9660 cdrom images and can create tar, pax, cpio, ar, zip, 7-zip, and shar archives."
-alias archive='bsdtar caf'
 alias unarchive='bsdtar xvf' # e[x]tract [v]erbose [f]ile
 alias archive-ls='bsdtar tvf' # lis[t] [v]erbose [f]ile
+# NOTE: bsdtar has better a default format than GNU, so we don't need --format
+# here. bsdtar uses restricted pax format by default, "which will create ustar
+# archives except for entries that require pax extensions (for long filenames,
+# ACLs, etc)."
+alias archive='bsdtar caf'
 
 if command -v wget >/dev/null 2>&1; then
 	alias download='wget'

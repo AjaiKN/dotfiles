@@ -30,7 +30,7 @@ jobs:
       shell: bash
       run: find dotfiles -name '.git' | xargs rm -rf
     - name: Tar files
-      run: tar caf dotfiles.tar.gz dotfiles
+      run: tar -caf dotfiles.tar.gz --format=pax dotfiles
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
