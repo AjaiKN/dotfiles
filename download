@@ -1,8 +1,7 @@
 #!/bin/sh
 
-# sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)"
-# sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)"
-# TODO: maybe https://stackoverflow.com/a/72601010
+# curl https://dotfiles.ajai.dev | sh
+# wget -O - https://dotfiles.ajai.dev/download | sh
 
 # Truncation guard
 if : ; then
