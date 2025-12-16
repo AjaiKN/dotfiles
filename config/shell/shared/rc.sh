@@ -16,6 +16,7 @@ echo_if_interactive() {
 OLD_PATH_SHELL_RC=$PATH
 
 ## Load envvars (in case they've changed)
+# shellcheck source=/Users/ajainelson/.config/shell/shared/envvars.sh
 . "$HOME/.config/shell/shared/envvars.sh" || :
 
 ## Rosetta 2
