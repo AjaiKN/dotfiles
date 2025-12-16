@@ -260,7 +260,8 @@ alias gwtmv='git worktree move'
 alias gwtrm='git worktree remove'
 alias gk='\gitk --all --branches &!'
 alias gke='\gitk --all $(git log --walk-reflogs --pretty=%h) &!'
-alias g..='cd "$(git rev-parse --show-toplevel || printf ".\n")"'
+alias g.='cd "$(git rev-parse --show-toplevel || printf ".\n")"'
+alias g..='cd "$(git -C .. rev-parse --show-toplevel || printf ".\n")"'
 
 # based on magit
 alias gb='git branch'
