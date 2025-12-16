@@ -14,13 +14,13 @@ echo_if_interactive() {
 ## Nix Prologue
 OLD_PATH_SHELL_RC=$PATH
 
-## Load envvars (in case they've changed)
-# shellcheck source=./envvars.sh
-. "$HOME/.config/shell/shared/envvars.sh" || :
-
 ## Rosetta 2
 # Open Rosetta 2 version of zsh
 alias i="arch -x86_64 /bin/zsh"
+
+## Load envvars (in case they've changed)
+# shellcheck source=./envvars.sh
+. "$HOME/.config/shell/shared/envvars.sh"
 
 ## Functions and Aliases
 # shellcheck source=./aliases_and_functions.sh
