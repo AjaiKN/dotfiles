@@ -2,13 +2,6 @@
 
 set -eu
 
-DOTFILES=$(realpath "$(dirname "$0")")
-export DOTFILES
-
-umask 077
-
-cd "$DOTFILES"
-
 confirm() {
 	printf '%s (y/n) ' "$1"
 	read -r REPLY
@@ -18,8 +11,26 @@ confirm() {
 	esac
 }
 
+DOTFILES=$(realpath "$(dirname "$0")")
+export DOTFILES
+
+umask 077
+
+cd "$DOTFILES"
+
+no_submodules_update=
+for arg in "$@"; do
+	if [ "$arg" = '--no-submodules-update' ]; then
+		no_submodules_update=1
+	fi
+done
+if [ -z "$no_submodules_update" ]; then
+	echo "Updating submodules..."
+	./submodules-update.sh || :
+fi
+
 echo "Installing files..."
-./install-files.sh "$@"
+./install-files.sh --no-submodules-update "$@"
 
 if [ ! -e ~/.gitconfig ]; then
 	(

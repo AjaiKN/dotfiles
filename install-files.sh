@@ -246,10 +246,15 @@ $1 should not exist.
 ## parse arguments
 
 verbose=
+no_submodules_update=
 while [ $# -gt 0 ]; do
 	case "$1" in
 		-v|--verbose)
 			verbose=1
+			shift
+			;;
+		--no-submodules-update)
+			no_submodules_update=1
 			shift
 			;;
 		*)
@@ -292,7 +297,7 @@ uninstall_file() {
 }
 
 uninstall() {
-	./submodules-update.sh || :
+	[ -n "$no_submodules_update" ] || ./submodules-update.sh || :
 	## dot-home
 	uninstall_file "$HOME" "$DOTFILES/dot-home"
 	uninstall_file "$HOME" "$DOTFILES/private/dot-home"
@@ -330,7 +335,7 @@ cd "$DOTFILES" || exit 54
 # nano's backupdir must exist or it gets mad
 mkdir -p "$HOME/.cache/nano/backups/"
 
-./submodules-update.sh || :
+[ -n "$no_submodules_update" ] || ./submodules-update.sh || :
 
 mkdir -p "$HOME/.config"
 
