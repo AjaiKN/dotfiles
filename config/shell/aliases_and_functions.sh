@@ -71,7 +71,6 @@ function git_main_branch() {
 	return 1
 }
 
-alias ggpur='ggu'
 alias g='git'
 alias ga='git add'
 alias gaa='git add --all'
