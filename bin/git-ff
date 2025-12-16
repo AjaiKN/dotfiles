@@ -80,7 +80,7 @@ fi
 if [ "$(git rev-parse "$FIRST_ARG")" = "$(git rev-parse "$SECOND_ARG")" ]; then
 	echo "First and second arguments both point to commit $(git rev-parse "$FIRST_ARG")" >&2
 	echo "So it's already fast-forwarded!" >&2
-	exit 1
+	exit
 fi
 
 if git merge-base --is-ancestor "$FIRST_ARG" "$SECOND_ARG"; then
