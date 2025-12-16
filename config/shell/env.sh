@@ -14,6 +14,7 @@ umask o-w || :
 
 ## Load ~/.config/shell/envvars.sh if not already loaded
 
+# shellcheck source=./envvars.sh
 [ -n "${AKN_SHELL_ENVVARS_LOADED:-}" ] || . "$HOME/.config/shell/envvars.sh" || :
 
 ## PS4 (used by set -x and bash -x)

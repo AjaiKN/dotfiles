@@ -1,8 +1,11 @@
+# shellcheck shell=sh
+
 ## Nix prologue
 OLD_PATH_PROFILE=$PATH
 
 ## Stuff
 
+# shellcheck source=./profile.sh
 . "$HOME/.config/shell/profile.sh"
 
 ## Nix epilogue
