@@ -9,7 +9,7 @@ echo_if_interactive() {
 	fi
 }
 
-# echo_if_interactive "Loading ~/.config/shell/shared/rc.sh"
+# echo_if_interactive "Loading ~/.config/shell/rc.sh"
 
 ## Nix Prologue
 OLD_PATH_SHELL_RC=$PATH
@@ -20,19 +20,19 @@ alias i="arch -x86_64 /bin/zsh"
 
 ## Load envvars (in case they've changed)
 # shellcheck source=./envvars.sh
-. "$HOME/.config/shell/shared/envvars.sh"
+. "$HOME/.config/shell/envvars.sh"
 
 ## Functions and Aliases
 # shellcheck source=./aliases_and_functions.sh
-. "$HOME/.config/shell/shared/aliases_and_functions.sh"
+. "$HOME/.config/shell/aliases_and_functions.sh"
 
 ## Enable colors
 # shellcheck source=./colors.sh
-. "$HOME/.config/shell/shared/colors.sh"
+. "$HOME/.config/shell/colors.sh"
 
 ## Python: warn if venv isn't sourced
 # shellcheck source=./python_venv.sh
-. "$HOME/.config/shell/shared/python_venv.sh"
+. "$HOME/.config/shell/python_venv.sh"
 
 ## Mise
 # https://mise.jdx.dev/lang/ruby.html#configuration
@@ -124,4 +124,4 @@ if [ -n "$IN_NIX_SHELL" ]; then
 	PATH=$OLD_PATH_SHELL_RC:$PATH
 fi
 
-# echo_if_interactive "Loaded ~/.config/shell/shared/rc.sh"
+# echo_if_interactive "Loaded ~/.config/shell/rc.sh"

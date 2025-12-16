@@ -3,7 +3,7 @@ OLD_PATH_PROFILE=$PATH
 
 ## Stuff
 
-. "$HOME/.config/shell/shared/profile.sh"
+. "$HOME/.config/shell/profile.sh"
 
 ## Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then

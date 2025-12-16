@@ -65,7 +65,7 @@ See `config/doom/modules/README.org`.
 
 ### Shell configuration
 
-- `config/shell/shared/*.sh`: General shell configuration (for both bash and zsh)
+- `config/shell/*.sh`: General shell configuration (for both bash and zsh)
 - `config/zsh/`: Zsh configuration
   - `config/zsh/plugin-manager.zsh`: My custom zsh plugin manager
 - `config/bash/`: Bash configuration

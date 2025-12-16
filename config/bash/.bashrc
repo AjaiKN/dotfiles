@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2317
 
-source "$HOME/.config/shell/shared/env.sh"
+source "$HOME/.config/shell/env.sh"
 
 # Loaded in interactive non-login shells in bash.
 # On Mac, interactive shells are login shells by default, so we load this file in ~/.bash_profile.
@@ -217,8 +217,8 @@ if command -v fzf >/dev/null 2>&1; then
 	eval "$(fzf --bash)"
 fi
 
-## ~/.config/shell/shared/rc.sh
-source "$HOME/.config/shell/shared/rc.sh"
+## ~/.config/shell/rc.sh
+source "$HOME/.config/shell/rc.sh"
 
 ## fasd
 if command -v fasd >/dev/null 2>&1; then

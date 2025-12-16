@@ -42,7 +42,7 @@ if [[ -o interactive ]] && ! (( $+functions[_git] )); then
 	autoload -Uzr _git
 fi
 
-source "$HOME/.config/shell/shared/env.sh"
+source "$HOME/.config/shell/env.sh"
 
 # from zsh4humans
 if [[ $EUID == 0 ]]; then # && -z ~(#qNU) && $DOTFILES == ~/* ]]; then

@@ -401,12 +401,12 @@ alias _='sudo '
 
 alias spacemacs='emacs-open-new --profile spacemacs'
 
-alias reload_shared='. ${ZDOTDIR:-"$HOME"}/.config/shell/shared/rc.sh'
+alias reload_shared='. ${ZDOTDIR:-"$HOME"}/.config/shell/rc.sh'
 
 function cdls { cd "$1" && ls; }
 
 #remember: no space between name and '='
-alias edit_shared='vim ${ZDOTDIR:-"$HOME"}/.config/shell/shared/rc.sh; . ${ZDOTDIR:-"$HOME"}/.config/shell/shared/rc.sh'
+alias edit_shared='vim ${ZDOTDIR:-"$HOME"}/.config/shell/rc.sh; . ${ZDOTDIR:-"$HOME"}/.config/shell/rc.sh'
 alias edit_vimrc='vim ~/.vimrc'
 alias gitbook='open http://git-scm.com/book/en/v2'
 alias matlab-orig='/Applications/MATLAB_*.app/bin/matlab'
