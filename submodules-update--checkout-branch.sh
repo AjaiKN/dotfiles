@@ -2,22 +2,22 @@
 
 set -eu
 
+if git symbolic-ref -q HEAD >/dev/null; then
+	# HEAD not detached
+	exit
+fi
+
 if branch=$(git config -f "$toplevel"/.gitmodules submodule."$name".branch); then
-	if git symbolic-ref -q HEAD >/dev/null; then
-		# HEAD not detached
-		exit
-	fi
-	if [ "$(git rev-parse HEAD)" = "$(git rev-parse "origin/$branch")" ]; then
-		git ff "$branch" "origin/$branch" 2>/dev/null || {
+	head_commit=$(git rev-parse HEAD)
+	if [ "$(git rev-parse "origin/$branch")" = "$head_commit" ]; then
+		"$DOTFILES"/bin/git-ff "$branch" "origin/$branch" 2>/dev/null ||
 			echo "Can't fast-forward $branch to origin/$branch"
-			exit
-		}
 	fi
-	if [ "$(git rev-parse HEAD)" = "$(git rev-parse "$branch")" ]; then
-		git checkout "$branch" >/dev/null 2>&1
-	# else
-	# 	echo "Not switching $sm_path to a branch"
+	if [ "$(git rev-parse "$branch")" = "$head_commit" ]; then
+		switch_to=$branch
 	fi
-# else
-# 	echo "No relevant branch for $sm_path"
+fi
+
+if [ "${switch_to:=$(git rev-parse --abbrev-ref=strict HEAD)}" != HEAD ]; then
+	git checkout "${switch_to}" >/dev/null 2>&1
 fi
