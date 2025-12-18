@@ -61,9 +61,9 @@ function open_command() {
 
 # take functions
 
-# mkcd is equivalent to takedir
-function mkcd takedir() {
-  mkdir -p $@ && cd ${@:$#}
+function takedir() {
+  # defined ~/.config/shell/aliases_and_functions.sh
+  mkcd "$@"
 }
 
 function takeurl() {

@@ -41,6 +41,10 @@ else
 	alias ports='netstat -tuapn' # maybe no -n?
 fi
 
+function mkcd {
+	mkdir -p "$@" && cd "${@:$#}" || return $?
+}
+
 ## git aliases
 # shellcheck source=./git.sh
 . "$HOME/.config/shell/git.sh"
