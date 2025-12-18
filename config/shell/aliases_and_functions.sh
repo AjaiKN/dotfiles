@@ -45,6 +45,12 @@ function mkcd {
 	mkdir -p "$@" && cd "${@:$#}" || return $?
 }
 
+function cdtemp {
+	cd "$(mktemp -d "${TMPDIR:-tmp}/${1:-tmp}.XXX")" || return $?
+}
+# shellcheck disable=SC2139
+alias {mktmp,mkcdtemp,mktempcd,cdmktemp,tempcd,tmpcd,tmp}=cdtemp
+
 ## git aliases
 # shellcheck source=./git.sh
 . "$HOME/.config/shell/git.sh"
