@@ -24,29 +24,6 @@
  tramp-backup-directory-alist (list (cons "." "~/.cache/doom/tramp-backup/"))
  tramp-auto-save-directory "~/.cache/doom/tramp-autosave/")
 
-(after! doom-editor
-  ;; TODO: PR or issue
-  (defadvice! doom-make-hashed-auto-save-file-name-a (fn)
-    "Compress the auto-save file name so paths don't get too long."
-    :around #'make-auto-save-file-name
-    (let ((buffer-file-name
-           (if (or
-                ;; Don't do anything for non-file-visiting buffers. Names
-                ;; generated for those are short enough already.
-                (null buffer-file-name)
-                ;; If an alternate handler exists for this path, bow out. Most of
-                ;; them end up calling `make-auto-save-file-name' again anyway, so
-                ;; we still achieve this advice's ultimate goal.
-                (find-file-name-handler buffer-file-name
-                                        'make-auto-save-file-name))
-               buffer-file-name
-             ;;CHANGED
-             (concat (or (and (string-match-p "/tramp-autosave/" buffer-file-name)
-                              (file-name-directory buffer-file-name))
-                         "")
-                     (sha1 buffer-file-name)))))
-      (funcall fn))))
-
 ;;; PERF: tramp
 
 ;; TODO: look at advice here: https://coredumped.dev/2025/06/18/making-tramp-go-brrrr./
