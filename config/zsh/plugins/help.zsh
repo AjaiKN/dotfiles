@@ -17,9 +17,8 @@ if (( ! ${+HELPDIR} )); then
 	unset dir
 fi
 
-unalias run-help 2>/dev/null       # don't display err if already done
-autoload -Uz run-help              # load the function
-autoload -Uz run-help-ip run-help-openssl run-help-p4 run-help-sudo run-help-svk run-help-svn # run-help-git
+unalias run-help 2>/dev/null
+autoload -Uz run-help ${^fpath}/run-help-^*.zwc(N:t) # from zsh4humans
 run-help-git () {
 	if [[ $1 == branchless ]]; then
 		if [[ $# -lt 2 ]]; then
@@ -31,7 +30,7 @@ run-help-git () {
 		git help ${1:-git}
 	fi
 }
-alias help=run-help                # optionally alias run-help to help
+alias help=run-help							# optionally alias run-help to help
 
 # press alt-h or esc-h or control-h after typing a command to see help for that command
 if [ "$TERM" != "eterm-color" ]; then

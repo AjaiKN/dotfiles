@@ -5,6 +5,10 @@
 # options, key bindings, etc.
 #
 
+### Profiling prologue
+# SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
+[ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
+
 ### helpers
 echo_if_interactive() {
 	if [ -t 0 ]; then
@@ -12,6 +16,9 @@ echo_if_interactive() {
 	fi
 }
 
+zmodload -F zsh/stat b:zstat                   || return 1
+zmodload -F zsh/files b:{zf_rm,zf_mv,zf_mkdir} || return 1
+zmodload zsh/datetime                          || return 1
 function zsh_compile {
 	# copied from zsh4humans -z4h-compile (license: MIT)
 
@@ -30,7 +37,6 @@ function zsh_compile {
 	# Checking [[ -e "$file".zwc ]] is faster than redirecting stderr of zstat to /dev/null.
 	[[ -e "$file".zwc ]] &&
 		# Use zstat to get mtime of the regular $file and the zwc $file.
-		zmodload -F zsh/stat b:zstat &&
 		zstat +mtime -A stat -- "$file" "$file".zwc &&
 		{
 			# Negative indices to handle ksh_arrays:
@@ -71,12 +77,11 @@ function zsh_compile {
 		(( !_akn_dangerous_root ))                   &&
 			builtin zcompile -R -- "$tmp" "$file"      &&
 			command touch -ct $t -- "$tmp"             &&
-			builtin zmodload -F zsh/files b:zf_{rm,mv} &&
-			zf_rm -f -- "$file".zwc                    &&
+			zf_rm -fs -- "$file".zwc                   &&
 			zf_mv -f -- "$tmp" "$file".zwc
 	} always {
 		# If it's unsuccessful, delete the tmp file.
-		(( $? )) && zf_rm -f -- "$tmp" "$file".zwc 2>/dev/null
+		(( $? )) && zf_rm -fs -- "$tmp" "$file".zwc 2>/dev/null
 	}
 }
 
@@ -108,10 +113,6 @@ alias .=safe_source_dot
 function source { safe_source "$@" }
 function . { safe_source_dot "$@" }
 
-### Profiling prologue
-# SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
-[ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
-
 ### Nix prologue
 OLD_PATH_ZSHRC=$PATH
 
@@ -126,7 +127,6 @@ if (( _akn_dangerous_root )); then
 		ZSH_CACHE_DIR=$(mktemp -d)
 	else
 		ZSH_CACHE_DIR=/tmp/zsh-cache-dir-$EUID-$RANDOM
-		zmodload -F zsh/files b:zf_mkdir
 		zf_mkdir -m 0700 $ZSH_CACHE_DIR
 	fi
 fi
@@ -154,15 +154,15 @@ zstyle ':zim:input' double-dot-expand yes
 
 compile_and_source "$ZSH_CUSTOM"/plugin-manager.zsh
 
-# plugin zsh-users/zsh-completions
 [[ "${OSTYPE}" == darwin* ]] && plugin scriptingosx/mac-zsh-completions
 plugin clarketm/zsh-completions
 (( $+commands[zig] )) && plugin ziglang/shell-completions
 plugin prezto-completion
 plugin tabtab
+plugin zsh-functions
 # plugin zimfw/completion # calls compinit
 is-at-least 4.3 && plugin zsh-users/zsh-history-substring-search
-plugin $DOTFILES/vendor/trash
+plugin $DOTFILES/vendor/zap
 plugin omz-clipboard
 plugin omz-functions
 plugin omz-grep
@@ -200,7 +200,6 @@ plugin compdef
 # plugin direnv
 (( $+commands[fzf] )) && plugin fzf
 plugin history
-plugin bindings
 plugin edit-command-line
 (( $+commands[emacs] )) && plugin emacs
 plugin autocorrect
@@ -213,7 +212,13 @@ if [[ $TERM != dumb && ( -z $INSIDE_EMACS || $INSIDE_EMACS = vterm* || $TERM = e
 	is-at-least 5.0.8 && plugin zsh-users/zsh-autosuggestions
 fi
 
+plugin bindings
+
 load_plugins
+
+### Plugin customization (after)
+
+ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
 
 ### Misc
 
@@ -246,6 +251,20 @@ fi
 
 ### Nix thing
 [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+
+### make cursor less conspicuous while prompt is being drawn
+
+if [[ $TERM != "dumb" ]]; then
+	function →set_cursor_before_prompt {
+		echo -ne '\e[6 q' # bar cursor
+		echo -ne '\e[?25l' # invisible cursor
+	}
+	function →set_cursor_after_prompt {
+		echo -ne '\e[?25h' # visible cursor
+	}
+	typeset -ga precmd_functions
+	precmd_functions=(→set_cursor_before_prompt $precmd_functions →set_cursor_after_prompt)
+fi
 
 ### Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then

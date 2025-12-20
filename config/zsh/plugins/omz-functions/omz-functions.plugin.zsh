@@ -39,6 +39,9 @@ function open_command() {
     linux*)   [[ "$(uname -r)" != *icrosoft* ]] && open_cmd='nohup xdg-open' || {
                 open_cmd='cmd.exe /c start ""'
                 [[ -e "$1" ]] && { 1="$(wslpath -w "${1:a}")" || return 1 }
+                [[ "$1" = (http|https)://* ]] && {
+                  1="$(echo "$1" | sed -E 's/([&|()<>^])/^\1/g')" || return 1
+                }
               } ;;
     msys*)    open_cmd='start ""' ;;
     *)        echo "Platform $OSTYPE not supported"
@@ -58,9 +61,9 @@ function open_command() {
 
 # take functions
 
-# mkcd is equivalent to takedir
-function mkcd takedir() {
-  mkdir -p $@ && cd ${@:$#}
+function takedir() {
+  # defined ~/.config/shell/aliases_and_functions.sh
+  mkcd "$@"
 }
 
 function takeurl() {

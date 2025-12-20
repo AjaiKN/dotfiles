@@ -1,7 +1,7 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; lang/ess/packages.el
 
-(package! ess :pin "378b5694af1260998e40dd681f87bddc667fcd05")
+(package! ess :pin "7b9123669cccb26f346624fc82f7e2ff74b5dc62")
 (package! ess-R-data-view :pin "d6e98d3ae1e2a2ea39a56eebcdb73e99d29562e9")
 (package! ess-view-data :pin "5ec1c7206f1431c7b24f0990497ecc7e0fb33939")
 (package! essgd :pin "d9a3729ebaeeeec78984f00508cf2785bc7e8978")

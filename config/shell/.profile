@@ -1,9 +1,12 @@
+# shellcheck shell=sh
+
 ## Nix prologue
 OLD_PATH_PROFILE=$PATH
 
 ## Stuff
 
-. "$HOME/.config/shell/shared/profile.sh"
+# shellcheck source=./profile.sh
+. "$HOME/.config/shell/profile.sh"
 
 ## Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then

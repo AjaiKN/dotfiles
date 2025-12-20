@@ -953,6 +953,16 @@ or creates it if it does not exist."
 (add-to-list 'interpreter-mode-alist
              (cons (rx bos "uv" eos) #'python-mode))
 
+(use-package! pet
+  :ghook ('python-base-mode-hook #'pet-mode -10)
+  :config
+  (defalias 'akn/python-verify-pet-vars-setup-info #'pet-verify-setup)
+  (map! :after python
+        :map python-base-mode-map
+        :localleader
+        "v" #'pet-verify-setup)
+  (set-popup-rule! (rx bol "*pet info") :select nil :quit t))
+
 ;;; racket
 ;; This has precedence over the file extension (#'auto-afadsfm) magic-fallback-mode-alist.
 ;; Also see `racket-hash-lang-mode'.

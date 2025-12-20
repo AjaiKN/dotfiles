@@ -2,7 +2,7 @@
 ;; General
 (use-package! roc-ts-mode
   :defer t
-  :mode ("\\.roc-ts\\'" . roc-ts-mode)
+  :mode ("\\.roc\\'" . roc-ts-mode)
   :config
   (map! :map roc-ts-mode-map
         (:localleader
@@ -24,16 +24,15 @@
   ;; Setup the LSP support:
   ;; For this to work, you'll need roc_language_server, which is distributed in
   ;; Roc releases, in your PATH.
-  (when (modulep! :tools lsp -eglot)
-    (require 'lsp-mode)
-    (add-to-list 'lsp-language-id-configuration '(roc-ts-mode . "roc"))
-    (lsp-register-client (make-lsp-client :new-connection (lsp-stdio-connection "roc_language_server")
-                                          :activation-fn (lsp-activate-on "roc")
-                                          :major-modes '(roc-ts-mode)
-                                          :server-id 'roc_ls)))
-  (when (modulep! :tools lsp +eglot)
-    (set-eglot-client! 'roc-ts-mode '("roc_language_server")))
-  (add-hook 'roc-ts-mode-local-vars-hook #'lsp!)
+  (when (modulep! +lsp)
+    (after! lsp-mode
+      (add-to-list 'lsp-language-id-configuration '(roc-ts-mode . "roc"))
+      (lsp-register-client (make-lsp-client :new-connection (lsp-stdio-connection "roc_language_server")
+                                            :activation-fn (lsp-activate-on "roc")
+                                            :major-modes '(roc-ts-mode)
+                                            :server-id 'roc_ls)))
+    (set-eglot-client! 'roc-ts-mode '("roc_language_server"))
+    (add-hook 'roc-ts-mode-local-vars-hook #'lsp!))
 
   ;; Formatting
   (set-formatter! 'roc-ts-format '("roc" "format" "--stdin" "--stdout") :modes '(roc-ts-mode))

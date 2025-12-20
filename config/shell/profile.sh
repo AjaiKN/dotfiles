@@ -9,10 +9,12 @@ umask go-rwx
 OLD_PATH_SHELL_PROFILE=$PATH
 
 ## env vars
-. "$HOME/.config/shell/shared/envvars.sh"
+# shellcheck source=./envvars.sh
+. "$HOME/.config/shell/envvars.sh"
 
 ## shell_env
-. "$HOME/.config/shell/shared/env.sh"
+# shellcheck source=./env.sh
+. "$HOME/.config/shell/env.sh"
 
 ## Stuff
 

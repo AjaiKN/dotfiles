@@ -7,15 +7,15 @@
 (eval-when-compile
   (require 'macroexp))
 
-(if (modulep! +bufferlo)
+(static-if (modulep! :ui tab-bar +bufferlo)
     (require 'bufferlo)
   (require 'tabspaces))
 
 ;;; Library
 
 (defun +workspace--protected-p (name)
-  (and (modulep! -bufferlo)
-       (equal name tabspaces-default-tab)))
+  (static-unless (modulep! :ui tab-bar +bufferlo)
+    (equal name tabspaces-default-tab)))
 
 (defun +workspace--generate-id ()
   (or (cl-loop for name in (+workspace-list-names)
@@ -222,7 +222,7 @@ throws an error."
 ;;;###autoload (autoload '+workspace/kill-buffers-close-workspace "config/doom/modules/ui/tab-bar/autoload/workspace" nil t)
 ;;;###autoload (autoload '+workspace-remove-buffer "config/doom/modules/ui/tab-bar/autoload/workspace" nil t)
 
-(if (modulep! :ui tab-bar +bufferlo)
+(static-if (modulep! :ui tab-bar +bufferlo)
     (progn
       (defalias '+workspace/switch-to-buffer             #'bufferlo-switch-to-buffer)
       (defalias '+workspace/switch-buffer-and-tab        #'bufferlo-switch-buffer-and-tab)

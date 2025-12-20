@@ -274,6 +274,22 @@ So to get the string deleted after a change, use M-y or C-p."
 
   (global-evil-quickscope-mode 1))
 
+;;; evil-owl
+
+(use-package! evil-owl
+  :defer-incrementally t
+  :ghook 'doom-first-input-hook
+  :config
+  (setq! evil-owl-idle-delay (or (bound-and-true-p which-key-idle-delay) 0.4)
+         evil-owl-display-method 'window)
+  (set-popup-rule! (rx "*evil-owl*")
+    :side 'right
+    :ttl nil
+    :vslot -100
+    :select nil
+    :size 0.2)
+  (evil-owl-mode))
+
 ;;; evil respect for emacs `line-move-visual'
 ;; This is an alternative to `evil-respect-visual-line-mode'.
 ;; NOTE: Confusingly, the Emacs `visual-line-mode' (which is what we're talking about here)

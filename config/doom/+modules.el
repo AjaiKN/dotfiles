@@ -169,13 +169,14 @@ returns true."
            *basic repeat
            *basic secondary-selection
            *basic tramp             ; remote files at your arthritic fingertips
-           *basic tramp-extra
+           *basic (:if (memq '*extra akn/tags) (tramp-extra +hlo) tramp-extra)
            *basic undo              ; persistent, smarter undo for your inevitable mistakes
            *basic vc                ; version-control and Emacs, sitting in a tree
            *basic vlf ; very large files
 
            :term
            *basic eshell            ; the elisp shell that works everywhere
+           *basic eshell-extra
            *basic shell             ; simple shell REPL for Emacs
            *basic term              ; basic terminal emulator for Emacs
            *basic vterm             ; the best terminal emulation in Emacs
@@ -205,6 +206,7 @@ returns true."
            *basic lookup              ; navigate your code and its documentation
            *extra (:if (executable-find "emacs-lsp-booster") (lsp +eglot +booster) (lsp +eglot))  ; M-x vscode
            *basic (magit +forge)             ; a git porcelain for Emacs
+           *extra (mason +sync)
            *extra stgit
            *extra llm
            *extra llm-extra
@@ -248,7 +250,7 @@ returns true."
            *extra (ess)               ; emacs speaks statistics (R) ; seems to work better without +tree-sitter
            factor
            faust             ; dsp, but you get to keep your soul
-           fortran           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
+           *extra (fortran +lsp)           ; in FORTRAN, GOD is REAL (unless declared INTEGER)
            *extra fsharp            ; ML stands for Microsoft's Language
            fstar             ; (dependent) types and (monadic) effects and Z3
            gdscript          ; the language you waited for
@@ -284,8 +286,8 @@ returns true."
            qt                ; the 'cutest' gui framework ever
            *extra (racket +lsp +xp)            ; a DSL for DSLs
            *extra raku              ; the artist formerly known as perl6
-           *basic rest              ; Emacs as a REST client
-           *extra roc
+           *basic (rest +jq)              ; Emacs as a REST client
+           *extra (roc +lsp)
            *basic rst               ; ReST in peace
            *extra (ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
            *extra (rust +lsp +tree-sitter)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
@@ -296,7 +298,7 @@ returns true."
            solidity          ; do you need a blockchain? No.
            *extra swift             ; who asked for emoji variables?
            terra             ; Earth and Moon in alignment for performance.
-           *extra typst
+           *extra (typst +lsp)
            *extra (web +lsp +tree-sitter)               ; the tubes
            *basic (yaml) ; +tree-sitter              ; JSON, but readable
            *extra (zig +lsp +tree-sitter)               ; C, but simpler

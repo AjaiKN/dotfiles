@@ -34,6 +34,7 @@ fi
 if [[ "$TERM" = "eterm-color" ]]; then
 	ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#666666"
 
+	zmodload zsh/complist
 	# https://unix.stackexchange.com/questions/84867/zsh-completion-enabling-shift-tab
 	bindkey -M menuselect '^[[Z' reverse-menu-complete
 

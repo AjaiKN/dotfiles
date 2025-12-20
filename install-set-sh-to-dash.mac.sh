@@ -26,3 +26,6 @@ if [ /var/select/sh -ef /bin/bash ] && [ -f /bin/dash ]; then
 		echo "Aborting"
 	fi
 fi
+if [[ $(stat -f '%Lp' /var/select/sh) != 755 ]]; then
+	sudo chmod -h 755 /var/select/sh
+fi

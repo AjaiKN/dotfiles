@@ -78,7 +78,9 @@
 #   plugins_failed      - List of plugins that failed to load
 #   plugins             - List of plugins to load
 
-builtin zmodload -F zsh/files b:zf_mkdir
+builtin zmodload -F zsh/files b:zf_mkdir || {
+	function zf_mkdir { mkdir $@ }
+}
 
 function .set_zsh_plugin_default_branch {
 	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
@@ -91,6 +93,7 @@ function .set_zsh_plugin_default_branch {
 		(
 			set -x
 			git -C "$DOTFILES" submodule set-branch -b "$default_branch" -- "config/zsh/plugins/${1}"
+			git -C "$DOTFILES" add .gitmodules
 		)
 	fi
 }
@@ -210,18 +213,20 @@ function load_plugin {
 	# Don't do `emulate -L zsh` here! Or else plugins won't be able to set options.
 
 	local plugin=$1
-	zsh_loaded_plugins+=($plugin_shortnames[$plugin])
-	local plugin_file=${plugin_files[$plugin]:-}
-	if [[ -n $plugin_file ]]; then
-		typeset -F start_time=EPOCHREALTIME
-		# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
-		ZERO="$plugin_file" compile_and_source "$plugin_file"
-		local ret=$?
+	typeset -F start_time=EPOCHREALTIME
+	{
+		zsh_loaded_plugins+=($plugin_shortnames[$plugin])
+		local plugin_file=${plugin_files[$plugin]:-}
+		if [[ -n $plugin_file ]]; then
+			# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
+			ZERO="$plugin_file" compile_and_source "$plugin_file"
+			local ret=$?
+			return $ret
+		fi
+	} always {
 		typeset -F end_time=EPOCHREALTIME
 		plugin_times[$plugin]=$((end_time - start_time))
-		return $ret
-	fi
-	return
+	}
 }
 
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#indicator
@@ -237,10 +242,10 @@ typeset -gaU plugins
 
 function plugin_info {
 	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
-	printf "%'11s %-40s %-20s %-20s\n" "TIME" "ID" "TYPE" "SHORTNAME"
+	printf "%'11s %-45s %-20s %-20s\n" "TIME" "ID" "TYPE" "SHORTNAME"
 	(
 		for plugin in $plugins; do
-			printf "%'9dμs %-40s %-20s %-20s\n" $(( 1000000 * ${plugin_times[$plugin]:-0} )) $plugin $plugin_types[$plugin] $plugin_shortnames[$plugin]
+			printf "%'9dμs %-45s %-20s %-20s\n" $(( 1000000 * ${plugin_times[$plugin]:-0} )) $plugin $plugin_types[$plugin] $plugin_shortnames[$plugin]
 		done
 	) | sort -n --reverse
 }
@@ -309,10 +314,13 @@ function plugin {
 }
 
 # https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#pmspec
-export PMSPEC=0fbis
+PMSPEC=0fbis
 
 function load_plugins {
 	# Don't do `emulate -L zsh` here! Or else plugins won't be able to set options.
+
+	# This should always be the last plugin.
+	plugin __compinit
 
 	unset -f plugin
 
@@ -357,8 +365,6 @@ function load_plugins {
 	if [[ -n "$ZSH_THEME" ]]; then
 		compile_and_source "$ZSH_CUSTOM/themes/$ZSH_THEME.zsh-theme"
 	fi
-
-	akn-setup-compinit
 }
 
 # from zsh4humans: defer compdef calls for later

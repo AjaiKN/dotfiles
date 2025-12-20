@@ -3,7 +3,7 @@
 # Loaded by interactive login shells in bash.
 # On Mac, interactive shells are login shells by default.
 
-source "$HOME/.config/shell/shared/profile.sh"
+source "$HOME/.config/shell/profile.sh"
 
 # We load .bashrc so that all interactive shells load .bashrc.
 source "$HOME/.bashrc"

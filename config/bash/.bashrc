@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2317
 
-source "$HOME/.config/shell/shared/env.sh"
+source "$HOME/.config/shell/env.sh"
 
 # Loaded in interactive non-login shells in bash.
 # On Mac, interactive shells are login shells by default, so we load this file in ~/.bash_profile.
@@ -209,14 +209,16 @@ alias ....='cd ../../..'
 alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 
+alias zcalc='zsh -ilc zcalc'
+
 ## fzf
 if command -v fzf >/dev/null 2>&1; then
 	# Set up fzf key bindings and fuzzy completion
 	eval "$(fzf --bash)"
 fi
 
-## ~/.config/shell/shared/rc.sh
-source "$HOME/.config/shell/shared/rc.sh"
+## ~/.config/shell/rc.sh
+source "$HOME/.config/shell/rc.sh"
 
 ## fasd
 if command -v fasd >/dev/null 2>&1; then
@@ -229,6 +231,7 @@ if command -v fasd >/dev/null 2>&1; then
 fi
 
 ## mise
+unset __MISE_ORIG_PATH # Leaving this set has resulted in some confusing behavior sometimes
 hash mise 2>/dev/null && eval "$(mise activate bash)"
 
 ## tabtab completions
@@ -258,6 +261,12 @@ case "$TERM" in
 esac
 
 [ -e "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ] && . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+
+## direnv
+
+if command -v direnv >/dev/null 2>&1; then
+	eval "$(direnv hook bash)"
+fi
 
 ## Nix epilogue
 if [ -n "$IN_NIX_SHELL" ]; then

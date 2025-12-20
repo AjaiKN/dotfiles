@@ -1,0 +1,102 @@
+:PROPERTIES:
+:ID:       c847c5db-ad4f-47bc-9f4e-250882318da1
+:END:
+title:     :tools mason
+#+subtitle:  <A one-line quip about this module to display in init.example.el>
+#+created:   December 07, 2025
+#+since:     26.01.0 (#COMMIT-OR-PR-REF)
+
+* Description :unfold:
+This module can install LSPs and other external dependencies for you.
+
+It uses [[https://github.com/deirn/mason.el][mason.el]], which uses the same [[https://github.com/mason-org/mason-registry][package registry]] as [[https://github.com/mason-org/mason.nvim][mason.nvim]].
+
+Run ~doom +mason sync~ to install dependencies for the Doom modules you have
+enabled.
+
+** Maintainers
+- [[doom-user:][@AjaiKN]]
+
+[[doom-contrib-maintainer:][Become a maintainer?]]
+
+** Module flags
+- +sync ::
+  Every time you run ~doom sync~, install the Mason packages corresponding to each
+  ~:lang xyz +lsp~ module you have enabled.
+
+** Packages
+- [[doom-package:mason]]
+
+** Hacks
+- Because [[doom-package:mason][mason.el]] does most of its work asynchronously, if you
+  install Mason packages with the doom CLI (e.g., by running ~doom +mason sync~),
+  then [[doom-help:sit-for][sit-for]] is repeatedly used until Mason is done installing the packages.
+  Otherwise, the command would exit early.
+- If the ~+sync~ flag is enabled, then there are some hacks to get the Mason
+  packages to install when you run ~doom sync~ and to make them reinstall when you
+  run ~doom sync -u~.
+
+** TODO Changelog
+# This section will be machine generated. Don't edit it by hand.
+/This module does not have a changelog yet./
+
+* Installation
+# This section should describe, in-depth, how to set up this module and its
+# dependencies, starting with this line:
+[[id:01cffea4-3329-45e2-a892-95a384ab2338][Enable this module in your ~doom!~ block.]]
+
+Depending on which Mason packages you want to install, some external
+dependencies will be required. You can run ~M-x mason-doctor~ to see a list. For
+more details, see [[https://github.com/deirn/mason.el?tab=readme-ov-file#requirements][the mason.el docs]].
+
+* Usage
+If you run ~M-x +mason/install-all-lsps~, this module will install the Mason
+packages corresponding to each ~:lang xyz +lsp~ module you have enabled. You can
+install the relevant packages from the command line by running ~doom +mason sync~.
+If the ~+sync~ flag is enabled, then they'll automatically be installed whenever
+you run the regular ~doom sync~ command.
+
+You can use ~M-x mason-manager~ to view the available packages and choose which
+ones to install. Press ~i~ to mark a package for installation, then press ~x~ to
+install all the marked packages.
+
+* TODO Configuration
+# Walk the user through how to configure this module, including any variables it
+# exposes or user-facing configuration API.
+# If this is left empty, add TODO to the heading and use:
+#+begin_quote
+󱌣 This module has no configuration documentation yet. [[doom-contrib-module:][Write some?]]
+#+end_quote
+# If this section has incomplete content, add TODO to the heading and use:
+# #+begin_quote
+# 󱌣 /This module's configuration documentation is incomplete./ [[doom-contrib-module:][Complete it?]]
+# #+end_quote
+
+* Troubleshooting
+# If this is left empty, use:
+/There are no known problems with this module./ [[doom-report:][Report one?]]
+
+* Frequently asked questions
+# [[doom-suggest-faq:][Ask a question?]]
+# This is for adoption, design, or niche questions. More general
+# usage/configuration matters should be covered in the sections above.
+#
+# If no questions are available, use
+/This module has no FAQs yet./ [[doom-suggest-faq:][Ask one?]]
+
+* TODO Appendix
+# A glossary of important major modes, minor modes, commands, functions, faces,
+# and variables that this module exposes. It doesn't have to be exhaustive and
+# should omit explanation/documentation.
+# If this is left empty, add TODO to the heading and use:
+# #+begin_quote
+# 󱌣 This module has no appendix yet. [[doom-contrib-module:][Write one?]]
+# #+end_quote
+# If this section has incomplete content, add TODO to the heading and use:
+#+begin_quote
+󱌣 /This module's appendix is incomplete./ [[doom-contrib-module:][Write more?]]
+#+end_quote
+
+# Local Variables:
+# mode: doom-docs-org
+# End:

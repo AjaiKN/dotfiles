@@ -1,41 +1,41 @@
 #!/bin/sh
 
-# sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)"
-# sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)"
-# TODO: maybe https://stackoverflow.com/a/72601010
+# curl https://dotfiles.ajai.dev | sh
+# wget -O - https://dotfiles.ajai.dev/download | sh
 
 # Truncation guard
 if : ; then
 	set -eu
 	set -x
 
-	umask go-rwx
+	umask 077
 
 	confirm() {
-		set +x
-		printf '%s (y/n) ' "$1"
-		read -r REPLY </dev/tty
-		case "$REPLY" in
-			y*) : ;;
-			Y*) : ;;
-			*) return 2 ;;
-		esac
-		set -x
+		(
+			set +x
+			printf '%s (y/n) ' "$1"
+			read -r REPLY </dev/tty
+			case "$REPLY" in
+				y*) : ;;
+				Y*) : ;;
+				*) return 2 ;;
+			esac
+		)
 	}
 
 	if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
 		mkdir -p "$(dirname "$DOTFILES")"
 		cd "$(dirname "$DOTFILES")"
 		echo "Installing to $DOTFILES..."
-		if command -v git >/dev/null 2>&1; then
+		if command -v git >/dev/null 2>&1 && [ -z "${NO_GIT:-}" ]; then
 			git clone --depth=1 "https://github.com/AjaiKN/dotfiles"
 		else
-			set +x; confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
+			confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
 
 			if command -v wget >/dev/null 2>&1; then
-				wget -O dotfiles.tar.gz 'https://api.github.com/repos/AjaiKN/dotfiles/tarball/'
+				wget 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
 			elif command -v curl >/dev/null 2>&1; then
-				curl -Lo dotfiles.tar.gz 'https://api.github.com/repos/AjaiKN/dotfiles/tarball/'
+				curl -LO 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
 			else
 				echo "no curl or wget command available in PATH"
 				exit 2
@@ -56,7 +56,14 @@ if : ; then
 	if [ -e "$DOTFILES"/install ]; then
 		set +x
 		if confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?"; then
-			exec "$DOTFILES"/install -v
+			"$DOTFILES"/install -v </dev/tty || {
+				ret=$?
+				echo
+				echo "Installing failed!"
+				echo "To try again, run:"
+				echo "$DOTFILES/install -v"
+				exit $ret
+			}
 		else
 			echo "To install, run:"
 			echo "$DOTFILES/install -v"

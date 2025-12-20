@@ -57,6 +57,9 @@
 	sw = switch
 	z = stash
 
+	attach = !set -x && git checkout "$(git rev-parse --abbrev-ref=strict HEAD)"
+	detach = switch --detach
+
 	ac = !git add -A && git commit
 	unstage = restore --staged
 	bisect-abort = bisect reset

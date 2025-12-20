@@ -33,6 +33,7 @@
 	url = https://github.com/AjaiKN/doomemacs
 	branch = akn-main
 	shallow = true
+	update = merge
 [submodule "dot-home/.config/zsh/plugins/zsh-smartcache"]
 	path = config/zsh/plugins/QuarticCat/zsh-smartcache
 	url = https://github.com/QuarticCat/zsh-smartcache
@@ -41,11 +42,6 @@
 [submodule "dot-home/.config/zsh/plugins/evalcache"]
 	path = config/zsh/plugins/mroth/evalcache
 	url = https://github.com/mroth/evalcache
-	branch = master
-	shallow = true
-[submodule "dot-home/.config/zsh/plugins/zsh-completions"]
-	path = config/zsh/plugins/zsh-users/zsh-completions
-	url = https://github.com/zsh-users/zsh-completions
 	branch = master
 	shallow = true
 [submodule "dot-home/.config/zsh/plugins/completion"]
@@ -130,6 +126,7 @@
 	path = config/zsh/plugins/zsh-vi-more/vi-motions
 	url = https://github.com/zsh-vi-more/vi-motions
 	ignore = untracked
+	branch = master
 	shallow = true
 [submodule "config/zsh/plugins/ziglang/shell-completions"]
 	path = config/zsh/plugins/ziglang/shell-completions
@@ -141,6 +138,7 @@
 	url = https://github.com/AjaiKN/dotfiles-private
 	branch = main
 	shallow = true
+	update = rebase
 [submodule "config/nano/nano-highlight"]
 	path = config/nano/nano-highlight
 	url = https://github.com/serialhex/nano-highlight
@@ -151,7 +149,10 @@
 	url = https://github.com/AjaiKN/things.el
 	branch = master
 	shallow = true
+	update = rebase
 [submodule "vendor/trash"]
-	path = vendor/trash
-	url = https://github.com/AjaiKN/trash
+	path = vendor/zap
+	url = https://github.com/AjaiKN/zap.sh
 	branch = main
+	shallow = true
+	update = rebase

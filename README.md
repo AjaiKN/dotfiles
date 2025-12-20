@@ -1,17 +1,17 @@
 # Ajai's dotfiles
 
-## Quick start
+## Downloading
 
 To download my dotfiles, you can run either of the following commands:
 
 <!-- sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)" -->
 ``` sh
-curl https://dotfiles.ajai.dev | sh
+curl https://dotfiles.ajai.dev/download | sh
 ```
 
 <!-- sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)" -->
 ``` sh
-wget -O - https://dotfiles.ajai.dev | sh
+wget -O - https://dotfiles.ajai.dev/download | sh
 ```
 
 By default, it will download to `~/prog/dotfiles`. If you want it to download to a different directory, set the `DOTFILES` environment variable to the location the repository should go.
@@ -22,17 +22,25 @@ Or you can just clone it yourself:
 git clone --depth=1 https://github.com/AjaiKN/dotfiles
 ```
 
+If you don't have git installed, you should probably install it. But you can also download my dotfiles without git:
+
+```sh
+curl -LO 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
+# OR: wget 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
+tar xf dotfiles.tar.gz
+```
+
 ## Installation
 
 To install the dotfiles to your home directory, run `./install`.
 (The download script will also offer to run this for you.)
-If any of the relevant dotfiles already exist in the home directory, don't worry: the install script will prompt to ask you whether to skip that file, delete the original file, back up the original file, or move the original file to the trash.
+If any of the relevant dotfiles already exist in the home directory, don't worry: the install script will prompt to ask you whether to skip that file, delete the original file, back up the original file, or [zap](https://github.com/AjaiKN/zap.sh) the original file to the trash.
 
 ## Uninstalling
 
 If you want to remove all the symlinks to my dotfiles, run `./uninstall`.
 
-NOTE: The `uninstall` script ONLY removes symlinks to my dotfiles. If you told the `install` script to delete, trash, or back up any of the original files, the `uninstall` script will not undo that; you'll have to undo it yourself.
+NOTE: The `uninstall` script ONLY removes symlinks to my dotfiles. If you told the `install` script to delete, zap/trash, or back up any of the original files, the `uninstall` script will not undo that; you'll have to undo it yourself.
 
 ## Basic Repository Structure
 
@@ -57,7 +65,7 @@ See `config/doom/modules/README.org`.
 
 ### Shell configuration
 
-- `config/shell/shared/*.sh`: General shell configuration (for both bash and zsh)
+- `config/shell/*.sh`: General shell configuration (for both bash and zsh)
 - `config/zsh/`: Zsh configuration
   - `config/zsh/plugin-manager.zsh`: My custom zsh plugin manager
 - `config/bash/`: Bash configuration
@@ -78,7 +86,7 @@ See `config/doom/modules/README.org`.
     - `git redo-commit`: Re-commit the undone commit (starting with the same commit message)
 
 ### Custom Scripts & Tools (in `bin/`)
-- `trash`: Move files to the trash instead of deleting (supports both macOS and Linux, no dependencies except bash)
+- `zap`: Move files to the trash instead of deleting (supports both macOS and Linux, no dependencies except bash)
 - `delete-ds-stores`: Clean up macOS .DS_Store files recursively
 - `scripts/secure_path`: A best-effort attempt to make my PATH cleaner and more secure by removing potentially dangerous directories
 - Emacs Integration

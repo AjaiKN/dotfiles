@@ -11,7 +11,7 @@ if ! command -v cargo && command -v nix-shell; then
 fi
 
 if cd "$DOTFILES/config/emacs/.local/straight/$(emacsclient --eval straight-build-dir | tr -d '"')/tsc"; then
-	trash tsc-dyn.so || :
+	zap tsc-dyn.so || :
 	cargo build --release
 	ln -s ./target/release/libtsc_dyn.so tsc-dyn.so
 fi

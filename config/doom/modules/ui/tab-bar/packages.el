@@ -3,8 +3,8 @@
 
 (package! tab-bar :type 'built-in)
 (if (modulep! +bufferlo)
-    (package! bufferlo :pin "ef7419b5badc46820fcc6dc73740a00a4740a9ba"
+    (package! bufferlo :pin "885a4f29ba5cea47e8a6206833d220c70e9b697b"
       :recipe (:host github :repo "florommel/bufferlo"))
-  (package! tabspaces :pin "f552823f51f11d66492f754deb51abd709c08ed9"))
-(package! activities :pin "a4ce6ce854807fe284da41f6d5292edb26c7f983"
+  (package! tabspaces :pin "051d8cecc67a83531c3c3e68e13f2cb297a4cfe2"))
+(package! activities :pin "5025962126d140a7e26d36c3a2750bf4ff0bfd45"
   :recipe (:host github :repo "alphapapa/activities.el"))

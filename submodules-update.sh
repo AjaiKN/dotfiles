@@ -5,7 +5,8 @@ cd "$(dirname "$0")" || exit 1
 # set -x
 
 if ! command -v git >/dev/null 2>&1; then
-	echo "Error: git command not found; skipping submodule update"
+	echo "Error: git command not found; skipping submodule update" >&2
+	exit 2
 fi
 
 git submodule --quiet sync --recursive
@@ -17,3 +18,6 @@ git submodule init config/nano vendor config/zsh/themes "$@"
 
 # update all submodules
 git -c submodule.fetchJobs=0 submodule update --recursive # --depth=1
+
+# shellcheck disable=SC2016
+git submodule --quiet foreach '"$toplevel"/submodules-update--checkout-branch.sh'

@@ -76,16 +76,19 @@ local function if_kkp(yes, no)
 end
 
 -- can't find a built-in action to do this?
-local close_window = wezterm.action_callback(
-  function (win, pane)
-    local window = win:mux_window()
-    local tabs = window:tabs()
-    for _, tab in ipairs(tabs) do
-      tab:activate()
-      win:perform_action(wezterm.action.CloseCurrentTab { confirm = false }, pane)
+local close_window = act.Multiple{
+  act.ActivateTab(-1),
+  wezterm.action_callback(
+    function (win, pane)
+      local window = win:mux_window()
+      local tabs = window:tabs()
+      for _, tab in ipairs(tabs) do
+        tab:activate()
+        win:perform_action(act.CloseCurrentTab { confirm = false }, pane)
+      end
     end
-  end
-)
+  ),
+}
 
 local clear_pattern = act.Multiple{act.CopyMode 'ClearPattern',
                                    act.CopyMode 'ClearPattern',
@@ -192,7 +195,7 @@ config.mouse_bindings = {
 
   {
     mods = 'NONE',
-    event = { Down = { streak = 5, button = 'Left' } },
+    event = { Down = { streak = 4, button = 'Left' } },
     action = act.SelectTextAtMouseCursor 'SemanticZone',
   },
 }

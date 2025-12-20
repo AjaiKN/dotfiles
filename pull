@@ -8,7 +8,7 @@ cd "$(dirname "$0")"
 set -x
 
 if [ -x "private/sync" ]; then
-  private/sync
+	private/sync
 fi
 
 git rev-parse HEAD

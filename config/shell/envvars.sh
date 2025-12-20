@@ -1,10 +1,10 @@
 # shellcheck shell=sh
 # shellcheck disable=SC2317
 
-# ~/.config/shell/shared/envvars.sh is loaded by:
-# - ~/.config/shell/shared/profile.sh: at login (this is the most important!)
-# - ~/.config/shell/shared/rc.sh: in interactive bash and zsh (for convenience in case this file has changed since login)
-# - ~/.config/shell/shared/env.sh ONLY IF THIS FILE HASN'T BEEN LOADED ALREADY: whenever zsh starts (for convenience in case dotfiles weren't installed yet when I logged in)
+# ~/.config/shell/envvars.sh is loaded by:
+# - ~/.config/shell/profile.sh: at login (this is the most important!)
+# - ~/.config/shell/rc.sh: in interactive bash and zsh (for convenience in case this file has changed since login)
+# - ~/.config/shell/env.sh ONLY IF THIS FILE HASN'T BEEN LOADED ALREADY: whenever zsh starts (for convenience in case dotfiles weren't installed yet when I logged in)
 
 ## umask
 umask go-rwx
@@ -56,6 +56,7 @@ $PLAN9/bin"
 
 if [ -z "$HOMEBREW_PREFIX" ] || ! [ -e "$HOMEBREW_PREFIX"/bin/brew ]; then
 	if [ -e /System ]; then
+		# macOS
 		if [ -e /opt/homebrew/bin/brew ]; then HOMEBREW_PREFIX=/opt/homebrew
 		elif [ -e /usr/local/bin/brew ]; then HOMEBREW_PREFIX=/usr/local
 		fi
