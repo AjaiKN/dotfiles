@@ -216,12 +216,14 @@ Pops up a diff buffer that can be edited to choose the changes to stage."
            (file buffer-file-name)
            (dest-buffer (get-buffer-create "*diff-hl-stage-some*"))
            (orig-buffer (current-buffer))
+           (diff-hl-update-async nil)
            ;; FIXME: If the file name has double quotes, these need to be quoted.
            (file-base (file-name-nondirectory file)))
       (with-current-buffer dest-buffer
         (let ((inhibit-read-only t))
           (erase-buffer)))
-      (diff-hl-diff-buffer-with-reference file dest-buffer nil 3)
+      (let (diff-hl-reference-revision)
+        (diff-hl-diff-buffer-with-reference file dest-buffer nil 3))
       (with-current-buffer dest-buffer
         (let ((inhibit-read-only t))
           (when end
