@@ -81,6 +81,19 @@ zz () {
 }
 alias e='f -e "$EDITOR"'
 
+## yazi
+
+# shellcheck disable=SC2155 disable=SC2164
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] &&
+		# builtin cd -- "$cwd"
+		builtin pushd -- "$cwd" >/dev/null
+	rm -f -- "$tmp"
+}
+
 ## bad package.json files
 # check if there are any package.json files that shouldn't be there
 (if [ -f /package.json ] || [ -f /Users/package.json ] || [ -f ~/package.json ] || [ -f ~/prog/package.json ]; then
