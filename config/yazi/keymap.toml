@@ -5,7 +5,7 @@
 [mgr]
 
 prepend_keymap = [
-	{ on = "z",        run = "plugin fasd fzf",  desc = "Search and open from Fasd using fzf" },
+	{ on = "Z",        run = "plugin fasd fzf",  desc = "Search and open from Fasd using fzf" },
 	{ on = "<Enter>",  run = "plugin fasd open", desc = "Add to Fasd and open hovered ijem" },
 	{ on = "<Right>",  run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
 	{ on = "l",  run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
