@@ -56,3 +56,14 @@ fi
 echo
 echo "Setting permissions..."
 ./install-permissions.sh
+
+if command -v yazi >/dev/null 2>&1 && command -v ya >/dev/null 2>&1; then
+	echo
+	if [ -e "$HOME/.local/state/akn-dotfiles-confirmed-install-yazi" ] || confirm "Install yazi packages?"; then
+		echo "Installing yazi packages..."
+		ya pkg install >/dev/null
+		if ! [ -e "$HOME/.local/state/akn-dotfiles-confirmed-install-yazi" ]; then
+			touch "$HOME/.local/state/akn-dotfiles-confirmed-install-yazi"
+		fi
+	fi
+fi

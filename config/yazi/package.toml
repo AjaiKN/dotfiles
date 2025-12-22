@@ -1,0 +1,7 @@
+[[plugin.deps]]
+use = "heitor57/fasd"
+rev = "d809e22"
+hash = "338a3d0e69ab3dfecf38a9fd8f6dc2be"
+
+[flavor]
+deps = []
