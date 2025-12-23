@@ -4,11 +4,25 @@ set -euo pipefail
 # shellcheck disable=SC2154
 trap 's=$?; echo >&2 "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 
-set -x
+dir=${1:-.}
+
+if [ -e "$dir" ] && ! [ -d "$dir" ]; then
+	# If it exists but isn't a directory, use the containing directory.
+	dir="$(dirname "$dir")"
+fi
+
+if [[ $dir != */ ]]; then
+	# Make sure it ends with a /, so emacs knows it's a directory.
+	# That way, if it doesn't exist yet, emacs will prompt to create magit.
+	# (See `doom-create-missing-directories-h` and `akn/no-longer-nonexisting-directory-h`.)
+	dir="$dir"/
+fi
 
 # If Emacs.app isn't already running, ...
 if ! pgrep -f Emacs.app >/dev/null; then
-	exec emacs -nw  --eval '(progn (dirvish) (akn/server-quit-mode))'
+	set -x
+	exec emacs-term-new "$dir"
 else
-	exec emacs-term --eval '(progn (dirvish) (akn/server-quit-mode))'
+	set -x
+	exec emacs-term "$dir"
 fi
