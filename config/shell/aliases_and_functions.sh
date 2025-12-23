@@ -51,6 +51,9 @@ function cdtemp {
 # shellcheck disable=SC2139
 alias {mktmp,mkcdtemp,mktempcd,cdmktemp,tempcd,tmpcd,tmp}=cdtemp
 
+alias dirvish=dired
+alias di=dired
+
 ## git aliases
 # shellcheck source=./git.sh
 . "$HOME/.config/shell/git.sh"

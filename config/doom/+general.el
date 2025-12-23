@@ -2621,16 +2621,35 @@ there's no need for `markdown-mode' to reduplicate the effort."
 (define-minor-mode akn/server-quit-mode
   "Press q to quit"
     :group 'akn
-  :keymap (make-sparse-keymap))
+  :keymap (make-sparse-keymap)
+  (if akn/server-quit-mode
+      (add-hook 'quit-window-hook #'akn/server-quit-window-h nil 'local)
+    (remove-hook 'quit-window-hook #'akn/server-quit-window-h 'local)))
 (defalias 'akn/terminal-quit-mode #'akn/server-quit-mode)
-(let ((akn/server-quit-commands (akn/cmds! (bound-and-true-p server-clients)    #'server-edit
-                                           (not (display-graphic-p))            #'save-buffers-kill-terminal
-                                           (not (bound-and-true-p server-mode)) #'save-buffers-kill-terminal)))
-  (map! (:map akn/server-quit-mode-map
-         :mnvg "q"               akn/server-quit-commands
-         [remap +magit/quit]     akn/server-quit-commands
-         [remap +magit/quit-all] akn/server-quit-commands
-         [remap +dired/quit-all] akn/server-quit-commands)))
+;; TODO: check (length (tab-bar-tabs))
+(defconst akn/server-quit-commands
+  (akn/cmds! (bound-and-true-p server-buffer-clients) #'server-edit
+             (not (display-graphic-p))                #'save-buffers-kill-terminal
+             (not (bound-and-true-p server-mode))     #'save-buffers-kill-terminal))
+(defun akn/server-quit ()
+  (interactive)
+  (call-interactively
+   (cond
+    ((bound-and-true-p server-buffer-clients) #'server-edit)
+    ((not (display-graphic-p))                #'save-buffers-kill-terminal)
+    ((not (bound-and-true-p server-mode))     #'save-buffers-kill-terminal)
+    (t #'ignore))))
+(defun akn/server-quit-window-h ()
+  (akn/server-quit))
+(map! (:map akn/server-quit-mode-map
+       :mnvg "q"               akn/server-quit-commands
+       [remap quit-window]     akn/server-quit-commands
+       [remap evil-quit]       akn/server-quit-commands
+       [remap +magit/quit]     akn/server-quit-commands
+       [remap +magit/quit-all] akn/server-quit-commands
+       [remap +dired/quit-all] akn/server-quit-commands
+       [remap dirvish-quit]    akn/server-quit-commands
+       [remap calc-quit]       akn/server-quit-commands))
 
 ;;; opening links
 
