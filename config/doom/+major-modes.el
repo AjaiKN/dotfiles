@@ -89,6 +89,18 @@
   (setq-hook! 'dired-mode-hook
     line-move-visual nil))
 
+(defun akn/dirvish-do-layout ()
+  "Run `dirvish-layout-toggle' if we're not already in a dirvish layout."
+  (when (and (derived-mode-p 'dired-mode) (featurep 'dirvish))
+    (unless (dv-curr-layout (dirvish-curr))
+      (dirvish-layout-toggle))))
+
+(add-hook! 'server-visit-hook
+  (defun akn/server-visit-dired-h ()
+    (akn/dirvish-do-layout)
+    (unless (display-graphic-p)
+      (akn/terminal-quit-mode))))
+
 (defun akn/dired-goto-beginning ()
   (interactive nil dired-mode)
   (goto-char (point-min))
