@@ -6,7 +6,11 @@
 
 prepend_keymap = [
 	{ on = "Z",        run = "plugin fasd fzf",  desc = "Search and open from Fasd using fzf" },
-	{ on = "<Enter>",  run = "plugin fasd open", desc = "Add to Fasd and open hovered ijem" },
+	{ on = "<Enter>",  run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
 	{ on = "<Right>",  run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
-	{ on = "l",  run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
+	{ on = "l",        run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
+	# { on = ["g", "c"], run = "plugin vcs-files", desc = "Show Git file changes" },
+	{ on   = [ "g", "c" ], run  = "plugin git-files", desc = "Show Git file changes" },
+	{ on = ["c", "m"], run = "plugin chmod",     desc = "Chmod on selected files" },
+	{ on  = "M",       run = "plugin mount" }
 ]
