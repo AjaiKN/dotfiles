@@ -2619,16 +2619,14 @@ there's no need for `markdown-mode' to reduplicate the effort."
   "Press q to quit"
     :group 'akn
   :keymap (make-sparse-keymap))
-(map! (:map akn/terminal-quit-mode-map
-       :mnvg "q" (akn/cmds! (not (display-graphic-p)) #'save-buffers-kill-terminal))
-      (:after magit
-       :map magit-mode-map
-       :mnvg "q" (akn/cmds! (and akn/terminal-quit-mode (not (display-graphic-p))) #'save-buffers-kill-terminal
-                            #'+magit/quit))
-      (:after dired
-       :map dired-mode-map
-       :mnvg "q" (akn/cmds! (and akn/terminal-quit-mode (not (display-graphic-p))) #'save-buffers-kill-terminal
-                            #'+dired/quit-all)))
+(let ((akn/terminal-quit-commands (akn/cmds! (bound-and-true-p server-clients)    #'server-edit
+                                             (not (display-graphic-p))            #'save-buffers-kill-terminal
+                                             (not (bound-and-true-p server-mode)) #'save-buffers-kill-terminal)))
+  (map! (:map akn/terminal-quit-mode-map
+         :mnvg "q"               akn/terminal-quit-commands
+         [remap +magit/quit]     akn/terminal-quit-commands
+         [remap +magit/quit-all] akn/terminal-quit-commands
+         [remap +dired/quit-all] akn/terminal-quit-commands)))
 
 ;;; opening links
 
