@@ -83,7 +83,9 @@
   :config
   (setq! dired-movement-style 'cycle-files
          dirvish-use-header-line nil ; dirvish's header line makes cycling not work right
-         dired-listing-switches "-ahl -v --group-directories-first")
+         dired-listing-switches "-ahl -v --group-directories-first"
+         dired-mouse-drag-files t
+         mouse-drag-and-drop-region-cross-program t)
   (setq-hook! 'dired-mode-hook
     line-move-visual nil))
 
