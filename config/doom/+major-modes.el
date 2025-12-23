@@ -99,7 +99,7 @@
   (defun akn/server-visit-dired-h ()
     (akn/dirvish-do-layout)
     (unless (display-graphic-p)
-      (akn/terminal-quit-mode))))
+      (akn/server-quit-mode))))
 
 (defun akn/dired-goto-beginning ()
   (interactive nil dired-mode)

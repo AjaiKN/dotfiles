@@ -2612,21 +2612,22 @@ there's no need for `markdown-mode' to reduplicate the effort."
   (makunbound 'calendar-holidays)
   (load "holidays" nil 'nomessage))
 
-;;; akn/terminal-quit-mode
+;;; akn/server-quit-mode
 
 ;; TODO: combine with `akn/info-standalone'
-(define-minor-mode akn/terminal-quit-mode
+(define-minor-mode akn/server-quit-mode
   "Press q to quit"
     :group 'akn
   :keymap (make-sparse-keymap))
-(let ((akn/terminal-quit-commands (akn/cmds! (bound-and-true-p server-clients)    #'server-edit
+(defalias 'akn/terminal-quit-mode #'akn/server-quit-mode)
+(let ((akn/server-quit-commands (akn/cmds! (bound-and-true-p server-clients)    #'server-edit
                                              (not (display-graphic-p))            #'save-buffers-kill-terminal
                                              (not (bound-and-true-p server-mode)) #'save-buffers-kill-terminal)))
-  (map! (:map akn/terminal-quit-mode-map
-         :mnvg "q"               akn/terminal-quit-commands
-         [remap +magit/quit]     akn/terminal-quit-commands
-         [remap +magit/quit-all] akn/terminal-quit-commands
-         [remap +dired/quit-all] akn/terminal-quit-commands)))
+  (map! (:map akn/server-quit-mode-map
+         :mnvg "q"               akn/server-quit-commands
+         [remap +magit/quit]     akn/server-quit-commands
+         [remap +magit/quit-all] akn/server-quit-commands
+         [remap +dired/quit-all] akn/server-quit-commands)))
 
 ;;; opening links
 

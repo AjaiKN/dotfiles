@@ -660,7 +660,7 @@ is :around, :before, :after, :override, :after-until,
                             doom-first-buffer-hook
                             doom-init-ui-hook
                             akn/evil-respect-line-move-visual-mode-hook
-                            akn/terminal-quit-mode-hook
+                            akn/server-quit-mode-hook
                             doom-after-init-hook))
 (defun akn/will-record-hook-p (hook) (memq hook akn/hooks-to-record))
 (defvar akn/hooks-already-run '())

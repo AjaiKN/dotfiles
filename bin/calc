@@ -8,7 +8,7 @@ set -x
 
 # If Emacs.app isn't already running, ...
 if ! pgrep -f Emacs.app >/dev/null; then
-	exec emacs -nw --eval '(progn (full-calc) (akn/terminal-quit-mode))'
+	exec emacs -nw --eval '(progn (full-calc) (akn/server-quit-mode))'
 else
-	exec emacs-term --eval '(progn (full-calc) (akn/terminal-quit-mode))'
+	exec emacs-term --eval '(progn (full-calc) (akn/server-quit-mode))'
 fi

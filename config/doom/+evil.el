@@ -416,7 +416,7 @@ So to get the string deleted after a change, use M-y or C-p."
 ;; TODO: are there other places I should be doing `evil-normalize-keymaps'?
 (add-hook! '(vlf-mode-hook
              evil-surround-mode-hook
-             akn/terminal-quit-mode-hook
+             akn/server-quit-mode-hook
              evil-quickscope-mode-hook
              evil-quickscope-always-mode-hook
              outli-mode-hook
