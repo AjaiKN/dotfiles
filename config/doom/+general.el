@@ -2621,8 +2621,8 @@ there's no need for `markdown-mode' to reduplicate the effort."
   :keymap (make-sparse-keymap))
 (defalias 'akn/terminal-quit-mode #'akn/server-quit-mode)
 (let ((akn/server-quit-commands (akn/cmds! (bound-and-true-p server-clients)    #'server-edit
-                                             (not (display-graphic-p))            #'save-buffers-kill-terminal
-                                             (not (bound-and-true-p server-mode)) #'save-buffers-kill-terminal)))
+                                           (not (display-graphic-p))            #'save-buffers-kill-terminal
+                                           (not (bound-and-true-p server-mode)) #'save-buffers-kill-terminal)))
   (map! (:map akn/server-quit-mode-map
          :mnvg "q"               akn/server-quit-commands
          [remap +magit/quit]     akn/server-quit-commands
