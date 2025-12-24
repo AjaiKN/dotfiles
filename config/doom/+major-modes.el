@@ -249,6 +249,15 @@
         [remap +fold/drag-stuff-up] #'ar/dired-drag-item-up
         [remap +fold/drag-stuff-down] #'ar/dired-drag-item-down))
 
+(add-hook! 'dired-mode-hook :depth 90
+  (defun akn/dired-diff-hl-thing-h ()
+    ;; From `diff-hl-margin-local-mode'. Not sure why this is necessary, but the
+    ;; marker in the fringe doesn't seem to be appearing without it.
+    (set-window-buffer (selected-window) (current-buffer))
+    (add-hook! 'window-configuration-change-hook :local
+      (when (derived-mode-p 'dired-mode)
+        (set-window-buffer (selected-window) (current-buffer))))))
+
 ;;; treemacs
 ;; Otherwise, when treemacs-follow-mode gets loaded (incrementally),
 ;; it immediately gets turned on and runs treemacs--follow-after-buffer-list-update constantly.

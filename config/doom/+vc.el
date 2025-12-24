@@ -142,7 +142,21 @@
 ;;; file-based stuff (diff-hl)
 
 (after! diff-hl
-  (setq! diff-hl-update-async nil))
+  (setq! diff-hl-update-async nil)
+  (setq! diff-hl-show-hunk-inline-smart-lines nil)
+  (add-hook 'global-diff-hl-mode-hook #'global-diff-hl-show-hunk-mouse-mode))
+
+;; show staged changes in a different color
+;; TODO: This doesn't seem to be working quite right.
+(after! diff-hl
+  (custom-set-faces!
+    '(diff-hl-reference-change :foreground "darkblue")
+    '(diff-hl-reference-delete :foreground "darkblue")
+    '(diff-hl-reference-insert :foreground "darkblue"))
+  (setq! diff-hl-highlight-reference-function #'diff-hl-highlight-on-fringe))
+(after! diff-hl-margin
+  (setf
+   (alist-get 'reference diff-hl-margin-symbols-alist) "["))
 
 (defun akn/vc-full-refresh ()
   (interactive)
@@ -169,17 +183,21 @@ If a prefix argument is provided, ask before reverting hunk."
 (defvar akn/after-stage-hook nil)
 (defun akn/stage-hunk ()
   (interactive)
-  (if (fboundp 'diff-hl-stage-dwim)
-      (diff-hl-stage-dwim)
-    (+vc-gutter/stage-hunk))
+  (cond
+   ((derived-mode-p 'dired-mode) (magit-dired-stage))
+   ((fboundp 'diff-hl-stage-dwim) (diff-hl-stage-dwim))
+   (t (+vc-gutter/stage-hunk)))
   (run-hooks 'akn/after-stage-hook))
 
 (defvar akn/after-unstage-hook nil)
 (defun akn/unstage-hunk ()
   (interactive)
-  (save-window-excursion
-    (call-interactively #'magit-status-here)
-    (magit-unstage))
+  (cond
+   ((derived-mode-p 'dired-mode) (magit-dired-unstage))
+   (t
+    (save-window-excursion
+      (call-interactively #'magit-status-here)
+      (magit-unstage))))
   (run-hooks 'akn/after-unstage-hook))
 
 ;;; magit
