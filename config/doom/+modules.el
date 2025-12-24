@@ -196,7 +196,7 @@ returns true."
            *extra debugger          ; FIXME stepping through code, to help you add bugs
            *extra direnv
            *extra docker
-           *basic dwim-shell-command
+           ;; *basic dwim-shell-command
            *basic editorconfig      ; let someone else argue about tabs vs spaces
            *basic (:if (versionp! emacs-version >= "30.1") vim-file-locals)
            ein               ; tame Jupyter notebooks with emacs
