@@ -83,11 +83,18 @@
   :config
   (setq! dired-movement-style 'cycle-files
          dirvish-use-header-line nil ; dirvish's header line makes cycling not work right
-         dired-listing-switches "-ahl -v --group-directories-first"
          dired-mouse-drag-files t
          mouse-drag-and-drop-region-cross-program t)
   (setq-hook! 'dired-mode-hook
     line-move-visual nil))
+
+(after! (:or dired dirvish-subtree)
+  (if (and (featurep :system 'bsd)
+           (not (executable-find "gls")))
+      (setq! dired-listing-switches           "-ahl"
+             dirvish-subtree-listing-switches "-Ahl")
+    (setq! dired-listing-switches           "--all        -l --sort=version --human-readable --group-directories-first"
+           dirvish-subtree-listing-switches "--almost-all -l --sort=version --human-readable --group-directories-first")))
 
 (defun akn/dirvish-do-layout ()
   "Run `dirvish-layout-toggle' if we're not already in a dirvish layout."
@@ -146,8 +153,7 @@
      ("/" "/"                           "root")
      ("t" "~/.Trash/"                   "trash")))
   :config
-  (setq! dirvish-subtree-listing-switches "-Ahl -v --group-directories-first"
-         dirvish-subtree-prefix "  │ ")
+  (setq! dirvish-subtree-prefix "  │ ")
   (pushnew! dirvish-attributes 'collapse))
 
 (after! (:or dired dirvish)
