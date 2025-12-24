@@ -144,16 +144,15 @@
   (interactive nil dired-mode))
 
 (use-package! dirvish
-  :custom
-  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
-   '(("h" "~/"                          "home")
-     ("p" "~/prog/"                     "prog")
-     ("o" "~/Documents/obsidian-vault/" "obsidian vault")
-     ("," "~/.config/doom/"             "private config")
-     ("d" "~/.config/emacs/"            "doom source")
-     ("/" "/"                           "root")
-     ("t" "~/.Trash/"                   "trash")))
   :config
+  (setq! dirvish-quick-access-entries
+         '(("h" "~/"                          "home")
+           ("p" "~/prog/"                     "prog")
+           ("o" "~/Documents/obsidian-vault/" "obsidian vault")
+           ("," "~/.config/doom/"             "private config")
+           ("d" "~/.config/emacs/"            "doom source")
+           ("/" "/"                           "root")
+           ("t" "~/.Trash/"                   "trash")))
   (setq! dirvish-subtree-prefix "  │ ")
   (pushnew! dirvish-attributes 'collapse))
 
