@@ -466,6 +466,8 @@ If a prefix argument is provided, ask before reverting hunk."
 
 ;; Doom sets this to '(SVN Git Hg)
 (setq! vc-handled-backends '(Git))
+(when (executable-find "hg")
+  (add-to-list 'vc-handled-backends 'Hg 'append))
 
 ;;; transient
 
