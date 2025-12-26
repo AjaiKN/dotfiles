@@ -380,6 +380,26 @@ If a prefix argument is provided, ask before reverting hunk."
   (transient-append-suffix #'magit-commit "u"
     '("C-r" "Redo" akn/git-redo-commit)))
 
+;; When copying from a magit diff buffer, don't include the diff markers at the
+;; beginning of the line.
+(defun akn/magit-kill-transform-fn (str)
+  (if (cl-loop for line in (string-lines str 'omit-nulls)
+               always (string-match-p (rx bol (or " " "+" "-")) line))
+      (cl-loop for line in (string-lines str nil 'keep-newlines)
+               concat (if (string-empty-p line)
+                          line
+                        (substring line 1)))
+    str))
+(add-hook! '(magit-status-mode-hook magit-diff-mode-hook
+             diff-mode-hook diff-minor-mode-hook)
+  (defun akn/set-magit-kill-transform-function-h ()
+    ;; (unless kill-transform-function
+    ;;   (setq-local kill-transform-function #'identity))
+    ;; (add-function :filter-return (local 'kill-transform-function)
+    ;;               #'akn/magit-kill-transform-fn
+    ;;               '(:depth -50))
+    (setq-local kill-transform-function #'akn/magit-kill-transform-fn)))
+
 ;;; magit-delta
 
 (use-package! magit-delta
