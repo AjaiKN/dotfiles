@@ -180,25 +180,29 @@ If a prefix argument is provided, ask before reverting hunk."
                                              ask-before-revert-hunk)))
     (+vc-gutter/revert-hunk t)))
 
-(defvar akn/after-stage-hook nil)
-(defun akn/stage-hunk ()
-  (interactive)
+(defvar akn/diff-hl-after-stage-hook nil)
+(defun akn/stage-hunk (&optional with-edit)
+  (interactive "P")
   (cond
    ((derived-mode-p 'dired-mode) (magit-dired-stage))
-   ((fboundp 'diff-hl-stage-dwim) (diff-hl-stage-dwim))
-   (t (+vc-gutter/stage-hunk)))
-  (run-hooks 'akn/after-stage-hook))
+   ((derived-mode-p 'magit-mode) (magit-stage))
+   ((not (require 'diff-hl nil 'noerror))
+    (when (fboundp '+vc-gutter/stage-hunk)
+      (+vc-gutter/stage-hunk)
+      (run-hooks 'akn/diff-hl-after-stage-hook)))
+   (t
+    (diff-hl-stage-dwim with-edit)
+    (run-hooks 'akn/diff-hl-after-stage-hook))))
 
-(defvar akn/after-unstage-hook nil)
 (defun akn/unstage-hunk ()
   (interactive)
   (cond
    ((derived-mode-p 'dired-mode) (magit-dired-unstage))
+   ((derived-mode-p 'magit-mode) (magit-unstage))
    (t
     (save-window-excursion
       (call-interactively #'magit-status-here)
-      (magit-unstage))))
-  (run-hooks 'akn/after-unstage-hook))
+      (magit-unstage)))))
 
 ;;; magit
 
@@ -324,7 +328,7 @@ If a prefix argument is provided, ask before reverting hunk."
     (and (akn/inside-git-repo-p)
          (magit-get-mode-buffer 'magit-status-mode nil 'visible)))
 
-  (add-hook! '(after-save-hook akn/after-stage-hook akn/after-unstage-hook) :depth 90
+  (add-hook! '(after-save-hook akn/diff-hl-after-stage-hook) :depth 90
     (defun akn/magit-after-save-refresh-status ()
       (when (akn/current-magit-status-buffer)
         (magit-after-save-refresh-status))))
