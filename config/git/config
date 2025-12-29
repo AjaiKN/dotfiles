@@ -64,6 +64,8 @@
 	unstage = restore --staged
 	bisect-abort = bisect reset
 	bisect-stop = bisect reset
+	unshallow = fetch --unshallow
+	deepen = fetch --unshallow
 	# TODO: make these automatically stage all *if there's nothing staged*
 	# inspired by magit
 	extend = commit --amend --no-edit
