@@ -63,20 +63,40 @@
 
 ;;; dired/dirvish
 (map! (:after (:or dired dirvish)
-       :map (dired-mode-map wdired-mode-map)
-       "s->"           #'dired-omit-mode
+       :map (dired-mode-map wdired-mode-map dirvish-mode-map)
+       "s->"                #'dired-omit-mode
        :nviemg "s-<return>" #'dired-find-file-other-window
-       :gnm "<mouse-2>"     #'dired-mouse-find-file
-       :gnm "s-<mouse-2>"   #'dired-mouse-find-file-other-window
-       [remap +multiple-cursors/click-add-cursor] #'ignore)
+       :gmn "<mouse-2>"     #'dired-mouse-find-file
+       :gmn "s-<mouse-2>"   #'dired-mouse-find-file-other-window
+       [remap +multiple-cursors/click-add-cursor] #'ignore
+       [remap drag-stuff-up]         #'ar/dired-drag-item-up
+       [remap drag-stuff-down]       #'ar/dired-drag-item-down
+       [remap +fold/drag-stuff-up]   #'ar/dired-drag-item-up
+       [remap +fold/drag-stuff-down] #'ar/dired-drag-item-down
+       :gmn "t" nil
+       :gmn "t t" #'dired-toggle-marks
+       :gmn "t m" #'dired-toggle-marks
+       :gmn "t h" #'dired-omit-mode
+       :gmn "t r" #'dired-toggle-read-only)
       (:after dirvish
        :map dirvish-mode-map
-       "M-l"           #'dirvish-ls-switches-menu
-       :mn "<tab>"     #'dirvish-subtree-toggle
-       :mn "TAB"       #'dirvish-subtree-toggle
-       :mn "<backtab>" #'dirvish-subtree-clear
-       :mn "S-<tab>"   #'dirvish-subtree-clear
-       :mn "S-TAB"     #'dirvish-subtree-clear))
+       "M-l"            #'dirvish-ls-switches-menu
+       :gmn "<tab>"     #'dirvish-subtree-toggle
+       :gmn "TAB"       #'dirvish-subtree-toggle
+       :gmn "<backtab>" #'dirvish-subtree-clear
+       :gmn "S-<tab>"   #'dirvish-subtree-clear
+       :gmn "S-TAB"     #'dirvish-subtree-clear
+       :gmn "h"         #'akn/dirvish-close-subtree-or-up-directory
+       :gmn "<left>"    #'akn/dirvish-close-subtree-or-up-directory
+       :gmn "l"         (akn/cmds! (akn/dirvish-layout-p) #'dired-find-file #'akn/dirvish-toggle-subtree-or-open-file)
+       :gmn "<right>"   (akn/cmds! (akn/dirvish-layout-p) #'dired-find-file #'akn/dirvish-toggle-subtree-or-open-file)
+       :gmn "t f"       #'dirvish-side-follow-mode
+       :gmn "t e"       #'dirvish-emerge-mode
+       :gmn "t l"       #'dirvish-layout-toggle
+       :gmn "t L"       #'dirvish-layout-switch
+       :gmn "<"         (cmds! (akn/dirvish-side-p) #'dirvish-side-decrease-width #'dired-prev-dirline)
+       :gmn ">"         (cmds! (akn/dirvish-side-p) #'dirvish-side-increase-width #'dired-next-dirline)
+       [remap dired-up-directory] #'akn/dirvish-up-directory))
 
 (after! dired
   (setq! dired-movement-style 'cycle-files
@@ -98,6 +118,9 @@
   (setq! dirvish-subtree-prefix "  │ ")
   (pushnew! dirvish-attributes 'collapse))
 
+(after! dirvish-side
+  (akn/remove-from-list 'dirvish-side-attributes 'file-size))
+
 ;;;; dired ls flags
 (after! (:or dired dirvish-subtree)
   (if (and (featurep :system 'bsd)
@@ -115,25 +138,7 @@
     (unless (display-graphic-p)
       (akn/server-quit-mode))))
 
-(defun akn/dirvish-do-layout ()
-  "Run `dirvish-layout-toggle' if we're not already in a dirvish layout."
-  (when (and (derived-mode-p 'dired-mode) (featurep 'dirvish))
-    (unless (dv-curr-layout (dirvish-curr))
-      (dirvish-layout-toggle))))
-
 ;;;; movement remaps
-(defun akn/dired-goto-beginning ()
-  (interactive nil dired-mode)
-  (goto-char (point-min))
-  (redisplay)
-  (let ((dired-movement-style 'cycle-files))
-    (goto-char (point-max))
-    (dired-next-line 1)))
-(defun akn/dired-goto-end ()
-  (interactive)
-  (let ((dired-movement-style 'cycle-files))
-    (goto-char (point-min))
-    (dired-previous-line 1)))
 (map! :after dired
       :map dired-mode-map
       [remap beginning-of-buffer]  (cmds! (not current-prefix-arg) #'akn/dired-goto-beginning)
@@ -156,18 +161,6 @@
       :mn "<backtab>" #'dired-hide-all
       :mn "S-<tab>"   #'dired-hide-all
       :mn "S-TAB"     #'dired-hide-all)
-
-(defun akn/dired-hide-subdir ()
-  (interactive nil dired-mode)
-  (save-excursion
-    (call-interactively (if (save-excursion
-                              (and (dired-file-name-at-point)
-                                   (directory-name-p (dired-file-name-at-point))))
-                            #'dired-maybe-insert-subdir
-                          #'dired-hide-subdir))))
-(defun akn/insert-or-hide-subdir ()
-  "TODO"
-  (interactive nil dired-mode))
 
 ;;;; aligning point to filenames in dired
 (defadvice! akn/dired--align-a (&rest _)
@@ -206,54 +199,8 @@
     (doom-files--update-refs file))
   (ignore-errors (when (projectile-project-root) (projectile-invalidate-cache nil))))
 
-;;;; manually dragging stuff up/down in dired
-;; https://xenodium.com/interactive-ordering-of-dired-items
 (after! dired
-  (defun ar/dired-drag-item-up ()
-    "Drag dired item down in buffer."
-    (interactive)
-    (unless (dired-get-filename nil t)
-      (error "Not a dired draggable item"))
-    (when (= (line-number-at-pos) 2)
-      (error "Already at top"))
-    (let* ((inhibit-read-only t)
-           (col (current-column))
-           (item-start (line-beginning-position))
-           (item-end (1+ (line-end-position)))
-           (item (buffer-substring item-start item-end)))
-      (delete-region item-start item-end)
-      (forward-line -1)
-      (beginning-of-line)
-      (insert item)
-      (forward-line -1)
-      (move-to-column col)))
-
-  (defun ar/dired-drag-item-down ()
-    "Drag dired item down in buffer."
-    (interactive)
-    (unless (dired-get-filename nil t)
-      (error "Not a dired draggable item"))
-    (when (save-excursion
-            (forward-line 1)
-            (eobp))
-      (error "Already at bottom"))
-    (let* ((inhibit-read-only t)
-           (col (current-column))
-           (item-start (line-beginning-position))
-           (item-end (1+ (line-end-position)))
-           (item (buffer-substring item-start item-end)))
-      (delete-region item-start item-end)
-      (forward-line 1)
-      (beginning-of-line)
-      (insert item)
-      (forward-line -1)
-      (move-to-column col)))
-
-  (map! :map dired-mode-map
-        [remap drag-stuff-up] #'ar/dired-drag-item-up
-        [remap drag-stuff-down] #'ar/dired-drag-item-down
-        [remap +fold/drag-stuff-up] #'ar/dired-drag-item-up
-        [remap +fold/drag-stuff-down] #'ar/dired-drag-item-down))
+  (map! :map dired-mode-map))
 
 ;;;; dired diff-hl fix
 (add-hook! 'dired-mode-hook :depth 90
@@ -280,15 +227,15 @@
   :config
   ;; might be cleaner to use advice for these
   (defun akn/treemacs-leftclick-action (event)
-    (interactive "e")
+    (interactive "e" treemacs-mode)
     (setf (elt event 0) 'down-mouse-1)
     (treemacs-leftclick-action event))
   (defun akn/treemacs-single-click-expand-action (event)
-    (interactive "e")
+    (interactive "e" treemacs-mode)
     (setf (elt event 0) 'mouse-1)
     (treemacs-single-click-expand-action event))
   (defun akn/treemacs-doubleclick-action (event)
-    (interactive "e")
+    (interactive "e" treemacs-mode)
     (setf (elt event 0) 'double-mouse-1)
     (treemacs-doubleclick-action event))
 
@@ -305,7 +252,7 @@
         "S-<down-mouse-1>" #'akn/treemacs-leftclick-action
         "S-<double-down-mouse-1>" #'akn/treemacs-doubleclick-action
         "s-<mouse-1>" (defun akn/treemacs-command-click (event)
-                        (interactive "e")
+                        (interactive "e" treemacs-mode)
                         (let ((treemacs-doubleclick-actions-config
                                `((file-node-open   . treemacs-visit-node-horizontal-split)
                                  (file-node-closed . treemacs-visit-node-horizontal-split)
