@@ -310,6 +310,7 @@
                                     tsc-dyn tsc map seq tree-sitter-cli tree-sitter-load tree-sitter
                                     cl-lib font-lock seq treesit
                                     dash s format elisp-refs help help-mode radix-tree help-fns f find-func nadvice info info-look backtrace macroexp debug edebug trace imenu cc-langs helpful
+                                    dired-loaddefs dired dirvish dired-x cond-let eieio transient dirvish-collapse dirvish-vc dirvish-subtree all-the-icons vscode-icon dirvish-icons dirvish-side
                                     dash treemacs-macros treemacs-customization treemacs-logging treemacs-core-utils treemacs-scope treemacs-themes treemacs-icons treemacs-faces treemacs-visuals treemacs-async  treemacs-rendering treemacs-follow-mode treemacs-filewatch-mode treemacs-mode treemacs-interface  treemacs-compatibility treemacs-workspaces treemacs-fringe-indicator treemacs-header-line treemacs-annotations ;; treemacs-persistence treemacs
                                     ;; evil treemacs-evil ;; projectile treemacs-projectile magit pfuture seq treemacs-magit persp-mode eieio dash treemacs-persp
                                     seq subr-x s ts-fold-util ts-fold-parsers ts-fold-summary ts-fold

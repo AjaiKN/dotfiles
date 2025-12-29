@@ -62,25 +62,23 @@
 (add-hook 'csv-mode-hook #'csv-align-mode)
 
 ;;; dired/dirvish
-(map! :after dired
-      :map (dired-mode-map wdired-mode-map)
-      "M-p"        #'dired-prev-dirline
-      "M-n"        #'dired-next-dirline
-      "s->"        #'dired-omit-mode
-      "M-l"        #'dirvish-ls-switches-menu
-      [remap +multiple-cursors/click-add-cursor] #'ignore
-      :gnm "<mouse-2>" #'dired-mouse-find-file
-      :gnm "s-<mouse-2>" #'dired-mouse-find-file-other-window
-      :nviemg "s-<return>" #'dired-find-file-other-window
-      :mn "<tab>" (if (modulep! :emacs dired +dirvish) #'dirvish-subtree-toggle #'akn/dired-hide-subdir)
-      :mn "TAB"   (if (modulep! :emacs dired +dirvish) #'dirvish-subtree-toggle #'akn/dired-hide-subdir)
-      :mn "<backtab>" (if (modulep! :emacs dired +dirvish) #'dirvish-subtree-clear #'dired-hide-all)
-      :mn "S-<tab>"   (if (modulep! :emacs dired +dirvish) #'dirvish-subtree-clear #'dired-hide-all)
-      :mn "S-TAB"     (if (modulep! :emacs dired +dirvish) #'dirvish-subtree-clear #'dired-hide-all))
+(map! (:after (:or dired dirvish)
+       :map (dired-mode-map wdired-mode-map)
+       "s->"           #'dired-omit-mode
+       :nviemg "s-<return>" #'dired-find-file-other-window
+       :gnm "<mouse-2>"     #'dired-mouse-find-file
+       :gnm "s-<mouse-2>"   #'dired-mouse-find-file-other-window
+       [remap +multiple-cursors/click-add-cursor] #'ignore)
+      (:after dirvish
+       :map dirvish-mode-map
+       "M-l"           #'dirvish-ls-switches-menu
+       :mn "<tab>"     #'dirvish-subtree-toggle
+       :mn "TAB"       #'dirvish-subtree-toggle
+       :mn "<backtab>" #'dirvish-subtree-clear
+       :mn "S-<tab>"   #'dirvish-subtree-clear
+       :mn "S-TAB"     #'dirvish-subtree-clear))
 
-(use-package! dired
-  :defer-incrementally (dired-loaddefs dnd)
-  :config
+(after! dired
   (setq! dired-movement-style 'cycle-files
          dirvish-use-header-line nil ; dirvish's header line makes cycling not work right
          dired-mouse-drag-files t
@@ -88,6 +86,19 @@
   (setq-hook! 'dired-mode-hook
     line-move-visual nil))
 
+(after! dirvish
+  (setq! dirvish-quick-access-entries
+         '(("h" "~/"                          "home")
+           ("p" "~/prog/"                     "prog")
+           ("o" "~/Documents/obsidian-vault/" "obsidian vault")
+           ("," "~/.config/doom/"             "private config")
+           ("d" "~/.config/emacs/"            "doom source")
+           ("/" "/"                           "root")
+           ("t" "~/.Trash/"                   "trash")))
+  (setq! dirvish-subtree-prefix "  │ ")
+  (pushnew! dirvish-attributes 'collapse))
+
+;;;; dired ls flags
 (after! (:or dired dirvish-subtree)
   (if (and (featurep :system 'bsd)
            (not (executable-find "gls")))
@@ -97,18 +108,20 @@
     (setq! dired-listing-switches           "--all        -l --sort=version --human-readable --group-directories-first"
            dirvish-subtree-listing-switches "--almost-all -l --sort=version --human-readable --group-directories-first")))
 
-(defun akn/dirvish-do-layout ()
-  "Run `dirvish-layout-toggle' if we're not already in a dirvish layout."
-  (when (and (derived-mode-p 'dired-mode) (featurep 'dirvish))
-    (unless (dv-curr-layout (dirvish-curr))
-      (dirvish-layout-toggle))))
-
+;;;; visiting directories from the command line with dired
 (add-hook! 'server-visit-hook
   (defun akn/server-visit-dired-h ()
     (akn/dirvish-do-layout)
     (unless (display-graphic-p)
       (akn/server-quit-mode))))
 
+(defun akn/dirvish-do-layout ()
+  "Run `dirvish-layout-toggle' if we're not already in a dirvish layout."
+  (when (and (derived-mode-p 'dired-mode) (featurep 'dirvish))
+    (unless (dv-curr-layout (dirvish-curr))
+      (dirvish-layout-toggle))))
+
+;;;; movement remaps
 (defun akn/dired-goto-beginning ()
   (interactive nil dired-mode)
   (goto-char (point-min))
@@ -132,6 +145,18 @@
       [remap evil-next-visual-line]     #'dired-next-line
       [remap evil-previous-visual-line] #'dired-previous-line)
 
+;;;; dired without dirvish
+(map! :unless (fboundp 'dirvish)
+      :after dired
+      :map (dired-mode-map wdired-mode-map)
+      "M-p"           #'dired-prev-dirline
+      "M-n"           #'dired-next-dirline
+      :mn "<tab>"     #'akn/dired-hide-subdir
+      :mn "TAB"       #'akn/dired-hide-subdir
+      :mn "<backtab>" #'dired-hide-all
+      :mn "S-<tab>"   #'dired-hide-all
+      :mn "S-TAB"     #'dired-hide-all)
+
 (defun akn/dired-hide-subdir ()
   (interactive nil dired-mode)
   (save-excursion
@@ -141,31 +166,10 @@
                             #'dired-maybe-insert-subdir
                           #'dired-hide-subdir))))
 (defun akn/insert-or-hide-subdir ()
+  "TODO"
   (interactive nil dired-mode))
 
-(use-package! dirvish
-  :config
-  (setq! dirvish-quick-access-entries
-         '(("h" "~/"                          "home")
-           ("p" "~/prog/"                     "prog")
-           ("o" "~/Documents/obsidian-vault/" "obsidian vault")
-           ("," "~/.config/doom/"             "private config")
-           ("d" "~/.config/emacs/"            "doom source")
-           ("/" "/"                           "root")
-           ("t" "~/.Trash/"                   "trash")))
-  (setq! dirvish-subtree-prefix "  │ ")
-  (pushnew! dirvish-attributes 'collapse))
-
-(after! (:or dired dirvish)
-  (advice-remove #'dired-find-file #'dirvish-find-entry-a))
-(akn/undefine-advice dired-find-file (:around (fn &rest args) akn/dirvish-find-entry-a)
-  (advice-remove #'dired-find-file #'dirvish-find-entry-a)
-  (condition-case-unless-debug err
-      (apply #'dirvish-find-entry-a args)
-    (error
-     (doom-log "Error in `dirvish-find-entry-a', called from `akn/dirvish-find-entry-a': %S" err)
-     (apply fn args))))
-
+;;;; aligning point to filenames in dired
 (defadvice! akn/dired--align-a (&rest _)
   "Move point to the filename."
   :before #'dirvish-subtree-toggle
@@ -180,6 +184,7 @@
       (when (derived-mode-p 'dired-mode)
         (akn/dired--align-a)))))
 
+;;;; updating refs when files change in dired
 (define-advice dired-rename-file (:after (file newname &rest _) akn/update-refs-a)
   (ignore-errors
     (doom-require 'doom-lib 'files)
@@ -201,6 +206,7 @@
     (doom-files--update-refs file))
   (ignore-errors (when (projectile-project-root) (projectile-invalidate-cache nil))))
 
+;;;; manually dragging stuff up/down in dired
 ;; https://xenodium.com/interactive-ordering-of-dired-items
 (after! dired
   (defun ar/dired-drag-item-up ()
@@ -249,6 +255,7 @@
         [remap +fold/drag-stuff-up] #'ar/dired-drag-item-up
         [remap +fold/drag-stuff-down] #'ar/dired-drag-item-down))
 
+;;;; dired diff-hl fix
 (add-hook! 'dired-mode-hook :depth 90
   (defun akn/dired-diff-hl-thing-h ()
     ;; From `diff-hl-margin-local-mode'. Not sure why this is necessary, but the
