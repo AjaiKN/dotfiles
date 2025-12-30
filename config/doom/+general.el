@@ -1868,9 +1868,15 @@ Use \\[visible-mode] to show the full hashes."
   :ghook 'doom-first-input-hook
   :config
   (advice-add #'dirvish--preview-update :around #'akn/save-selected-window-a)
-  (akn/advise-letf! dirvish--find-file-temporarily (akn/a)
+  (akn/advise-letf! dirvish--find-file-temporarily (akn/only-allow-some-find-file-hooks-a)
     ;; See `consult--filter-find-file-hook'
     (advice-add #'run-hooks :around #'consult--filter-find-file-hook))
+  (akn/advise-letf! dirvish-peek-setup-h (akn/make-preview-be-in-nondedicated-window-a)
+    (define-advice minibuffer-selected-window (:filter-return (ret) akn/ensure-in-nondedicated-window-a)
+      (if (eq (window-dedicated-p ret) t)
+          (some-window (lambda (w) (not (eq (window-dedicated-p w) t)))
+                       'no-minibuffer)
+        ret)))
 
   (dirvish-peek-mode))
 
