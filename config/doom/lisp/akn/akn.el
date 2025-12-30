@@ -515,7 +515,7 @@ We can use this function to `interactive' without needing to call
     `(akn/undefine-advice ,wrapped-fun (:around (,oldfun &rest ,args) ,wrapper-name)
        (akn/letf! ,stuff
          (apply ,oldfun ,args)))))
-(akn/rotate-symbols! 'emacs-lisp-hook "akn/advise-letf!" "akn/unadvise-letf!")
+(akn/rotate-symbols! 'emacs-lisp-mode-hook "akn/advise-letf!" "akn/unadvise-letf!")
 
 (defmacro akn/make-overrider! (func &optional default-func)
   (setq func (akn/unquote func))
