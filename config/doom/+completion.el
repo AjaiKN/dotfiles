@@ -195,8 +195,38 @@
 
 ;;; sorting
 
+(map! :map vertico-map
+      "M-S" #'akn/cycle-sort-function)
+
+;; https://github.com/minad/vertico/wiki#toggle-sorting-functions
+(defun akn/cycle-sort-function ()
+  (interactive)
+  (let* ((category (compat-call completion-metadata-get
+                                (completion-metadata (buffer-substring-no-properties
+                                                      (minibuffer-prompt-end)
+                                                      (max (minibuffer-prompt-end) (point)))
+                                                     minibuffer-completion-table
+                                                     minibuffer-completion-predicate)
+                                'category))
+         (funcs-cycle (if (eq category 'file)
+                          (list #'akn/vertico-sort-directories-first-alpha
+                                #'vertico-sort-length-alpha
+                                #'vertico-sort-history-length-alpha)
+                        (list #'vertico-sort-alpha
+                              #'vertico-sort-length-alpha
+                              #'vertico-sort-history-length-alpha
+                              vertico-sort-function)))
+         (funcs-cycle (akn/-> funcs-cycle nreverse seq-uniq nreverse))
+         (current-func (or vertico-sort-override-function vertico-sort-function))
+         (current-pos (or (seq-position funcs-cycle current-func) -1))
+         (new-pos (mod (1+ current-pos) (length funcs-cycle)))
+         (new-func (seq-elt funcs-cycle new-pos)))
+    (message "%s" new-func)
+    (setq-local vertico-sort-override-function new-func))
+  (setq vertico--input t)
+  (vertico--update))
+
 ;; https://github.com/minad/vertico/wiki#customize-sorting-based-on-completion-category
-;; TODO: https://github.com/minad/vertico/wiki#toggle-sorting-functions
 (dolist (cmd (list
               #'find-file))
               ;; #'find-file-read-only
