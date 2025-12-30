@@ -372,6 +372,7 @@
    #'akn/projectile-root-assume-cached
    #'akn/projectile-invalidate-cached-project-roots
    #'akn/doom-project-ignored-p--a
+   #'akn/vertico-sort-directories-first-alpha
    #'+corfu-add-cape-dabbrev-h
    #'+magit-revert-buffer-maybe-h
    #'+doom-dashboard-reload-maybe-h

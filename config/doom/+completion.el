@@ -193,6 +193,26 @@
 ;; (use-package! corfu-mouse
 ;;   :ghook 'corfu-mode-hook)
 
+;;; sorting
+
+;; https://github.com/minad/vertico/wiki#customize-sorting-based-on-completion-category
+;; TODO: https://github.com/minad/vertico/wiki#toggle-sorting-functions
+(dolist (cmd (list
+              #'find-file))
+              ;; #'find-file-read-only
+              ;; #'find-file-other-tab #'find-file-read-only-other-tab
+              ;; #'find-file-other-frame #'find-file-read-only-other-frame
+              ;; #'find-file-other-window #'find-file-read-only-other-window
+              ;; #'find-file-existing #'find-file-literally))
+  (setf (alist-get cmd vertico-multiform-commands)
+        `((vertico-sort-override-function . ,#'akn/vertico-sort-directories-first-alpha))))
+
+(defun akn/vertico-sort-directories-first-alpha (list)
+  "Sort directories before files in LIST."
+  (setq list (vertico-sort-alpha list))
+  (nconc (cl-loop for x in list if (string-suffix-p "/" x) collect x)
+         (cl-loop for x in list if (not (string-suffix-p "/" x)) collect x)))
+
 ;;; file-local variables
 
 ;; Local Variables:
