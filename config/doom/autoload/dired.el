@@ -1,6 +1,16 @@
 ;;; autoload/dired.el -*- lexical-binding: t; -*-
 
+(require 'dired)
+
 ;;; Helpers
+
+;;;###autoload
+(defun akn/dirvish-p ()
+  (and-let* (((derived-mode-p 'dired-mode))
+             ((featurep 'dirvish))
+             (curr (dirvish-curr)))))
+;;;###autoload
+(defalias 'akn/dirvish-curr #'akn/dirvish-p)
 
 ;;;###autoload
 (defun akn/dirvish-side-p ()
@@ -75,14 +85,18 @@ Non-mouse version of `dirvish-subtree-toggle-or-open'."
   (interactive nil dired-mode)
   (goto-char (point-min))
   (redisplay)
-  (dlet ((dired-movement-style 'cycle-files))
+  (let ((dired-movement-style (if (and (akn/dirvish-p) header-line-format)
+                                  'cycle
+                                'cycle-files)))
     (goto-char (point-max))
     (dired-next-line 1)))
 
 ;;;###autoload
 (defun akn/dired-goto-end ()
   (interactive nil dired-mode)
-  (dlet ((dired-movement-style 'cycle-files))
+  (let ((dired-movement-style (if (and (akn/dirvish-p) header-line-format)
+                                  'cycle
+                                'cycle-files)))
     (goto-char (point-min))
     (dired-previous-line 1)))
 

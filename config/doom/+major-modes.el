@@ -100,7 +100,6 @@
 
 (after! dired
   (setq! dired-movement-style 'cycle-files
-         dirvish-use-header-line nil ; dirvish's header line makes cycling not work right
          dired-mouse-drag-files t
          mouse-drag-and-drop-region-cross-program t)
   (setq-hook! 'dired-mode-hook
@@ -116,10 +115,59 @@
            ("/" "/"                           "root")
            ("t" "~/.Trash/"                   "trash")))
   (setq! dirvish-subtree-prefix "  │ ")
-  (pushnew! dirvish-attributes 'collapse))
+  (pushnew! dirvish-attributes 'collapse)
+
+  ;; When `dirvish-use-header-line' is enabled, cycle-files doesn't work right.
+  (setq! dired-movement-style (if (and dirvish-use-header-line (eq dired-movement-style 'cycle-files))
+                                  'cycle
+                                'cycle-files))
+
+  (add-hook! 'akn/dirvish-side-mode-hook
+    (defun akn/dirvish-side-hide-modeline-h ()
+      (if akn/dirvish-side-mode
+          (setq-local dirvish-use-mode-line nil
+                      dired-movement-style nil)
+        (kill-local-variable 'dirvish-use-mode-line)
+        (setq-local dired-movement-style 'cycle))
+      (hide-mode-line-mode (if akn/dirvish-side-mode 1 -1)))))
 
 (after! dirvish-side
   (akn/remove-from-list 'dirvish-side-attributes 'file-size))
+
+;;;; my dirvish hooks
+(defvar akn/dirvish-hook nil)
+(defvar akn/dirvish-layout-change-hook nil)
+(add-hook! 'dirvish-find-entry-hook
+  (defun akn/dirvish-find-entry-dired-hook-h (_filename find-fn)
+    (when (eq find-fn 'dired)
+      (run-hooks 'akn/dirvish-hook))))
+(define-advice dirvish--build-layout (:after (&rest _) akn/run-layout-change-hooks-a)
+  (run-hooks 'akn/dirvish-layout-change-hook))
+
+(define-minor-mode akn/dirvish-mode
+  "")
+(define-minor-mode akn/dirvish-side-mode
+  "")
+(define-minor-mode akn/dirvish-basic-mode
+  "")
+(define-minor-mode akn/dirvish-peek-mode
+  "")
+(define-minor-mode akn/dirvish-layout-mode
+  "")
+(add-hook! '(akn/dirvish-hook akn/dirvish-layout-change-hook)
+  (defun akn/set-dirvish-modes-h ()
+    (unless akn/dirvish-mode (akn/dirvish-mode))
+    (if (akn/dirvish-layout-p)
+        (progn
+          (unless akn/dirvish-layout-mode (akn/dirvish-layout-mode))
+          (when akn/dirvish-side-mode (akn/dirvish-side-mode -1))
+          (when akn/dirvish-basic-mode (akn/dirvish-basic-mode -1))
+          (when akn/dirvish-peek-mode (akn/dirvish-peek-mode -1)))
+      (when akn/dirvish-layout-mode (akn/dirvish-layout-mode -1))
+      (pcase (dv-type (dirvish-curr))
+        ('side    (akn/dirvish-side-mode))
+        ('default (akn/dirvish-basic-mode))
+        ('peek    (akn/dirvish-peek-mode))))))
 
 ;;;; dired ls flags
 (after! (:or dired dirvish-subtree)
