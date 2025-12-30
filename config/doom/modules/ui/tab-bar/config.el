@@ -328,14 +328,6 @@ new project directory.")
               (#'safe-persp-name #'+workspace--name))
     (apply fn args)))
 
-;; https://github.com/alexluigit/dirvish/issues/6
-(define-advice dirvish-init-dired-buffer (:after (&rest _) akn/a)
-  (kill-local-variable 'tab-bar-new-tab-choice))
-;; TODO: PR to `dirvish-init-dired-buffer':
-;; (when (or (not (boundp 'tab-bar-new-tab-choice))
-;;           (memq tab-bar-new-tab-choice '(t window clone)))
-;;   (setq-local tab-bar-new-tab-choice "*scratch*"))
-
 ;;; activities
 (use-package! activities
   :defer t
