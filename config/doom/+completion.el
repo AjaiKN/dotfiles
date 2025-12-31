@@ -227,15 +227,16 @@
   (vertico--update))
 
 ;; https://github.com/minad/vertico/wiki#customize-sorting-based-on-completion-category
-(dolist (cmd (list
-              #'find-file))
-              ;; #'find-file-read-only
-              ;; #'find-file-other-tab #'find-file-read-only-other-tab
-              ;; #'find-file-other-frame #'find-file-read-only-other-frame
-              ;; #'find-file-other-window #'find-file-read-only-other-window
-              ;; #'find-file-existing #'find-file-literally))
-  (setf (alist-get cmd vertico-multiform-commands)
-        `((vertico-sort-override-function . ,#'akn/vertico-sort-directories-first-alpha))))
+(after! vertico
+  (dolist (cmd (list
+                #'find-file))
+                ;; #'find-file-read-only
+                ;; #'find-file-other-tab #'find-file-read-only-other-tab
+                ;; #'find-file-other-frame #'find-file-read-only-other-frame
+                ;; #'find-file-other-window #'find-file-read-only-other-window
+                ;; #'find-file-existing #'find-file-literally))
+    (setf (alist-get cmd vertico-multiform-commands)
+          `((vertico-sort-override-function . ,#'akn/vertico-sort-directories-first-alpha)))))
 
 (defun akn/vertico-sort-directories-first-alpha (list)
   "Sort directories before files in LIST."
