@@ -67,15 +67,15 @@ export GPG_TTY
 # Override fasd builtin interactive aliases to use fzf
 # https://github.com/clvv/fasd#introduction
 unalias sf sd zz 2>/dev/null
-sf () {
+function sf () {
 	# interactive file selection
 	fasd -f -l | fzf --tac --tiebreak=index --query="$*"
 }
-sd () {
+function sd () {
 	# interactive directory selection
 	fasd -d -l | fzf --tac --tiebreak=index --query="$*"
 }
-zz () {
+function zz () {
 	# cd with interactive selection
 	cd "$(fasd -d -l | fzf --tac --tiebreak=index --query="$*")" || return 1
 }
