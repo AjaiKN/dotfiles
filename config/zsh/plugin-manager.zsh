@@ -78,9 +78,11 @@
 #   plugins_failed      - List of plugins that failed to load
 #   plugins             - List of plugins to load
 
-builtin zmodload -F zsh/files b:zf_mkdir || {
+builtin zmodload -F zsh/files b:zf_{mkdir,rm} || {
 	function zf_mkdir { mkdir $@ }
+	function zf_rm { rm $@ }
 }
+builtin zmodload zsh/zutil
 
 function .set_zsh_plugin_default_branch {
 	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
@@ -219,7 +221,12 @@ function load_plugin {
 		local plugin_file=${plugin_files[$plugin]:-}
 		if [[ -n $plugin_file ]]; then
 			# https://zdharma-continuum.github.io/Zsh-100-Commits-Club/Zsh-Plugin-Standard.html#zero-handling
-			ZERO="$plugin_file" compile_and_source "$plugin_file"
+			if [[ -z ${plugin_nocompile[$plugin]} ]]; then
+				ZERO="$plugin_file" zsh_compile "$plugin_file"
+			else
+				zf_rm -f "$plugin_file".zwc
+			fi
+			ZERO="$plugin_file" builtin source "$plugin_file"
 			local ret=$?
 			return $ret
 		fi
@@ -236,6 +243,7 @@ typeset -gA plugin_types
 typeset -gA plugin_shortnames
 typeset -gA plugin_dirs
 typeset -gA plugin_times
+typeset -gA plugin_nocompile
 
 typeset -gaU plugins_failed
 typeset -gaU plugins
@@ -249,6 +257,7 @@ function plugin_info {
 		done
 	) | sort -n --reverse
 }
+alias print_plugin_times=plugin_info
 
 function .plugin_file {
 	builtin emulate -L zsh -o extended_glob -o no_case_glob -o no_aliases
@@ -288,6 +297,12 @@ function plugin {
 	if [[ $plugin == /* || $plugin = '~'* ]]; then
 		plugin_basic_path=$plugin
 	fi
+
+	shift
+	local nocompile
+	zparseopts -F -no-compile=nocompile
+	plugin_nocompile[$plugin]=$nocompile
+
 	.plugin_file   $plugin regular        $plugin_basic_path/${plugin:t}.plugin.zsh(NY1^/) ||
 		.plugin_file $plugin regular        $plugin_basic_path/*.plugin.zsh(NY1^/) ||
 		.plugin_file $plugin prezto_or_zim  $plugin_basic_path/init.zsh(NY1^/) ||
@@ -295,6 +310,8 @@ function plugin {
 		.plugin_file $plugin nonstandard_sh $plugin_basic_path/*.sh(NY1^/) ||
 		.plugin_file $plugin single_file    $plugin_basic_path.plugin.zsh(NY1^/) ||
 		.plugin_file $plugin single_file    $plugin_basic_path.zsh(NY1^/) ||
+		.plugin_file $plugin single_file    $plugin_basic_path.sh(NY1^/) ||
+		.plugin_file $plugin single_file    $plugin_basic_path(NY1^/) ||
 		.plugin_file $plugin dir_only       $plugin_basic_path(NY1F) ||
 		{
 			if [[ -o interactive ]]; then

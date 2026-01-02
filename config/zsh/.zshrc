@@ -85,6 +85,13 @@ function zsh_compile {
 	}
 }
 
+function zsh_compile_many {
+	local file
+	for file in $@; do
+		zsh_compile $file
+	done
+}
+
 function zsh_compile_if_zwc_exists {
 	if [[ -e "$1".zwc ]]; then
 		zsh_compile "$1"
@@ -188,7 +195,7 @@ plugin ohmyzsh/plugins/fasd
 # plugin prezto/modules/gnu-utility
 (( $+commands[npm] )) && plugin lukechilds/zsh-better-npm-completion
 plugin help
-plugin bash_zsh_shared_rc
+plugin ~/.config/shell/rc.sh --no-compile
 plugin options
 plugin aliases
 plugin compdef
