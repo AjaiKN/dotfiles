@@ -1,9 +1,9 @@
 # shellcheck shell=sh
 
-akn_path_high_priority="\
+export PATH="\
 $HOME/.local/bin:\
 $HOME/bin:\
-$DOTFILES/private/bin:
+$DOTFILES/private/bin:\
 $DOTFILES/bin:\
 $HOME/.local/share/mise/shims:\
 $HOME/.config/emacs/bin:\
@@ -16,12 +16,9 @@ $HOME/.local/state/nix/profile/bin:\
 /run/current-system/sw/bin:\
 $HOME/.cargo/bin:\
 $HOME/.poetry/bin:\
-/Applications/Coq-Platform~8.16~2022.09.app/Contents/Resources/bin"
-
-# then brew
-
-akn_path_mid_priority="\
-/opt/homebrew/bin:\
+/Applications/Coq-Platform~8.16~2022.09.app/Contents/Resources/bin:\
+${HOMEBREW_PREFIX:-/opt/homebrew}/bin:\
+${HOMEBREW_PREFIX:-/opt/homebrew}/sbin:\
 /snap/bin:\
 /usr/local/bin:\
 /usr/local/sbin:\
@@ -30,27 +27,13 @@ akn_path_mid_priority="\
 /usr/bin:\
 /bin:\
 /usr/sbin:\
-/sbin"
-
-# then original $PATH
-
-akn_path_lowest_priority="\
+/sbin:\
+$PATH:\
 $HOME/.antigravity/antigravity/bin:\
 /opt/R/arm64/gfortran/bin:\
 /Applications/Firefox.app/Contents/MacOS:\
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support:\
-$HOME/prog/plan9port/bin\
-"
-
-## putting it all together
-
-export PATH="$akn_path_mid_priority:$PATH:$akn_path_lowest_priority"
-# shellcheck source=./brew.sh
-. "$HOME/.config/shell/brew.sh"
-export PATH="$akn_path_high_priority:$PATH"
-
-unset akn_path_high_priority akn_path_mid_priority akn_path_lowest_priority
-
+$HOME/prog/plan9port/bin"
 
 ## Secure PATH
 if [ -x "$DOTFILES/scripts/secure_path" ]; then

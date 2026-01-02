@@ -34,9 +34,17 @@ export XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share/:/usr/share/}"
 export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:-/etc/xdg}"
 # XDG_RUNTIME_DIR
 
+## brew
+# shellcheck source=./brew.sh
+. "$HOME/.config/shell/brew.sh"
+
 ## PATH
 # shellcheck source=./path.sh
 . "$HOME/.config/shell/path.sh"
+
+## MANPATH
+# from brew shellenv
+[ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
 
 ## EDITOR
 
