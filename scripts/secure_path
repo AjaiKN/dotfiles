@@ -149,12 +149,12 @@ is_dir_empty() {
 IFS=':'
 for dir in $PATH; do
 	if [ "${dir#/}" = "$dir" ]; then
-		>&2 echo "removing $dir because doesn't start with /"
+		>&2 echo "removing '$dir' because doesn't start with /"
 		continue
 	fi
 
 	[ -d "$dir" ] || {
-		# >&2 echo "removing $dir because it's not an existing directory"
+		# >&2 echo "removing '$dir' because it's not an existing directory"
 		continue
 	}
 
@@ -187,17 +187,17 @@ for perms in $all_perms_and_uids; do
 	shift
 
 	if [ "${dir#/}" = "$dir" ]; then
-		>&2 echo "removing $dir because doesn't start with /"
+		>&2 echo "removing '$dir' because doesn't start with /"
 		continue
 	fi
 
 	[ -d "$dir" ] || {
-		>&2 echo "removing $dir because it's not an existing directory"
+		>&2 echo "removing '$dir' because it's not an existing directory"
 		continue
 	}
 
 	check_perms_format "$perms" || {
-		>&2 echo "removing $dir because invalid permissions: $perms"
+		>&2 echo "removing '$dir' because invalid permissions: $perms"
 		continue
 	}
 
@@ -210,7 +210,7 @@ for perms in $all_perms_and_uids; do
 			"$newline$(id -un "$owner")$newline")
 				;;
 			*)
-				>&2 echo "removing $dir because owned by untrusted user: '$(id -un "$owner")' ($owner); if you trust them, add the username or uid to $trusted_users_file"
+				>&2 echo "removing '$dir' because owned by untrusted user: '$(id -un "$owner")' ($owner); if you trust them, add the username or uid to $trusted_users_file"
 				continue
 				;;
 		esac
@@ -225,14 +225,14 @@ for perms in $all_perms_and_uids; do
 	case "$perms" in
 		????????w?*)
 			if can_world_reach "$dir"; then
-				>&2 echo "removing $dir because world writable (o+w, and its ancestors are o+x)"
+				>&2 echo "removing '$dir' because world writable (o+w, and its ancestors are o+x)"
 				continue
 			fi
 			;;
 	esac
 
 	if is_dir_empty "$dir" && is_writable_and_not_sticky "$(dirname "$dir")" && can_world_reach "$dir"; then
-		>&2 echo "removing $dir because world deletable (empty, its parent is writable and not sticky, and its ancestors are o+x)"
+		>&2 echo "removing '$dir' because world deletable (empty, its parent is writable and not sticky, and its ancestors are o+x)"
 		continue
 	fi
 
