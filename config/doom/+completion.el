@@ -227,7 +227,7 @@
   (vertico--update))
 
 ;; https://github.com/minad/vertico/wiki#customize-sorting-based-on-completion-category
-(after! vertico
+(after! vertico-multiform
   (dolist (cmd (list
                 #'find-file))
                 ;; #'find-file-read-only
