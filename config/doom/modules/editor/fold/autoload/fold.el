@@ -78,17 +78,17 @@
          (ts-fold--foldable-node-at-pos (point)))))
 
 (defun +fold--invisible-points (count)
-  (let (points)
-    (save-excursion
-      (while (and (< (length points) (abs count))
-                  (progn (if (< count 0) (beginning-of-line) (end-of-line))
-                         (re-search-forward hs-block-start-regexp nil t
-                                            (if (> count 0) 1 -1))))
-        (unless (invisible-p (line-beginning-position))
-          (end-of-line)
-          (when (ignore-errors (hs-already-hidden-p))
-            (push (point) points)))))
-    (nreverse points)))
+  (save-excursion
+    (cl-loop with num-points = 0
+             until (>= num-points (abs count))
+             do (if (< count 0) (beginning-of-line) (end-of-line))
+               while (re-search-forward hs-block-start-regexp nil t
+                                        (if (> count 0) 1 -1))
+               unless (invisible-p (line-beginning-position))
+                 do (end-of-line)
+                 and when (ignore-errors (hs-already-hidden-p))
+                   do (cl-incf num-points)
+                   and collect (point))))
 
 (defmacro +fold-from-eol (&rest body)
   "Perform action after moving to the end of the line."
