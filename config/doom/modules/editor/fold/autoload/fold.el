@@ -81,16 +81,16 @@
   (let (points)
     (save-excursion
       (catch 'abort
-        (if (< count 0) (beginning-of-line))
-        (while (re-search-forward hs-block-start-regexp nil t
-                                  (if (> count 0) 1 -1))
-          (unless (invisible-p (point))
+        (while (progn
+                 (if (< count 0) (beginning-of-line) (end-of-line))
+                 (re-search-forward hs-block-start-regexp nil t
+                                    (if (> count 0) 1 -1)))
+          (unless (invisible-p (line-beginning-position))
             (end-of-line)
             (when (ignore-errors (hs-already-hidden-p))
               (push (point) points)
-              (when (>= (length points) count)
-                (throw 'abort nil))))
-          (forward-line (if (> count 0) 1 -1)))))
+              (when (>= (length points) (abs count))
+                (throw 'abort nil)))))))
     (nreverse points)))
 
 (defmacro +fold-from-eol (&rest body)
@@ -416,7 +416,10 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
            if (save-excursion (funcall fn))
            nconc it into points
            finally do
-           (if-let* ((pt (nth (1- (abs count)) (sort points (if (> count 0) #'< #'>)))))
+           (if-let* ((op (if (> count 0) #'< #'>))
+                     (points (seq-filter (apply-partially op orig-pt) points))
+                     (points (sort points op))
+                     (pt (nth (1- (abs count)) points)))
                (goto-char pt)
              (user-error "No more folds %s point" (if (> count 0) "after" "before")))))
 
