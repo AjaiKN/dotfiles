@@ -255,6 +255,13 @@ Targets `vimish-fold', `hideshow', `ts-fold' and `outline' folds."
         ((+fold--treesit-fold-p) (save-excursion (treesit-fold-toggle)))
         ((+fold--ts-fold-p) (save-excursion (ts-fold-toggle)))
         ((+fold--hideshow-fold-p)
+         ;; (save-excursion
+         ;;   (if (or (hs-already-hidden-p)
+         ;;           (+fold-from-eol (hs-already-hidden-p)))
+         ;;       (progn
+         ;;         (save-excursion (hs-show-block))
+         ;;         (+fold-from-eol (hs-show-block)))
+         ;;     (+fold--hideshow-close)))
          (save-excursion (+fold-from-eol (hs-toggle-hiding))))
         ((+fold--outline-fold-p nil t)
          (save-excursion (+fold--outline-cycle-state)))))
@@ -288,6 +295,20 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
            (outline-show-branches)
            (outline-show-entry)))))
 
+(defun +fold--hideshow-close ()
+  "First, try closing the hideshow block at point.
+If that doesn't work, try closing the block at the end of the line."
+  (or (save-excursion (hs-hide-block)
+                      ;; (invisible-p (pos-eol))
+                      (hs-already-hidden-p))
+      (save-excursion (+fold-from-eol (hs-hide-block)))))
+;; Here's an example where this matters. There are 2 different ways it can be
+;; folded, depending on where point is:
+(if (+ (+ 3 1)
+       2)
+    2
+  3)
+
 ;;;###autoload
 (defun +fold/close ()
   "Close the folded region at point.
@@ -299,7 +320,7 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
         ((+fold--outline-fold-p) (save-excursion (outline-hide-subtree)))
         ((+fold--treesit-fold-p) (save-excursion (treesit-fold-close)))
         ((+fold--ts-fold-p) (save-excursion (ts-fold-close)))
-        ((+fold--hideshow-fold-p) (save-excursion (+fold-from-eol (hs-hide-block))))
+        ((+fold--hideshow-fold-p) (+fold--hideshow-close))
         ((+fold--outline-fold-p nil t) (save-excursion (outline-hide-subtree)))))
 
 ;;;###autoload
