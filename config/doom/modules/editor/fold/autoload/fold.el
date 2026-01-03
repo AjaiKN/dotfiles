@@ -19,8 +19,10 @@
 
 (defun +fold--vimish-fold-p ()
   (and (featurep 'vimish-fold)
-       (cl-some #'vimish-fold--vimish-overlay-p
-                (overlays-at (point)))))
+       (cl-loop for ov in (overlays-at (point))
+                thereis (and (vimish-fold--vimish-overlay-p ov)
+                             (eq (line-number-at-pos)
+                                 (line-number-at-pos (overlay-start ov)))))))
 
 (defun +fold--outline-mode-p (&optional check-headlines-exist allow-outline-indent)
   (unless (or (bound-and-true-p outline-minor-mode)
