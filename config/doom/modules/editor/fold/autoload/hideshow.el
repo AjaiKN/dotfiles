@@ -49,12 +49,13 @@
       (> (current-indentation) base-indent)))
 
 (defun +fold--hideshow-seek (start direction before skip predicate base-indent)
-  "Seeks forward (if direction is 1) or backward (if direction is -1) from start, until predicate
-fails. If before is nil, it will return the first line where predicate fails, otherwise it returns
-the last line where predicate holds."
+  "Seeks forward (if direction is 1) or backward (if direction is -1) from
+start, until predicate fails. If before is nil, it will return the first line
+where predicate fails, otherwise it returns the last line where predicate
+holds."
   (save-excursion
     (goto-char start)
-    (goto-char (point-at-bol))
+    (goto-char (line-beginning-position))
     (let ((bnd (if (> 0 direction)
                    (point-min)
                  (point-max)))
@@ -62,9 +63,9 @@ the last line where predicate holds."
       (when skip (forward-line direction))
       (cl-loop while (and (/= (point) bnd) (funcall predicate base-indent))
                do (progn
-                    (when before (setq pt (point-at-bol)))
+                    (when before (setq pt (line-beginning-position)))
                     (forward-line direction)
-                    (unless before (setq pt (point-at-bol)))))
+                    (unless before (setq pt ()))))
       pt)))
 
 (defun +fold-hideshow-indent-range (&optional point)
