@@ -353,9 +353,10 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
             (outline-show-only-headings))))))))
 
 ;;;###autoload
-(defun +fold/next (count)
+(defun +fold/next (&optional count)
   "Jump to the next COUNT-th folded region."
   (interactive "p")
+  (or count (setq count 1))
   (cl-loop with orig-pt = (point)
            for fn in
            (list (lambda ()
@@ -420,10 +421,10 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
              (user-error "No more folds %s point" (if (> count 0) "after" "before")))))
 
 ;;;###autoload
-(defun +fold/previous (count)
+(defun +fold/previous (&optional count)
   "Jump to the previous COUNT-th folded region."
   (interactive "p")
-  (+fold/next (- count)))
+  (+fold/next (- (or count 1))))
 
 ;;;###autoload
 (defalias '+fold/create      (if (modulep! :editor evil) #'evil-vimish-fold/create      #'vimish-fold))
