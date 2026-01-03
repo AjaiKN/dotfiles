@@ -30,10 +30,10 @@
 	shallow = true
 [submodule "dot-home/.config/emacs"]
 	path = config/emacs
-	url = https://github.com/AjaiKN/doomemacs
-	branch = akn-main
+	url = https://github.com/doomemacs/doomemacs
+	branch = master
 	shallow = true
-	update = merge
+	update = rebase
 [submodule "dot-home/.config/zsh/plugins/zsh-smartcache"]
 	path = config/zsh/plugins/QuarticCat/zsh-smartcache
 	url = https://github.com/QuarticCat/zsh-smartcache
