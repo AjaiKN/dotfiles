@@ -41,7 +41,7 @@ set -euo pipefail
 # shellcheck disable=SC2154
 trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ]; then
 	echo "Usage: git shelve <BRANCH-NAME>"
 	echo
 	cat <<-EOF
@@ -58,19 +58,30 @@ if [ $# -ne 1 ]; then
 	exit 1
 fi
 
-old=refs/heads/"$1"
-new=refs/shelved/"$1"
-old_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$old"
-new_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$new"
-set -x
+for branch in "$@"; do
+	branch=${branch#refs/heads/}
+	branch=${branch#heads/}
 
-git update-ref "$new" "$old" ''
+	old=refs/heads/"$branch"
+	new=refs/shelved/"$branch"
+	old_abbrev=$(git rev-parse --verify --abbrev-ref "$old" 2>/dev/null) || {
+		printf '%s does not exist\n' "$old" >&2
+		exit 1
+	}
 
-# rename reflog file
-if [ -f "$old_reflog" ]; then
-	mkdir -p "${new_reflog%/*}"
-	mv "$old_reflog" "$new_reflog"
-fi
+	old_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$old"
+	new_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$new"
 
-git config --unset branch."$1".pushRemote || :
-git branch -D "$1"
+	git update-ref "$new" "$old" ''
+
+	# rename reflog file
+	if [ -f "$old_reflog" ]; then
+		mkdir -p "${new_reflog%/*}"
+		mv "$old_reflog" "$new_reflog"
+	fi
+
+	git config --unset branch."$branch".pushRemote || :
+	git branch -D "$branch" >/dev/null
+
+	printf '%s -> %s (%s)\n' "$old_abbrev" "$(git rev-parse --abbrev-ref "$new")" "$(git rev-parse --short "$new")"
+done

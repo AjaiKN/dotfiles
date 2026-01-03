@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+if [ $# -lt 1 ]; then
+	echo "Usage: git shelved-delete <BRANCH-NAME>..."
+	echo
+	cat <<-EOF
+		Delete a branch shelved with git-shelve.
+	EOF
+	exit 1
+fi
+
+for branch in "$@"; do
+	branch=${branch#refs/shelved/}
+	old=refs/shelved/"$branch"
+	old_abbrev=$(git rev-parse --verify --abbrev-ref "$old" 2>/dev/null) || {
+		printf '%s does not exist\n' "$old" >&2
+		exit 1
+	}
+	old_commit=$(git rev-parse --short "$old")
+
+	git update-ref -d "$old"
+	printf 'Deleted shelved branch %s (was %s)\n' "$old_abbrev" "$old_commit"
+done

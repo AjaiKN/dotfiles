@@ -4,8 +4,8 @@ set -euo pipefail
 # shellcheck disable=SC2154
 trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
 
-if [ $# -ne 1 ]; then
-	echo "Usage: git unshelve <BRANCH-NAME>"
+if [ $# -lt 1 ]; then
+	echo "Usage: git unshelve <BRANCH-NAME>..."
 	echo
 	cat <<-EOF
 		Just like magit's magit-branch-unshelve, which is described as follows:
@@ -19,21 +19,29 @@ if [ $# -ne 1 ]; then
 	exit 1
 fi
 
+for branch in "$@"; do
+	branch=${branch#refs/shelved/}
+	branch=${branch#shelved/}
 
+	old=refs/shelved/"$branch"
+	new=refs/heads/"$branch"
+	old_abbrev=$(git rev-parse --verify --abbrev-ref "$old" 2>/dev/null) || {
+		printf '%s does not exist\n' "$old" >&2
+		exit 1
+	}
 
-old=refs/shelved/"$1"
-new=refs/heads/"$1"
-old_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$old"
-new_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$new"
-set -x
+	old_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$old"
+	new_reflog="$(git rev-parse --show-toplevel)"/.git/logs/"$new"
 
-git update-ref "$new" "$old" ''
+	git update-ref "$new" "$old" ''
 
-# rename reflog file
-if [ -f "$old_reflog" ]; then
-	mkdir -p "${new_reflog%/*}"
-	mv "$old_reflog" "$new_reflog"
-fi
+	# rename reflog file
+	if [ -f "$old_reflog" ]; then
+		mkdir -p "${new_reflog%/*}"
+		mv "$old_reflog" "$new_reflog"
+	fi
 
+	git update-ref -d "$old"
 
-git update-ref -d "$old"
+	printf '%s -> %s (%s)\n' "$old_abbrev" "$(git rev-parse --abbrev-ref "$new")" "$(git rev-parse --short "$new")"
+done
