@@ -80,17 +80,14 @@
 (defun +fold--invisible-points (count)
   (let (points)
     (save-excursion
-      (catch 'abort
-        (while (progn
-                 (if (< count 0) (beginning-of-line) (end-of-line))
-                 (re-search-forward hs-block-start-regexp nil t
-                                    (if (> count 0) 1 -1)))
-          (unless (invisible-p (line-beginning-position))
-            (end-of-line)
-            (when (ignore-errors (hs-already-hidden-p))
-              (push (point) points)
-              (when (>= (length points) (abs count))
-                (throw 'abort nil)))))))
+      (while (and (< (length points) (abs count))
+                  (progn (if (< count 0) (beginning-of-line) (end-of-line))
+                         (re-search-forward hs-block-start-regexp nil t
+                                            (if (> count 0) 1 -1))))
+        (unless (invisible-p (line-beginning-position))
+          (end-of-line)
+          (when (ignore-errors (hs-already-hidden-p))
+            (push (point) points)))))
     (nreverse points)))
 
 (defmacro +fold-from-eol (&rest body)
