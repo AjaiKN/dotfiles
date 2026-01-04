@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cd "$(dirname "$0")" || exit 1
+
+if [ $# -eq 0 ]; then
+	nvim --headless -c ':lua require("nfnl.api")["compile-all-files"](); print("")' -c 'qa'
+else
+	cmd=$(printf ':lua require("nfnl.api")["compile-file"]({ path="%s" }); print("")' "$1")
+	nvim --headless -c "$cmd" -c 'qa'
+fi
