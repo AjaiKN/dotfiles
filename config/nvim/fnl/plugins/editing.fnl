@@ -41,11 +41,11 @@
  (tx "folke/flash.nvim"
      {:event :VeryLazy
       :opts {}
-      :keys [(tx :s {:mode [:n :x :o] 1 (fn [] ((. (require :flash) :jump))) :desc "Flash"})
-             (tx :S {:mode [:n :x :o] 1 (fn [] ((. (require :flash) :treesitter))) :desc "Flash Treesitter"})
-             (tx :r {:mode :o 1 (fn [] ((. (require :flash) :remote))) :desc "Remote Flash"})
-             (tx :R {:mode [:o :x] 1 (fn [] ((. (require :flash) :treesitter_search))) :desc "Treesitter Search"})
-             (tx :<c-s> {:mode [:c] 1 (fn [] ((. (require :flash) :toggle))) :desc "Toggle Flash Search"})]})
+      :keys [(tx :s     (fn [] ((. (require :flash) :jump))) {:mode [:n :x :o] :desc "Flash"})
+             (tx :S     (fn [] ((. (require :flash) :treesitter))) {:mode [:n :x :o] :desc "Flash Treesitter"})
+             (tx :r     (fn [] ((. (require :flash) :remote))) {:mode :o :desc "Remote Flash"})
+             (tx :R     (fn [] ((. (require :flash) :treesitter_search))) {:mode [:o :x] :desc "Treesitter Search"})
+             (tx :<c-s> (fn [] ((. (require :flash) :toggle))) {:mode [:c] :desc "Toggle Flash Search"})]})
 
  ;; Better Yank/Paste
  (tx "gbprod/yanky.nvim"
@@ -54,12 +54,12 @@
       :dependencies [(tx "kkharji/sqlite.lua")]
       :opts {:ring {:storage :sqlite}
              :highlight {:timer 150}}
-      :keys [(tx :<leader>p {:mode [:n :x] 1 "<cmd>YankyRingHistory<cr>" :desc "Open Yank History"})
-             (tx :y {:mode [:n :x] 1 "<Plug>(YankyYank)" :desc "Yank text"})
-             (tx :p {:mode [:n :x] 1 "<Plug>(YankyPutAfter)" :desc "Put yanked text after cursor"})
-             (tx :P {:mode [:n :x] 1 "<Plug>(YankyPutBefore)" :desc "Put yanked text before cursor"})
-             (tx :gp {:mode [:n :x] 1 "<Plug>(YankyGPutAfter)" :desc "Put yanked text after selection"})
-             (tx :gP {:mode [:n :x] 1 "<Plug>(YankyGPutBefore)" :desc "Put yanked text before selection"})
+      :keys [(tx :<leader>p "<cmd>YankyRingHistory<cr>" {:mode [:n :x] :desc "Open Yank History"})
+             (tx :y "<Plug>(YankyYank)" {:mode [:n :x] :desc "Yank text"})
+             (tx :p "<Plug>(YankyPutAfter)" {:mode [:n :x] :desc "Put yanked text after cursor"})
+             (tx :P "<Plug>(YankyPutBefore)" {:mode [:n :x] :desc "Put yanked text before cursor"})
+             (tx :gp "<Plug>(YankyGPutAfter)" {:mode [:n :x] :desc "Put yanked text after selection"})
+             (tx :gP "<Plug>(YankyGPutBefore)" {:mode [:n :x] :desc "Put yanked text before selection"})
              (tx :<M-y> "<Plug>(YankyCycleForward)" {:desc "Cycle Forward Through Yank History"})
              (tx "[y" "<Plug>(YankyCycleForward)" {:desc "Cycle Forward Through Yank History"})
              (tx "]y" "<Plug>(YankyCycleBackward)" {:desc "Cycle Backward Through Yank History"})
