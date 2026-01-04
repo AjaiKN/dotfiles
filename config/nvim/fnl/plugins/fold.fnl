@@ -1,0 +1,21 @@
+(import-macros {: tx} :config.macros)
+
+;; folding
+(tx "kevinhwang91/nvim-ufo"
+    {:dependencies ["kevinhwang91/promise-async"]
+     :opts {:provider_selector (fn [bufnr filetype buftype]
+                                 [:treesitter :indent])}
+     :config
+     (fn [_ opts]
+       (set vim.o.foldcolumn "1") ;; '0' is not bad
+       (set vim.o.foldlevel 99) ;; Using ufo provider need a large value, feel free to decrease the value
+       (set vim.o.foldlevelstart 99)
+       (set vim.o.foldenable true)
+
+       ((. (require :ufo) :setup) opts)
+
+       ;; Using ufo provider need remap `zR` and `zM`. If Neovim is 0.6.1, remap yourself
+       (vim.keymap.set :n :zR (. (require :ufo) :openAllFolds))
+       (vim.keymap.set :n :zM (. (require :ufo) :closeAllFolds))
+
+       (vim.keymap.set :n :<Tab> :za))})
