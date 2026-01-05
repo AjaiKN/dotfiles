@@ -2634,17 +2634,16 @@ there's no need for `markdown-mode' to reduplicate the effort."
 (defalias 'akn/terminal-quit-mode #'akn/server-quit-mode)
 ;; TODO: check (length (tab-bar-tabs))
 (defconst akn/server-quit-commands
-  (akn/cmds! (bound-and-true-p server-buffer-clients) #'server-edit
-             (not (display-graphic-p))                #'save-buffers-kill-terminal
-             (not (bound-and-true-p server-mode))     #'save-buffers-kill-terminal))
+  (akn/cmds! (akn/server-quit-cmd) it))
+(defun akn/server-quit-cmd ()
+  (cond
+   ((bound-and-true-p server-buffer-clients) #'server-edit)
+   ((not (display-graphic-p))                #'save-buffers-kill-terminal)
+   ((not (bound-and-true-p server-mode))     #'save-buffers-kill-terminal)))
 (defun akn/server-quit ()
   (interactive)
   (call-interactively
-   (cond
-    ((bound-and-true-p server-buffer-clients) #'server-edit)
-    ((not (display-graphic-p))                #'save-buffers-kill-terminal)
-    ((not (bound-and-true-p server-mode))     #'save-buffers-kill-terminal)
-    (t #'ignore))))
+   (or (akn/server-quit-cmd) #'ignore)))
 (defun akn/server-quit-window-h ()
   (akn/server-quit))
 (map! (:map akn/server-quit-mode-map
