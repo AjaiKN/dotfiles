@@ -94,6 +94,29 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+## ranger
+
+# https://github.com/ranger/ranger/wiki/Integration-with-other-programs#bash-compatible-shells-1
+# q = quit and change working directory
+# Q = quit and don't change working directory
+function ranger {
+	local IFS=$'\t\n'
+	local tempfile
+	tempfile="$(mktemp -t tmp.XXXXXX)"
+	local ranger_cmd=(
+		command
+		ranger
+		--cmd="map q chain shell echo %d > ""$tempfile""; quitall"
+	)
+
+	"${ranger_cmd[@]}" "$@"
+	if [[ -f "$tempfile" ]] && [[ "$(cat -- "$tempfile")" != "$(echo -n "$(pwd)")" ]]; then
+		# cd -- "$(cat "$tempfile")" || return
+		builtin pushd -- "$(cat "$tempfile")" >/dev/null || return
+	fi
+	command rm -f -- "$tempfile" 2>/dev/null
+}
+
 ## bad package.json files
 # check if there are any package.json files that shouldn't be there
 (if [ -f /package.json ] || [ -f /Users/package.json ] || [ -f ~/package.json ] || [ -f ~/prog/package.json ]; then
