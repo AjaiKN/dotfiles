@@ -5,12 +5,68 @@
 [mgr]
 
 prepend_keymap = [
+	{ on = "<C-h>", run = "help", desc = "Open help" },
+
+	{ on = "<C-t>",    run = "tab_create --current", desc = "Create a new tab with CWD" },
+	{ on = "<C-w>",    run = "close",                desc = "Close the current tab, or quit if it's last" },
+
 	{ on = "Z",        run = "plugin fasd fzf",  desc = "Search and open from Fasd using fzf" },
 	{ on = "<Enter>",  run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
 	{ on = "<Right>",  run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
 	{ on = "l",        run = "plugin fasd open", desc = "Add to Fasd and open hovered item" },
-	{ on = ["g", "c"], run = "plugin vcs-files", desc = "Show Git file changes" },
+
 	# { on   = [ "g", "c" ], run  = "plugin git-files", desc = "Show Git file changes" },
+	{ on = ["g", "c"], run = "plugin vcs-files", desc = "Show Git file changes" },
 	{ on = ["c", "m"], run = "plugin chmod",     desc = "Chmod on selected files" },
 	{ on  = "M",       run = "plugin mount" },
+]
+
+[tasks]
+prepend_keymap = [
+	{ on = "<C-h>", run = "help", desc = "Open help" },
+]
+
+[spot]
+prepend_keymap = [
+	{ on = "<C-h>", run = "help", desc = "Open help" },
+]
+
+[pick]
+prepend_keymap = [
+	{ on = "<C-h>", run = "help", desc = "Open help" },
+]
+
+[input]
+prepend_keymap = [
+	{ on = "<C-h>", run = "help", desc = "Open help" },
+]
+
+[confirm]
+prepend_keymap = [
+	{ on = "<C-h>", run = "help", desc = "Open help" },
+]
+
+[cmp]
+prepend_keymap = [
+	{ on = "<C-h>", run = "help", desc = "Open help" },
+]
+
+[help]
+prepend_keymap = [
+	{ on = "q", run = "escape", desc = "Clear the filter, or hide the help" },
+
+	{ on = "/", run = "filter", desc = "Filter help items" },
+
+	{ on = "<C-u>",        run = "arrow -50%",  desc = "Move cursor up half page" },
+	{ on = "<C-d>",        run = "arrow 50%",   desc = "Move cursor down half page" },
+	{ on = "<C-b>",        run = "arrow -100%", desc = "Move cursor up one page" },
+	{ on = "<C-f>",        run = "arrow 100%",  desc = "Move cursor down one page" },
+	{ on = "b",            run = "arrow -100%", desc = "Move cursor up one page" },
+	{ on = "f",            run = "arrow 100%",  desc = "Move cursor down one page" },
+	{ on = "<S-PageUp>",   run = "arrow -50%",  desc = "Move cursor up half page" },
+	{ on = "<S-PageDown>", run = "arrow 50%",   desc = "Move cursor down half page" },
+	{ on = "<PageUp>",     run = "arrow -100%", desc = "Move cursor up one page" },
+	{ on = "<PageDown>",   run = "arrow 100%",  desc = "Move cursor down one page" },
+	{ on = [ "g", "g" ],   run = "arrow top",   desc = "Go to top" },
+	{ on = "G",            run = "arrow bot",   desc = "Go to bottom" },
 ]
