@@ -17,7 +17,7 @@ $HOME/.local/state/nix/profile/bin:\
 $HOME/.cargo/bin:\
 $HOME/.poetry/bin:\
 /Applications/Coq-Platform~8.16~2022.09.app/Contents/Resources/bin:\
-${HOMEBREW_PREFIX:-/opt/homebrew}/bin:\
+${HOMEBREW_PREFIX:=/opt/homebrew}/bin:\
 ${HOMEBREW_PREFIX:-/opt/homebrew}/sbin:\
 /snap/bin:\
 /usr/local/bin:\
@@ -29,6 +29,7 @@ ${HOMEBREW_PREFIX:-/opt/homebrew}/sbin:\
 /usr/sbin:\
 /sbin:\
 $PATH:\
+$HOMEBREW_PREFIX/opt/trash-cli/bin:\
 $HOME/.antigravity/antigravity/bin:\
 /opt/R/arm64/gfortran/bin:\
 /Applications/Firefox.app/Contents/MacOS:\
