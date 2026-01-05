@@ -84,15 +84,16 @@ alias e='f -e "$EDITOR"'
 ## yazi
 
 # shellcheck disable=SC2155 disable=SC2164
-function y() {
+function yazi() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	yazi "$@" --cwd-file="$tmp"
+	command yazi "$@" --cwd-file="$tmp"
 	IFS= read -r -d '' cwd < "$tmp"
 	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] &&
 		# builtin cd -- "$cwd"
 		builtin pushd -- "$cwd" >/dev/null
 	rm -f -- "$tmp"
 }
+alias y=yazi
 
 ## ranger
 
