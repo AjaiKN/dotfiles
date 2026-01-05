@@ -106,6 +106,7 @@ index."
       thing))
    ((listp thing)
     (seq-position (tab-bar-tabs) thing #'eq))))
+;;;###autoload
 (defun +workspace--name (thing)
   (cond
    ((listp thing)
