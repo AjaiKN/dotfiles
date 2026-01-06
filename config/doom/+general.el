@@ -2635,8 +2635,23 @@ there's no need for `markdown-mode' to reduplicate the effort."
 ;; TODO: check (length (tab-bar-tabs))
 (defconst akn/server-quit-commands
   (akn/cmds! (akn/server-quit-cmd) it))
+(defun akn/dired-quit (&optional no-change-cwd)
+  (interactive "P")
+  (if (and (derived-mode-p 'dired-mode)
+           (not no-change-cwd))
+      (doom-file-write akn/dired-file (or dired-directory ""))
+    (when (file-exists-p akn/dired-file)
+       (delete-file akn/dired-file)))
+  (call-interactively
+   (let ((major-mode 'fundamental-mode))
+     (or (akn/server-quit-cmd) #'dirvish-quit))))
+(defun akn/dired-quit-no-change-cwd ()
+  (interactive)
+  (akn/dired-quit 'no-change-cwd))
 (defun akn/server-quit-cmd ()
   (cond
+   ((null (find-buffer 'akn/server-quit-mode t)) nil)
+   ((derived-mode-p 'dired-mode)             #'akn/dired-quit)
    ((bound-and-true-p server-buffer-clients) #'server-edit)
    ((not (display-graphic-p))                #'save-buffers-kill-terminal)
    ((not (bound-and-true-p server-mode))     #'save-buffers-kill-terminal)))
@@ -2654,7 +2669,14 @@ there's no need for `markdown-mode' to reduplicate the effort."
        [remap +magit/quit-all] akn/server-quit-commands
        [remap +dired/quit-all] akn/server-quit-commands
        [remap dirvish-quit]    akn/server-quit-commands
-       [remap calc-quit]       akn/server-quit-commands))
+       [remap calc-quit]       akn/server-quit-commands)
+      [remap dirvish-quit]    akn/server-quit-commands
+      [remap +dired/quit-all] akn/server-quit-commands
+      (:map (dired-mode-map dirvish-mode-map)
+       :nviemg "q" #'akn/dired-quit
+       :nviemg "Q" #'akn/dired-quit-no-change-cwd))
+
+(defvar akn/dired-file (file-name-concat doom-cache-dir "akn-cwd"))
 
 ;;; opening links
 

@@ -118,6 +118,13 @@ function ranger {
 	command rm -f -- "$tempfile" 2>/dev/null
 }
 
+## my dired command
+
+function dired {
+	. dired "${@:-.}"
+}
+alias d=dired
+
 ## bad package.json files
 # check if there are any package.json files that shouldn't be there
 (if [ -f /package.json ] || [ -f /Users/package.json ] || [ -f ~/package.json ] || [ -f ~/prog/package.json ]; then

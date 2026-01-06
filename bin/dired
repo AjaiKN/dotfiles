@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
-# shellcheck disable=SC2154
-trap 's=$?; echo >&2 "$0: Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
-
 dir=${1:-.}
 
 if [ -e "$dir" ] && ! [ -d "$dir" ]; then
 	# If it exists but isn't a directory, use the containing directory.
-	dir="$(dirname "$dir")"
+	dir="$(dirname "$dir")" || exit 2
 fi
 
 if [[ $dir != */ ]]; then
@@ -18,11 +14,18 @@ if [[ $dir != */ ]]; then
 	dir="$dir"/
 fi
 
+rm -f ~/.cache/doom/akn-cwd
+
 # If Emacs.app isn't already running, ...
 if ! pgrep -f Emacs.app >/dev/null; then
-	set -x
-	exec emacs-term-new "$dir"
+	emacs-term-new "$dir" || exit $?
 else
-	set -x
-	exec emacs-term "$dir"
+	emacs-term "$dir" || exit $?
+fi
+
+# This only works if this script is sourced directly:
+#   dired() { . dired "${@:-.}"; }
+if dir=$(cat ~/.cache/doom/akn-cwd 2>/dev/null) && [ -n "$dir" ]; then
+	pushd -- "$dir" >/dev/null || exit 1
+	rm -f ~/.cache/doom/akn-cwd
 fi

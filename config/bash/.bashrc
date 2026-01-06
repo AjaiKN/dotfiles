@@ -217,9 +217,6 @@ if command -v fzf >/dev/null 2>&1; then
 	eval "$(fzf --bash)"
 fi
 
-## ~/.config/shell/rc.sh
-source "$HOME/.config/shell/rc.sh"
-
 ## fasd
 if command -v fasd >/dev/null 2>&1; then
 	fasd_cache="${XDG_CACHE_HOME:-$HOME/.cache}/fasd-init-bash"
@@ -229,6 +226,9 @@ if command -v fasd >/dev/null 2>&1; then
 	source "$fasd_cache"
 	unset fasd_cache
 fi
+
+## ~/.config/shell/rc.sh
+source "$HOME/.config/shell/rc.sh"
 
 ## mise
 unset __MISE_ORIG_PATH # Leaving this set has resulted in some confusing behavior sometimes
