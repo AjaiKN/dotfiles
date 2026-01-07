@@ -77,6 +77,8 @@
          (seq-filter (lambda (p) (not (string-match-p "local/share/mise/installs" p)))
                      exec-path)))
 
+;;;; TERM
+
 (when (or (daemonp)
           (member (getenv "TERM_PROGRAM") '("WezTerm" "ghostty")))
   (setq! etcc-term-type-override 'kitty))
