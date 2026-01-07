@@ -211,6 +211,7 @@ returns true."
            *extra llm
            *extra llm-extra
            *basic make              ; run make tasks from Emacs
+           *basic mise
            pass              ; password manager for nerds
            *extra pdf               ; pdf enhancements   ; NOTE: needed to do `brew install poppler`
            *basic prodigy           ; FIXME managing external services & code builders
