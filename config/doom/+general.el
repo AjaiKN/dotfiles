@@ -1366,10 +1366,6 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   :init
   (setq lsp-tailwindcss-add-on-mode t)
 
-  (defun akn/require-tailwind ()
-    (or (require 'lsp-tailwindcss nil t)
-        (message "(lsp-tailwindcss not installed)")))
-
   (add-hook! (html-mode html-ts-mode
               mhtml-mode mhtml-ts-mode
               css-mode css-ts-mode
@@ -1407,7 +1403,31 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
                                                                                         .bundledDependencies
                                                                                         .optionalDependencies))))
                                                               (alist-get 'tailwindcss deps)))))
-        (akn/require-tailwind)))))
+        (or (require 'lsp-tailwindcss nil t)
+            (message "(lsp-tailwindcss not installed)")))))
+
+  :config
+  (pushnew! lsp-tailwindcss-major-modes
+            'html-mode 'html-ts-mode
+            'mhtml-mode 'mhtml-ts-mode
+            'css-mode 'css-ts-mode
+            'scss-mode 'scss-ts-mode
+            'sass-mode 'sass-ts-mode
+            'web-mode 'web-ts-mode
+            'js2-mode 'js2-ts-mode
+            'js3-mode 'js3-ts-mode
+            'jsx-mode 'jsx-ts-mode
+            'rjsx-mode 'rjsx-ts-mode
+            'js-mode 'js-base-mode
+            'angular-mode 'angular-ts-mode
+            '+web-angularjs-mode
+            'vue-mode 'vue-ts-mode
+            'less-css-mode 'less-css-ts-mode
+            'less-mode 'less-ts-mode
+            'typescript-mode 'typescript-ts-base-mode
+            'typescript-tsx-mode 'typescript-tsx-ts-mode
+            'svelte-mode 'svelte-ts-mode
+            'astro-mode 'astro-ts-mode))
 
 ;;; doom reloading and upgrading
 (setq doom-upgrade-command

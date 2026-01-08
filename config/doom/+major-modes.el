@@ -32,6 +32,13 @@
                            'sh-mode))))
 (advice-add #'lsp! :before-while #'akn/auto-lsp-p)
 
+;;; web, JavaScript, TypeScript, HTML, CSS, etc.
+
+;; I want it to check for node_modules folders anywhere above default-directory,
+;; not just anywhere above the current project folder.
+(akn/advise-letf! +javascript-add-npm-path-h (akn/a)
+  (#'doom-project-root #'ignore))
+
 ;;; astro js
 ;; https://edmundmiller.dev/posts/emacs-astro/
 (use-package! astro-ts-mode
