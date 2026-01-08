@@ -27,11 +27,11 @@
 ;;;###autoload
 (defun akn/open-in-vscode (&optional path)
   (interactive)
-  (async-shell-command (format "code '%s'"
-                               (or path
-                                   buffer-file-name
-                                   default-directory
-                                   (doom-project-root)))))
+  (akn/run-command (format "code '%s'"
+                           (or path
+                               buffer-file-name
+                               default-directory
+                               (doom-project-root)))))
 ;;;###autoload
 (defun akn/open-project-in-vscode (&optional path)
   (interactive)
