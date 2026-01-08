@@ -47,7 +47,7 @@
 (package! org-super-agenda        :pin "fb20ad9c8a9705aa05d40751682beae2d094e0fe" :disable (not (modulep! :lang org)))
 (package! pet                     :pin "1f7450237549ad9850543fbc78d12f9fd375324d" :disable (not (modulep! :lang python)))
 (disable-packages! pipenv pyvenv)
-(package! lsp-tailwindcss         :pin "8574cb3ad2e669eebb34b4d57c3cdef5a424a9b5" :disable (not (modulep! :lang web))               :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
+(package! lsp-tailwindcss         :pin "cdd0325a6a571e51f6c7d1cbc198c7a7ea4a194a" :disable (not (modulep! :lang web))               :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
 (package! astro-ts-mode           :pin "78e7e942011839bd4f4de0a1d8460f5879ba4ca5" :disable (not (modulep! :lang web)))
 (package! launchctl               :pin "c9b7e93f5ec6fa504dfb03d60571cf3e5dc38e12" :disable (not (modulep! :os macos)))
 (package! applescript-mode        :pin "3dbbb8b48e519a5208ce237db577056c7a5a5943" :disable (not (modulep! :os macos)))
