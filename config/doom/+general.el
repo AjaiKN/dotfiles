@@ -2041,6 +2041,13 @@ Also see `+default/find-file-under-here'."
 
 (setq! lsp-auto-guess-root t)
 
+(add-to-list 'warning-suppress-types '(lsp-mode akn-unknown-notification))
+(akn/advise-letf! lsp--on-notification (akn/more-specific-warning-type-a)
+  (akn/advise-letf! lsp-warn (akn/more-specific-warning-type-a)
+    (define-advice display-warning (:filter-args (args) akn/more-specific-warning-type-a)
+      (cons '(lsp-mode akn-unknown-notification)
+            (cdr args)))))
+
 ;;;; lsp minimal mode
 ;;  https://emacs-lsp.github.io/lsp-mode/tutorials/how-to-turn-off/
 (define-minor-mode akn/lsp-minimal-mode
