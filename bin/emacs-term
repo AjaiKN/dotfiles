@@ -2,13 +2,15 @@
 
 # set -x
 
+export EMACS_SOCKET_NAME=term
+
 if
 	# No args, stdin isn't a tty but stderr is -> something is probably being piped to us
 	{ (( $# == 0 )) && [[ ! -t 0 ]] && [[ -t 2 ]]; } ||
 		# Single argument: -
 		{ (( $# == 1 )) && [[ "$1" == "-" ]]; }
 then
-	exec epipe -nw -s term
+	exec epipe -nw
 fi
 
 args=()
@@ -30,6 +32,6 @@ fi
 
 # Emacs in the terminal
 
-emacs-daemon-wait term
+emacs-daemon-wait
 # if no arguments, open dired in the current directory
-exec emacsclient -s term -nw "${@:-.}"
+exec emacsclient -nw "${@:-.}"

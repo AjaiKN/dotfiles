@@ -3,8 +3,90 @@
 set -euo pipefail
 # shellcheck disable=SC2154
 trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
-set -x
 
-emacsclient -e '(akn/restart-and-restore)' >/dev/null
-emacsclient -s term -e '(doom/restart)' >/dev/null || :
-# emacs-open-frame
+print_usage() {
+	echo "Usage: $0 [-f|--force] [-v|--verbose] [-o|--open] [server...]"
+	echo "Restart the specified emacs servers."
+	echo "If no servers are specified, restart the 'server' and 'term' servers."
+	echo
+	echo "  -f, --force     force the servers to restart immediately"
+	echo "  -v, --verbose   be more verbose"
+	echo "  -o, --open      open a frame of the server after restarting"
+}
+
+verbose=
+force=
+open=
+while [[ $# -gt 0 ]]; do
+	case "$1" in
+		--version)
+			echo "emacs-restart 0.0.1-pre"
+			exit
+			;;
+		--help|-h)
+			print_usage
+			exit 0
+			;;
+		--verbose|-v)
+			verbose=1
+			shift
+			;;
+		--force|-f)
+			force=1
+			shift
+			;;
+		--open|-o)
+			open=1
+			shift
+			;;
+		--)
+			shift
+			break
+			;;
+		-[^-][^-]*) # expand multiple single-char options (e.g. -vf)
+			opt="$1"
+			shift
+			other="${opt#-?}"
+			set -- "${opt%"$other"}" "-${other}" "$@"
+			;;
+		-*)
+			echo "ERROR: Unknown option: $1"
+			print_usage
+			exit 1
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
+if [[ $# -eq 0 ]]; then
+	set -- server term
+fi
+
+set +e
+if [[ -n $verbose ]]; then
+	set -x
+fi
+
+s=0
+for server in "$@"; do
+	if [[ -n $force ]]; then
+		if [[ "$(uname -s)" = "Darwin" ]]; then
+			lunchy restart dev.ajai.emacsdaemon"$server" || s=$?
+		elif command -v systemctl >/dev/null 2>&1; then
+			systemctl --user restart emacs@"$server".service || s=$?
+		else
+			emacsclient -s "$server" -e '(let (kill-emacs-hook) (kill-emacs))' >/dev/null || s=$?
+		fi
+	else
+		emacsclient -s "$server" -e '(akn/restart-and-restore)' >/dev/null || s=$?
+	fi
+done
+if [[ -n $open ]]; then
+	for server in "$@"; do
+		[[ $server == term ]] ||
+			EMACS_SOCKET_NAME=$server emacs-open || s=$?
+	done
+fi
+exit $s
