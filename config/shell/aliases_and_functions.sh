@@ -228,3 +228,8 @@ alias ip='ipconfig getifaddr en0'
 alias nvim-kickstart='NVIM_APPNAME="nvim-kickstart" nvim'
 
 alias c='a -e code'
+
+function print_path() {
+	# shellcheck disable=SC2001
+	echo "$PATH" | sed 's/:/\n/g'
+}
