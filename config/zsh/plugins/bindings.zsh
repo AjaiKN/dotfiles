@@ -20,10 +20,13 @@ if [ "$TERM" != "eterm-color" ]; then
 	# bindkey "^O" accept-line-and-down-history
 	bindkey "^P" up-line-or-history # or up-history?
 	bindkey "^Q" push-line
-	if (( $+functions[fzf-history-widget] )); then
+	if zle -l fzf-history-widget; then
 		bindkey "^R" fzf-history-widget
 		bindkey "^T" fzf-file-widget
 		bindkey "^[c" fzf-cd-widget
+	fi
+	if zle -l atuin-search-viins; then
+		bindkey "^R" atuin-search-viins
 	fi
 	bindkey "^S" history-incremental-search-forward
 	#Conflict: In vim, this deletes until the beginning of the line, not the whole line
@@ -159,7 +162,7 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey '^[b' emacs-backward-word
 	bindkey '^[f' emacs-forward-word
 
-	if (( $+functions[history-substring-search-up] )); then
+	if zle -l history-substring-search-up; then
 		bindkey '[OA' history-substring-search-up
 		bindkey '[OB' history-substring-search-down
 		bindkey '^[[A' history-substring-search-up
