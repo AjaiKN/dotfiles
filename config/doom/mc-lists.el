@@ -123,6 +123,7 @@
         akn/evil-mc-make-cursor-move-next-line
         akn/evil-mc-make-cursor-move-prev-line
         akn/evil-visual-insert
+        akn/fullscreen-toggle
         akn/immediate-auto-save-visited-local-mode
         akn/localleader
         akn/mc->evil-mc
