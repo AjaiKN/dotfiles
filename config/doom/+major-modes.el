@@ -1523,6 +1523,8 @@ Open the vterm buffer reusing a window."
 
 ;;; web
 (after! web-mode
+  (setq! web-mode-auto-close-style 2)
+
   (map! :map web-mode-map
         ;; also see https://blog.binchen.org/posts/navigateselect-html-tags-in-emacs.html
         :nvieomrg "C-t" #'web-mode-tag-match
