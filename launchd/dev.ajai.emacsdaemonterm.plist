@@ -19,7 +19,7 @@
 
 	<key>ProgramArguments</key>
 	<array>
-		<string>/opt/homebrew/bin/emacs</string>
+		<string>/Applications/Emacs.app/Contents/MacOS/bin/emacs</string>
 		<!-- <string>/Users/ajainelson/.nix-profile/bin/emacs</string> -->
 		<string>--fg-daemon=term</string>
 	</array>
