@@ -301,7 +301,7 @@ returns true."
            terra             ; Earth and Moon in alignment for performance.
            *extra (typst +lsp)
            *extra (web +lsp +tree-sitter)               ; the tubes
-           *extra (vue +tree-sitter)
+           *extra (vue)
            *basic (yaml) ; +tree-sitter              ; JSON, but readable
            *extra (zig +lsp +tree-sitter)               ; C, but simpler
            *extra sage
