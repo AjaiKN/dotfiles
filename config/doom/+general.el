@@ -815,7 +815,8 @@ underscores in all modes."
 
 ;;;; Tabs & spaces
 
-(setq-default tab-width 2)
+(setq! tab-width 2
+       standard-indent 2)
 
 (setq! backward-delete-char-untabify-method nil)
 
