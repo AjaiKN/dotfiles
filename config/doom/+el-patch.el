@@ -402,18 +402,30 @@ If DIR is not supplied its set to the current directory by default."
     "Ensure that the grammar library for the language LANG is installed.
 The option `treesit-auto-install-grammar' defines whether to install
 the grammar library if it's unavailable."
-    (or (treesit-ready-p lang t)
-        (when (el-patch-wrap 2 0
-                (and
-                 ;; (not non-essential)
-                 (not (when non-essential (message "not ensuring treesit grammar because non-essential") non-essential))
-                 (or (eq treesit-auto-install-grammar 'always)
-                     (and (eq treesit-auto-install-grammar 'ask)
-                          (y-or-n-p (format "Tree-sitter grammar for `%s' is missing; install it?"
-                                            lang))))))
-          (treesit-install-language-grammar lang)
-          ;; Check that the grammar was installed successfully
-          (treesit-ready-p lang)))))
+    (when (treesit-available-p)
+      (or (treesit-ready-p lang t)
+          (let ((out-dir (or (seq-find #'file-writable-p
+                                       treesit-extra-load-path)
+                             (locate-user-emacs-file "tree-sitter"))))
+            (when (el-patch-wrap 2 0
+                    (and
+                     ;; (not non-essential)
+                     (not (when non-essential (message "not ensuring treesit grammar because non-essential") non-essential))
+                     (or (eq treesit-auto-install-grammar 'always)
+                         (and (memq treesit-auto-install-grammar '(ask ask-dir))
+                              (y-or-n-p (format "Tree-sitter grammar for `%s' is missing; install it?"
+                                                lang))
+                              (or (eq treesit-auto-install-grammar 'ask)
+                                  (progn
+                                    (setq out-dir (read-directory-name
+                                                   (format-prompt "Install grammar for `%s' to" nil lang)
+                                                   out-dir
+                                                   treesit-extra-load-path))
+                                    (add-to-list 'treesit-extra-load-path out-dir)
+                                    t))))))
+              (treesit-install-language-grammar lang out-dir)
+              ;; Check that the grammar was installed successfully
+              (treesit-ready-p lang)))))))
 
 ;;; validating
 (cond
