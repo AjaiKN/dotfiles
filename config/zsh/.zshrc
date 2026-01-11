@@ -208,7 +208,7 @@ plugin compdef
 (( $+commands[fzf] )) && plugin fzf
 plugin history
 plugin edit-command-line
-(( $+commands[emacs] )) && plugin emacs
+[[ -n $INSIDE_EMACS ]] && plugin inside-emacs
 plugin autocorrect
 (( $+commands[atuin] )) && plugin atuin
 
