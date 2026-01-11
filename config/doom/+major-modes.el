@@ -97,6 +97,7 @@
        :gmn "<left>"    #'akn/dirvish-close-subtree-or-up-directory
        :gmn "l"         (akn/cmds! (akn/dirvish-layout-p) #'dired-find-file #'akn/dirvish-toggle-subtree-or-open-file)
        :gmn "<right>"   (akn/cmds! (akn/dirvish-layout-p) #'dired-find-file #'akn/dirvish-toggle-subtree-or-open-file)
+       :gmn "RET"       (akn/cmds! (akn/dirvish-side-p) #'akn/dirvish-toggle-subtree-or-open-file #'dired-find-file)
        :gmn "t f"       #'dirvish-side-follow-mode
        :gmn "t e"       #'dirvish-emerge-mode
        :gmn "t l"       #'dirvish-layout-toggle
