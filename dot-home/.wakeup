@@ -8,7 +8,6 @@
 # https://apple.stackexchange.com/a/397157
 if system_profiler SPAudioDataType | grep --quiet Headphones; then
 	# headphones plugged in
-	# TODO: not sure if this'll work with airpods
 	true
 else
 	# headphones not plugged in
