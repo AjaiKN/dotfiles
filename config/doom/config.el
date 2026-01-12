@@ -44,11 +44,6 @@
                  customize-changed-options customize-save-customized))
     (put sym 'disabled nil)))
 
-(after! gv
-  ;; TODO: remove once Emacs un-obsoletes this
-  ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2023-08/msg02409.html
-  (put 'buffer-local-value 'byte-obsolete-generalized-variable nil))
-
 (require 'akn)
 
 ;;; init perf stuff

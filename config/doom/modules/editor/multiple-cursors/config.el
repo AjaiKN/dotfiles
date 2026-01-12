@@ -187,8 +187,6 @@
   ;; Can't use `mc/cmds-to-run-once' because mc-lists.el overwrites it
   (add-to-list 'mc--default-cmds-to-run-once 'swiper-mc)
 
-  ;; TODO multiple-cursors config for Emacs users?
-
   ;; mc doesn't play well with evil, this attempts to assuage some of its
   ;; problems so that any plugins that depend on multiple-cursors (which I have
   ;; no control over) can still use it in relative safety.

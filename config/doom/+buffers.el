@@ -423,15 +423,6 @@ name and is empty, it'll still try to save it."
         (delete-frame))
     (save-buffers-kill-emacs)))
 
-;;; fix loading session, no workspace selected
-;; See https://github.com/doomemacs/doomemacs/issues/8069.
-;; TODO: remove if this is fixed
-(when (modulep! :ui workspaces)
-  (defadvice! akn/select-workspace-after-load (&rest _)
-    :after #'doom-load-session
-    (unless (+workspace-p (+workspace-current))
-      (+workspace/switch-to 0))))
-
 ;;; file-local variables
 
 ;; Local Variables:

@@ -36,6 +36,9 @@
      ("akn/winner"
       winner-undo                       "<left>" "u" "C-u"
       winner-redo                       "<right>" "r" "C-r")
+     ("akn/tab-bar-history-back"
+      tab-bar-history-back              "<left>" "u" "C-u"
+      tab-bar-history-forward           "<right>" "r" "C-r")
      ("akn/workspace-swap"
       +workspace/swap-left    "<left>"
       +workspace/swap-right   "<right>"

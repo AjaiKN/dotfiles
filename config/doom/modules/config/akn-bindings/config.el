@@ -655,7 +655,8 @@ to normal state is deprioritized)."
                      (and (get-char-property (point) 'button)
                           (get-char-property (point) 'category)
                           (require 'button nil t)
-                          (button-at (point)))
+                          (and-let* ((button (button-at (point))))
+                            (button-get button 'action)))
                      #'push-button
                      (and (or (get-char-property (point) 'field)
                               (get-char-property (point) 'button)
@@ -663,7 +664,7 @@ to normal state is deprioritized)."
                           (require 'wid-edit nil t)
                           (widget-at (point)))
                      #'widget-button-press
-                     (thing-at-point-url-at-point) #'browse-url-at-point
+                     (thing-at-point-url-at-point) #'browse-url-at-point ;or #'goto-address-at-point ?
                      (thing-at-point-file-at-point) #'find-file-at-point
                      (derived-mode-p 'helpful-mode) #'helpful-at-point
                      (derived-mode-p 'embark-collect-mode) #'embark-act

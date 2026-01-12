@@ -57,7 +57,6 @@
          :desc "Magit run"          "!" #'magit-run
          :desc "Magit status here"  "RET" #'magit-status-here
          :desc "Magit git command"  "Q" #'magit-git-command
-         ;; TODO: implement "unstage hunk"
          :desc "Magit stash"        "Z" #'magit-stash
          :desc "Magit quit"         "q" #'akn/magit-quit
          :desc "Magit push"         "p" #'magit-push
