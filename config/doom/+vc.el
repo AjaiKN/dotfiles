@@ -494,7 +494,7 @@ If a prefix argument is provided, ask before reverting hunk."
 
 ;;; transient
 
-(after! transient
+(after! (:or transient magit)
   (setq! transient-default-level 7
          transient-highlight-higher-levels t))
 (use-package! transient-showcase
