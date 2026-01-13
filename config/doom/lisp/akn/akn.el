@@ -292,6 +292,9 @@ enabled, and when disabled resets them to their original values."
                                        #'apheleia-mode
                                      #'ignore))
 
+;;;###autoload
+(defalias 'akn/follow-mode-split #'follow-delete-other-windows-and-split)
+
 ;;; macros for defining things
 (defmacro akn/defun (name &rest stuff)
   "Just like `defun', except return NAME.

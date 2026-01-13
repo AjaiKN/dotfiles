@@ -341,6 +341,7 @@ to normal state is deprioritized)."
  (:prefix "w"
   "D" #'toggle-window-dedicated
   "m h" #'doom/window-maximize-horizontally
+  "F" (akn/cmds! (bound-and-true-p follow-mode) #'follow-mode #'akn/follow-mode-split)
   "O" #'other-window-prefix
   "." #'same-window-prefix
   "C-h" nil) ; so this doesn't interfere with using C-h in which-key

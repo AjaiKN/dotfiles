@@ -280,6 +280,12 @@ was non-nil."
                  +popup-defaults)))
     (+popup/buffer)))
 
+(add-hook! 'follow-mode-hook
+  (defun akn--follow-mode-no-smooth-scroll-h ()
+    (if follow-mode
+        (akn/local-smooth-scroll-disabled-mode)
+      (akn/local-smooth-scroll-disabled-mode -1))))
+
 ;;; workspaces
 
 (map! [remap +workspace/save] #'akn/+workspace/save)
