@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+
+if [ $# -gt 0 ]; then
+	case "$1" in
+		abort|quit|'done')
+			shift
+			set -- reset "$@"
+			;;
+		stop)
+			shift
+			set -- reset "$@" HEAD
+			;;
+	esac
+fi
+
+if dot_git=$(git rev-parse --git-dir); then
+	# so that magit will be able to show the command output too
+	git bisect "$@" | tee "$dot_git/BISECT_CMD_OUTPUT"
+else
+	git bisect "$@"
+fi

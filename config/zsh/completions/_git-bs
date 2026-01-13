@@ -1,0 +1,6 @@
+#compdef git-bs
+
+# ensure /usr/share/zsh/5.9/functions/_git is loaded
+typeset -f _git-bisect &>/dev/null || _git
+
+_git-bisect $@
