@@ -37,6 +37,7 @@ config.macos_window_background_blur = 3
 config.quit_when_all_windows_are_closed = false
 config.default_cwd = os.getenv("HOME") .. "/prog"
 config.prefer_to_spawn_tabs = true
+config.scrollback_lines = 200000
 
 local function bind(mods, key, action)
   return { mods = mods, key = key, action = action }
