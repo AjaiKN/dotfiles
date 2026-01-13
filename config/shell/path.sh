@@ -33,6 +33,8 @@ $HOMEBREW_PREFIX/opt/trash-cli/bin:\
 $HOME/.antigravity/antigravity/bin:\
 /opt/R/arm64/gfortran/bin:\
 /Applications/Firefox.app/Contents/MacOS:\
+/Applications/Gnucash.app/Contents/Resources/bin:\
+/Applications/Gnucash.app/Contents/MacOS:\
 /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support:\
 $HOME/prog/plan9port/bin"
 
