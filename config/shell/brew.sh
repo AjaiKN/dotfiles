@@ -7,6 +7,7 @@ if [ -z "$HOMEBREW_PREFIX" ] || ! [ -e "$HOMEBREW_PREFIX"/bin/brew ]; then
 		if [ -e /opt/homebrew/bin/brew ]; then export HOMEBREW_PREFIX=/opt/homebrew
 		elif [ -e /usr/local/bin/brew ]; then export HOMEBREW_PREFIX=/usr/local
 		fi
+		alias ibrew='arch -x86_64 /usr/local/bin/brew' # old Intel Homebrew through Rosetta
 	else
 		if [ -e /home/linuxbrew/.linuxbrew/bin/brew ]; then export HOMEBREW_PREFIX=/home/linuxbrew/.linuxbrew
 		elif [ -e "$HOME"/.linuxbrew/bin/brew ]; then export HOMEBREW_PREFIX="$HOME"/.linuxbrew
