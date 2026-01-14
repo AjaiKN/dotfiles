@@ -392,3 +392,6 @@ function compdef() {
 		setopt no_prompt_bang no_bg_nice no_aliases
 	_akn_compdef+=("${(pj:\0:)@}")
 }
+# I *think* it's fine that we haven't run compinit yet, since compdef calls are deferred.
+autoload -Uz bashcompinit && bashcompinit
+function bashcompinit() {}
