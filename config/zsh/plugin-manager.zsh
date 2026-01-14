@@ -338,6 +338,7 @@ function load_plugins {
 
 	# This should always be the last plugin.
 	plugin __compinit
+	# plugin __compinit-z4h
 
 	unset -f plugin
 
