@@ -11,6 +11,19 @@ echo_if_interactive() {
 
 # echo_if_interactive "Loading ~/.config/shell/rc.sh"
 
+## umask
+# shellcheck disable=SC3028
+if [ "${EUID:-$(id -u)}" -eq 0 ]; then # https://stackoverflow.com/a/52586842
+	# We may want files created by the superuser to be default-readable by other users
+	# NOTE: To get sudo to be more permissive than the current umask, you need to add this to /etc/sudoers:
+	#   Defaults umask_override
+	#   Defaults umask=0022
+	umask 022
+else
+	# Very conservative umask for regular users
+	umask go-rwx
+fi
+
 ## Nix Prologue
 OLD_PATH_SHELL_RC=$PATH
 

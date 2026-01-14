@@ -9,9 +9,6 @@
 export ENV="$HOME/.config/shell/env.sh"
 export BASH_ENV="$HOME/.config/shell/env.sh"
 
-## umask
-umask o-w || :
-
 ## Load ~/.config/shell/envvars.sh if not already loaded
 
 # shellcheck source=./envvars.sh

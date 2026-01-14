@@ -7,7 +7,8 @@
 # - ~/.config/shell/env.sh ONLY IF THIS FILE HASN'T BEEN LOADED ALREADY: whenever zsh starts (for convenience in case dotfiles weren't installed yet when I logged in)
 
 ## umask
-umask go-rwx
+# Don't allow obviously insecure umask
+umask go-w
 
 ## DOTFILES
 
