@@ -59,24 +59,29 @@
 
 	local zdumpfile=$ZSH_CACHE_DIR/zcompdump-z4h-$EUID-$ZSH_VERSION
 
-	local -a stat files=(${^fpath}/^([^_]*|*~|*.zwc)(-.N))
-	(( ! $#files )) || zstat -A stat +mtime -- $files
-	local real_sig=($ZSH_VERSION $ZSH_PATCHLEVEL $files $stat)
-	real_sig='# '${(V)${(pj:\0:)real_sig}}$'\n'
+	local -a zmtimes
+	LC_ALL=C local -ar files=(${^fpath}/^([^_]*|*~|*.zwc)(-.N))
+	if (( ${#files} )); then
+		zstat -A zmtimes +mtime -- $files || return 1
+	fi
+	local znew_dat=($ZSH_VERSION $ZSH_PATCHLEVEL $files $zmtimes)
+	znew_dat='# '${(V)${(pj:\0:)znew_dat}}$'\n'
 
-	local sig
+	local zold_dat
 	if [[ -r $zdumpfile ]] &&
-			sysread -s $#real_sig sig <$zdumpfile        &&
-			[[ $sig == $real_sig && -r $zdumpfile.zwc ]] &&
-			zstat -A stat +mtime -- $zdumpfile $zdumpfile.zwc &&
-			(( stat[2] == stat[1] + 1 )); then
+			 # Read the comment at the top of the dumpfile
+			sysread -s ${#znew_dat} zold_dat <$zdumpfile        &&
+			[[ $zold_dat == $znew_dat && -r $zdumpfile.zwc ]] &&
+			zstat -A zmtimes +mtime -- $zdumpfile $zdumpfile.zwc &&
+			(( zmtimes[2] == zmtimes[1] + 1 )); then
 		compinit -C -d $zdumpfile
 	else
 		echo "Creating new dumpfile"
 		local tmp=$ZSH_CACHE_DIR/tmp.zcompdump-z4h.$sysparams[pid]
 		zf_rm -f -- $zdumpfile $zdumpfile.zwc $tmp $tmp.2
 		compinit -C -d $tmp
-		{ print -rn -- $real_sig; <$tmp } >$tmp.2
+		# Add comment at top of dumpfile
+		{ print -rn -- $znew_dat; <$tmp } >$tmp.2
 		zf_rm -f -- $tmp
 		zf_mv -- $tmp.2 $zdumpfile
 		zsh_compile $zdumpfile

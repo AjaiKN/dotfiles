@@ -59,20 +59,22 @@
 	else
 		# Check if dumpfile is up-to-date by comparing the full path and
 		# last modification time of all the completion functions in fpath.
-		local zold_dat
 		local -a zmtimes
-		local -i zdump_dat=1
-		LC_ALL=C local -r zcomps=(${^fpath}/^([^_]*|*~|*.zwc)(N))
-		if (( ${#zcomps} )); then
-			zmodload -F zsh/stat b:zstat && zstat -A zmtimes +mtime ${zcomps} || return 1
+		LC_ALL=C local -r files=(${^fpath}/^([^_]*|*~|*.zwc)(-.N))
+		if (( ${#files} )); then
+			zmodload -F zsh/stat b:zstat && zstat -A zmtimes +mtime -- $files || return 1
 		fi
-		local -r znew_dat=${ZSH_VERSION}${ZSH_PATCHLEVEL}$'\0'${(pj:\0:)zcomps}$'\0'${(pj:\0:)zmtimes}
-		if [[ -e ${zdumpfile}.dat ]]; then
-			zmodload -F zsh/system b:sysread && sysread -s ${#znew_dat} zold_dat <${zdumpfile}.dat || return 1
-			if [[ ${zold_dat} == ${znew_dat} ]] zdump_dat=0
-		fi
-		if (( zdump_dat )); then
-			# echo removing
+		local -r znew_dat=${ZSH_VERSION}${ZSH_PATCHLEVEL}$'\0'${(pj:\0:)files}$'\0'${(pj:\0:)zmtimes}
+
+		local zold_dat
+		if [[ -r ${zdumpfile}.dat ]] &&
+			zmodload -F zsh/system b:sysread &&
+			sysread -s ${#znew_dat} zold_dat <${zdumpfile}.dat &&
+			[[ ${zold_dat} == ${znew_dat} ]]
+		then
+			: # Dumpfile is up-to-date
+		else
+			# Delete -> force creation of new dumpfile
 			zmodload -F zsh/files b:zf_rm
 			zf_rm -fs ${zdumpfile}(|.dat|.zwc(|.old))(N) 2>/dev/null
 		fi
