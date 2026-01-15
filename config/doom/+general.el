@@ -2113,8 +2113,8 @@ current buffer, killing it."
 (add-hook! 'after-save-hook #'akn/executable-make-buffer-file-user-executable-if-script-p)
 (defun akn/executable-make-buffer-file-user-executable-if-script-p ()
   "Like `executable-make-buffer-file-executable-if-script-p', except
-if it only makes it executable to the user (u+x) rather than
-all (+x).
+it respects the variable `executable-chmod' (by using the function
+`executable-chmod').
 
 Make file executable according to umask if not already executable.
 If file already has any execute bits set at all, do not change existing
@@ -2123,6 +2123,8 @@ file modes."
        (save-restriction
          (widen)
          (string= "#!" (buffer-substring (point-min) (+ 2 (point-min)))))
+       buffer-file-name
+       (not (backup-file-name-p buffer-file-name))
        ;; Eg file-modes can return nil (bug#9879).  It should not,
        ;; in this context, but we should handle it all the same.
        (with-demoted-errors "Unable to make file executable: %s"
