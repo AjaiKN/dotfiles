@@ -26,6 +26,11 @@
 
 ;;; Completion
 
+(pushnew! completion-ignored-extensions
+          ".zwc"                        ; zsh word code
+          ".DS_Store"                   ; macOS
+          ".jj/")                       ; https://github.com/jj-vcs/jj
+
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
 ;; also see `completion-category-defaults' and `completion-category-overrides'
 (after! (:or emacs orderless vertico)
@@ -70,6 +75,8 @@
      +vertico-basic-remote-try-completion
      +vertico-basic-remote-all-completions
      "Use basic completion on remote files only")))
+
+;;; orderless
 
 (use-package! orderless
   :init
@@ -160,6 +167,7 @@
         :i "S-<tab>"   stab-cmd
         :i "S-TAB"     stab-cmd))
 
+;;; corfu
 
 (after! corfu
   (map! (:map corfu-map
