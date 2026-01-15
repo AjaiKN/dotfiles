@@ -2676,6 +2676,7 @@ there's no need for `markdown-mode' to reduplicate the effort."
        :nviemg "q" #'akn/dired-quit
        :nviemg "Q" #'akn/dired-quit-no-change-cwd))
 (defalias 'akn/terminal-quit-mode #'akn/server-quit-mode)
+(akn/prioritize-minor-mode-keymap 'akn/server-quit-mode)
 ;; TODO: check (length (tab-bar-tabs))
 (defconst akn/server-quit-commands
   (akn/cmds! (akn/server-quit-cmd) it))
