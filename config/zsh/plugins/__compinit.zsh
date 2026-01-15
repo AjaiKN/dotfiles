@@ -47,9 +47,10 @@
 	local zdumpfile="$ZSH_CACHE_DIR/zcompdump-$EUID-$ZSH_VERSION"
 
 	if (( _akn_dangerous_root )); then
+		# -D: don't bother making a dumpfile
 		# -i: ignore/skip insecure directories
-		zsh_compile $zdumpfile
-		compinit -d $zdumpfile -i || return 1
+		zf_rm -f ${zdumpfile}.zwc
+		compinit -d $zdumpfile -D -i || return 1
 	elif ! is-at-least 5.2; then
 		# the extended glob we need doesn't seem to be supported in earlier zsh versions
 		# zmodload -F zsh/files b:zf_rm
