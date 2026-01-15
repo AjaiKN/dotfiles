@@ -34,28 +34,28 @@
 	# make sure my stuff is at the front
 	add_to_fpath "$ZSH_CACHE_DIR/completions" "$ZSH_CUSTOM/completions" "$ZSH_CUSTOM/functions"
 
-	autoload -Uz is-at-least
 	# from https://github.com/zimfw/completion/blob/master/init.zsh
 	if (( ${+_comps} )); then
 		# https://github.com/zimfw/zimfw/wiki/Troubleshooting#completion-is-not-working
 		print -u2 'warning: __compinit.zsh: completion was already initialized. Will call compinit again.'
 	fi
 
-	# not using -C because https://github.com/romkatv/zsh-bench?tab=readme-ov-file#cutting-corners
-	# autoload -Uz compinit
-	# compinit -d "$ZSH_CACHE_DIR/zcompdump"
+	autoload -Uz is-at-least
+	autoload -Uz compinit || return 1
 
 	# from https://github.com/zimfw/completion/blob/master/init.zsh
 	local zdumpfile="$ZSH_CACHE_DIR/zcompdump-$EUID-$ZSH_VERSION"
 
 	if (( _akn_dangerous_root )); then
 		# -i: ignore/skip insecure directories
-		autoload -Uz compinit && compinit -d $zdumpfile -i || return 1
+		zsh_compile $zdumpfile
+		compinit -d $zdumpfile -i || return 1
 	elif ! is-at-least 5.2; then
 		# the extended glob we need doesn't seem to be supported in earlier zsh versions
 		# zmodload -F zsh/files b:zf_rm
 		# zf_rm -fs ${zdumpfile}(|.dat|.zwc(|.old))(N)
-		autoload -Uz compinit && compinit -d ${zdumpfile} || return 1
+		zsh_compile $zdumpfile
+		compinit -d $zdumpfile || return 1
 	else
 		# Check if dumpfile is up-to-date by comparing the full path and
 		# last modification time of all the completion functions in fpath.
@@ -70,7 +70,7 @@
 		if [[ -r ${zdumpfile}.dat ]] &&
 			zmodload -F zsh/system b:sysread &&
 			sysread -s ${#znew_dat} zold_dat <${zdumpfile}.dat &&
-			[[ ${zold_dat} == ${znew_dat} ]]
+			[[ $zold_dat == $znew_dat ]]
 		then
 			: # Dumpfile is up-to-date
 		else
@@ -80,16 +80,14 @@
 		fi
 
 		# Load and initialize the completion system
-		autoload -Uz compinit && compinit -C -d ${zdumpfile} && [[ -e ${zdumpfile} ]] || return 1
+		compinit -C -d $zdumpfile && [[ -e $zdumpfile ]] || return 1
 
-		if [[ ! ${zdumpfile}.dat -nt ${zdumpfile} ]]; then
-			>! ${zdumpfile}.dat <<<${znew_dat}
+		if [[ ! ${zdumpfile}.dat -nt $zdumpfile ]]; then
+			>! ${zdumpfile}.dat <<<$znew_dat
 		fi
+
 		# Compile the completion dumpfile; significant speedup
-		# if [[ ! ${zdumpfile}.zwc -nt ${zdumpfile} ]]; then
-		#   zcompile ${zdumpfile}
-		# fi
-		zsh_compile ${zdumpfile}
+		zsh_compile $zdumpfile
 	fi
 
 	# from zsh4humans: Replay compdef calls.
