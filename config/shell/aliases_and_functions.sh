@@ -64,6 +64,8 @@ alias di=dired
 
 ## Misc
 
+# Expand aliases when using sudo
+alias sudo='sudo '
 alias _='sudo '
 
 #copy file onto clipboard: cat #{file} | pbcopy
