@@ -189,6 +189,7 @@ plugin omz-vcs_info
 plugin ohmyzsh/plugins/fasd
 [[ "${OSTYPE}" == darwin* ]] && plugin ohmyzsh/plugins/macos
 (( $+commands[systemctl] )) && plugin ohmyzsh/plugins/systemd
+plugin ohmyzsh/plugins/gitignore
 # plugin ohmyzsh/plugins/colored-man-pages
 # plugin ohmyzsh/plugins/mise
 # plugin ohmyzsh/plugins/gnu-utils
