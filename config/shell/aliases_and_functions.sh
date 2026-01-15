@@ -68,6 +68,9 @@ alias di=dired
 alias sudo='sudo '
 alias _='sudo '
 
+command -v sudoedit >/dev/null 2>&1 ||
+	alias sudoedit='\sudo -e'
+
 #copy file onto clipboard: cat #{file} | pbcopy
 #paste onto file: pbpaste > #{file}
 
