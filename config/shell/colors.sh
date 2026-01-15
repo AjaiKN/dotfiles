@@ -54,21 +54,21 @@ case "$OSTYPE" in
 	(netbsd*)
 		# On NetBSD, test if `gls` (GNU ls) is installed (this one supports colors);
 		# otherwise, leave ls as is, because NetBSD's ls doesn't support -G
-		akn_try_ls_args gls --color=tty
+		akn_try_ls_args gls --color=tty --group-directories-first
 		;;
 	(openbsd*)
 		# On OpenBSD, `gls` (ls from GNU coreutils) and `colorls` (ls from base,
 		# with color and multibyte support) are available from ports.
 		# `colorls` will be installed on purpose and can't be pulled in by installing
 		# coreutils (which might be installed for other reasons), so prefer it to `gls`.
-		akn_try_ls_args gls --color=tty
+		akn_try_ls_args gls --color=tty --group-directories-first
 		akn_try_ls_args colorls -G
 		;;
 	(darwin*|freebsd*)
 		# OMZ only uses GNU ls if installed and there are user defaults for
-		# $LS_COLORS, as the default coloring scheme is not very pretty.
+		# $LS_COLORS ("as the default coloring scheme is not very pretty").
 		# But I like that GNU ls is more compact.
-		akn_try_ls_args gls --color=tty ||
+		akn_try_ls_args gls --color=tty --group-directories-first ||
 			# This alias works by default just using $LSCOLORS
 			akn_try_ls_args ls -G
 		alias macls="\ls -G"
@@ -76,7 +76,7 @@ case "$OSTYPE" in
 		alias getfacl="\ls -G -lde@"
 		;;
 	(*)
-		akn_try_ls_args ls --color=tty ||
+		akn_try_ls_args ls --color=tty --group-directories-first ||
 			akn_try_ls_args ls -G
 		;;
 esac
