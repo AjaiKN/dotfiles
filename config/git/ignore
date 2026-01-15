@@ -3,7 +3,7 @@
 # from ~/prog/obiesource/git-graph
 .gitGraph
 
-# Icon ends with two \r
+# Icon\r
 # https://stackoverflow.com/a/65429032
 Icon?
 ![iI]con[_a-zA-Z0-9]
@@ -18,10 +18,21 @@ flycheck_*
 .project
 .projectile-cache.eld
 
-###############################
+## gitignore.io #############################
 
-# Created by https://www.toptal.com/developers/gitignore/api/macos,linux,direnv,emacs,vim,gpg,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,linux,direnv,emacs,vim,gpg,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/macos,linux,direnv,emacs,vim,gpg,visualstudiocode,backup,diff,git,kate,mercurial,patch,ssh
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos,linux,direnv,emacs,vim,gpg,visualstudiocode,backup,diff,git,kate,mercurial,patch,ssh
+
+### Backup ###
+*.bak
+*.gho
+*.ori
+*.orig
+*.tmp
+
+### Diff ###
+*.patch
+*.diff
 
 ### direnv ###
 .direnv
@@ -31,8 +42,8 @@ flycheck_*
 # -*- mode: gitignore; -*-
 *~
 \#*\#
-/.config/emacsesktop
-/.config/emacsesktop.lock
+/.emacs.desktop
+/.emacs.desktop.lock
 *.elc
 auto-save-list
 tramp
@@ -78,9 +89,28 @@ flycheck_*.el
 /network-security.data
 
 
+### Git ###
+# Created by git for backups. To disable backups in Git:
+# $ git config --global mergetool.keepBackup false
+
+# Created by git when using merge tools for conflicts
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+
 ### GPG ###
 secring.*
 
+
+### Kate ###
+# Swap Files #
+.*.kate-swp
+.swp.*
 
 ### Linux ###
 
@@ -102,8 +132,8 @@ secring.*
 .AppleDouble
 .LSOverride
 
+# Icon must end with two \r
 Icon
-
 
 # Thumbnails
 ._*
@@ -127,6 +157,22 @@ Temporary Items
 ### macOS Patch ###
 # iCloud generated files
 *.icloud
+
+### Mercurial ###
+.hg/
+.hgignore
+.hgsigs
+.hgsub
+.hgsubstate
+.hgtags
+
+### Patch ###
+*.rej
+
+### SSH ###
+**/.ssh/id_*
+**/.ssh/*_id_*
+**/.ssh/known_hosts
 
 ### Vim ###
 # Swap
@@ -167,6 +213,9 @@ tags
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,linux,direnv,emacs,vim,gpg,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/macos,linux,direnv,emacs,vim,gpg,visualstudiocode,backup,diff,git,kate,mercurial,patch,ssh
 
+## remove gitignore.io lines that I don't want
+
+![iI]con
 !/server/
