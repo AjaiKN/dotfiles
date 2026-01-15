@@ -44,7 +44,7 @@ mychmod go-rwx ./*history .*history
 mychmod go-rwx ./*history_backup .*history_backup
 mychmod go-rwx Zotero ZotMoov
 mychmod go-rwx .config .local .local/bin .local/share .local/state .cache
-mychmod go-rwx "${XDG_CONFIG_HOME:-.cache}" "${XDG_STATE_HOME:-.local/state}" "${XDG_DATA_HOME:-.local/share}" "${XDG_CACHE_HOME:-.cache}"
+mychmod go-rwx "${XDG_CONFIG_HOME:-.config}" "${XDG_STATE_HOME:-.local/state}" "${XDG_DATA_HOME:-.local/share}" "${XDG_CACHE_HOME:-.cache}"
 mychmod go-rwx ./*rc .*rc
 
 mychmod go-rwx "$DOTFILES"
