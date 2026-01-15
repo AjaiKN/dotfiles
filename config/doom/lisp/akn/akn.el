@@ -648,6 +648,13 @@ is :around, :before, :after, :override, :after-until,
 
 ;;; function for prioritizing keymaps
 (defun akn/prioritize-minor-mode-keymap (minor-mode-name)
+  "Prioritize MINOR-MODE-NAME's map over other minor mode maps.
+
+MINOR-MODE-NAME, a symbol, is the name of a minor mode. If it ends with
+`-map', the `-map' part will be ignored."
+  (let ((str (akn/symbol->string minor-mode-name)))
+    (when (string-match (rx bos (group (* anychar)) "-map" eos) str)
+      (setq minor-mode-name (akn/string->symbol (match-string 1 str)))))
   (when (not (eq (caar minor-mode-map-alist) minor-mode-name))
     (let ((entry (assq minor-mode-name minor-mode-map-alist)))
       (if (not entry)
