@@ -2661,6 +2661,20 @@ there's no need for `markdown-mode' to reduplicate the effort."
   (if akn/server-quit-mode
       (add-hook 'quit-window-hook #'akn/server-quit-window-h nil 'local)
     (remove-hook 'quit-window-hook #'akn/server-quit-window-h 'local)))
+(map! (:map akn/server-quit-mode-map
+       :mnvg "q"               akn/server-quit-commands
+       [remap quit-window]     akn/server-quit-commands
+       [remap evil-quit]       akn/server-quit-commands
+       [remap +magit/quit]     akn/server-quit-commands
+       [remap +magit/quit-all] akn/server-quit-commands
+       [remap +dired/quit-all] akn/server-quit-commands
+       [remap dirvish-quit]    akn/server-quit-commands
+       [remap calc-quit]       akn/server-quit-commands)
+      [remap dirvish-quit]    akn/server-quit-commands
+      [remap +dired/quit-all] akn/server-quit-commands
+      (:map (dired-mode-map dirvish-mode-map)
+       :nviemg "q" #'akn/dired-quit
+       :nviemg "Q" #'akn/dired-quit-no-change-cwd))
 (defalias 'akn/terminal-quit-mode #'akn/server-quit-mode)
 ;; TODO: check (length (tab-bar-tabs))
 (defconst akn/server-quit-commands
@@ -2691,20 +2705,6 @@ there's no need for `markdown-mode' to reduplicate the effort."
    (or (akn/server-quit-cmd) #'ignore)))
 (defun akn/server-quit-window-h ()
   (akn/server-quit))
-(map! (:map akn/server-quit-mode-map
-       :mnvg "q"               akn/server-quit-commands
-       [remap quit-window]     akn/server-quit-commands
-       [remap evil-quit]       akn/server-quit-commands
-       [remap +magit/quit]     akn/server-quit-commands
-       [remap +magit/quit-all] akn/server-quit-commands
-       [remap +dired/quit-all] akn/server-quit-commands
-       [remap dirvish-quit]    akn/server-quit-commands
-       [remap calc-quit]       akn/server-quit-commands)
-      [remap dirvish-quit]    akn/server-quit-commands
-      [remap +dired/quit-all] akn/server-quit-commands
-      (:map (dired-mode-map dirvish-mode-map)
-       :nviemg "q" #'akn/dired-quit
-       :nviemg "Q" #'akn/dired-quit-no-change-cwd))
 
 (defvar akn/dired-file (file-name-concat doom-cache-dir "akn-cwd"))
 
