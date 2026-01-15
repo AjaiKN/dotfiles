@@ -89,10 +89,10 @@
 
 	# Replay compdef calls.
 	local args
-	for args in $_akn_compdef; do
+	for args in $_akn_deferred_compdefs; do
 		compdef "${(@0)args}"
 	done
-	unset _akn_compdef
+	unset _akn_deferred_compdefs
 
 	# local cmd
 	# for cmd in helm kitty kubectl oc; do

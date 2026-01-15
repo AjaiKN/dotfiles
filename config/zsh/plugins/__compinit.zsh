@@ -94,10 +94,10 @@
 
 	# from zsh4humans: Replay compdef calls.
 	local args
-	for args in $_akn_compdef; do
+	for args in $_akn_deferred_compdefs; do
 		compdef "${(@0)args}"
 	done
-	unset _akn_compdef
+	unset _akn_deferred_compdefs
 
 	# from https://github.com/zimfw/completion/blob/master/init.zsh
 	functions[compinit]=$'print -u2 \'warning: compinit being called again after completion module at \'${funcfiletrace[1]}
