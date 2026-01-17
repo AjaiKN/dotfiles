@@ -790,8 +790,9 @@ underscores in all modes."
 ;; https://github.com/liuyinz/binky.el
 ;; https://github.com/rolandwalker/back-button
 ;; https://github.com/tcw165/history
-;; https://elpa.gnu.org/packages/cursor-undo.html
 ;; https://www.emacswiki.org/emacs/BookmarkPlus#AutomaticIdle-PeriodBookmarking
+;; https://github.com/yangwen0228/jump-tree
+;; https://github.com/ganmacs/jumplist
 
 ;; https://old.reddit.com/r/emacs/comments/17g17m2/bookmark_or_dogears_or/
 ;; https://old.reddit.com/r/emacs/comments/pt8kod/gumshoe_20_my_first_package_in_melpa/
