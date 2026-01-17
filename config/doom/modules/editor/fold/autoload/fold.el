@@ -328,6 +328,7 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
   "Open folds at LEVEL (or all folds if LEVEL is nil)."
   (interactive
    (list (if current-prefix-arg (prefix-numeric-value current-prefix-arg))))
+  (setq selective-display nil)
   (cond ((derived-mode-p 'Custom-mode)
          (+fold--custom-open-all))
         ((+fold--treesit-fold-p) (treesit-fold-open-all))
