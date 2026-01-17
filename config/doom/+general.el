@@ -2661,6 +2661,8 @@ there's no need for `markdown-mode' to reduplicate the effort."
   (if akn/server-quit-mode
       (add-hook 'quit-window-hook #'akn/server-quit-window-h nil 'local)
     (remove-hook 'quit-window-hook #'akn/server-quit-window-h 'local)))
+(defconst akn/server-quit-commands
+  (akn/cmds! (akn/server-quit-cmd) it))
 (map! (:map akn/server-quit-mode-map
        :mnvg "q"               akn/server-quit-commands
        [remap quit-window]     akn/server-quit-commands
@@ -2678,8 +2680,6 @@ there's no need for `markdown-mode' to reduplicate the effort."
 (defalias 'akn/terminal-quit-mode #'akn/server-quit-mode)
 (akn/prioritize-minor-mode-keymap 'akn/server-quit-mode)
 ;; TODO: check (length (tab-bar-tabs))
-(defconst akn/server-quit-commands
-  (akn/cmds! (akn/server-quit-cmd) it))
 (defun akn/dired-quit (&optional no-change-cwd)
   (interactive "P")
   (if (and (derived-mode-p 'dired-mode)
