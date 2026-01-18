@@ -1843,6 +1843,11 @@ Use \\[visible-mode] to show the full hashes."
     (lispy-set-key-theme lispy-key-theme)))
 
 ;;; Consult
+
+(defvar akn/no-preview-file-regexp
+  (rx (or (regexp akn/file-remote-regexp)
+          (: bos "/.resolve" (or eos "/")))))
+
 (use-package! consult
   :defer-incrementally (compat pp tabulated-list text-property-search fringe bookmark)
   :config
@@ -1876,9 +1881,8 @@ Use \\[visible-mode] to show the full hashes."
       (lambda (&optional name)
         (funcall ret
                  (if (and (stringp name)
-                          (file-remote-p name))
-                          ;; a connection is already established to the remote system it's on
-                          ;; (not (file-remote-p name nil t)))
+                          (or (string-match-p akn/no-preview-regexp name)
+                              (file-remote-p name)))
                      nil
                    name))))))
 
@@ -1899,6 +1903,10 @@ Use \\[visible-mode] to show the full hashes."
           (some-window (lambda (w) (not (eq (window-dedicated-p w) t)))
                        'no-minibuffer)
         ret)))
+
+  (define-advice dirvish-disable-dp (:before-until (file &rest _args) akn/a)
+    (when (and (stringp file) (string-match-p akn/no-preview-file-regexp file))
+      `(info . ,(format "Preview for file %s has been disabled (matches akn/no-preview-file-regexp)" file))))
 
   (dirvish-peek-mode))
 
