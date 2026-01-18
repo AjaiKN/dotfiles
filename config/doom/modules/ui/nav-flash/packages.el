@@ -1,4 +1,5 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; ui/nav-flash/packages.el
 
-(package! pulsar :pin "9e6f3735863a4c03a8f225f052e3f9278b832aa0")
+(package! pulsar :pin "7f32ceeaf59de5c035b90c7afffa249c5ff3185a"
+  :recipe (:host github :repo "protesilaos/pulsar"))
