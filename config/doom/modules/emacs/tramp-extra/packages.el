@@ -2,7 +2,7 @@
 ;;; emacs/tramp-extra/packages.el
 
 (when (modulep! +hlo)
-  (package! tramp-hlo :pin "703c2b0d83a486d3010774eaf97b259b82d574f0"
+  (package! tramp-hlo :pin "b726b4042e96ac5cead396c8d12c01e6bad2bd78"
     :recipe (:host github :repo "jsadusk/tramp-hlo")))
 
 (when (modulep! +rpc)
