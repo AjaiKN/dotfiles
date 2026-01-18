@@ -228,3 +228,15 @@
   :demand t
   :config
   (tramp-hlo-setup))
+
+;;; PERF: tramp-rpc
+
+(use-package! tramp-rpc
+  :when (modulep! +rpc)
+
+  ;; TODO: remove this paragraph (and add :defer t) if tramp-rpc's autoloads are fixed (also from ./packages.el)
+  :after tramp
+  :demand t
+
+  :config
+  (setq! tramp-rpc-deploy-prefer-build nil))
