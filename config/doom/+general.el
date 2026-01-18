@@ -1881,7 +1881,7 @@ Use \\[visible-mode] to show the full hashes."
       (lambda (&optional name)
         (funcall ret
                  (if (and (stringp name)
-                          (or (string-match-p akn/no-preview-regexp name)
+                          (or (string-match-p akn/no-preview-file-regexp name)
                               (file-remote-p name)))
                      nil
                    name))))))
