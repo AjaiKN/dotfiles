@@ -75,7 +75,7 @@ only = [
   "chezmoi",
   # "home_manager",
   "juliaup",
-  "macports",
+  # "macports",
   # "myrepos", # https://myrepos.branchable.com/
   "self_update",
   "tmux",
