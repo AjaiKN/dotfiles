@@ -309,3 +309,18 @@ if [ -x "$DOTFILES/scripts/secure_path" ]; then
 	fi
 	export PATH
 fi
+
+## Guix
+
+if [ -e "$XDG_CONFIG_HOME/guix/current" ]; then
+	GUIX_PROFILE="$XDG_CONFIG_HOME/guix/current"
+	. "$GUIX_PROFILE/etc/profile"
+fi
+
+### Automatically added by the Guix install script.
+if [ -n "$GUIX_ENVIRONMENT" ]; then
+	if [[ $PS1 =~ (.*)"\\$" ]]; then
+		PS1="${BASH_REMATCH[1]} [env]\\\$ "
+	fi
+fi
+

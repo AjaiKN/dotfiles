@@ -300,6 +300,13 @@ if [ -x "$DOTFILES/scripts/secure_path" ]; then
 	export PATH
 fi
 
+### Guix
+
+if [ -e "$XDG_CONFIG_HOME/guix/current" ]; then
+	GUIX_PROFILE="$XDG_CONFIG_HOME/guix/current"
+	. "$GUIX_PROFILE/etc/profile"
+fi
+
 ### Deduplicate PATH, MANPATH, and fpath
 typeset -U path manpath fpath
 

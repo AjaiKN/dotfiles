@@ -43,6 +43,13 @@ export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:-/etc/xdg}"
 # shellcheck source=./path.sh
 . "$HOME/.config/shell/path.sh"
 
+## Guix
+
+if [ -e "$XDG_CONFIG_HOME/guix/current" ]; then
+	GUIX_PROFILE="$XDG_CONFIG_HOME/guix/current"
+	. "$GUIX_PROFILE/etc/profile"
+fi
+
 ## MANPATH
 # from brew shellenv
 [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}"
