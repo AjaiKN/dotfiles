@@ -1,6 +1,8 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2317
 
+source "$HOME/.config/shell/env.sh"
+
 # https://planet.kde.org/siosms-blog-2023-12-21-dont-change-your-login-shell-use-a-modern-terminal-emulator/
 # Only trigger if:
 if
@@ -13,16 +15,14 @@ if
 		# - We did not call: bash -c '...'
 		[[ -z ${BASH_EXECUTION_STRING:-} ]] &&
 		# - The zsh binary exists and is executable
-		[[ -x "/bin/zsh" ]] &&
+		command -v zsh >/dev/null 2>&1 &&
 		# - 'zsh' is not the parent process of this shell
 		grep -qv 'zsh' "/proc/$PPID/comm" 2>/dev/null &&
 		akn_ps_output="$(ps --no-header --pid=$PPID --format=comm 2>/dev/null)" && [[ $akn_ps_output != "zsh" ]]
 then
 	export AKN_INSIDE_ZSH=1
-	exec /bin/zsh
+	exec zsh
 fi
-
-source "$HOME/.config/shell/env.sh"
 
 # Loaded in interactive non-login shells in bash.
 # On Mac, interactive shells are login shells by default, so we load this file in ~/.bash_profile.

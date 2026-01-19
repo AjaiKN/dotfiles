@@ -4,15 +4,19 @@ local wezterm = require 'wezterm'
 -- This will hold the configuration.
 local config = wezterm.config_builder()
 
+local home = wezterm.home_dir --os.getenv("HOME")
+local is_mac = string.find(wezterm.target_triple, 'darwin')
+
+function file_exists(name)
+  -- https://stackoverflow.com/a/4991602
+   local f=io.open(name,"r")
+   if f~=nil then io.close(f) return true else return false end
+end
+
 --disabled because I have no way of knowing if TERM=wezterm is installed on an ssh'ed machine
 --TODO: try doing something like this: https://ghostty.org/docs/help/terminfo#configure-ssh-to-fall-back-to-a-known-terminfo-entry
--- function file_exists(name)
---   -- https://stackoverflow.com/a/4991602
---    local f=io.open(name,"r")
---    if f~=nil then io.close(f) return true else return false end
--- end
 -- -- https://wezterm.org/config/lua/config/term.html
--- if file_exists(os.getenv("HOME") .. "/.terminfo/w/wezterm") then
+-- if file_exists(home .. "/.terminfo/w/wezterm") then
 --   config.term = "wezterm"
 -- end
 
@@ -28,6 +32,14 @@ wezterm.on('toggle-opacity', function(window, pane)
   window:set_config_overrides(overrides)
 end)
 
+for _,dir in ipairs({ home.."/.local/bin", home.."/bin", home.."/.config/guix/current/bin", home.."/.nix-profile/bin", "/nix/profile/bin", home.."/.local/state/nix/profile/bin", "/nix/var/nix/profiles/default/bin", "/usr/local/bin", "/usr/bin", "/bin", not is_mac and "/home/linuxbrew/.linuxbrew/bin" }) do
+  if dir and file_exists(dir.."/zsh") then
+    wezterm.log_info("shell: " .. dir.."/zsh")
+    config.default_prog = { dir.."/zsh" }
+    break
+  end
+end
+
 -- This is where you actually apply your config choices
 
 -- config.color_scheme = 'AdventureTime'
@@ -35,7 +47,9 @@ config.enable_kitty_keyboard = true
 config.window_background_opacity = my_opacity
 config.macos_window_background_blur = 3
 config.quit_when_all_windows_are_closed = false
-config.default_cwd = os.getenv("HOME") .. "/prog"
+if file_exists(home .. "/prog/") then
+  config.default_cwd = home .. "/prog"
+end
 config.prefer_to_spawn_tabs = true
 config.scrollback_lines = 200000
 
@@ -127,7 +141,7 @@ config.keys = {
   bind('SHIFT|SUPER', 'DownArrow', if_kkp(kkp_super_shift_up, act.ScrollToPrompt(1))),
 }
 
-if not string.find(wezterm.target_triple, 'darwin') then
+if not is_mac then
   -- add_bind('CTRL', 'v', if_kkp(act.SendKey{mods='CTRL', key='v'}, act.PasteFrom 'Clipboard'))
   add_bind('CTRL', 'w', if_kkp(act.SendKey{mods='CTRL', key='w'}, act.CloseCurrentTab{confirm=true}))
   add_bind('CTRL', 't', if_kkp(act.SendKey{mods='CTRL', key='t'}, act.SpawnTab 'CurrentPaneDomain'))
