@@ -27,6 +27,14 @@
 #   - Deduplicates the final PATH
 #   - Falls back to original PATH if result would be empty
 
+orig_path="$PATH"
+export PATH="/usr/bin:/bin:/usr/sbin:/sbin"
+system_path_good=
+if system_path="$(getconf PATH)" && [ -n "$system_path" ]; then
+	system_path_good=1
+	export PATH="${system_path}:$PATH"
+fi
+
 export LC_ALL=C
 
 newline='
@@ -147,7 +155,7 @@ is_dir_empty() {
 }
 
 IFS=':'
-for dir in $PATH; do
+for dir in $orig_path; do
 	if [ "${dir#/}" = "$dir" ]; then
 		>&2 echo "removing '$dir' because doesn't start with /"
 		continue
@@ -240,8 +248,9 @@ for perms in $all_perms_and_uids; do
 done
 
 # Add the default system PATH back at the end
-system_path="$(getconf PATH)"
-ret="${ret%:}:${system_path#:}"
+if [ -n "$system_path_good" ]; then
+	ret="${ret%:}:${system_path#:}"
+fi
 
 # deduplicate
 ret="$(printf '%s' ":${ret#:}:" | awk -v RS=":" -v ORS=":" '!x[$0]++')"
