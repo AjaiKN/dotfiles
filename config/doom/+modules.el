@@ -201,6 +201,7 @@ returns true."
            *basic (:if (versionp! emacs-version >= "30.1") vim-file-locals)
            ein               ; tame Jupyter notebooks with emacs
            *extra quarto
+           *basic (:if (featurep :system 'linux) guix)
            *basic (eval +overlay)     ; run code, run (also, repls)
            *basic fasd
            *basic lookup              ; navigate your code and its documentation
@@ -293,7 +294,7 @@ returns true."
            *extra (ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
            *extra (rust +lsp +tree-sitter)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
            scala             ; java, but good
-           (scheme +guile)   ; a fully conniving family of lisps
+           *extra (scheme +guile)   ; a fully conniving family of lisps
            *basic (sh +fish +powershell +lsp)        ; +tree-sitter ; she sells {ba,z,fi}sh shells on the C xor
            sml
            solidity          ; do you need a blockchain? No.
