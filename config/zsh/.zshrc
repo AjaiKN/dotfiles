@@ -13,6 +13,11 @@
 
 export AKN_INSIDE_ZSH=1
 
+### disable command-not-found handlers
+
+unfunction command_not_found_handle 2>/dev/null
+unfunction command_not_found_handler 2>/dev/null
+
 ### helpers
 echo_if_interactive() {
 	if [ -t 0 ]; then
