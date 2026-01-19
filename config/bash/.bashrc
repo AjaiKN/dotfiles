@@ -312,10 +312,7 @@ fi
 
 ## Guix
 
-if [ -e "$XDG_CONFIG_HOME/guix/current" ]; then
-	GUIX_PROFILE="$XDG_CONFIG_HOME/guix/current"
-	. "$GUIX_PROFILE/etc/profile"
-fi
+. "$HOME/.config/shell/guix.sh"
 
 ### Automatically added by the Guix install script.
 if [ -n "$GUIX_ENVIRONMENT" ]; then

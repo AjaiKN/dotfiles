@@ -8,7 +8,10 @@ $DOTFILES/bin:\
 $HOME/.local/share/mise/shims:\
 $HOME/.config/emacs/bin:\
 /run/wrappers/bin:\
+${GUIX_PROFILE:-$HOME/.guix-profile}/bin:\
+$HOME/.guix-profile/bin:\
 ${XDG_CONFIG_HOME:-$HOME/.config}/guix/current/bin:\
+/var/guix/profiles/system/bin:\
 $HOME/.nix-profile/bin:\
 /nix/profile/bin:\
 $HOME/.local/state/nix/profile/bin:\

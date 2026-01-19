@@ -302,10 +302,7 @@ fi
 
 ### Guix
 
-if [ -e "$XDG_CONFIG_HOME/guix/current" ]; then
-	GUIX_PROFILE="$XDG_CONFIG_HOME/guix/current"
-	. "$GUIX_PROFILE/etc/profile"
-fi
+. "$HOME/.config/shell/guix.sh"
 
 ### Deduplicate PATH, MANPATH, and fpath
 typeset -U path manpath fpath
