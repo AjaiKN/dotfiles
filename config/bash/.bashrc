@@ -46,6 +46,11 @@ OLD_PATH_BASHRC=$PATH
 #       *) return;;
 # esac
 
+## disable command-not-found handlers
+
+unfunction command_not_found_handle 2>/dev/null
+unfunction command_not_found_handler 2>/dev/null
+
 ## History
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
