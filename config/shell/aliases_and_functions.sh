@@ -76,6 +76,10 @@ command -v sudoedit >/dev/null 2>&1 ||
 
 #export PERL5LIB="~/.cpan/build/Devel-REPL-1.003025-rohPIt/lib:~/.cpan/build/Moose-2.1206-ddLWA6/lib"
 
+if ! command -v caffeinate >/dev/null 2>&1; then
+	alias caffeinate=systemd-inhibit
+fi
+
 alias spacemacs='emacs-open-new --profile spacemacs'
 
 alias reload_shared='. ${ZDOTDIR:-"$HOME"}/.config/shell/rc.sh'
