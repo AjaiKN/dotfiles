@@ -9,6 +9,10 @@
 # SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
 [ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
 
+### AKN_INSIDE_ZSH
+
+export AKN_INSIDE_ZSH=1
+
 ### helpers
 echo_if_interactive() {
 	if [ -t 0 ]; then

@@ -7,3 +7,5 @@ source "$HOME/.config/shell/profile.sh" || return 1
 
 # Ensure path arrays do not contain duplicates.
 typeset -gU cdpath fpath mailpath path
+
+export AKN_INSIDE_ZSH=1
