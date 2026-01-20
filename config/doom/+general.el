@@ -1895,8 +1895,11 @@ Use \\[visible-mode] to show the full hashes."
   :config
   (advice-add #'dirvish--preview-update :around #'akn/save-selected-window-a)
   (akn/advise-letf! dirvish--find-file-temporarily (akn/only-allow-some-find-file-hooks-a)
-    ;; See `consult--filter-find-file-hook'
-    (advice-add #'run-hooks :around #'consult--filter-find-file-hook))
+    ;; See `consult--filter-find-file-hook' and `consult-preview-allowed-hooks'
+    (advice-add #'run-hooks :around
+                (if (require 'consult nil 'noerror)
+                    #'consult--filter-find-file-hook
+                  #'funcall)))
   (akn/advise-letf! dirvish-peek-setup-h (akn/make-preview-be-in-nondedicated-window-a)
     (define-advice minibuffer-selected-window (:filter-return (ret) akn/ensure-in-nondedicated-window-a)
       (if (eq (window-dedicated-p ret) t)
@@ -1908,6 +1911,9 @@ Use \\[visible-mode] to show the full hashes."
     (when (and (stringp file) (string-match-p akn/no-preview-file-regexp file))
       `(info . ,(format "Preview for file %s has been disabled (matches akn/no-preview-file-regexp)" file))))
 
+  (add-hook! 'dirvish-preview-setup-hook
+             #'+word-wrap--enable-global-mode)
+
   (dirvish-peek-mode))
 
 (after! dirvish
@@ -1917,7 +1923,9 @@ Use \\[visible-mode] to show the full hashes."
 (after! consult
   (pushnew! consult-preview-variables
             '(tab-line-exclude . t)
-            '(tab-line-tabs-function . nil)))
+            '(tab-line-tabs-function . nil))
+  (pushnew! consult-preview-allowed-hooks
+            #'doom-optimize-for-large-files-h))
 
 ;;; Projectile
 
