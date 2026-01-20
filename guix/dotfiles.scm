@@ -6,22 +6,6 @@
              (ice-9 regex)
              (ice-9 string-fun))
 
-(define remove-stat
-  ;; Remove the `stat' object the `file-system-tree' provides
-  ;; for each file in the tree.
-  (match-lambda
-    ((name stat)              ; flat file
-     name)
-    ((name stat children ...) ; directory
-     (list name (map remove-stat children)))))
-
-(remove-stat
- (let ([dir "/home/ajainelson/prog/dotfiles/config"])
-   (file-system-tree
-    dir
-    (lambda (name stat)
-      (file-exists? (in-vicinity name ".unfold"))))))
-
 (define (path-change-prefix path old-prefix new-prefix)
   (define old-prefix-slash (string-append old-prefix "/"))
   (cond
@@ -61,8 +45,8 @@
                     ;; follow symlinks
                     stat))
 
-(get-files "/home/ajainelson/prog/dotfiles/config" ".config")
-(get-files "/home/ajainelson/prog/dotfiles/dot-home")
+;; (get-files "/home/ajainelson/prog/dotfiles/config" ".config")
+;; (get-files "/home/ajainelson/prog/dotfiles/dot-home")
 
 ;;;;;;;;;;;;;;;;;;
 
