@@ -21,7 +21,10 @@
 (define* (get-files dir #:optional [location-in-home ""] #:key [transform identity])
   (define (ignore? path)
     (let ((name (basename path)))
-      (or (member name '(".profile" ".git" ".gitignore" ".unfold"))
+      (or (member name '(".unfold"
+                         ".profile"
+                         ".bashrc" ".bash_profile"
+                         ".zshenv" ".zprofile" ".zshrc" ".zlogin" ".zlogout"))
           (any (lambda (rx) (string-match rx name))
                '("~$" "\\.swp$" )))))
   (define (enter? path stat result)
