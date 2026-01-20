@@ -17,8 +17,6 @@
 ;; https://github.com/doomemacs/doomemacs/issues/8287
 (when (modulep! :lang coq)
   (unpin! proof-general))
-(when (modulep! :lang graphviz)
-  (package! graphviz-dot-mode :pin "516c151b845a3eb2da73eb4ee648ad99172087ac"))
 
 (package! track-changes :built-in t)
 (package! eldoc :built-in t)
