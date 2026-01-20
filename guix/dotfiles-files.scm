@@ -1,4 +1,6 @@
-;; guix home container dotfiles.scm
+(define-module (dotfiles-files)
+  #:declarative? #t
+  #:export (get-files))
 
 (use-modules (srfi srfi-1)
              (ice-9 ftw)
@@ -47,35 +49,3 @@
 
 ;; (get-files "/home/ajainelson/prog/dotfiles/config" ".config")
 ;; (get-files "/home/ajainelson/prog/dotfiles/dot-home")
-
-;;;;;;;;;;;;;;;;;;
-
-(use-modules (gnu home)
-             (gnu home services)
-             (gnu home services shells)
-             (gnu home services dotfiles)
-             (gnu services)
-             (gnu packages)
-             (gnu packages shells)
-             (guix gexp))
-
-(define (make-local-file path)
-  (local-file path
-              (string-delete (char-set #\. #\@) (basename path))
-              #:recursive? #t))
-
-(home-environment
-  (services
-   (append (list (service home-files-service-type
-                          (append
-                           (get-files "/home/ajainelson/prog/dotfiles/dot-home" #:transform make-local-file)
-                           (if (file-exists? "/home/ajainelson/prog/dotfiles/private/dot-home")
-                               (get-files "/home/ajainelson/prog/dotfiles/private/dot-home" #:transform make-local-file)
-                               '())))
-                 (service home-xdg-configuration-files-service-type
-                          (append
-                           (get-files "/home/ajainelson/prog/dotfiles/config" #:transform make-local-file)
-                           (if (file-exists? "/home/ajainelson/prog/dotfiles/private/config")
-                               (get-files "/home/ajainelson/prog/dotfiles/private/config" #:transform make-local-file)
-                               '()))))
-           %base-home-services)))
