@@ -21,8 +21,8 @@
  '(lsp-rust-analyzer-expression-adjustment-hints "always")
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(safe-local-variable-directories
-   '("/Users/ajainelson/prog/cs342-hw/" "/Users/ajainelson/.config/doom/"
-     "~/.config/emacs/"))
+   '("/home/ajainelson/prog/guix/" "/Users/ajainelson/prog/cs342-hw/"
+     "/Users/ajainelson/.config/doom/" "~/.config/emacs/"))
  '(safe-local-variable-values
    '((eval conf-quote-normal 1) (checkdoc-allow-quoting-nil-and-t . t)
      (+tree-sitter-hl-enabled-modes) (Package . April)
