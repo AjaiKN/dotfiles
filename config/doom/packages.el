@@ -23,6 +23,10 @@
 (when (modulep! :tools pdf)
   (package! pdf-tools :built-in 'prefer)) ;https://discourse.nixos.org/t/how-can-i-get-emacs-pdf-tools-working/10270
 
+;; If this Emacs has igc, disable gcmh.
+;; (when (fboundp 'igc-collect)
+;;   (disable-packages! gcmh))
+
 ;;; new packages
 ;; (package! ____________________ :pin "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" :disable ________________________________________ :recipe ___)
 ;;;; Required

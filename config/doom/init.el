@@ -24,6 +24,11 @@
 
 (defvar akn/private-doom-dir "~/.config/doom.private/")
 
+(after! doom-start
+  (when (not (fboundp 'gcmh-mode))
+    ;; Don't enable gcmh-mode if the package isn't installed
+    (remove-hook 'doom-first-buffer-hook 'gcmh-mode)))
+
 ;; can remove this paragraph after Doom 3
 (after! (:or emacs doom doom-projects)
   (require 'xdg)
