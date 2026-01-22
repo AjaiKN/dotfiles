@@ -45,12 +45,12 @@ This can either be a directory or a list in the format of
   :type `(choice
           directory
           (repeat (list (regexp :tag "Regexp")
-                   (string :tag "Replacement")
-                   (choice
-                    (const :tag "Uniquify" t)
-                    ,@(mapcar (lambda (algo)
-                                (list 'const algo))
-                              (secure-hash-algorithms)))))))
+                        (string :tag "Replacement")
+                        (choice
+                         (const :tag "Uniquify" t)
+                         ,@(mapcar (lambda (algo)
+                                     (list 'const algo))
+                                   (secure-hash-algorithms)))))))
 
 (defcustom better-backup-buffer-defer nil
   ""
