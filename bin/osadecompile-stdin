@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+tmp=$(mktemp)
+cat >$tmp
+osadecompile $tmp
