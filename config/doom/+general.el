@@ -2895,7 +2895,16 @@ there's no need for `markdown-mode' to reduplicate the effort."
   ;; Set back from Doom's default, since the editorconfig maintainers say that
   ;; the elisp implementation is "faster and more secure"
   ;; (https://github.com/editorconfig/editorconfig-emacs/issues/230#issuecomment-701916590).
-  (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash))
+  (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash)
+
+  ;; conf-mode isn't a child of prog-mode or text-mode, so editorconfig-mode
+  ;; doesn't reapply in some cases after reverting the buffer.
+  ;; TODO: replicate in vanilla Emacs, make issue/PR
+  (add-hook! 'editorconfig-mode-hook
+    (defun akn/editorconfig-for-conf-mode-h ()
+      (if editorconfig-mode
+          (add-hook 'conf-mode-hook #'editorconfig-major-mode-hook t)
+        (remove-hook 'conf-mode-hook #'editorconfig-major-mode-hook)))))
 
 ;;; don't add passwords in clipboard to kill ring (macOS only for now)
 
