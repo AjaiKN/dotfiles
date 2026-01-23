@@ -805,39 +805,6 @@ off again if you're dealing with non-compressed plist files."
     :desc "Unset env variable"          :nm "#" #'launchctl-unsetenv
     :desc "Help"                        :nm "h" #'which-key-show-major-mode)))
 
-;;; applescript
-
-(use-package! applescript-mode
-  :defer t
-  :commands (akn/applescript-mode)
-  :init
-  (setf (alist-get 'applescript-mode major-mode-remap-alist) #'akn/applescript-mode)
-  :config
-  (define-derived-mode akn/applescript-mode prog-mode "AppleScript"
-    "A replacement for `applescript-mode'.
-
-This uses `define-derived-mode', as opposed to the old style of defining
-major modes, where regular functions were used."
-    :group 'applescript
-    (akn/letf! ((major-mode major-mode)
-                (mode-name mode-name)
-                (#'kill-all-local-variables #'ignore))
-      (applescript-mode)))
-  (derived-mode-add-parents 'akn/applescript-mode '(applescript-mode)))
-
-(add-to-list 'jka-compr-compression-info-list
-             ;;[regexp
-             ;; compr-message  compr-prog  compr-args
-             ;; uncomp-message uncomp-prog uncomp-args
-             ;; can-append strip-extension-flag file-magic-bytes
-             ;; uncompress-function]
-             `[,(rx ".scpt" eos)
-               "compiling AppleScript to binary .scpt file" "osacompile" ("-o" "/dev/stdout")
-               "decompiling binary .scpt file to AppleScript text" "osadecompile-stdin" ()
-               nil nil nil "FasdUAS"
-               nil])
-(jka-compr-update)
-
 ;;; lisp
 
 (add-to-list 'auto-mode-alist '("[./]sbclrc\\'" . common-lisp-mode))

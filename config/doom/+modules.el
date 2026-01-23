@@ -232,6 +232,7 @@ returns true."
 
            :lang
            agda              ; types of types of types of types...
+           *extra (:if (featurep :system 'macos) applescript)
            *extra beancount         ; mind the GAAP
            *extra ledger            ; be audit you can be
            *extra ledger+hledger
