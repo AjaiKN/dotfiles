@@ -19,42 +19,42 @@ force=
 open=
 while [[ $# -gt 0 ]]; do
 	case "$1" in
-		--version)
+		(--version)
 			echo "emacs-restart 0.0.1-pre"
 			exit
 			;;
-		--help|-h)
+		(--help|-h)
 			print_usage
 			exit 0
 			;;
-		--verbose|-v)
+		(--verbose|-v)
 			verbose=1
 			shift
 			;;
-		--force|-f)
+		(--force|-f)
 			force=1
 			shift
 			;;
-		--open|-o)
+		(--open|-o)
 			open=1
 			shift
 			;;
-		--)
+		(--)
 			shift
 			break
 			;;
-		-[^-][^-]*) # expand multiple single-char options (e.g. -vf)
+		(-[^-][^-]*) # expand multiple single-char options (e.g. -vf)
 			opt="$1"
 			shift
 			other="${opt#-?}"
 			set -- "${opt%"$other"}" "-${other}" "$@"
 			;;
-		-*)
+		(-*)
 			echo "ERROR: Unknown option: $1"
 			print_usage
 			exit 1
 			;;
-		*)
+		(*)
 			break
 			;;
 	esac
