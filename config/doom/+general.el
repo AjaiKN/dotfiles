@@ -1142,15 +1142,32 @@ underscores in all modes."
 
 (add-hook! '(find-file-hook akn/new-file-mode-hook)
            #'better-backup-buffer-mode)
+
 (add-hook! 'before-save-hook
   (defun akn/better-backup-buffer-mode-maybe-h ()
     (when (and buffer-file-name (not (bound-and-true-p better-backup-buffer-mode)))
       (better-backup-buffer-mode))))
+
 (akn/after-idle! ((* 60 27) :each-idle t)
   (let ((default-directory better-backup-directory))
     (when (and (file-exists-p default-directory)
                (executable-find "fclones"))
       (akn/run-command "pwd && fclones group . | fclones link" :shell t :output-buffer " *dedupe-better-backup*"))))
+
+(after! better-backup
+  (pushnew! better-backup-exclude-file-regexps
+            (rx bos (literal (file-truename bookmark-default-file)) eos)
+            (rx "/.cache/")
+            (rx "/elgrep-data.el" eos)
+            (rx "/COMMIT_EDITMSG" eos))
+  (after! epa-hook (pushnew! better-backup-exclude-file-regexps epa-file-name-regexp))
+  (after! age      (pushnew! better-backup-exclude-file-regexps age-file-name-regexp))
+  (setq! better-backup-exclude-buffer-predicate
+         `(or ,#'doom-unreal-buffer-p
+              ,(lambda (b)
+                 (and-let* ((f (buffer-file-name b)))
+                   (or (backup-file-name-p f)
+                       (not (akn/backup-enable-predicate f))))))))
 
 ;;;; backups (disabled by doom)
 

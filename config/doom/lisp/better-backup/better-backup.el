@@ -57,6 +57,18 @@ This can either be a directory or a list in the format of
   :group 'better-backup
   :type 'boolean)
 
+(defcustom better-backup-exclude-file-regexps nil
+  "A list of regexps matching files not to be backed up."
+  :group 'better-backup
+  :type '(repeat regexp))
+
+(defcustom better-backup-exclude-buffer-predicate nil
+  "Predicate matching buffers not to be backed up.
+
+The predicate is passed as argument to `buffer-match-p', which see."
+  :group 'better-backup
+  :type '(buffer-predicate :tag "Predicate for `buffer-match-p'"))
+
 ;;;; Choosing backup file names
 
 (cl-defun better-backup--backup-file-name (&optional (file-or-buffer-name (current-buffer)))
@@ -146,9 +158,15 @@ This can either be a directory or a list in the format of
 (defvar-local better-backup--buffer-local-saved-state nil
   "")
 
-(cl-defun better-backup--buffer-backup-maybe (&optional (buffer (current-buffer)))
+(cl-defun better-backup--buffer-backup-maybe ()
   ""
-  (with-current-buffer (or buffer (current-buffer))
+  (unless (or (buffer-match-p better-backup-exclude-buffer-predicate (current-buffer))
+              (and buffer-file-name
+                   (cl-loop for rx in better-backup-exclude-file-regexps
+                            thereis (string-match-p rx buffer-file-name)))
+              (and buffer-file-truename
+                   (cl-loop for rx in better-backup-exclude-file-regexps
+                            thereis (string-match-p rx buffer-file-truename))))
     (unless (equal (buffer-chars-modified-tick) better-backup--buffer-last-backup-tick)
       (better-backup--write-buffer)
       (setq better-backup--buffer-last-backup-tick (buffer-chars-modified-tick)))
