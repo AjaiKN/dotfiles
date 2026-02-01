@@ -398,6 +398,18 @@ are exactly the same too."
   ;; https://smartparens.readthedocs.io/en/stable/pair-management.html
   ;; https://smartparens.readthedocs.io/en/stable/permissions.html
 
+  (defun akn/word-post-handler (id action context)
+   "Handler for ruby-def-like insertions.
+ID, ACTION, CONTEXT.
+
+Copied from `sp-ruby-def-post-handler'."
+   (when (equal action 'insert)
+     (save-excursion
+       (insert "x")
+       (newline)
+       (indent-according-to-mode))
+     (delete-char 1)))
+
   (sp-with-modes 'text-mode
     ;; Because of the `:actions' property, these just wrap things when the region
     ;; is active; it doesn't auto-insert when nothing is highlighted.
@@ -419,6 +431,43 @@ are exactly the same too."
   (sp-pair "=" "=" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p))
   (sp-pair "/" "/" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p))
   (sp-pair "$" "$" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p)))
+
+;; experimental, might remove
+(after! (:and smartparens sh-script)
+  (defun akn/sp-sh-post-handler (_id action _context)
+    (when (equal action 'insert)
+      (save-excursion
+        (forward-line)
+        (goto-char (pos-bol))
+        (indent-according-to-mode))))
+
+  (require 'dash)
+  (sp-with-modes '(sh-mode sh-base-mode bash-ts-mode)
+    (sp-local-pair "if" "; then\nfi"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "for" "; do\ndone"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "while" "; do\ndone"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "until" "; do\ndone"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "case" " in\nesac"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))))
 
 ;;; embrace
 
