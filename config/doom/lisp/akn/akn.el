@@ -1285,12 +1285,15 @@ Recurses inner lists to find strings to unpropertize."
 
 ;;;; join (unfill) paragraph
 ;;;###autoload
-(defun akn/join-paragraphs ()
+(defun akn/join-each-paragraph ()
+  "Join each paragraph in the region into a single line.
+
+If no region is active, join together the current paragraph."
   (interactive)
   (let ((fill-column most-positive-fixnum))
     (call-interactively #'fill-paragraph)))
 ;;;###autoload
-(defalias 'akn/unfill-paragraphs #'akn/join-paragraphs)
+(defalias 'akn/unfill-each-paragraph #'akn/join-each-paragraph)
 
 ;;;; debug
 ;;;###autoload
