@@ -1283,9 +1283,9 @@ Recurses inner lists to find strings to unpropertize."
   (with-current-buffer (or buffer (current-buffer))
     (setq-local doom-real-buffer-p nil)))
 
-;;;; join (unfill) paragraph
+;;; manipulating newlines and blank lines
 ;;;###autoload
-(defun akn/join-each-paragraph ()
+(defun akn/unfill-each-paragraph ()
   "Join each paragraph in the region into a single line.
 
 If no region is active, join together the current paragraph."
@@ -1293,9 +1293,36 @@ If no region is active, join together the current paragraph."
   (let ((fill-column most-positive-fixnum))
     (call-interactively #'fill-paragraph)))
 ;;;###autoload
-(defalias 'akn/unfill-each-paragraph #'akn/join-each-paragraph)
+(defalias 'akn/join-each-paragraph #'akn/unfill-each-paragraph)
 
-;;;; debug
+;;;###autoload
+(defun akn/delete-blank-lines (&optional beg end)
+  "Delete all blank lines."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n\n" (* "\n")) "\n" beg end))
+;;;###autoload
+(defun akn/collapse-blank-lines (&optional beg end)
+  "Collapse 2+ blank lines into just 1 blank line."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n\n\n" (* "\n")) "\n\n" beg end))
+;;;###autoload
+(defun akn/shrink-blank-lines (&optional beg end)
+  "Shrink 2+X blank lines down into 1+X blank lines."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n" (group (+ "\n")))
+                            "\\1"
+                            beg end))
+;;;###autoload
+(defun akn/reduce-blank-lines (&optional beg end)
+  "Reduce 1+X blank lines into 0+X blank lines.
+
+Put another way, reduce 2+X newlines into 1+X newlines."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n" (group (+ "\n")))
+                            "\\1"
+                            beg end))
+
+;;; debug
 ;;;###autoload
 (defun akn/debug ()
   (interactive)
