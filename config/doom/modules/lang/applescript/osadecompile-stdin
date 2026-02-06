@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+set -e
+
+umask go-rwx
+
+tmp=$(mktemp)
+cat >$tmp
+osadecompile $tmp

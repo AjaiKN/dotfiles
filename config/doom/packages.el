@@ -17,13 +17,15 @@
 ;; https://github.com/doomemacs/doomemacs/issues/8287
 (when (modulep! :lang coq)
   (unpin! proof-general))
-(when (modulep! :lang graphviz)
-  (package! graphviz-dot-mode :pin "516c151b845a3eb2da73eb4ee648ad99172087ac"))
 
 (package! track-changes :built-in t)
 (package! eldoc :built-in t)
 (when (modulep! :tools pdf)
   (package! pdf-tools :built-in 'prefer)) ;https://discourse.nixos.org/t/how-can-i-get-emacs-pdf-tools-working/10270
+
+;; If this Emacs has igc, disable gcmh.
+;; (when (fboundp 'igc-collect)
+;;   (disable-packages! gcmh))
 
 ;;; new packages
 ;; (package! ____________________ :pin "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" :disable ________________________________________ :recipe ___)
@@ -50,7 +52,6 @@
 (package! lsp-tailwindcss         :pin "cdd0325a6a571e51f6c7d1cbc198c7a7ea4a194a" :disable (not (modulep! :lang web))               :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
 (package! astro-ts-mode           :pin "78e7e942011839bd4f4de0a1d8460f5879ba4ca5" :disable (not (modulep! :lang web)))
 (package! launchctl               :pin "c9b7e93f5ec6fa504dfb03d60571cf3e5dc38e12" :disable (not (modulep! :os macos)))
-(package! applescript-mode        :pin "3dbbb8b48e519a5208ce237db577056c7a5a5943" :disable (not (modulep! :os macos)))
 (package! eshell-vterm            :pin "20f4b246fa605a1533cdfbe3cb7faf31a24e3d2e" :disable (not (and (modulep! :term eshell) (modulep! :term vterm))))
 (package! coterm                  :pin "6f04b2e7151db862c85b1cbdcf523bdeae27c006" :disable (not (modulep! :term shell)))
 (package! magit-delta             :pin "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616" :disable (not (modulep! :tools magit)))

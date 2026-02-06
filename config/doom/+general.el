@@ -398,6 +398,18 @@ are exactly the same too."
   ;; https://smartparens.readthedocs.io/en/stable/pair-management.html
   ;; https://smartparens.readthedocs.io/en/stable/permissions.html
 
+  (defun akn/word-post-handler (id action context)
+   "Handler for ruby-def-like insertions.
+ID, ACTION, CONTEXT.
+
+Copied from `sp-ruby-def-post-handler'."
+   (when (equal action 'insert)
+     (save-excursion
+       (insert "x")
+       (newline)
+       (indent-according-to-mode))
+     (delete-char 1)))
+
   (sp-with-modes 'text-mode
     ;; Because of the `:actions' property, these just wrap things when the region
     ;; is active; it doesn't auto-insert when nothing is highlighted.
@@ -419,6 +431,43 @@ are exactly the same too."
   (sp-pair "=" "=" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p))
   (sp-pair "/" "/" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p))
   (sp-pair "$" "$" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p)))
+
+;; experimental, might remove
+(after! (:and smartparens sh-script)
+  (defun akn/sp-sh-post-handler (_id action _context)
+    (when (equal action 'insert)
+      (save-excursion
+        (forward-line)
+        (goto-char (pos-bol))
+        (indent-according-to-mode))))
+
+  (require 'dash)
+  (sp-with-modes '(sh-mode sh-base-mode bash-ts-mode)
+    (sp-local-pair "if" "; then\nfi"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "for" "; do\ndone"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "while" "; do\ndone"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "until" "; do\ndone"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))
+    (sp-local-pair "case" " in\nesac"
+                   :when '(("SPC"))
+                   :actions '(insert)
+                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
+                   :post-handlers (list #'akn/sp-sh-post-handler))))
 
 ;;; embrace
 
@@ -1142,15 +1191,32 @@ underscores in all modes."
 
 (add-hook! '(find-file-hook akn/new-file-mode-hook)
            #'better-backup-buffer-mode)
+
 (add-hook! 'before-save-hook
   (defun akn/better-backup-buffer-mode-maybe-h ()
     (when (and buffer-file-name (not (bound-and-true-p better-backup-buffer-mode)))
       (better-backup-buffer-mode))))
+
 (akn/after-idle! ((* 60 27) :each-idle t)
   (let ((default-directory better-backup-directory))
     (when (and (file-exists-p default-directory)
                (executable-find "fclones"))
       (akn/run-command "pwd && fclones group . | fclones link" :shell t :output-buffer " *dedupe-better-backup*"))))
+
+(after! better-backup
+  (pushnew! better-backup-exclude-file-regexps
+            (rx bos (literal (file-truename bookmark-default-file)) eos)
+            (rx "/.cache/")
+            (rx "/elgrep-data.el" eos)
+            (rx "/COMMIT_EDITMSG" eos))
+  (after! epa-hook (pushnew! better-backup-exclude-file-regexps epa-file-name-regexp))
+  (after! age      (pushnew! better-backup-exclude-file-regexps age-file-name-regexp))
+  (setq! better-backup-exclude-buffer-predicate
+         `(or ,#'doom-unreal-buffer-p
+              ,(lambda (b)
+                 (and-let* ((f (buffer-file-name b)))
+                   (or (backup-file-name-p f)
+                       (not (akn/backup-enable-predicate f))))))))
 
 ;;;; backups (disabled by doom)
 
@@ -1895,8 +1961,11 @@ Use \\[visible-mode] to show the full hashes."
   :config
   (advice-add #'dirvish--preview-update :around #'akn/save-selected-window-a)
   (akn/advise-letf! dirvish--find-file-temporarily (akn/only-allow-some-find-file-hooks-a)
-    ;; See `consult--filter-find-file-hook'
-    (advice-add #'run-hooks :around #'consult--filter-find-file-hook))
+    ;; See `consult--filter-find-file-hook' and `consult-preview-allowed-hooks'
+    (advice-add #'run-hooks :around
+                (if (require 'consult nil 'noerror)
+                    #'consult--filter-find-file-hook
+                  #'funcall)))
   (akn/advise-letf! dirvish-peek-setup-h (akn/make-preview-be-in-nondedicated-window-a)
     (define-advice minibuffer-selected-window (:filter-return (ret) akn/ensure-in-nondedicated-window-a)
       (if (eq (window-dedicated-p ret) t)
@@ -1908,6 +1977,9 @@ Use \\[visible-mode] to show the full hashes."
     (when (and (stringp file) (string-match-p akn/no-preview-file-regexp file))
       `(info . ,(format "Preview for file %s has been disabled (matches akn/no-preview-file-regexp)" file))))
 
+  (add-hook! 'dirvish-preview-setup-hook
+             #'+word-wrap--enable-global-mode)
+
   (dirvish-peek-mode))
 
 (after! dirvish
@@ -1917,7 +1989,9 @@ Use \\[visible-mode] to show the full hashes."
 (after! consult
   (pushnew! consult-preview-variables
             '(tab-line-exclude . t)
-            '(tab-line-tabs-function . nil)))
+            '(tab-line-tabs-function . nil))
+  (pushnew! consult-preview-allowed-hooks
+            #'doom-optimize-for-large-files-h))
 
 ;;; Projectile
 
@@ -2887,7 +2961,16 @@ there's no need for `markdown-mode' to reduplicate the effort."
   ;; Set back from Doom's default, since the editorconfig maintainers say that
   ;; the elisp implementation is "faster and more secure"
   ;; (https://github.com/editorconfig/editorconfig-emacs/issues/230#issuecomment-701916590).
-  (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash))
+  (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash)
+
+  ;; conf-mode isn't a child of prog-mode or text-mode, so editorconfig-mode
+  ;; doesn't reapply in some cases after reverting the buffer.
+  ;; TODO: replicate in vanilla Emacs, make issue/PR
+  (add-hook! 'editorconfig-mode-hook
+    (defun akn/editorconfig-for-conf-mode-h ()
+      (if editorconfig-mode
+          (add-hook 'conf-mode-hook #'editorconfig-major-mode-hook t)
+        (remove-hook 'conf-mode-hook #'editorconfig-major-mode-hook)))))
 
 ;;; don't add passwords in clipboard to kill ring (macOS only for now)
 

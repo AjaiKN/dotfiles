@@ -396,6 +396,8 @@ If DIR is not supplied its set to the current directory by default."
     (require 'treesit)
     (when (and (not (fboundp 'treesit-ensure-installed))
                (version< emacs-version "31.1"))
+      ;; NOTE: I think the definition of treesit-ensure-installed has changed
+      ;; since then in emacs master.
       (load! "modules/tools/tree-sitter/autoload/compat-30" doom-emacs-dir)))
 
   (el-patch-defun treesit-ensure-installed (lang)

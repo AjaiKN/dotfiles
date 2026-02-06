@@ -205,7 +205,9 @@ returns true."
            *basic (eval +overlay)     ; run code, run (also, repls)
            *basic fasd
            *basic lookup              ; navigate your code and its documentation
-           *extra (:if (executable-find "emacs-lsp-booster") (lsp +booster) (lsp)) ; +eglot ; M-x vscode
+           *extra (:if (executable-find "emacs-lsp-booster")
+                       (lsp +eglot +booster)
+                     (lsp +eglot))
            *basic (magit +forge)             ; a git porcelain for Emacs
            *extra (mason) ;+sync)
            *extra stgit
@@ -232,6 +234,7 @@ returns true."
 
            :lang
            agda              ; types of types of types of types...
+           *extra (:if (featurep :system 'macos) applescript)
            *extra beancount         ; mind the GAAP
            *extra ledger            ; be audit you can be
            *extra ledger+hledger
