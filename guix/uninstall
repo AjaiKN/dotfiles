@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+# shellcheck disable=SC2154
+trap 's=$?; echo >&2 ": Error on line "$LINENO": $BASH_COMMAND"; exit $s' ERR
+set -x
+
+DOTFILES=$(realpath "$HOME/.dotfiles")
+if [[ $DOTFILES == /gnu/* ]]; then
+	DOTFILES="$HOME/prog/dotfiles"
+fi
+export DOTFILES
+
+guix home reconfigure "$DOTFILES/guix/empty-home-configuration.scm"
+if [[ -L "$HOME/.profile" ]]; then
+	ls -l "$HOME/.profile"
+	rm "$HOME/.profile"
+fi
+
+"$DOTFILES"/install

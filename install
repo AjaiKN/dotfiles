@@ -12,6 +12,13 @@ confirm() {
 }
 
 DOTFILES=$(realpath "$(dirname "$0")")
+case $DOTFILES in
+	/gnu/*)
+		if [ -d "$HOME/prog/dotfiles" ]; then
+			DOTFILES="$HOME/prog/dotfiles"
+		fi
+		;;
+esac
 export DOTFILES
 
 umask 077

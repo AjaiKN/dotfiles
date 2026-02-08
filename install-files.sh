@@ -62,6 +62,13 @@ fi
 cd "$dotfiles_orig"
 
 DOTFILES=$(realpath "$(dirname "$0")")
+case $DOTFILES in
+	/gnu/*)
+		if [ -d "$HOME/prog/dotfiles" ]; then
+			DOTFILES="$HOME/prog/dotfiles"
+		fi
+		;;
+esac
 export DOTFILES
 
 cd "$DOTFILES"
@@ -109,7 +116,7 @@ get_planned_link_source() {
 is_dotfiles_link() {
 	[ -L "$1" ] || return 1
 	relative=$(dotfiles_relative_to_dir "$(dirname "$1")") || exit 28
-	link=$(readlink "$1") || exit 29
+	link=$(readlink "$1")
 	case "$link" in
 		"$DOTFILES"/*|"$relative"/*|./"$relative"/*) return 0 ;;
 		*) return 1 ;;
