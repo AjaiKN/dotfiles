@@ -81,7 +81,7 @@
   (interactive)
   (setq prefix-arg current-prefix-arg)
   (setq unread-command-events (listify-key-sequence (kbd doom-localleader-alt-key)))
-  (minibuffer-message "%s- ") doom-localleader-alt-key)
+  (minibuffer-message "%s- " doom-localleader-alt-key))
 (defun akn/localleader-which-key-immediate ()
   (interactive)
   (setq prefix-arg current-prefix-arg)
