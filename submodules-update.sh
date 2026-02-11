@@ -1,11 +1,16 @@
 #!/bin/sh
 
-cd "$(dirname "$0")" || exit 1
+cd "${DOTFILES:=$(dirname "$0")}" || exit 1
 
 # set -x
 
 if ! command -v git >/dev/null 2>&1; then
-	echo "Error: git command not found; skipping submodule update" >&2
+	echo "git command not found; skipping submodule update" >&2
+	exit 2
+fi
+
+if ! [ -e "$DOTFILES"/.git ]; then
+	echo "$DOTFILES is not controlled by git; skipping submodule update" >&2
 	exit 2
 fi
 
