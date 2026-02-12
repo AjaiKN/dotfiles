@@ -141,7 +141,17 @@
 ;;; file-based stuff (diff-hl)
 
 (after! diff-hl
-  (setq! diff-hl-update-async nil)
+  (setq! diff-hl-flydiff-delay 0.3)
+
+  ;; https://github.com/doomemacs/doomemacs/issues/8554
+  (setq! diff-hl-update-async
+         (cond ((featurep :system 'macos) nil)
+               ((<= emacs-major-version 30) 'thread)
+               (t)))
+  ;; I want the gutter to change before saving even on macOS.
+  ;; It works fine on macOS as long as diff-hl-update-async is nil.
+  (add-hook 'diff-hl-mode-hook #'diff-hl-flydiff-mode)
+
   (setq! diff-hl-show-hunk-inline-smart-lines nil)
   (add-hook 'global-diff-hl-mode-hook #'global-diff-hl-show-hunk-mouse-mode))
 
