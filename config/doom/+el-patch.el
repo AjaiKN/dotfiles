@@ -435,7 +435,8 @@ the grammar library if it's unavailable."
  (load-in-progress
   ;; If we're loading this file, don't block startup
   (akn/after-idle! ((* 60 8) :timer-name akn/el-patch-timer)
-    (el-patch-validate-all)))
+    (unless (version< emacs-version "31") ; `treesit-ensure-installed' (TODO: remove when Doom updates in ~/.config/emacs/modules/tools/tree-sitter/autoload/compat-30)
+      (el-patch-validate-all))))
  (t
   ;; If we're interactively using `eval-buffer', validate immediately
   (el-patch-validate-all)))
