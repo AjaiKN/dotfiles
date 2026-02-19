@@ -397,17 +397,20 @@
    #'akn/fix-ws-butler-in-evil-mode/before-save-a
    #'akn/fix-ws-butler-in-evil-mode/after-save-a))
 (akn/after-idle! ((* 60 12) :timer-name akn/func-compile-timer :cancel-old-timer t)
-  (akn/after-idle! (10 :repeat t :timer-name akn/func-compile-timer2 :cancel-old-timer t)
+  (akn/after-idle! (1 :repeat t :timer-name akn/func-compile-timer2 :cancel-old-timer t)
     (if-let* ((fn (pop akn/funcs-to-compile)))
         (dlet ((shut-up-ignore doom-debug-mode))
-          (doom-log "compile-functions: %s" fn)
           (shut-up
             (let (byte-compile-warnings)
-              (or (if (featurep 'native-compile)
-                      (or (native-comp-function-p (indirect-function fn))
-                          (ignore-errors (native-compile fn))))
-                  (byte-code-function-p fn)
-                  (byte-compile fn)))))
+              (when (fboundp fn)
+                (doom-log "compiling: %s" fn)
+                (when (autoloadp (symbol-function fn))
+                  (autoload-do-load (symbol-function fn)))
+                (or (and (featurep 'native-compile)
+                         (or (native-comp-function-p (indirect-function fn))
+                             (ignore-errors (native-compile fn))))
+                    (byte-code-function-p fn)
+                    (byte-compile fn))))))
       (cancel-timer akn/func-compile-timer))))
 
 
