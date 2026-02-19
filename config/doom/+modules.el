@@ -276,6 +276,7 @@ returns true."
            *extra lean              ; for folks with too much to prove
            *basic (lua +fennel)               ; one-based indices? one-based indices
            *basic markdown          ; writing docs for people to ignore
+           *extra mediawiki ; Wikipedia
            *extra obsidian
            *extra mercury
            nim               ; python + lisp at the speed of c
