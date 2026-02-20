@@ -405,6 +405,11 @@ to normal state is deprioritized)."
    "M-s-t"       (+mc-if-evil-mc #'+multiple-cursors/evil-mc-toggle-cursors             #'+multiple-cursors/mc-toggle-cursors)
    "s-y" #'+multiple-cursors/mc-toggle-evil)
 
+ (:when (modulep! :editor snippets)
+   :i "M-TAB" (akn/cmds! (yas-maybe-expand-abbrev-key-filter #'yas-expand) #'yas-expand
+                         (current-word 'strict) #'yasnippet-capf
+                         #'consult-yasnippet))
+
  (:when (modulep! :os emacs-mac)
    "H-<up>"    (kmacro "s-<up>")
    "H-<down>"  (kmacro "s-<down>")

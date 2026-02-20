@@ -2235,11 +2235,7 @@ file modes."
 
 ;;; yasnippet
 (use-package! yasnippet
-  :config
-  (map! ;; :i "S-SPC" yas-maybe-expand
-   :i "M-TAB" (akn/cmds! (yas-maybe-expand-abbrev-key-filter #'yas-expand) #'yas-expand
-                         (current-word 'strict) #'yasnippet-capf
-                         #'consult-yasnippet)))
+  :config)
    ;; (akn/defun akn/yasnippet-capf ()
    ;;   (interactive)
    ;;   (condition-case nil
