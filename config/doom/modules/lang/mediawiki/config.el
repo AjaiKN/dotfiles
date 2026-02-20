@@ -72,3 +72,6 @@
                (normalized-title (alist-get 'to n-attrs)))
     (setq title normalized-title))
   (apply fn pagelist title args))
+
+(akn/advise-letf! mediawiki-pop-to-buffer (+mediawiki--same-window-a)
+  (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
