@@ -32,16 +32,22 @@
 
 (add-hook 'mediawiki-mode-hook #'doom-mark-buffer-as-real-h)
 (setq-hook! 'mediawiki-mode-hook
-  revert-buffer-function #'+mediawiki/reload)
+  revert-buffer-function #'+mediawiki-revert-buffer-fn)
 (when (fboundp 'better-backup-buffer-mode)
   (add-hook 'mediawiki-mode-hook #'better-backup-buffer-mode))
+(add-hook! 'mediawiki-mode-hook
+  (defun +mediawiki--update-tab-line-h ()
+    (add-hook! 'after-change-functions :local
+      (when (bound-and-true-p tab-line-mode)
+        (tab-line-force-update nil)))))
 
 (map! :after mediawiki-mode
       :map mediawiki-mode-map
       [remap mediawiki-open] #'+mediawiki/open
       [remap mediawiki-open-page-at-point] #'+mediawiki/open-page-at-point
       :mn "RET" (akn/cmds! (+mediawiki-page-at-point) #'+mediawiki/open-page-at-point)
-      [remap save-buffer] (akn/cmds! (not (derived-mode-p #'mediawiki-file-mode)) #'mediawiki-save)
+      [remap mediawiki-save] #'+mediawiki/save
+      [remap save-buffer] (akn/cmds! (not (derived-mode-p #'mediawiki-file-mode)) #'+mediawiki/save)
       "M-RET" #'mediawiki-terminate-paragraph
       "M-<return>" #'mediawiki-terminate-paragraph
       "s-S" #'mediawiki-save-as
@@ -75,3 +81,5 @@
 
 (akn/advise-letf! mediawiki-pop-to-buffer (+mediawiki--same-window-a)
   (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
+
+(pushnew! +word-wrap-text-modes #'mediawiki-mode #'mediawiki-file-mode #'mediawiki-draft-mode)

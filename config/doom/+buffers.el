@@ -158,7 +158,7 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                        (t "")))))
      (t
       (when (and (not even-if-modified)
-                 (memq revert-buffer-function (list #'revert-buffer--default 'vlf-revert))
+                 (memq revert-buffer-function (list #'revert-buffer--default 'vlf-revert #'+mediawiki-revert-buffer-fn))
                  (buffer-modified-p))
         (user-error "Buffer modified, not reverting"))
       (message "Reverting `%s' buffer%s%s..."

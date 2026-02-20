@@ -28,7 +28,8 @@
       (setq buffer (or (buffer-base-buffer buffer) buffer))
       (setq name (replace-regexp-in-string (rx bol (+ " ")) "" (buffer-name buffer))))
     (concat name
-            (when (and (buffer-file-name buffer)
+            (when (and (or (buffer-file-name buffer)
+                           (eq (buffer-local-value 'major-mode buffer) 'mediawiki-mode))
                        (buffer-modified-p buffer)
                        (buffer-local-value '+tabs-show-modified-star buffer))
               " (*)"))))
