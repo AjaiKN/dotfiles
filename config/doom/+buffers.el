@@ -105,6 +105,8 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                   undelicately)
              #'revert-buffer-insert-file-contents--default-function
            revert-buffer-insert-file-contents-function)))
+    (when (bound-and-true-p better-backup-buffer-mode)
+      (better-backup--buffer-backup-maybe))
     (cond
      ((derived-mode-p 'org-agenda-mode)
       (org-agenda-redo))
@@ -178,9 +180,13 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                (if (eq revert-buffer-function #'revert-buffer--default)
                    ""
                  (format-message " (`%s')" revert-buffer-function)))))
+    (when (bound-and-true-p better-backup-buffer-mode)
+      (better-backup--buffer-backup-maybe))
     (akn/record-buffer)))
 (defun akn/hard-reload-buffer (&optional even-if-modified)
   (interactive (list current-prefix-arg))
+  (when (bound-and-true-p better-backup-buffer-mode)
+    (better-backup--buffer-backup-maybe))
   (cond
    ((derived-mode-p 'org-agenda-mode)
     (org-agenda-redo t))
@@ -189,6 +195,30 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
     (notmuch-refresh-all-buffers))
    ((derived-mode-p 'stgit-mode)
     (call-interactively #'stgit-repair))
+   ((and (modulep! :lang mediawiki)
+         (+mediawiki-virtual-p))
+    (if (and (not even-if-modified) (buffer-modified-p))
+        (akn/reload-buffer)
+      (let ((site mediawiki-site)
+            (page mediawiki-page-title)
+            (buf (current-buffer))
+            (temp-buf (generate-new-buffer "*temp-reloading-buffer*")))
+        (unwind-protect
+            (with-window-non-dedicated nil
+              (set-window-buffer nil temp-buf)
+              (message "Killing buffer...")
+              (if even-if-modified
+                  (progn
+                    (when (buffer-modified-p) (do-auto-save nil t))
+                    (set-buffer-modified-p nil)
+                    (let ((kill-buffer-query-functions))
+                      (kill-buffer buf)))
+                (kill-buffer buf))
+              (message "Reopening file...")
+              (+mediawiki/open site page)
+              (message "Reopening file...done"))
+          (with-temp-message "Killing temp buffer..."
+            (kill-buffer temp-buf))))))
    ((and (not even-if-modified) (buffer-modified-p))
     (akn/reload-buffer nil t t))
    (t
@@ -213,6 +243,8 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
             (with-temp-message "Killing temp buffer..."
               (kill-buffer temp-buf))))
       (akn/reload-buffer nil t t))))
+  (when (bound-and-true-p better-backup-buffer-mode)
+    (better-backup--buffer-backup-maybe))
   (akn/record-buffer))
 
 (defun akn/revert-buffer-keep-read-only (&optional ignore-auto noconfirm preserve-modes)
