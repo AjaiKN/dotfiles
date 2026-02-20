@@ -48,7 +48,13 @@
       [remap mediawiki-open-page-at-point] #'+mediawiki/open-page-at-point
       :mn "RET" (akn/cmds! (+mediawiki-page-at-point) #'+mediawiki/open-page-at-point)
       [remap mediawiki-save] #'+mediawiki/save
-      [remap save-buffer] (akn/cmds! (not (derived-mode-p #'mediawiki-file-mode)) #'+mediawiki/save)
+      [remap save-buffer]                   (akn/cmds! (+mediawiki-virtual-p) #'+mediawiki/save)
+      [remap browse-url-of-file]            (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-browse)
+      [remap +macos/reveal-in-finder]       (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-browse)
+      [remap +vc/browse-at-remote]          (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-browse)
+      [remap +vc/browse-at-remote-kill]     (akn/cmds! (+mediawiki-virtual-p) (cmd! (kill-new (mediawiki-make-url mediawiki-page-title "view"))))
+      [remap +vc/browse-at-remote-homepage] (akn/cmds! (+mediawiki-virtual-p) (cmd! (browse-url (mediawiki-site-url mediawiki-site))))
+      [remap +vc/browse-at-remote-homepage] (akn/cmds! (+mediawiki-virtual-p) (cmd! (kill-new (mediawiki-site-url mediawiki-site))))
       "M-RET" #'mediawiki-terminate-paragraph
       "M-<return>" #'mediawiki-terminate-paragraph
       "s-S" #'mediawiki-save-as
