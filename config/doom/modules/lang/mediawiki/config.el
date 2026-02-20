@@ -67,6 +67,30 @@
 ;; TODO: article name completion, async with consult (maybe use consult-omni-wikipedia?)
 
 ;; TODO: snippets
+;; (after! mediawiki-mode
+;;   (add-hook 'mediawiki-mode-hook #'abbrev-mode)
+;;   (define-abbrevs)
+;;   (defun +mediawiki-abbrev-heading-h ()
+;;     (while (= (char-before) ?\=)
+;;       (backward-char))
+;;     (backward-char))
+;;   (abbrev-table-put mediawiki-mode-abbrev-table
+;;                     :regexp (rx bol (group (+ (not " "))) (* " ")))
+;;   (cl-loop for n from 1 to 6
+;;            do
+;;            (define-abbrev mediawiki-mode-abbrev-table
+;;              (make-string n ?\=)
+;;              (concat (make-string n ?\=) "  " (make-string n ?\=))
+;;              #'+mediawiki-abbrev-heading-h)))
+
+(after! (:and mediawiki-mode smartparens)
+  (setf (alist-get 'mediawiki-mode sp-pairs) nil)
+  (dolist (delim '("=" "==" "===" "====" "=====" "======"))
+    (sp-local-pair 'mediawiki-mode (concat delim " ") (concat " " delim) :actions '(insert))))
+                 ;; :post-handlers `(:add ,(lambda (_id action _context)
+                 ;;                          (when (and (eq action 'insert) (eq (char-after) ?\=))
+                 ;;                            (insert " ")
+                 ;;                            (backward-char))))))
 
 (after! savehist
   (add-to-list 'savehist-additional-variables 'mediawiki-page-history))

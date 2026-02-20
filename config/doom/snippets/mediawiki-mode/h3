@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: Header 3 (===)
+# uuid:
+# key: h3
+# condition: t
+# --
+=== ${1:Header 3} ===
+
+$0
