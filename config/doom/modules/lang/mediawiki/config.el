@@ -32,7 +32,8 @@
 
 (add-hook 'mediawiki-mode-hook #'doom-mark-buffer-as-real-h)
 (setq-hook! 'mediawiki-mode-hook
-  revert-buffer-function #'+mediawiki-revert-buffer-fn)
+  revert-buffer-function #'+mediawiki-revert-buffer-fn
+  adaptive-fill-regexp (rx (* (any " \t:*#"))))
 (when (fboundp 'better-backup-buffer-mode)
   (add-hook 'mediawiki-mode-hook #'better-backup-buffer-mode))
 (add-hook! 'mediawiki-mode-hook
