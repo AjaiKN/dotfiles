@@ -418,8 +418,18 @@ to normal state is deprioritized)."
                          #'yas-insert-snippet))
 
  (:when (modulep! :editor tempel)
-   :i "M-TAB" (akn/cmds! (and (current-word 'strict) (not (use-region-p))) #'tempel-complete
-                         #'tempel-insert))
+   :i "M-TAB" (akn/defun akn/tempel-complete ()
+                (interactive)
+                (or (and (current-word 'strict)
+                         (not (use-region-p))
+                         (condition-case _err
+                             (progn
+                               (tempel-complete t)
+                               t)
+                           (user-error nil)))
+                    (call-interactively (if (modulep! :completion vertico)
+                                            #'consult-tempel
+                                          #'tempel-insert)))))
 
  (:when (modulep! :os emacs-mac)
    "H-<up>"    (kmacro "s-<up>")

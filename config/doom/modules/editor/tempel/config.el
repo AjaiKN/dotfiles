@@ -8,6 +8,8 @@
   (setq! tempel-path (list (expand-file-name "snippets.eld" doom-user-dir)))
   (add-to-list 'tempel-user-elements #'+tempel-add-user-elements)
 
+  (setq! tempel-done-on-region nil)
+
   (map! :map tempel-map
         :gie "TAB"       #'tempel-next
         :gie "<tab>"     #'tempel-next
@@ -15,7 +17,13 @@
         :gie "S-<tab>"   #'tempel-previous
         :gie "S-TAB"     #'tempel-previous)
 
-  (add-to-list '+corfu-inhibit-auto-functions #'+tempel-active-p))
+  (add-to-list '+corfu-inhibit-auto-functions #'+tempel-active-p)
+
+  (add-hook! 'doom-escape-hook :after
+    (defun +tempel-done-h ()
+      (when (+tempel-active-p)
+        (tempel-done)
+        t))))
 
 (use-package! consult-tempel
   :when (modulep! :completion vertico)
