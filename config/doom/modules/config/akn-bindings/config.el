@@ -144,6 +144,13 @@ to normal state is deprioritized)."
         (completion-preview-hide)
         t))))
 
+;;; undo https://github.com/doomemacs/doomemacs/commit/7d0f2032ea72ae8c8ffae80787b4ee8b4a584945
+
+(map! :gi [remap newline] #'newline-and-indent
+      :i  "S-RET"         #'electric-indent-just-newline
+      :i  [S-return]      #'electric-indent-just-newline
+      :i  "C-j"           #'electric-indent-just-newline)
+
 ;;; leader bindings
 
 (map!
