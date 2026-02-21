@@ -146,6 +146,7 @@ returns true."
            *basic rotate-text       ; cycle region at point between text candidates
            *extra smart-tabs
            *basic snippets          ; my elves. They type so I don't have to
+           *basic tempel ; replacement for :editor snippets
            *extra symex
            things
            *extra titlecase

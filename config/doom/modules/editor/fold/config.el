@@ -209,7 +209,7 @@ If nil, the value of `+fold-ellipsis' is used."
         (when (bound-and-true-p outli-mode)
           (outli-mode -1)))))
   (put 'outli-heading-stem 'safe-local-variable #'stringp)
-  (put 'outli-heading-char 'safe-local-variable #'integerp)
+  (put 'outli-heading-char 'safe-local-variable #'characterp)
 
   :config
   (pushnew! outli-heading-config

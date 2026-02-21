@@ -410,6 +410,10 @@ to normal state is deprioritized)."
                          (current-word 'strict) #'yasnippet-capf
                          #'consult-yasnippet))
 
+ (:when (modulep! :editor tempel)
+   :i "M-TAB" (akn/cmds! (current-word 'strict) #'tempel-complete
+                         #'tempel-insert))
+
  (:when (modulep! :os emacs-mac)
    "H-<up>"    (kmacro "s-<up>")
    "H-<down>"  (kmacro "s-<down>")
