@@ -245,7 +245,9 @@ to normal state is deprioritized)."
 
  (:prefix "q"
   "n" #'akn/open-new-emacs
-  "N" #'akn/open-new-emacs-with-profile)
+  "N" #'akn/open-new-emacs-with-profile
+  :desc "Restart & restore Emacs"      "r" #'akn/restart-and-restore
+  :desc "Restart Emacs"                "R" #'akn/restart)
 
  (:prefix "r"
   (:when (and (modulep! :tools regex) (boundp 'akn/pcre2el-keymap))

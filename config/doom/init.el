@@ -226,7 +226,6 @@ Does it mean I should disable core.untrackedCache even though
                ,thing)
             (start-process "emacs-open-frame" " *emacs-open-frame*" "emacs-open-frame")))))))
 (global-set-key [remap doom/restart] #'akn/restart)
-(global-set-key [remap doom/restart-and-restore] #'akn/restart-and-restore)
 (when (file-exists-p akn/restart-emacs-file)
   (if (condition-case-unless-debug err
           (progn
