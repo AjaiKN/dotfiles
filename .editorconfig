@@ -13,7 +13,7 @@ insert_final_newline = true
 # max_line_length = 80
 spelling_language = en-US
 
-[{*.{el,lisp,scm,rkt,fnl,clj,cljs,cljr,cljc,cljd,edn,elm,ml,mli},.sbclrc}]
+[{*.{el,eld,lisp,scm,rkt,fnl,clj,cljs,cljr,cljc,cljd,edn,elm,ml,mli},.sbclrc}]
 indent_style = space
 [*.{py,fish,zig,rs,kt,kts,ktm}]
 indent_style = space
