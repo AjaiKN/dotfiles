@@ -371,6 +371,9 @@ to normal state is deprioritized)."
   `(akn/cmds! (+multiple-cursors-use-evil-mc-p) ,if-evil ,if-not-evil))
 
 (map!
+ (:map override-global-map ;take precedence over Doom's Evil smart tab
+  :i [tab] (akn/cmds! (tempel-expand) #'tempel-expand))
+
  (:when (modulep! :ui highlight-symbol)
   ;; NOTE: `*' (`evil-ex-search-word-forward') and `\#' (`evil-ex-search-word-backward') might be a better way
   :desc "Highlight current symbol occurences" "M-i"  #'symbol-overlay-put)
