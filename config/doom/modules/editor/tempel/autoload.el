@@ -26,3 +26,7 @@ string).  It returns t if a new completion is found, nil otherwise."
    (`(i ,inc)
     (cons 'l (or (alist-get inc (tempel--templates))
                  (error "Template %s not found" inc))))))
+
+;;;###autoload
+(defun +tempel-active-p ()
+  (bound-and-true-p tempel--active))

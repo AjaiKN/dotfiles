@@ -70,7 +70,7 @@ mediawiki-mode
 (nobold "{{nobold|" r "}}")
 (noitalic "{{noitalic|" r "}}")
 
-(tag "<"(p "tag" element)">"  "<"element"/>")
+(tag "<"(p "tag" element)">" r "<"element"/>")
 
 (small "<small>" r "</small>")
 (big "<big>" r "</big>")

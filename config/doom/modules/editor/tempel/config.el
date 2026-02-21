@@ -13,7 +13,9 @@
         :gie "<tab>"     #'tempel-next
         :gie "<backtab>" #'tempel-previous
         :gie "S-<tab>"   #'tempel-previous
-        :gie "S-TAB"     #'tempel-previous))
+        :gie "S-TAB"     #'tempel-previous)
+
+  (add-to-list '+corfu-inhibit-auto-functions #'+tempel-active-p))
 
 (use-package! consult-tempel
   :when (modulep! :completion vertico)

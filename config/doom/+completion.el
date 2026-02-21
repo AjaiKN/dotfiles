@@ -194,12 +194,26 @@
         (setq-local tab-always-indent 'complete))
     (when (eq tab-always-indent 'complete)
       (kill-local-variable 'tab-always-indent))))
-(add-hook! '(org-mode-hook markdown-mode-hook)
-  (defun akn/corfu-mode-off ()
-    (corfu-mode -1)))
 
 ;; (use-package! corfu-mouse
 ;;   :ghook 'corfu-mode-hook)
+
+(define-minor-mode akn/corfu-auto-disabled-mode
+  "Disable corfu-auto."
+  :group 'akn
+  (if akn/corfu-auto-disabled-mode
+      (remove-hook 'post-command-hook #'corfu-auto--post-command 'local)
+    (when corfu-auto
+      (add-hook 'post-command-hook #'corfu-auto--post-command nil 'local))))
+(add-to-list '+corfu-inhibit-auto-functions
+             (lambda () akn/corfu-auto-disabled-mode))
+(add-hook! 'corfu-mode-hook :depth 95
+  (defun akn/corfu--check-auto-disabled-h ()
+    (if akn/corfu-auto-disabled-mode
+        (remove-hook 'post-command-hook #'corfu-auto--post-command 'local))))
+
+(add-hook! '(text-mode-hook org-mode-hook markdown-mode-hook mediawiki-mode-hook)
+           #'akn/corfu-auto-disabled-mode)
 
 ;;; sorting
 
