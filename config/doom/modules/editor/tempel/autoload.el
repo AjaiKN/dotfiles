@@ -19,3 +19,10 @@ string).  It returns t if a new completion is found, nil otherwise."
         (user-error nil))
     (undo 1)
     nil))
+
+;;;###autoload
+(defun +tempel-add-user-elements (elt)
+ (pcase elt
+   (`(i ,inc)
+    (cons 'l (or (alist-get inc (tempel--templates))
+                 (error "Template %s not found" inc))))))

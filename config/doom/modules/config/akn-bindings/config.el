@@ -196,7 +196,11 @@ to normal state is deprioritized)."
 
  (:prefix "i"
   (:when (modulep! :editor typing-the-word-blimpy-in-doom-emacs)
-   :desc "Blimpy" "B" #'blimpy-type-the-word-blimpy-in-emacs))
+    :desc "Blimpy" "B" #'blimpy-type-the-word-blimpy-in-emacs)
+  (:when (modulep! :editor tempel)
+    :desc "Snippet" "s" #'tempel-insert
+    (:when (modulep! :editor snippets)
+      :desc "Yasnippet" "S" #'yas-insert-snippet)))
 
  (:prefix "o"
   (:when (and (modulep! :term term) (not (modulep! :term eat)))
@@ -407,11 +411,11 @@ to normal state is deprioritized)."
 
  (:when (modulep! :editor snippets)
    :i "M-TAB" (akn/cmds! (yas-maybe-expand-abbrev-key-filter #'yas-expand) #'yas-expand
-                         (current-word 'strict) #'yasnippet-capf
-                         #'consult-yasnippet))
+                         (and (current-word 'strict) (not (use-region-p))) #'yasnippet-capf
+                         #'yas-insert-snippet))
 
  (:when (modulep! :editor tempel)
-   :i "M-TAB" (akn/cmds! (current-word 'strict) #'tempel-complete
+   :i "M-TAB" (akn/cmds! (and (current-word 'strict) (not (use-region-p))) #'tempel-complete
                          #'tempel-insert))
 
  (:when (modulep! :os emacs-mac)
