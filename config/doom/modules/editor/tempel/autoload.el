@@ -21,12 +21,24 @@ string).  It returns t if a new completion is found, nil otherwise."
     nil))
 
 ;;;###autoload
-(defun +tempel-add-user-elements (elt)
+(defun +tempel-add-user-elements (elt _fields)
  (pcase elt
    ;; include another template
    (`(i ,inc)
     (cons 'l (or (alist-get inc (tempel--templates))
-                 (error "Template %s not found" inc))))))
+                 (error "Template %s not found" inc))))
+   (`(indent . ,things)
+    (let ((beginning (point-marker)))
+      `(l
+        ,@things
+        (ignore
+         (if (eq (marker-buffer ,beginning) (current-buffer))
+             (progn
+               (unless (bound-and-true-p smart-tabs-mode)
+                 (funcall (if indent-tabs-mode #'tabify #'untabify)
+                          (marker-position ,beginning) (point)))
+               (indent-region (marker-position ,beginning) (point)))
+           (error "+tempel-add-user-elements: indent: marker isn't in this buffer"))))))))
 
 ;;;###autoload
 (defun +tempel-active-p ()
