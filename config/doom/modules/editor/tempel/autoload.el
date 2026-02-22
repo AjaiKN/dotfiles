@@ -23,6 +23,7 @@ string).  It returns t if a new completion is found, nil otherwise."
 ;;;###autoload
 (defun +tempel-add-user-elements (elt)
  (pcase elt
+   ;; include another template
    (`(i ,inc)
     (cons 'l (or (alist-get inc (tempel--templates))
                  (error "Template %s not found" inc))))))
