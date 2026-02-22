@@ -169,6 +169,11 @@
 
 ;;; corfu
 
+;; TODO: PR/issue: +corfu-inhibit-auto-functions doesn't work?
+(after! corfu
+  (define-advice corfu-auto--complete-deferred (:before-while (&rest _) akn/+corfu-inhibit-auto-functions-a)
+    (not (run-hook-with-args-until-success '+corfu-inhibit-auto-functions))))
+
 (after! corfu
   (map! (:map corfu-map
          ;; when inside popup
@@ -203,10 +208,11 @@
   :group 'akn
   (if akn/corfu-auto-disabled-mode
       (remove-hook 'post-command-hook #'corfu-auto--post-command 'local)
-    (when corfu-auto
+    (when (bound-and-true-p corfu-auto)
       (add-hook 'post-command-hook #'corfu-auto--post-command nil 'local))))
-(add-to-list '+corfu-inhibit-auto-functions
-             (lambda () akn/corfu-auto-disabled-mode))
+(when (modulep! :completion corfu)
+  (add-to-list '+corfu-inhibit-auto-functions
+               (lambda () akn/corfu-auto-disabled-mode)))
 (add-hook! 'corfu-mode-hook :depth 95
   (defun akn/corfu--check-auto-disabled-h ()
     (if akn/corfu-auto-disabled-mode
