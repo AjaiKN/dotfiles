@@ -33,14 +33,14 @@ mediawiki-mode
 
 (pad "{{pad|" p "em}}")
 
-(link "[[" (r "target") "|" p "]]")
+(link "[[" (R "target") "|" p "]]")
 (linksection "{{section link|" r "}}")
 (wp "[[WP:" r "]]")
 (help "[[Help:" r "]]")
-(wikt "[[wikt:" r "|" p "]] ")
+(wikt "[[wikt:" R "|" p "]] ")
 
 (addcat "[[Category:" (r "Name (not a link)") "]] ")
-(linkcat "[[:Category:" r "|" p "]] ")
+(linkcat "[[:Category:" R "|" p "]] ")
 
 (redirect "#REDIRECT [[" r "]]")
 
@@ -48,7 +48,7 @@ mediawiki-mode
       " |last=" p
       " |first=" p
       " |date=" p
-      " |title=" r
+      " |title=" R
       " |url=" p
       " |location=" p
       " |publisher=" p
@@ -61,7 +61,7 @@ mediawiki-mode
      " |first=" p
      " |date=" p
      " |title=" p
-     " |url=" r
+     " |url=" R
      " |website=" p
      " |location=" p
      " |publisher=" p
@@ -75,7 +75,7 @@ mediawiki-mode
       " |first=" p
       " |date=" p
       " |title=" p
-      " |url=" r
+      " |url=" R
       " |work=" p
       " |location=" p
       " |publisher=" p
@@ -88,4 +88,4 @@ mediawiki-mode
 (ref "<ref name=\"" p "\" />")
 (cn "{{Citation needed|{{subst:DATE}}}}")
 
-(blockquote & "{{blockquote |text="r" |sign="p" }}" %)
+(blockquote & "{{blockquote |text="R" |sign="p" }}" %)
