@@ -1,6 +1,9 @@
 editorconfig-conf-mode
 
-(template "root = " (p "true") n
+(template "# See https://editorconfig.org" n
+          n
+          "# top-most EditorConfig file" n
+          "root = " (p "true") n
           n
           "[*]" n
           "indent_style = " (p "tab") n
