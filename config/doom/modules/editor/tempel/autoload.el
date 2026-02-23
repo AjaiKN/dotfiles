@@ -1,5 +1,8 @@
 ;;; editor/tempel/autoload.el -*- lexical-binding: t; -*-
 
+(eval-and-compile
+  (require 'akn))
+
 ;;;###autoload
 (defun +tempel-setup-capf-h ()
   (push #'tempel-complete completion-at-point-functions))
@@ -21,8 +24,13 @@ string).  It returns t if a new completion is found, nil otherwise."
     nil))
 
 ;;;###autoload
-(defun +tempel-add-user-elements (elt _fields)
+(defun +tempel-add-user-elements (elt fields)
  (pcase elt
+   ;; add q with arguments
+   ;; TODO: PR
+   (`(q . ,rest)
+    (let ((ov (apply #'tempel--placeholder rest)))
+      (overlay-put ov 'tempel--enter #'tempel--done)))
    ;; include another template
    (`(i ,inc)
     (cons 'l (or (alist-get inc (tempel--templates))
@@ -38,7 +46,39 @@ string).  It returns t if a new completion is found, nil otherwise."
                  (funcall (if indent-tabs-mode #'tabify #'untabify)
                           (marker-position ,beginning) (point)))
                (indent-region (marker-position ,beginning) (point)))
-           (error "+tempel-add-user-elements: indent: marker isn't in this buffer"))))))))
+           (error "+tempel-add-user-elements: indent: marker isn't in this buffer"))))))
+   (`(yas ,template)
+    (cons 'l (+tempel--parse-yasnippet-template template)))
+   ((or `(yas-field ,n)
+        `(yas-field ,n ,contents)
+        `(yas-field ,n ,contents ,transformer))
+    (when transformer (error "field transformer not supported yet"))
+    (let ((field-name (intern (format "yas-field-%s" n))))
+      (cond
+       ((and (assq field-name fields)
+             (null contents)
+             (null transformer))
+        field-name)
+       (t
+        (list (if (eq n 0) 'q 'p)
+              `(+tempel--subst (+tempel--concat ,@contents))
+               field-name)))))
+   (`(yas-mirror ,n ,transformer)
+    (let ((field-name (intern (format "yas-field-%s" n))))
+      `(dlet ((yas-text (or ,field-name "")))
+         ,transformer)))
+   (`(yas-subst ,expr)
+    `(+tempel--subst
+       ,expr))))
+
+(defmacro +tempel--subst (expr)
+  `(akn/letf! ((#'yas-subst #'+tempel--subst))
+     ,expr))
+
+(defun +tempel--concat (&rest stuff)
+  (cl-loop for thing in stuff
+           when thing
+           concat thing))
 
 ;;;###autoload
 (defun +tempel-active-p ()
