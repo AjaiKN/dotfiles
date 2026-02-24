@@ -84,6 +84,19 @@ string).  It returns t if a new completion is found, nil otherwise."
 (defun +tempel-active-p ()
   (bound-and-true-p tempel--active))
 
+(defun +tempel--read-yasnippet-directives ()
+  "Return an alist of yasnippet directives at the top of the current buffer."
+  (goto-char (point-min))
+  (when (re-search-forward "^# --\\s-*\n" nil 'noerror)
+    (let ((end-of-headers (point)))
+      (save-excursion
+        (goto-char (point-min))
+        (cl-loop while (re-search-forward "^# *\\([^ ]+?\\) *: *\\(.*?\\)[[:space:]]*$"
+                                          end-of-headers
+                                          'noerror)
+                 collect (cons (match-string-no-properties 1)
+                               (match-string-no-properties 2)))))))
+
 (defun +tempel--parse-yasnippet-template (str)
   (car (+tempel--parse-yasnippet-template-1 str)))
 
