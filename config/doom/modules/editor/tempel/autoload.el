@@ -66,7 +66,7 @@ string).  It returns t if a new completion is found, nil otherwise."
    (`(yas-mirror ,n ,transformer)
     (let ((field-name (intern (format "yas-field-%s" n))))
       `(dlet ((yas-text (or ,field-name "")))
-         ,transformer)))
+         (or ,transformer ""))))
    (`(yas-subst ,expr)
     `(+tempel--subst
        ,expr))))
