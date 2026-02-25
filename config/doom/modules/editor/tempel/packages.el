@@ -1,8 +1,8 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; editor/tempel/packages.el
 
-(package! tempel
-  :recipe (:local-repo "~/prog/emacs/tempel"))
+(package! tempel)
+  ;; :recipe (:local-repo "~/prog/emacs/tempel"))
 
 (when (modulep! :completion vertico)
   (package! consult-tempel
