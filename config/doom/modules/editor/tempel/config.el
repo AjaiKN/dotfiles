@@ -37,7 +37,29 @@
                  (`(R> . ,rest) `(r> . ,rest)))))
         (let ((tempel-done-on-region nil))
           (apply fn region elt-r-lowercased args))
-      (apply fn region elt args))))
+      (apply fn region elt args)))
+
+  (defvar +tempel-region-string)
+  (defvar +tempel--used-yasnippet-p)
+  (define-advice tempel--insert (:around (fn template region &rest args) +tempel--add-region)
+    (let ((+tempel-region-string (and-let* ((beg (car region))
+                                            (end (cdr region)))
+                                      (buffer-substring-no-properties beg end)))
+          (+tempel--used-yasnippet-p nil))
+      (prog1
+          (apply fn template region args)
+        ;; If the region wasn't used directly because it was used by yasnippet's
+        ;; yas-selected-text, it'll still be laying around after the template.
+        ;; In that case, remove it.
+        (when-let* ((+tempel--used-yasnippet-p)
+                    (ov (tempel--find-overlay 'tempel--range))
+                    (template-beg (overlay-start ov))
+                    (template-end (overlay-end ov))
+                    (region-end (cdr region))
+                    (region-end (marker-position region-end))
+                    ((> region-end template-end))
+                    (region-beg template-end))
+          (delete-region region-beg region-end))))))
 
 (use-package! consult-tempel
   :when (modulep! :completion vertico)

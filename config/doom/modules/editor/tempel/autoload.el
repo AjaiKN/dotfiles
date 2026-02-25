@@ -48,7 +48,8 @@ string).  It returns t if a new completion is found, nil otherwise."
                (indent-region (marker-position ,beginning) (point)))
            (error "+tempel-add-user-elements: indent: marker isn't in this buffer"))))))
    (`(yas ,template)
-    (cons 'l (+tempel--parse-yasnippet-template template)))
+    (setq +tempel--used-yasnippet-p t)
+    `(l ,@(+tempel--parse-yasnippet-template template)))
    ((or `(yas-field ,n)
         `(yas-field ,n ,contents)
         `(yas-field ,n ,contents ,transformer))
@@ -72,7 +73,8 @@ string).  It returns t if a new completion is found, nil otherwise."
        ,expr))))
 
 (defmacro +tempel--subst (expr)
-  `(akn/letf! ((#'yas-subst #'+tempel--subst))
+  `(akn/letf! ((#'yas-subst #'+tempel--subst)
+               (yas-selected-text +tempel-region-string))
      ,expr))
 
 (defun +tempel--concat (&rest stuff)
