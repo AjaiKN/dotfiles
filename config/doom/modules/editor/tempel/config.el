@@ -59,7 +59,13 @@
                     (region-end (marker-position region-end))
                     ((> region-end template-end))
                     (region-beg template-end))
-          (delete-region region-beg region-end))))))
+          (delete-region region-beg region-end)))))
+
+  ;; I'm not sure why tempel doesn't make (p (expression...)) placeholders
+  ;; overwrite the expression result when you start typing, even though for
+  ;; (p "string") it does.
+  (define-advice tempel--field (:around (fn &optional name init _default) +tempel--always-allow-overwrite)
+    (funcall fn name init t)))
 
 (use-package! consult-tempel
   :when (modulep! :completion vertico)
