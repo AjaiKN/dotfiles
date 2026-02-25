@@ -43,6 +43,7 @@ only = [
   "rustup",
   "stack",
   "zigup",
+  # "zvm",
 
   #JavaScript
   "node",
@@ -95,6 +96,7 @@ only = [
   "atom",
   "certbot",
   "chezmoi",
+  "choosenim",
   "cursor",
   # "home_manager",
   "juliaup",
@@ -112,8 +114,11 @@ only = [
   # "wsl_update",
 
   #Linux
+  # "app_man",
   "auto_cpufreq",
   "config_update",
+  # "deb_get",
+  # "distrobox",
   # "falconf",
   "flatpak",
   "gnome_shell_extensions",
@@ -128,15 +133,11 @@ only = [
   "snap",
 
   # "am",
-  # "app_man",
   # "audit",
   # "bin",
   # "bob",
-  # "choosenim",
   # "clam_av_db",
   # "composer",
-  # "deb_get",
-  # "distrobox",
   # "elan",
   # "firmware",
   # "flutter",
@@ -171,7 +172,6 @@ only = [
   # "vcpkg",
   # "waydroid",
   # "winget",
-  # "zvm",
 ]
 
 # Run `sudo -v` to cache credentials at the start of the run
