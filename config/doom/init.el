@@ -17,6 +17,22 @@
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 
+;; Doom disables these startup optimizations on daemons, since startup time
+;; doesn't matter as much. But I still care about startup time with the daemon,
+;; so I'm restoring some of the simpler, more impactful ones.
+(when (daemonp)
+  (unless noninteractive
+    (setq frame-inhibit-implied-resize t)
+    (setq inhibit-startup-screen t
+          inhibit-startup-echo-area-message user-login-name
+          initial-major-mode 'fundamental-mode
+          initial-scratch-message nil)
+    (advice-add #'display-startup-echo-area-message :override #'ignore)
+    (advice-add #'display-startup-screen :override #'ignore)
+    (define-advice setopt--set (:around (fn &rest args) inhibit-load-symbol -90)
+      (let ((custom-load-recursion t))
+        (apply fn args)))))
+
 (add-load-path! "./lisp")
 
 (setq el-patch-use-advice t)

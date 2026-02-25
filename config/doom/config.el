@@ -334,6 +334,7 @@
 
 (defvar akn/funcs-to-compile
   (list
+   #'setopt--set@inhibit-load-symbol
    #'akn/line-numbers-on-when-narrowing-a
    #'akn/line-numbers-off-when-widening-a
    #'akn/set-jump-before-mwheel-scroll-h
