@@ -5,24 +5,12 @@ java-base-mode java-mode java-ts-mode
 (pkg "package " q ";")
 (imp "import " q ";")
 
-(class "class "
-       (p (s-upper-camel-case (file-name-base (or (buffer-file-name) (buffer-name) "Name"))))
-       " {" n>
-       r> n>
-       "}" > n)
-(interface "interface "
-           (p (s-upper-camel-case (file-name-base (or (buffer-file-name) (buffer-name) "Name"))))
-           " {" n>
-           r> n>
-           "}" > n)
-(record "record "
-        (p (s-upper-camel-case (file-name-base (or (buffer-file-name) (buffer-name) "Name"))))
-        " ("(p "int x")") {"q"}")
-(enum "enum "
-      (p (s-upper-camel-case (file-name-base (or (buffer-file-name) (buffer-name) "Name"))))
-      " {" n>
-      (r> "OPTION_ONE,") n>
-      "}" > n)
+(fileclassname (p (s-upper-camel-case (file-name-base (or (buffer-file-name) (buffer-name) "Name")))))
+
+(class     "class "     (i fileclassname) " {" n> r> n> "}" > n)
+(interface "interface " (i fileclassname) " {" n> r> n> "}" > n)
+(enum      "enum "      (i fileclassname) " {" n> (r> "OPTION_ONE,") n> "}" > n)
+(record    "record "    (i fileclassname) "("(p "int x")") {"q"}")
 
 (getter (p "int") " get"(capitalize (car (string-split prop " ")))"() {" n>
         "return this."(p "prop" prop)";" > n>

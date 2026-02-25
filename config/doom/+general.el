@@ -888,6 +888,7 @@ underscores in all modes."
     lfe-mode
     common-lisp-mode
     lisp-interaction-mode
+    lisp-data-mode
     ielm-mode
     slime-repl-mode
     inferior-emacs-lisp-mode
