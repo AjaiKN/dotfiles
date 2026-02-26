@@ -9,8 +9,14 @@ sh-base-mode sh-mode
         (i safemode)
         (i verbose) n n)
 
-(if "if " p "; then" n> p n> "else" n> p n> "fi")
-(case "case " p " in" n> p ")" n> p n> ";;" n> q n "esac")
+(alias "alias "p"=\""r"\"")
+
+(if  "if " p "; then" n> r n "fi" >)
+(ife "if " p "; then" n> p n "else" > n> q n> "fi" >)
+(if  "if " p "; then" n> r n "fi" >)
+(case "case " p " in" n>
+      r> n>
+      "esac" > %)
 (for "for " p " in ; do" n> q n "done")
 
 (parseargs
@@ -29,7 +35,7 @@ sh-base-mode sh-mode
   while [ $# -gt 0 ]; do
     case \"$1\" in
       --version)
-        echo \"emacs-restart 0.0.1-pre\"
+        echo \""(p (file-name-base (or (buffer-file-name) (buffer-name) "Program")))" 0.0.1-pre\"
         exit
         ;;
       -h|--help)
@@ -67,4 +73,9 @@ sh-base-mode sh-mode
         break
         ;;
     esac
-  done"))
+  done" n))
+
+sh-base-mode sh-mode
+:when (save-excursion (goto-char (pos-bol)) (bobp))
+(shebang "#!/usr/bin/env " (p (symbol-name sh-shell)) n q :post (sh-mode))
+(\#! "#!/usr/bin/env " (p (symbol-name sh-shell)) n q :post (sh-mode))
