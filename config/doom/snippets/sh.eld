@@ -81,8 +81,3 @@ sh-base-mode sh-mode
         ;;
     esac
   done" n))
-
-sh-base-mode sh-mode
-:when (save-excursion (goto-char (pos-bol)) (bobp))
-(shebang "#!/usr/bin/env " (p (symbol-name sh-shell)) n q :post (sh-mode))
-(\#! "#!/usr/bin/env " (p (symbol-name sh-shell)) n q :post (sh-mode))
