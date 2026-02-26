@@ -1,4 +1,7 @@
 sh-base-mode sh-mode
+:when (cl-loop for shell = sh-shell then (alist-get shell sh-ancestor-alist)
+               while shell
+               thereis (eq shell 'sh))
 
 (cdhere "cd \"$(dirname \"\$0\")\"")
 (safemode & "set -euo pipefail" n
@@ -11,13 +14,17 @@ sh-base-mode sh-mode
 
 (alias "alias "p"=\""r"\"")
 
-(if  "if " p "; then" n> r n "fi" >)
-(ife "if " p "; then" n> p n "else" > n> q n> "fi" >)
-(if  "if " p "; then" n> r n "fi" >)
-(case "case " p " in" n>
-      r> n>
-      "esac" > %)
-(for "for " p " in ; do" n> q n "done")
+(if "if " p "; then" n> r n "fi" > %)
+(case "case " p " in" n> r n "esac" > %)
+(while "while " p "; do" n> r n "done" > %)
+(until "until " p "; do" n> r n "done" > %)
+(ife "if " p "; then" n> p n "else" > n> q n> "fi" > %)
+(for "for "p" in "p"; do" n> r n "done" > %)
+
+(switch (i case))
+
+(function "function " p " {" n> r n "}" > %)
+(fn p"() {" n> r n "}" > %)
 
 (parseargs
  (indent
