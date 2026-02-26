@@ -432,43 +432,6 @@ Copied from `sp-ruby-def-post-handler'."
   (sp-pair "/" "/" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p))
   (sp-pair "$" "$" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p)))
 
-;; experimental, might remove
-(after! (:and smartparens sh-script)
-  (defun akn/sp-sh-post-handler (_id action _context)
-    (when (equal action 'insert)
-      (save-excursion
-        (forward-line)
-        (goto-char (pos-bol))
-        (indent-according-to-mode))))
-
-  (require 'dash)
-  (sp-with-modes '(sh-mode sh-base-mode bash-ts-mode)
-    (sp-local-pair "if" "; then\nfi"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "for" "; do\ndone"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "while" "; do\ndone"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "until" "; do\ndone"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "case" " in\nesac"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))))
-
 ;;; embrace
 
 (use-package! embrace
@@ -1803,7 +1766,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   "If you don't remember the emacs notation for keybindings
 (e.g. that command-shift-f is s-F), then this should help!"
   (interactive
-   (list (read-key-sequence "Press key: ")))
+   (list (progn (read-key-sequence "Press key: ")
+                (this-single-command-raw-keys))))
   (akn/evil-save-state
    (evil-force-normal-state)
    (if (akn/has-quote-in-rest-of-line-p)
