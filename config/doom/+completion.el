@@ -272,6 +272,13 @@
   (nconc (cl-loop for x in list if (string-suffix-p "/" x) collect x)
          (cl-loop for x in list if (not (string-suffix-p "/" x)) collect x)))
 
+;;; abbrev-mode
+;; mainly for tempel-abbrev-mode
+(add-hook! '(java-mode-hook java-ts-mode-hook
+             sh-base-mode-hook
+             mediawiki-mode-hook)
+           #'abbrev-mode)
+
 ;;; file-local variables
 
 ;; Local Variables:
