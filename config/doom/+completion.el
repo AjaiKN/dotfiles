@@ -279,6 +279,39 @@
              mediawiki-mode-hook)
            #'abbrev-mode)
 
+
+(define-advice self-insert-command (:around (fn &rest args) akn/no-abbrev-sometimes-a)
+  "Only allow abbrev expansion if the last command was `self-insert-command'.
+
+Also disable abbrev expansions temporarily after undo or when shift-translated.
+If I just undid an abbrev expansion, then I press the key again, I
+probably don't want the abbrev expansion to be done this time. Also,
+if I press shift-SPC, I don't want the abbrev to expand."
+  (if (and abbrev-mode
+           (or
+            this-command-keys-shift-translated
+            ;; Experimental: only expand abbrevs if the last command was self-insert-command
+            (not (eq last-command #'self-insert-command))))
+                     ;; (eq last-command (command-remapping 'self-insert-command))))))
+            ;; (and (fboundp 'undo--last-change-was-undo-p)
+            ;;      (undo--last-change-was-undo-p buffer-undo-list))))
+      (let (abbrev-mode)
+        (apply fn args))
+    (apply fn args)))
+;; Another possible way to do the same thing:
+;; (map! [remap self-insert-command]
+;;       (akn/cmds! (and abbrev-mode
+;;                       (or this-command-keys-shift-translated
+;;                           (and (fboundp 'undo--last-change-was-undo-p)
+;;                                (undo--last-change-was-undo-p buffer-undo-list))))
+;;                  #'akn/self-insert-command-no-abbrev))
+;; (defun akn/self-insert-command-no-abbrev ()
+;;   (interactive)
+;;   (let (abbrev-mode)
+;;     (unwind-protect
+;;         (call-interactively #'self-insert-command)
+;;       (setq this-command #'self-insert-command))))
+
 ;;; file-local variables
 
 ;; Local Variables:
