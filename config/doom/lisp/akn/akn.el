@@ -130,6 +130,15 @@ Same as Doom's `doom-unquote'."
 (akn/keywordify akn/read-file-name #'read-file-name
   (prompt dir default-filename mustmatch initial predicate))
 
+;;; obarrays
+
+(defun akn/obarray->list (ob)
+  (let (ret)
+    (when (obarrayp ob)
+      (obarray-map (lambda (sym) (push sym ret))
+                   ob))
+    ret))
+
 ;;; non-doom compat
 
 (defmacro akn--simple-modulep! (group module)
