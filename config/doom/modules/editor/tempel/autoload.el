@@ -30,7 +30,15 @@ string).  It returns t if a new completion is found, nil otherwise."
    ;; TODO: PR
    (`(q . ,rest)
     (let ((ov (apply #'tempel--placeholder rest)))
-      (overlay-put ov 'tempel--enter #'tempel--done)))
+      (overlay-put ov 'tempel--enter
+                   (lambda (&optional _field-ov)
+                     ;; select the field
+                     (push-mark (if (eq (point) (overlay-end ov))
+                                    (overlay-start ov)
+                                  (overlay-end ov)))
+                     (activate-mark)
+                     (tempel--done)))
+      ""))
    ;; include another template
    (`(i ,inc)
     (cons 'l (or (alist-get inc (tempel--templates))
