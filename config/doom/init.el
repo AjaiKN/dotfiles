@@ -212,28 +212,27 @@ Does it mean I should disable core.untrackedCache even though
                          (if ',(akn/fullscreenp)
                              (akn/fullscreen-on)
                            (akn/fullscreen-off
-                            (and ',(frame-pixel-height)
+                            (and ',(frame-pixel-width)
                                  ',(frame-pixel-height)
-                                 (set-frame-size nil ',(frame-pixel-height) ',(frame-pixel-height) 'pixelwise))
+                                 (set-frame-size nil ',(frame-pixel-width) ',(frame-pixel-height) 'pixelwise))
                             (and ',(car pos)
                                  ',(cdr pos)
                                  (set-frame-position (selected-frame) ',(car pos) ',(cdr pos))))
-                          (set-frame-parameter nil 'alpha ',(frame-parameter nil 'alpha))
-                          (set-frame-parameter nil 'alpha-background ',(frame-parameter nil 'alpha-background))
-                          (doom/quickload-session 'force))))))
-          `(unless (bound-and-true-p akn/terminal-daemon-p)
-             (if (daemonp)
-                 ;; (add-hook 'window-setup-hook #'doom-load-session 100)
-                 (add-transient-hook! 'after-make-frame-functions
-                   :after
-                   ,thing)
-               ,thing)
+                           (set-frame-parameter nil 'alpha ',(frame-parameter nil 'alpha))
+                           (set-frame-parameter nil 'alpha-background ',(frame-parameter nil 'alpha-background)))
+                         (doom/quickload-session 'force)))))
+         `(unless (bound-and-true-p akn/terminal-daemon-p)
+            (add-transient-hook! 'server-after-make-frame-hook
+              :after
+              ,thing)
             (start-process "emacs-open-frame" " *emacs-open-frame*" "emacs-open-frame")))))))
 (global-set-key [remap doom/restart] #'akn/restart)
-(when (file-exists-p akn/restart-emacs-file)
+(when (and (daemonp)
+           (not akn/terminal-daemon-p)
+           (file-exists-p akn/restart-emacs-file))
   (if (condition-case-unless-debug err
           (progn
-            (load akn/restart-emacs-file nil 'nomessage)
+            (load akn/restart-emacs-file)
             t)
         (error
          (display-warning 'akn/restart-emacs-file

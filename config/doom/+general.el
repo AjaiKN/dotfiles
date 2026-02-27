@@ -211,8 +211,12 @@ are exactly the same too."
   (setq recentf-keep (remq #'recentf-keep-default-predicate recentf-keep))
   (add-to-list 'recentf-keep #'akn/keep-predicate)
 
-  (add-to-list 'recentf-exclude (rx ".local/etc/workspaces/autosave" eos))
-  (add-to-list 'recentf-exclude (rx "/elgrep-data.el" eos))
+  (pushnew! recentf-exclude
+            (rx ".local/etc/workspaces/autosave" eos)
+            (rx "/elgrep-data.el" eos)
+            (rx ".local/share/doom/bookmarks" eos)
+            (rx ".local/share/doom")
+            (rx ".local/state/doom"))
   ;; originally 20, Doom set to 200
   (setq recentf-max-saved-items (max 5000 recentf-max-saved-items))
 
