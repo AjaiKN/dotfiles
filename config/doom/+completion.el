@@ -169,11 +169,6 @@
 
 ;;; corfu
 
-;; TODO: PR/issue: +corfu-inhibit-auto-functions doesn't work?
-(after! corfu
-  (define-advice corfu-auto--complete-deferred (:before-while (&rest _) akn/+corfu-inhibit-auto-functions-a)
-    (not (run-hook-with-args-until-success '+corfu-inhibit-auto-functions))))
-
 (after! corfu
   (map! (:map corfu-map
          ;; when inside popup
@@ -202,6 +197,13 @@
 
 ;; (use-package! corfu-mouse
 ;;   :ghook 'corfu-mode-hook)
+
+;;;; disabling corfu
+
+;; TODO: PR/issue: +corfu-inhibit-auto-functions doesn't work?
+(after! corfu
+  (define-advice corfu-auto--complete-deferred (:before-while (&rest _) akn/+corfu-inhibit-auto-functions-a)
+    (not (run-hook-with-args-until-success '+corfu-inhibit-auto-functions))))
 
 (define-minor-mode akn/corfu-auto-disabled-mode
   "Disable corfu-auto."
