@@ -177,13 +177,15 @@
          :gie "TAB" #'corfu-next
          :gie "<backtab>" #'corfu-previous
          :gie "S-TAB" #'corfu-previous
-         :gie "S-<tab>" #'corfu-previous)
+         :gie "S-<tab>" #'corfu-previous
+         :gie "<down>" #'corfu-next
+         :gie "<up>" #'corfu-previous
+         :gie "C-j" #'corfu-next
+         :gie "C-k" #'corfu-previous
+         :gie "C-n" #'corfu-next
+         :gie "C-p" #'corfu-previous)
         (:map corfu-mode-map
          ;; when corfu-mode is on
-         :i "C-@"   #'completion-at-point
-         :i "C-SPC" #'completion-at-point
-         :i "C-n"   #'+corfu/dabbrev-or-next
-         :i "C-p"   #'+corfu/dabbrev-or-last
          :nv "C-SPC" nil)
         :i "C-S-SPC" #'set-mark-command
         :i "C-@"     #'set-mark-command))
@@ -214,8 +216,10 @@
     (when (bound-and-true-p corfu-auto)
       (add-hook 'post-command-hook #'corfu-auto--post-command nil 'local))))
 (when (modulep! :completion corfu)
-  (add-to-list '+corfu-inhibit-auto-functions
-               (lambda () akn/corfu-auto-disabled-mode)))
+  (pushnew! +corfu-inhibit-auto-functions
+            (lambda () akn/corfu-auto-disabled-mode)
+            (lambda () (and (derived-mode-p 'org-mode) (org-at-table-p)))
+            (lambda () (and (fboundp 'yas-active-snippets) (yas-active-snippets)))))
 (add-hook! 'corfu-mode-hook :depth 95
   (defun akn/corfu--check-auto-disabled-h ()
     (if akn/corfu-auto-disabled-mode

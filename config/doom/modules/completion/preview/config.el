@@ -49,9 +49,11 @@ end of the line."
   ;; Bindings that take effect when the preview is shown:
   ;; Cycle the completion candidate that the preview shows
   (map! :map completion-preview-active-mode-map
-        "<right>" (akn/cmds! (or (eolp) (derived-mode-p 'eshell-mode 'comint-mode 'minibuffer-mode))
-                             #'completion-preview-insert)
+        :gie "<right>" (akn/cmds! (or (eolp) (derived-mode-p 'eshell-mode 'comint-mode 'minibuffer-mode))
+                                  #'completion-preview-insert)
         "M-n" #'completion-preview-next-candidate
         "M-p" #'completion-preview-prev-candidate
         ;; Convenient alternative to C-i after typing one of the above
-        "M-i" #'completion-preview-insert))
+        ;; :gie "TAB" #'completion-preview-insert
+        ;; :gie "<tab>" #'completion-preview-insert
+        :gie "M-i" #'completion-preview-insert))
