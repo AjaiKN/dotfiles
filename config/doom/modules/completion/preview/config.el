@@ -54,6 +54,7 @@ end of the line."
         "M-n" #'completion-preview-next-candidate
         "M-p" #'completion-preview-prev-candidate
         ;; Convenient alternative to C-i after typing one of the above
-        ;; :gie "TAB" #'completion-preview-insert
-        ;; :gie "<tab>" #'completion-preview-insert
-        :gie "M-i" #'completion-preview-insert))
+        :gie "M-i" #'completion-preview-insert
+        (:when (not akn/should-tab-cycle-candidates)
+          :gie "TAB" #'completion-preview-insert
+          :gie "<tab>" #'completion-preview-insert)))

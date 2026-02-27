@@ -170,14 +170,16 @@
 ;;; corfu
 
 (after! corfu
+  (setq! corfu-preselect (not akn/should-tab-cycle-candidates))
+
   (map! (:map corfu-map
          ;; when inside popup
+         :gie "<tab>"     (akn/cmds! akn/should-tab-cycle-candidates #'corfu-next     #'corfu-complete)
+         :gie "TAB"       (akn/cmds! akn/should-tab-cycle-candidates #'corfu-next     #'corfu-complete)
+         :gie "<backtab>" (akn/cmds! akn/should-tab-cycle-candidates #'corfu-previous)
+         :gie "S-TAB"     (akn/cmds! akn/should-tab-cycle-candidates #'corfu-previous)
+         :gie "S-<tab>"   (akn/cmds! akn/should-tab-cycle-candidates #'corfu-previous)
          :i "C-SPC" #'corfu-insert-separator
-         :gie "<tab>" #'corfu-next
-         :gie "TAB" #'corfu-next
-         :gie "<backtab>" #'corfu-previous
-         :gie "S-TAB" #'corfu-previous
-         :gie "S-<tab>" #'corfu-previous
          :gie "<down>" #'corfu-next
          :gie "<up>" #'corfu-previous
          :gie "C-j" #'corfu-next

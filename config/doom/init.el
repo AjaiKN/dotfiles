@@ -113,6 +113,10 @@
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#use-plists-for-deserialization
 (setenv "LSP_USE_PLISTS" "true")
 
+(defvar akn/should-tab-cycle-candidates nil
+  "Should the tab key cycle to the next completion candidate (as opposed to
+selecting the current candidate)?")
+
 (load! "+modules")
 
 (define-advice straight--process-output (:filter-return (ret) akn/a)
