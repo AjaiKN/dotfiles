@@ -176,7 +176,8 @@
          :gie "<tab>" #'corfu-next
          :gie "TAB" #'corfu-next
          :gie "<backtab>" #'corfu-previous
-         :gie "S-TAB" #'corfu-previous)
+         :gie "S-TAB" #'corfu-previous
+         :gie "S-<tab>" #'corfu-previous)
         (:map corfu-mode-map
          ;; when corfu-mode is on
          :i "C-@"   #'completion-at-point
