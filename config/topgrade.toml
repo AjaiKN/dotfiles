@@ -23,7 +23,7 @@ only = [
   "system",
   "tldr",
   # "typst",
-  "yazi",
+  # "yazi",
 
   #Languages
   "bun",
