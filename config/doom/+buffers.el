@@ -400,11 +400,14 @@ no file name."
        "p" #'python-mode))
 
 (defun akn/add-lexical-binding ()
+  (interactive)
   (save-excursion
-    (goto-char 1)
-    (unless (search-forward "lexical-binding: t" nil t)
-      (goto-char 1)
-      (insert ";;; -*- lexical-binding: t; -*-\n"))))
+    (add-file-local-variable-prop-line 'lexical-binding t)
+    (without-restriction
+      (goto-char (point-min))
+      (when (looking-at-p ";; ")
+        (insert ";")))
+    (setq-local lexical-binding t)))
 (add-hook! 'emacs-lisp-mode-hook
   (defun akn/add-lexical-binding-h ()
     (when (and akn/new-file-mode (not buffer-read-only))

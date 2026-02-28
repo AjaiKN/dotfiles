@@ -3,8 +3,7 @@ emacs-lisp-mode
 (au & ";;;###autoload" %)
 (autodef & ";;;###autodef" %)
 
-(lexical "-*- lexical-binding: t -*-"
-         :post (save-excursion (unless (doom-point-in-comment-p) (comment-line 1))))
+(lexical "" :post (akn/add-lexical-binding))
 
 (__package
  ";;; " (p (if buffer-file-name (file-name-nondirectory buffer-file-name) "") file) " --- " (p "Description") " -*- lexical-binding: t; -*-" n

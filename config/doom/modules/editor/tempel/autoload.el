@@ -41,8 +41,11 @@ string).  It returns t if a new completion is found, nil otherwise."
       ""))
    ;; include another template
    (`(i ,inc)
-    (cons 'l (or (alist-get inc (tempel--templates))
-                 (error "Template %s not found" inc))))
+    (let* ((template (or (alist-get inc (tempel--templates))
+                         (error "Template %s not found" inc)))
+           ;; if there are keywords at the end, take them out
+           (template (seq-take-while (lambda (x) (not (keywordp x))) template)))
+      (cons 'l template)))
    (`(indent . ,things)
     (let ((beginning (point-marker)))
       `(l
