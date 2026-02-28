@@ -96,3 +96,14 @@
 (defun +mediawiki/insert-link ()
   "TODO: similar to org-insert-link"
   (interactive))
+
+;;;###autoload
+(defun +mediawiki/edit-js-indirectly ()
+  (interactive)
+  (defvar edit-indirect-guess-mode-function)
+  (let ((edit-indirect-guess-mode-function
+         (lambda (&rest _)
+           (funcall (major-mode-remap #'js-mode))))
+        (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
+    (edit-indirect-region (point-min) (point-max) t)
+    (+mediawiki-indirect-mode)))

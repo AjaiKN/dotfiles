@@ -464,6 +464,16 @@ name and is empty, it'll still try to save it."
         (delete-frame))
     (save-buffers-kill-emacs)))
 
+;;; edit-indirect
+
+(after! edit-indirect
+  (setq! edit-indirect-guess-mode-function
+         (lambda (parent-buf &rest _)
+           (normal-mode)
+           (when (eq major-mode 'fundamental-mode)
+             (funcall (buffer-local-value 'major-mode parent-buf)))))
+  (add-hook 'edit-indirect-after-creation-hook #'doom-mark-buffer-as-real-h))
+
 ;;; file-local variables
 
 ;; Local Variables:
