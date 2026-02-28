@@ -429,7 +429,10 @@ to normal state is deprioritized)."
  (:when (modulep! :editor tempel)
    :i "M-TAB" (akn/defun akn/tempel-complete ()
                 (interactive)
-                (or (and (current-word 'strict)
+                (or (when (tempel-expand)
+                      (call-interactively #'tempel-expand)
+                      t)
+                    (and (current-word 'strict)
                          (not (use-region-p))
                          (condition-case _err
                              (progn
