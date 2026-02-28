@@ -113,9 +113,10 @@
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#use-plists-for-deserialization
 (setenv "LSP_USE_PLISTS" "true")
 
-(defvar akn/should-tab-cycle-candidates nil
+(defvar akn/should-tab-cycle-candidates t
   "Should the tab key cycle to the next completion candidate (as opposed to
-selecting the current candidate)?")
+selecting the current candidate)? If this is nil, the first candidate
+from the corfu completion menu will be selected automatically.")
 
 (load! "+modules")
 
