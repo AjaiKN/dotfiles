@@ -139,18 +139,6 @@ The predicate is passed as argument to `buffer-match-p', which see."
              #'better-backup--write-buffer-sync)
            file))
 
-(cl-defun better-backup--copy-file-async (from &optional (to (better-backup--backup-file-name from)))
-  ""
-  (let ((process
-         (make-process :name "better-backup"
-                       :command `("cp" "-i" ,from ,to)
-                       :connection-type 'pipe)))
-    (process-send-eof process)))
-
-(cl-defun better-backup--copy-file-sync (from &optional (to (better-backup--backup-file-name from)))
-  ""
-  (copy-file from to nil 'keep-mtime 'preserve-uid-gid 'preserve-permissions))
-
 ;;;; Main
 
 (defvar-local better-backup--buffer-last-backup-tick nil
