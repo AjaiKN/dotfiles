@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: Header 1 (=)
-# uuid:
-# key: h1
-# condition: t
-# --
-= ${1:Header 1} =
-
-$0
