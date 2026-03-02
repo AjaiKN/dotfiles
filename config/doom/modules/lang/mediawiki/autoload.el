@@ -29,7 +29,7 @@
   (interactive)
   (when (buffer-modified-p)
     (call-interactively #'mediawiki-save)
-    (set-buffer-modified-p nil)))
+    (revert-buffer t t t)))
 
 ;;;###autoload
 (defun +mediawiki/open (site page)
