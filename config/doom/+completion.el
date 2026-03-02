@@ -171,7 +171,8 @@
 
 (after! corfu
   (setq! +corfu-want-ret-to-confirm t ;akn/should-tab-cycle-candidates
-         corfu-preselect (not akn/should-tab-cycle-candidates))
+         corfu-preselect (if akn/should-tab-cycle-candidates 'prompt t))
+
   ;; (when (not akn/should-tab-cycle-candidates)
   ;;   (setq-hook! 'minibuffer-mode-hook
   ;;     +corfu-want-ret-to-confirm nil))
