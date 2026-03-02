@@ -186,13 +186,15 @@ The predicate is passed as argument to `buffer-match-p', which see."
         (add-hook 'before-save-hook #'better-backup--buffer-backup-maybe nil 'local)
         (add-hook 'after-save-hook #'better-backup--buffer-backup-maybe 92 'local)
         (add-hook 'before-revert-hook #'better-backup--buffer-backup-maybe nil 'local)
-        (add-hook 'after-revert-hook #'better-backup--buffer-backup-maybe 92 'local))
+        (add-hook 'after-revert-hook #'better-backup--buffer-backup-maybe 92 'local)
+        (add-hook 'kill-buffer-hook #'better-backup--buffer-backup-maybe -92 'local))
     (progn
       (remove-hook 'first-change-hook #'better-backup--buffer-backup-maybe 'local)
       (remove-hook 'before-save-hook #'better-backup--buffer-backup-maybe 'local)
       (remove-hook 'after-save-hook #'better-backup--buffer-backup-maybe 'local)
       (remove-hook 'before-revert-hook #'better-backup--buffer-backup-maybe 'local)
       (remove-hook 'after-revert-hook #'better-backup--buffer-backup-maybe 'local)
+      (remove-hook 'kill-buffer-hook #'better-backup--buffer-backup-maybe 'local)
       (when better-backup--buffer-local-saved-state
         (buffer-local-restore-state better-backup--buffer-local-saved-state)
         (setq better-backup--buffer-local-saved-state nil)))))
