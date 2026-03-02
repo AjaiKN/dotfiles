@@ -1511,6 +1511,19 @@ Open the vterm buffer reusing a window."
                                     nil t)
             (eshell/alias (match-string-no-properties 1) (match-string-no-properties 2))))))))
 
+;;; thread-list-mode
+(put 'list-threads 'disabled nil)
+(after! threads
+  (set-popup-rule! (rx "*Threads*"))
+  (akn/advise-letf! list-threads (akn/obey-display-action-a)
+    (switch-to-buffer-obey-display-actions t))
+  (define-advice thread-list-send-quit-signal (:before-while (&rest _) akn/confirm-a)
+    (or (not (called-interactively-p 'any))
+        (y-or-n-p "Manually canceling threads can ruin your Emacs session. Are you sure you want to send a quit signal? ")))
+  (define-advice thread-list-send-error-signal (:before-while (&rest _) akn/confirm-a)
+    (or (not (called-interactively-p 'any))
+        (y-or-n-p "Manually canceling threads can ruin your Emacs session. Are you sure you want to send an error signal? "))))
+
 ;;; vdiff
 (use-package! vdiff
   :config
