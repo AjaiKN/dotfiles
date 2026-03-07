@@ -3,8 +3,8 @@
 (require 'akn)
 
 (after! projectile
-  (pushnew! projectile-project-root-files "DESCRIPTION" ".here")
-  (pushnew! projectile-project-root-files-top-down-recurring "remake.yml"))
+  (akn/pushnew projectile-project-root-files "DESCRIPTION" ".here")
+  (akn/pushnew projectile-project-root-files-top-down-recurring "remake.yml"))
 
 
 ;;; ESS
@@ -75,7 +75,7 @@
 
   ;; can re-enable this on a per-project basis
   (after! flycheck
-    (pushnew! (default-value 'flycheck-disabled-checkers) 'r-lintr))
+    (akn/pushnew (default-value 'flycheck-disabled-checkers) 'r-lintr))
 
   (set-company-backend! '(ess-r-mode inferior-ess-r-mode)
     '(company-R-args company-R-objects company-dabbrev-code :separate))

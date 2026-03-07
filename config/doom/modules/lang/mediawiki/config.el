@@ -92,4 +92,4 @@
 (akn/advise-letf! mediawiki-pop-to-buffer (+mediawiki--same-window-a)
   (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
 
-(pushnew! +word-wrap-text-modes #'mediawiki-mode #'mediawiki-file-mode #'mediawiki-draft-mode)
+(akn/pushnew +word-wrap-text-modes #'mediawiki-mode #'mediawiki-file-mode #'mediawiki-draft-mode)

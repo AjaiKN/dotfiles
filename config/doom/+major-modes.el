@@ -123,7 +123,7 @@
             ("/" "/"                           "root")
             ("t" "~/.Trash/"                   "trash")))
   (setopt dirvish-subtree-prefix "  │ ")
-  (pushnew! dirvish-attributes 'collapse)
+  (akn/pushnew dirvish-attributes 'collapse)
 
   ;; When `dirvish-use-header-line' is enabled, cycle-files doesn't work right.
   (setopt dired-movement-style (if (and dirvish-use-header-line (eq dired-movement-style 'cycle-files))
@@ -653,7 +653,7 @@ This is to mimic the behavior of RET in Stand-alone GNU Info."
               (toggle-frame-tab-bar))))))))
 
 (after! info
-  (pushnew! Info-directory-list)
+  (akn/pushnew Info-directory-list)
   (cl-callf append
       Info-additional-directory-list
       (doom-glob (or (getenv-internal "HOMEBREW_CELLAR") "/opt/homebrew/Cellar")
@@ -1165,15 +1165,15 @@ or creates it if it does not exist."
           (group-n 2 (+ (not (any "\t\n "))))))))
 
 (after! sh-script
-  (pushnew! (cddr (alist-get 'zsh sh-builtins))
-            "zstyle"
-            ;; somem others from `man zshbuiltins':
-            "cap" "clone" "command" "comparguments" "compcall" "compdescribe"
-            "compfiles" "compgroups" "compquote" "comptags" "comptry"
-            "compvalues" "echoti" "emulate" "float" "getcap" "job" "last"
-            "nocorrect" "noglob" "printf" "pushln" "setcap" "stat" "test" "trap"
-            "where" "zcompile" "zformat" "zftp" "zle" "zmodload" "zparseopts"
-            "zprof" "zpty" "zregexparse" "zsocket" "ztcp")
+  (akn/pushnew (cddr (alist-get 'zsh sh-builtins))
+    "zstyle"
+    ;; somem others from `man zshbuiltins':
+    "cap" "clone" "command" "comparguments" "compcall" "compdescribe"
+    "compfiles" "compgroups" "compquote" "comptags" "comptry"
+    "compvalues" "echoti" "emulate" "float" "getcap" "job" "last"
+    "nocorrect" "noglob" "printf" "pushln" "setcap" "stat" "test" "trap"
+    "where" "zcompile" "zformat" "zftp" "zle" "zmodload" "zparseopts"
+    "zprof" "zpty" "zregexparse" "zsocket" "ztcp")
 
   (setopt sh-basic-offset 2))
 
@@ -1468,11 +1468,11 @@ Open the vterm buffer reusing a window."
   (eshell-vterm-mode))
 
 (after! eshell
-  (pushnew! eshell-modules-list
-            'eshell-elecslash
-            'eshell-rebind
-            ;; 'eshell-smart
-            'eshell-xtra)
+  (akn/pushnew eshell-modules-list
+    'eshell-elecslash
+    'eshell-rebind
+    ;; 'eshell-smart
+    'eshell-xtra)
 
   ;; Now we can type "v irb" to run irb in visual mode, for example.
   ;; (And we've set up visual mode to use vterm.)

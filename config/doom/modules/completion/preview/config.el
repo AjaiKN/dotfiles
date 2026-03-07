@@ -10,9 +10,9 @@
   :config
   (global-completion-preview-mode)
   (add-to-list 'global-completion-preview-modes 'minibuffer-mode)
-  (pushnew! (alist-get 'not global-completion-preview-modes)
-            'org-mode
-            'text-mode)
+  (akn/pushnew (alist-get 'not global-completion-preview-modes)
+    'org-mode
+    'text-mode)
 
   ;; Show the preview already after two symbol characters
   (setq completion-preview-minimum-symbol-length 2)
@@ -39,12 +39,12 @@ end of the line."
 
   ;; Non-standard commands to that should show the preview:
 
-  (pushnew! completion-preview-commands
-            #'org-self-insert-command
-            #'paredit-backward-delete
-            #'quail-self-insert-command
-            #'eshell-self-insert-command
-            #'semantic-complete-self-insert)
+  (akn/pushnew completion-preview-commands
+    #'org-self-insert-command
+    #'paredit-backward-delete
+    #'quail-self-insert-command
+    #'eshell-self-insert-command
+    #'semantic-complete-self-insert)
 
   ;; Bindings that take effect when the preview is shown:
   ;; Cycle the completion candidate that the preview shows

@@ -207,19 +207,6 @@ the variables instead of replacing them."
     `(cl-callf2 delete ,element ,list-var)))
 (akn/rotate-symbols! 'emacs-lisp-mode-hook "add-to-list" "akn/remove-from-list")
 
-(defmacro akn/removeall! (place &rest values)
-  ""
-  (cl-with-gensyms (x vals)
-    `(let ((,vals (list ,@values)))
-       (cl-callf2
-           cl-delete-if
-           (lambda (,x) (member ,x ,vals))
-           ,place))))
-
-(akn/rotate-symbols! 'emacs-lisp-mode-hook
-                    '("pushnew!" "akn/removeall!")
-                    '("cl-pushnew" "akn/removeall!"))
-
 (defmacro akn/remove-hook (hook function &optional _depth local)
   "Like `remove-hook', but takes the same arguments as `add-hook' for convenience."
   (if local
@@ -235,6 +222,31 @@ the variables instead of replacing them."
        ,(when advice-fn-name
           `(fmakunbound ',advice-fn-name)))))
 (akn/rotate-symbols! 'emacs-lisp-mode-hook "define-advice" "akn/undefine-advice")
+
+;;; akn/pushnew
+
+(defmacro akn/pushnew (place &rest values)
+  "Push VALUES sequentially into PLACE, if they aren't already present.
+This is a variadic `cl-pushnew'.
+
+This is taken from Doom's `pushnew!' function, which was deprecated."
+  (declare (indent 1))
+  (let ((var (make-symbol "result")))
+    `(dolist (,var (list ,@values) (with-no-warnings ,place))
+       (cl-pushnew ,var ,place :test #'equal))))
+
+(defmacro akn/removeall (place &rest values)
+  "The opposite of `akn/pushnew'."
+  (declare (indent 1))
+  (cl-with-gensyms (x vals)
+    `(let ((,vals (list ,@values)))
+       (cl-callf2
+           cl-delete-if
+           (lambda (,x) (member ,x ,vals))
+           ,place))))
+(akn/rotate-symbols! 'emacs-lisp-mode-hook
+                    '("akn/pushnew" "akn/removeall")
+                    '("cl-pushnew" "akn/removeall"))
 
 ;;; convenience macros for setting variables then restoring the old values
 (defmacro akn/mode-set (my-mode-name &rest vars-and-values)

@@ -26,10 +26,10 @@
 
 ;;; Completion
 
-(pushnew! completion-ignored-extensions
-          ".zwc"                        ; zsh word code
-          ".DS_Store"                   ; macOS
-          ".jj/")                       ; https://github.com/jj-vcs/jj
+(akn/pushnew completion-ignored-extensions
+  ".zwc"                        ; zsh word code
+  ".DS_Store"                   ; macOS
+  ".jj/")                       ; https://github.com/jj-vcs/jj
 
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
 ;; also see `completion-category-defaults' and `completion-category-overrides'
@@ -43,17 +43,17 @@
       (setf (alist-get `imenu completion-category-overrides) `((styles akn/orderless-without-initialism orderless ,@maybe-fussy basic)))
       (setf (alist-get `consult-grep completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
       (setf (alist-get `consult-location completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
-      (pushnew! completion-category-overrides
-                ;; `(lsp-capf         (styles orderless ,@maybe-fussy basic)) ;doom`s default
-                `(imenu             (styles akn/orderless-without-initialism orderless ,@maybe-fussy basic))
-                `(file              (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher-or-initialism ,@maybe-fussy partial-completion))
-                `(bookmark          (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher ,@maybe-fussy partial-completion))
-                `(consult-location  (styles akn/orderless-without-initialism ,@maybe-fussy basic))
-                `(consult-grep      (styles akn/orderless-without-initialism ,@maybe-fussy basic))
-                ;; Override the defaults in completion-category-defaults
-                `(racket-identifier (styles ,@completion-styles))
-                `(racket-module     (styles ,@completion-styles))
-                `(email             (styles ,@completion-styles)))))
+      (akn/pushnew completion-category-overrides
+        ;; `(lsp-capf         (styles orderless ,@maybe-fussy basic)) ;doom`s default
+        `(imenu             (styles akn/orderless-without-initialism orderless ,@maybe-fussy basic))
+        `(file              (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher-or-initialism ,@maybe-fussy partial-completion))
+        `(bookmark          (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher ,@maybe-fussy partial-completion))
+        `(consult-location  (styles akn/orderless-without-initialism ,@maybe-fussy basic))
+        `(consult-grep      (styles akn/orderless-without-initialism ,@maybe-fussy basic))
+        ;; Override the defaults in completion-category-defaults
+        `(racket-identifier (styles ,@completion-styles))
+        `(racket-module     (styles ,@completion-styles))
+        `(email             (styles ,@completion-styles)))))
    ((modulep! :completion fussy)
     (setq completion-styles '(fussy basic)))
    (t
@@ -223,10 +223,10 @@
     (when (bound-and-true-p corfu-auto)
       (add-hook 'post-command-hook #'corfu-auto--post-command nil 'local))))
 (when (modulep! :completion corfu)
-  (pushnew! +corfu-inhibit-auto-functions
-            (lambda () akn/corfu-auto-disabled-mode)
-            (lambda () (and (derived-mode-p 'org-mode) (org-at-table-p)))
-            (lambda () (and (fboundp 'yas-active-snippets) (yas-active-snippets)))))
+  (akn/pushnew +corfu-inhibit-auto-functions
+    (lambda () akn/corfu-auto-disabled-mode)
+    (lambda () (and (derived-mode-p 'org-mode) (org-at-table-p)))
+    (lambda () (and (fboundp 'yas-active-snippets) (yas-active-snippets)))))
 (add-hook! 'corfu-mode-hook :depth 95
   (defun akn/corfu--check-auto-disabled-h ()
     (if akn/corfu-auto-disabled-mode

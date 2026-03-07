@@ -258,18 +258,18 @@ If a prefix argument is provided, ask before reverting hunk."
   ;; adding hooks that run #'magit-save-repository-buffers
   (setopt magit-save-repository-buffers 'dontask)
 
-  (pushnew! magit-no-confirm
-            'safe-with-wip
-            'stage-all-changes
-            'unstage-all-changes
-            'untrack
-            'rename)
+  (akn/pushnew magit-no-confirm
+    'safe-with-wip
+    'stage-all-changes
+    'unstage-all-changes
+    'untrack
+    'rename)
 
-  (pushnew! magit-published-branches
-            "origin/master"
-            "upstream/master"
-            "origin/main"
-            "upstream/main")
+  (akn/pushnew magit-published-branches
+    "origin/master"
+    "upstream/master"
+    "origin/main"
+    "upstream/main")
 
   (setq magit-repository-directories `(("~/prog" . 2)
                                        ("~/.config/emacs" . 0)

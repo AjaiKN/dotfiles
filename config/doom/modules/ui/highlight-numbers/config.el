@@ -15,9 +15,9 @@
            highlight-numbers-modelist))
 
 (after! so-long
-  (pushnew! so-long-minor-modes 'highlight-numbers-mode))
+  (akn/pushnew so-long-minor-modes 'highlight-numbers-mode))
 
 (after! ielm
   (require 'highlight-numbers)
-  (pushnew! ielm-font-lock-keywords
-            (highlight-numbers--get-regexp-for-mode 'emacs-lisp-mode)))
+  (akn/pushnew ielm-font-lock-keywords
+    (highlight-numbers--get-regexp-for-mode 'emacs-lisp-mode)))

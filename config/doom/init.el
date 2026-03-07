@@ -92,23 +92,20 @@
 (after! doom-cli-env
   ;; Make sure Doom doesn't inherit environment variables that it shouldn't.
   ;; NOTE: These are regexes.
-  (pushnew! doom-env-deny
-            "ITERM"
-            "TERM"
-            "MISE"
-            "RUBYLIB"
-            "JAVA_HOME"
-            "_P9K_SSH_TTY"
-            "P9K_TTY"
-            "TTY"
-            "TMPDIR")
-  (pushnew! doom-env-allow
-            "COLORTERM"
-            ;; Otherwise, on nix-darwin, /etc/zshenv will be run again (specifically, /nix/store/*-set-environment is sourced), and it'll reset $PATH.
-            ;; In non-interactive shells, ~/.zshrc won't be run, so $PATH won't include everything I need.
-            "__NIX_DARWIN_SET_ENVIRONMENT_DONE"
-            "__ETC_PROFILE_NIX_SOURCED"
-            "\\<NIX\\>"))
+  (dolist (x '("ITERM" "TERM" "MISE" "RUBYLIB"
+               "JAVA_HOME" "_P9K_SSH_TTY" "P9K_TTY"
+               "TTY" "TMPDIR"))
+    (add-to-list 'doom-env-deny x))
+
+  (dolist (x '("COLORTERM"
+               ;; Otherwise, on nix-darwin, /etc/zshenv will be run again
+               ;; (specifically, /nix/store/*-set-environment is sourced), and
+               ;; it'll reset $PATH. In non-interactive shells, ~/.zshrc won't
+               ;; be run, so $PATH won't include everything I need.
+               "__NIX_DARWIN_SET_ENVIRONMENT_DONE"
+               "__ETC_PROFILE_NIX_SOURCED"
+               "\\<NIX\\>"))
+    (add-to-list 'doom-env-allow x)))
 
 ;; https://emacs-lsp.github.io/lsp-mode/page/performance/#use-plists-for-deserialization
 (setenv "LSP_USE_PLISTS" "true")
@@ -177,6 +174,9 @@ Does it mean I should disable core.untrackedCache even though
         :pipe            "")) ; FIXME: find a non-private char
 
 ;;; restarting emacs
+
+(eval-when-compile
+  (ignore-errors (require 'akn)))
 
 (defvar restart-emacs-daemon-with-tty-frames-p)
 (setq restart-emacs-daemon-with-tty-frames-p t)

@@ -212,11 +212,11 @@ If nil, the value of `+fold-ellipsis' is used."
   (put 'outli-heading-char 'safe-local-variable #'characterp)
 
   :config
-  (pushnew! outli-heading-config
-            ;;MODE STEM REPEAT-CHAR [STYLE] [NO-BAR]
-            '(sh-mode "#" ?\# t)
-            '(conf-unix-mode "#" ?\# t)
-            '(fennel-mode ";;" ?\; t))
+  (akn/pushnew outli-heading-config
+    ;;MODE STEM REPEAT-CHAR [STYLE] [NO-BAR]
+    '(sh-mode "#" ?\# t)
+    '(conf-unix-mode "#" ?\# t)
+    '(fennel-mode ";;" ?\; t))
   (add-hook! '(sh-mode-hook conf-unix-mode-hook fennel-mode-hook)
              #'outli-mode)
 

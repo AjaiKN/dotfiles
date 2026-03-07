@@ -162,7 +162,7 @@
 ;; (setopt doom-theme 'doom-vibrant)
 
 ;; (when (equal (daemonp) "term"))
-;;   (pushnew! default-frame-alist '(background-color . unspecified))
+;;   (akn/pushnew default-frame-alist '(background-color . unspecified))
 ;;   (set-face-background 'default 'unspecified)
 ;;   (custom-set-faces! '(default :background nil))
 ;;   (add-hook! 'doom-load-theme-hook

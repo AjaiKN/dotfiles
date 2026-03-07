@@ -241,29 +241,29 @@
 
 ;;; Extra
 (after! multiple-cursors
-  (pushnew! mc/unsupported-minor-modes
-            'completion-preview-mode
-            'parinfer-rust-mode
-            'akn/active-region-arrow-boundary-mode
-            'hl-line-mode
-            'symbol-overlay-mode
-            'akn/line-move-visual-mode)
-  (pushnew! mc/cursor-specific-vars
-            'evil-markers-alist 'evil-motion-marker 'evil-prev-visual-mark 'evil-prev-visual-point
-            'evil-visual-beginning 'evil-visual-end 'evil-visual-mark 'evil-visual-point))
+  (akn/pushnew mc/unsupported-minor-modes
+    'completion-preview-mode
+    'parinfer-rust-mode
+    'akn/active-region-arrow-boundary-mode
+    'hl-line-mode
+    'symbol-overlay-mode
+    'akn/line-move-visual-mode)
+  (akn/pushnew mc/cursor-specific-vars
+    'evil-markers-alist 'evil-motion-marker 'evil-prev-visual-mark 'evil-prev-visual-point
+    'evil-visual-beginning 'evil-visual-end 'evil-visual-mark 'evil-visual-point))
 (after! evil-mc
-  (pushnew! evil-mc-incompatible-minor-modes
-            'completion-preview-mode
-            'parinfer-rust-mode
-            'akn/active-region-arrow-boundary-mode
-            'hl-line-mode
-            'symbol-overlay-mode
-            'akn/line-move-visual-mode
-            ;; evil-escape's escape key leaves behind extraneous characters
-            'evil-escape-mode
-            ;; Lispy commands don't register on more than 1 cursor. Lispyville
-            ;; is fine though.
-            'lispy-mode))
+  (akn/pushnew evil-mc-incompatible-minor-modes
+    'completion-preview-mode
+    'parinfer-rust-mode
+    'akn/active-region-arrow-boundary-mode
+    'hl-line-mode
+    'symbol-overlay-mode
+    'akn/line-move-visual-mode
+    ;; evil-escape's escape key leaves behind extraneous characters
+    'evil-escape-mode
+    ;; Lispy commands don't register on more than 1 cursor. Lispyville
+    ;; is fine though.
+    'lispy-mode))
 
 (after! evil-mc
   ;; This one should be good:

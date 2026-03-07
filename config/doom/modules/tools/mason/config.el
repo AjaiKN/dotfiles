@@ -9,7 +9,7 @@
 (use-package! mason
   :hook (doom-first-input . mason-ensure)
   :config
-  (pushnew! set-message-functions #'inhibit-message)
-  (pushnew! inhibit-message-regexps
-            (rx bos "Mason ready" eos)
-            "Emacs(.*): Calling"))
+  (akn/pushnew set-message-functions #'inhibit-message)
+  (akn/pushnew inhibit-message-regexps
+    (rx bos "Mason ready" eos)
+    "Emacs(.*): Calling"))
