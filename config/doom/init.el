@@ -36,30 +36,30 @@
 ;; can remove this paragraph after Doom 3
 (after! (:or emacs doom doom-projects)
   (require 'xdg)
-  (setq! doom-data-dir
-         (if (featurep :system 'windows)
-             (expand-file-name "doomemacs/data/" (getenv-internal "LOCALAPPDATA"))
-           (expand-file-name "doom/" (xdg-data-home)))
-         doom-cache-dir
-         (if (featurep :system 'windows)
-             (expand-file-name "doomemacs/cache/" (getenv-internal "LOCALAPPDATA"))
-           (expand-file-name "doom/" (xdg-cache-home)))
-         doom-state-dir
-         (if (featurep :system 'windows)
-             (expand-file-name "doomemacs/state/" (getenv-internal "LOCALAPPDATA"))
-           (expand-file-name "doom/" (xdg-state-home)))
-         doom-profile-cache-dir    (file-name-concat doom-cache-dir (car doom-profile))
-         doom-profile-data-dir     (file-name-concat doom-data-dir (car doom-profile))
-         doom-profile-state-dir    (file-name-concat doom-state-dir (car doom-profile))
-         doom-profile-dir          (file-name-concat doom-profile-data-dir "@" (cdr doom-profile))
-         desktop-dirname           (file-name-concat doom-profile-state-dir "desktop")
-         pcache-directory          (file-name-concat doom-profile-cache-dir "pcache/")
-         doom-projectile-cache-dir (file-name-concat doom-profile-cache-dir "projectile/")
-         doom-sync-info-file       (file-name-concat doom-profile-data-dir "sync")
-         project-list-file         (file-name-concat doom-profile-state-dir "projects")
-         doom-store-dir (concat doom-data-dir "store/")
-         doom-profiles-generated-dir doom-data-dir
-         doom-cli-log-file-format (expand-file-name "logs/cli.%s.%s.%s" doom-state-dir))
+  (setopt doom-data-dir
+          (if (featurep :system 'windows)
+              (expand-file-name "doomemacs/data/" (getenv-internal "LOCALAPPDATA"))
+            (expand-file-name "doom/" (xdg-data-home)))
+          doom-cache-dir
+          (if (featurep :system 'windows)
+              (expand-file-name "doomemacs/cache/" (getenv-internal "LOCALAPPDATA"))
+            (expand-file-name "doom/" (xdg-cache-home)))
+          doom-state-dir
+          (if (featurep :system 'windows)
+              (expand-file-name "doomemacs/state/" (getenv-internal "LOCALAPPDATA"))
+            (expand-file-name "doom/" (xdg-state-home)))
+          doom-profile-cache-dir    (file-name-concat doom-cache-dir (car doom-profile))
+          doom-profile-data-dir     (file-name-concat doom-data-dir (car doom-profile))
+          doom-profile-state-dir    (file-name-concat doom-state-dir (car doom-profile))
+          doom-profile-dir          (file-name-concat doom-profile-data-dir "@" (cdr doom-profile))
+          desktop-dirname           (file-name-concat doom-profile-state-dir "desktop")
+          pcache-directory          (file-name-concat doom-profile-cache-dir "pcache/")
+          doom-projectile-cache-dir (file-name-concat doom-profile-cache-dir "projectile/")
+          doom-sync-info-file       (file-name-concat doom-profile-data-dir "sync")
+          project-list-file         (file-name-concat doom-profile-state-dir "projects")
+          doom-store-dir (concat doom-data-dir "store/")
+          doom-profiles-generated-dir doom-data-dir
+          doom-cli-log-file-format (expand-file-name "logs/cli.%s.%s.%s" doom-state-dir))
   (when (boundp 'doom-local-dir)
     (require 'cl-lib)
     (cl-loop for (target source) in (list

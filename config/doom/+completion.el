@@ -19,7 +19,7 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
@@ -107,9 +107,9 @@
 
   :config
   ;; https://github.com/oantolin/orderless#component-matching-styles
-  (setq! orderless-matching-styles (list #'orderless-literal
-                                         #'orderless-regexp
-                                         #'orderless-initialism))
+  (setopt orderless-matching-styles (list #'orderless-literal
+                                          #'orderless-regexp
+                                          #'orderless-initialism))
 
   ;; add a space after point (to mimic substring completion style)
   (defadvice! akn/completion-add-space-after-point-a (args)
@@ -170,8 +170,8 @@
 ;;; corfu
 
 (after! corfu
-  (setq! +corfu-want-ret-to-confirm t ;akn/should-tab-cycle-candidates
-         corfu-preselect (if akn/should-tab-cycle-candidates 'prompt t))
+  (setopt +corfu-want-ret-to-confirm t ;akn/should-tab-cycle-candidates
+          corfu-preselect (if akn/should-tab-cycle-candidates 'prompt t))
 
   ;; (when (not akn/should-tab-cycle-candidates)
   ;;   (setq-hook! 'minibuffer-mode-hook

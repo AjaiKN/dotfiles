@@ -19,7 +19,7 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
@@ -72,7 +72,7 @@
 (set-popup-rule! '(major-mode . profiler-report-mode) :quit nil)
 
 ;; not sure (see `auto-revert-mode' docs)
-(setq!
+(setopt
  ;; default: `revert-buffer-insert-file-contents--default-function'
  revert-buffer-insert-file-contents-function #'revert-buffer-insert-file-contents-delicately
  ;; default: 2.0
@@ -437,7 +437,7 @@ name and is empty, it'll still try to save it."
   :demand t
   :config
   ;; make windmove also be able to move to frame
-  (setq! framemove-hook-into-windmove t)
+  (setopt framemove-hook-into-windmove t)
 
   (defadvice! akn/framemove--should-be-user-error-a (fn &rest args)
     :around #'fm-next-frame
@@ -467,11 +467,11 @@ name and is empty, it'll still try to save it."
 ;;; edit-indirect
 
 (after! edit-indirect
-  (setq! edit-indirect-guess-mode-function
-         (lambda (parent-buf &rest _)
-           (normal-mode)
-           (when (eq major-mode 'fundamental-mode)
-             (funcall (buffer-local-value 'major-mode parent-buf)))))
+  (setopt edit-indirect-guess-mode-function
+          (lambda (parent-buf &rest _)
+            (normal-mode)
+            (when (eq major-mode 'fundamental-mode)
+              (funcall (buffer-local-value 'major-mode parent-buf)))))
   (add-hook 'edit-indirect-after-creation-hook #'doom-mark-buffer-as-real-h))
 
 ;;; file-local variables

@@ -20,7 +20,7 @@
         repeat-help-popup-type 'which-key)
   (repeat-help-mode)
   (unless repeat-help-auto
-    (setq! repeat-echo-function #'repeat-echo-message)))
+    (setopt repeat-echo-function #'repeat-echo-message)))
 
 ;; or https://tildegit.org/acdw/define-repeat-map.el/src/branch/main/define-repeat-map.el
 (use-package! repeaters
@@ -137,8 +137,8 @@
   :after-call doom-first-input-hook
   :defer-incrementally t
   :config
-  (setq! repeat-exit-key "<escape>"
-         repeat-exit-timeout (* 60 3))
+  (setopt repeat-exit-key "<escape>"
+          repeat-exit-timeout (* 60 3))
 
   ;; ;; not sure why the regular `repeat-exit' function isn't working for me
   (defun akn/repeat-exit ()

@@ -19,7 +19,7 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
@@ -45,7 +45,7 @@
 ;; only works in insert state
 (setq mouse-drag-and-drop-region t)
 
-;; (setq! frame-title-format "%b")
+;; (setopt frame-title-format "%b")
 
 (setq delete-by-moving-to-trash (not noninteractive) ; Doom only does this by default on Mac for some reason
       magit-delete-by-moving-to-trash t
@@ -57,10 +57,10 @@
 (add-hook! '(+modeline-global-mode-hook doom-modeline-mode-hook)
   (defun akn/modeline-stuff ()
     (interactive)
-    (setq! display-time-default-load-average nil)
+    (setopt display-time-default-load-average nil)
     (display-time-mode 1)
 
-    (setq! battery-mode-line-format "[%b%p%%, %t left]  ")
+    (setopt battery-mode-line-format "[%b%p%%, %t left]  ")
     (unless (string-match-p "^Power N/A" (shut-up (battery)))
       (display-battery-mode 1))))
 
@@ -73,10 +73,10 @@
   :defer t
   :when (modulep! :ui modeline -light)
   :init
-  (setq! doom-modeline-buffer-encoding (if (featurep :system 'windows) t 'nondefault)
-         doom-modeline-always-show-macro-register t
-         ;; doom-modeline-minor-modes t
-         doom-modeline-enable-word-count t)
+  (setopt doom-modeline-buffer-encoding (if (featurep :system 'windows) t 'nondefault)
+          doom-modeline-always-show-macro-register t
+          ;; doom-modeline-minor-modes t
+          doom-modeline-enable-word-count t)
   :config
   (pushnew! doom-modeline-continuous-word-count-modes
             'text-mode))
@@ -120,22 +120,22 @@
   ;; (advice-add #'persp-frame-switch  :after #'akn/+modeline--generate-buffer-id-cache-h)
   ;; (advice-add #'persp-window-switch :after #'akn/+modeline--generate-buffer-id-cache-h)
 
-  (setq! frame-title-format
-         '(""
-           ;; akn/title-bar-workspace-cache
-           ;; +modeline-buffer-identification
-           ((:eval (propertize (or +modeline--buffer-id-cache "%b")
-                               'face (cond ((buffer-modified-p) '(error bold mode-line-buffer-id))
-                                           ((+modeline-active) 'mode-line-buffer-id))
-                               'help-echo (or +modeline--buffer-id-cache (buffer-name)))))
-           " (%+)")))
+  (setopt frame-title-format
+          '(""
+            ;; akn/title-bar-workspace-cache
+            ;; +modeline-buffer-identification
+            ((:eval (propertize (or +modeline--buffer-id-cache "%b")
+                                'face (cond ((buffer-modified-p) '(error bold mode-line-buffer-id))
+                                            ((+modeline-active) 'mode-line-buffer-id))
+                                'help-echo (or +modeline--buffer-id-cache (buffer-name)))))
+            " (%+)")))
 
 ;;;; modeline word count
 
 (use-package! org-wc
   :autoload akn/org-word-count-number
   :config
-  (setq! org-wc-default-link-count 'description)
+  (setopt org-wc-default-link-count 'description)
   ;; TODO: PR
   (defadvice! akn/org-wc/remove-cached-word-counts-a (beg end &rest _)
     :before #'org-word-count
@@ -185,7 +185,7 @@ it just displays it."
 
 ;;; recentf
 
-(setq! recentf-case-fold-search t)
+(setopt recentf-case-fold-search t)
 
 (defun akn/keep-predicate (file)
   "Faster version of `recentf-keep-default-predicate'.
@@ -227,7 +227,7 @@ are exactly the same too."
 
   ;; Doom wants to do this on emacs quit, but I don't.
   (remove-hook 'kill-emacs-hook #'recentf-cleanup)
-  (setq! recentf-auto-cleanup (* 22 60))
+  (setopt recentf-auto-cleanup (* 22 60))
 
   ;; timer for autosaving recentf
   (akn/after-idle! (63 :each-idle t :timer-name akn/recentf-timer)
@@ -260,10 +260,10 @@ are exactly the same too."
       (add-to-list '+reverse-im-input-source-alist '("com.apple.keylayout.Devanagari-QWERTY" . "devanagari-qwerty"))
       (require 'devanagari-qwerty)))
   :config
-  (setq! default-input-method "devanagari-qwerty"))
+  (setopt default-input-method "devanagari-qwerty"))
 
-;; (setq! default-input-method "devanagari-itrans")
-;; (setq! default-input-method "devanagari-kyoto-harvard")
+;; (setopt default-input-method "devanagari-itrans")
+;; (setopt default-input-method "devanagari-kyoto-harvard")
 
 ;;; which-key
 
@@ -306,13 +306,13 @@ are exactly the same too."
    `((,(rx bos "g z") . ,(rx "move"))                                                      . (nil . "mv"))
    `((,(rx bos "g s") . ,(rx bos "evilem-" (? "-") "motion-" (group (* nonl))))            . (nil . "-\\1")))
   ;; '(("\\`SPC w" . "\\`\\(.*\\)-?-?window-?-?\\(.*\\)") . (nil . "\\1\\2"))))
-  ;; (setq!)
+  ;; (setopt)
   ;; (setq which-key-replacement-alist (cdddr which-key-replacement-alist))
-  ;; (setq! which-key-unicode-correction 3)
+  ;; (setopt which-key-unicode-correction 3)
   ;; added a zero-width space (https://en.wikipedia.org/wiki/Zero-width_space) to correct for it
-  ;; (setq! which-key-dont-use-unicode t)
-  ;; (setq! which-key-ellipsis "..")
-  (setq! which-key-ellipsis "…"))
+  ;; (setopt which-key-dont-use-unicode t)
+  ;; (setopt which-key-ellipsis "..")
+  (setopt which-key-ellipsis "…"))
 
 ;;;; which-key bug fix
 
@@ -664,15 +664,15 @@ underscores in all modes."
   ;; Disable `prettify-symbols-mode' in terminal buffers, since it seems to
   ;; cause a bug where lines get duplicated when I'm moving between lines.
   (when akn/terminal-only-p
-    (setq! +ligatures-extras-in-modes nil)))
+    (setopt +ligatures-extras-in-modes nil)))
 
 ;;; Jump back before scroll - and other jumping stuff
 (map! "s-b"   #'better-jumper-jump-backward
       "M-s-b" #'better-jumper-jump-forward)
 
 (after! better-jumper
-  (setq! better-jumper-context 'buffer
-         better-jumper-use-savehist t))
+  (setopt better-jumper-context 'buffer
+          better-jumper-use-savehist t))
 
 ;; Using both buffer and window context
 ;;
@@ -816,7 +816,7 @@ underscores in all modes."
 
 ;;; bookmarks
 
-(setq!
+(setopt
  ;; Save to bookmarks file every time bookmarks change.
  bookmark-save-flag 1
  ;; If the bookmark file changes on disk, reload it without prompting.
@@ -826,16 +826,16 @@ underscores in all modes."
 
 (when (modulep! :editor whitespace)
   ;; might want to turn this off at some point
-  (setq! +whitespace-guess-in-projects t)
+  (setopt +whitespace-guess-in-projects t)
   (pushnew! +whitespace-guess-excluded-modes
             'elm-mode))
 
 ;;;; Tabs & spaces
 
-(setq! tab-width 2
-       standard-indent 2)
+(setopt tab-width 2
+        standard-indent 2)
 
-(setq! backward-delete-char-untabify-method nil)
+(setopt backward-delete-char-untabify-method nil)
 
 (defvar-local akn/evil-shift-width-different-from-tab-width nil
   "If this is non-nil, `evil-shift-width' won't be set equal to `tab-width'.")
@@ -934,7 +934,7 @@ underscores in all modes."
   ;;    the written file). While sometimes convenient, this behavior is not
   ;;    intuitive. To the average user it looks like whitespace cleanup is failing,
   ;;    which causes folks to redundantly install their own."
-  (setq! ws-butler-keep-whitespace-before-point t)
+  (setopt ws-butler-keep-whitespace-before-point t)
 
   ;; ws-butler doesn't seem to work too well in polymodes
   (setq-hook! '(polymode-init-inner-hook
@@ -1008,7 +1008,7 @@ underscores in all modes."
         parinfer-rust-auto-download nil))
 
 (after! parinfer-rust-mode
-  (setq! parinfer-rust-buffer-replace-strategy 'safe))
+  (setopt parinfer-rust-buffer-replace-strategy 'safe))
 
 (map! [remap parinfer-rust-toggle-disable] #'akn/parinfer-toggle
       :map (lisp-mode-shared-map parinfer-rust-mode-map akn/lisp-like-mode-map)
@@ -1179,12 +1179,12 @@ underscores in all modes."
             (rx "/COMMIT_EDITMSG" eos))
   (after! epa-hook (pushnew! better-backup-exclude-file-regexps epa-file-name-regexp))
   (after! age      (pushnew! better-backup-exclude-file-regexps age-file-name-regexp))
-  (setq! better-backup-exclude-buffer-predicate
-         `(or ,#'doom-unreal-buffer-p
-              ,(lambda (b)
-                 (and-let* ((f (buffer-file-name b)))
-                   (or (backup-file-name-p f)
-                       (not (akn/backup-enable-predicate f))))))))
+  (setopt better-backup-exclude-buffer-predicate
+          `(or ,#'doom-unreal-buffer-p
+               ,(lambda (b)
+                  (and-let* ((f (buffer-file-name b)))
+                    (or (backup-file-name-p f)
+                        (not (akn/backup-enable-predicate f))))))))
 
 ;;;; backups (disabled by doom)
 
@@ -1532,9 +1532,9 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   ;; :init
   ;; (let ((newval "5:00am"))
   ;;   (unless (equal (bound-and-true-p midnight-delay) newval)
-  ;;     (setq! midnight-delay newval)))
+  ;;     (setopt midnight-delay newval)))
   :config
-  (setq! clean-buffer-list-delay-special (* 60 60 6))
+  (setopt clean-buffer-list-delay-special (* 60 60 6))
   ;; https://old.reddit.com/r/emacs/comments/15rubhr/til_midnight_mode/
   (pushnew! clean-buffer-list-kill-regexps
             (rx bos "magit-" (or "process" "diff"))
@@ -1562,9 +1562,9 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;;; deft
 (use-package! deft
   :config
-  (setq! deft-directory "~/Documents/obsidian-vault"
-         deft-default-extension "md"
-         deft-recursive t))
+  (setopt deft-directory "~/Documents/obsidian-vault"
+          deft-default-extension "md"
+          deft-recursive t))
 
 ;;; word wrap
 ;; enable word-wrap (almost) everywhere
@@ -1606,22 +1606,22 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
         (isearch-clean-overlays)
         t)))
 
-  (setq! isearch-allow-scroll 'unlimited)
+  (setopt isearch-allow-scroll 'unlimited)
   (dolist (scroll-cmd akn/all-scroll-commands)
     (put scroll-cmd 'isearch-scroll t))
 
-  (setq! isearch-allow-motion nil)
+  (setopt isearch-allow-motion nil)
   (setf (get #'scroll-up   'isearch-motion) nil)
   (setf (get #'scroll-down 'isearch-motion) nil)
   ;; (setf (get #'evil-scroll-page-down 'isearch-motion) (get #'scroll-up   'isearch-motion))
   ;; (setf (get #'evil-scroll-page-up   'isearch-motion) (get #'scroll-down 'isearch-motion))
 
-  (setq! isearch-yank-on-move 'shift
-         isearch-lazy-count t
-         isearch-lazy-highlight t
-         isearch-resume-in-command-history t
-         search-ring-max 128
-         regexp-search-ring-max 128))
+  (setopt isearch-yank-on-move 'shift
+          isearch-lazy-count t
+          isearch-lazy-highlight t
+          isearch-resume-in-command-history t
+          search-ring-max 128
+          regexp-search-ring-max 128))
 
 ;;; fix rectangular selection in normal mode
 ;; TODO: make it actually do visual block
@@ -1648,8 +1648,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   ;; https://emacs.stackexchange.com/a/32523
   ;; https://company-mode.github.io/manual/Customization.html#index-company_002didle_002ddelay
   (after! org
-    (setq! company-idle-delay
-           (lambda () (if (string-equal major-mode "org-mode") nil 0.2)))))
+    (setopt company-idle-delay
+            (lambda () (if (string-equal major-mode "org-mode") nil 0.2)))))
 
 ;;; gmch alternative (experimental)
 ;; (when nil
@@ -1967,7 +1967,7 @@ Use \\[visible-mode] to show the full hashes."
 ;; At least for the projects I've been working on lately, the speedup from
 ;; caching isn't worth the annoyance of having to manually run
 ;; `projectile-invalidate-cache' (<leader> p i) all the time.
-(setq! projectile-enable-caching nil)
+(setopt projectile-enable-caching nil)
 
 (use-package! projectile
   :init
@@ -1985,7 +1985,7 @@ Use \\[visible-mode] to show the full hashes."
   :config
   (defvar akn/projectile-timer nil)
   ;; discover projects in ~/prog and its sub-directories
-  (setq! projectile-project-search-path '(("~/prog" . 2) ("~/prog/emacs/" . 2)))
+  (setopt projectile-project-search-path '(("~/prog" . 2) ("~/prog/emacs/" . 2)))
   (when akn/projectile-timer (cancel-timer akn/projectile-timer))
   (defun akn/discover-projects ()
     (interactive)
@@ -2000,7 +2000,7 @@ Use \\[visible-mode] to show the full hashes."
   ;;   (projectile-discover-projects-in-search-path)))
 
   ;; originally #'doom-project-find-file
-  (setq! +workspaces-switch-project-function #'akn/workspace-switch-project)
+  (setopt +workspaces-switch-project-function #'akn/workspace-switch-project)
   (defun akn/workspace-switch-project (&optional dirname)
     (interactive)
     (when (null dirname) (setq dirname default-directory))
@@ -2062,7 +2062,7 @@ Also see `+default/find-file-under-here'."
   (map! (:map embark-general-map
               "y" #'embark-copy-as-kill
               "s-c" #'embark-copy-as-kill))
-  (setq! embark-cycle-key "C-;"))
+  (setopt embark-cycle-key "C-;"))
 
 ;;; indent guides
 (use-package! indent-bars
@@ -2092,7 +2092,7 @@ Also see `+default/find-file-under-here'."
 
 ;;; lsp
 
-(setq! lsp-auto-guess-root t)
+(setopt lsp-auto-guess-root t)
 
 (add-to-list 'warning-suppress-types '(lsp-mode akn-unknown-notification))
 (akn/advise-letf! lsp--on-notification (akn/more-specific-warning-type-a)
@@ -2158,8 +2158,8 @@ current buffer, killing it."
 (akn/remove-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
 ;; default is #o111 (ugo+x)
-(setq! executable-chmod #o100) ; u+x
-(setq! executable-prefix-env t)
+(setopt executable-chmod #o100) ; u+x
+(setopt executable-prefix-env t)
 
 ;; TODO
 (add-hook! 'after-save-hook #'akn/executable-make-buffer-file-user-executable-if-script-p)
@@ -2270,7 +2270,7 @@ file modes."
         "s-i" #'markdown-insert-italic
         "s-b" #'markdown-insert-bold)
   ;; In markdown, if we're in a list, add a new bullet when I press enter
-  (setq! markdown-indent-on-enter 'indent-and-new-item)
+  (setopt markdown-indent-on-enter 'indent-and-new-item)
   (defun akn/markdown-enter-key ()
     (interactive)
     (cond
@@ -2324,7 +2324,7 @@ file modes."
 
 
   ;; syntax highlight code blocks
-  (setq! markdown-fontify-code-blocks-natively t))
+  (setopt markdown-fontify-code-blocks-natively t))
 
 ;;; tty
 ;; https://stackoverflow.com/a/62266648
@@ -2339,7 +2339,7 @@ file modes."
 ;;; treesit
 (after! treesit
   (unless (eq treesit-font-lock-level 4)
-    (setq! treesit-font-lock-level 4))
+    (setopt treesit-font-lock-level 4))
   (defadvice! akn/treesit-explore-mode-dont-ask-if-one-choice-a (fn &rest outer-args)
     :around #'treesit-explore-mode
     (let* ((akn/completing-read-function--old completing-read-function)
@@ -2396,7 +2396,7 @@ file modes."
      "s" #'copy-as-format-slack
      "w" #'copy-as-format-mediawiki)))
   :config
-  (setq! copy-as-format-default "github"))
+  (setopt copy-as-format-default "github"))
 
 ;;; PERF: speed up killing emacs
 
@@ -2422,7 +2422,7 @@ file modes."
 
 ;;; spelling
 (after! ispell
-  (setq! ispell-personal-dictionary (akn/expand-file "~/.config/enchant/en.dic")))
+  (setopt ispell-personal-dictionary (akn/expand-file "~/.config/enchant/en.dic")))
 (when (modulep! :checkers spell)
   (remove-hook! '(text-mode-hook org-mode-hook markdown-mode-hook TeX-mode-hook rst-mode-hook mu4e-compose-mode-hook message-mode-hook git-commit-mode-hook)
     #'spell-fu-mode
@@ -2611,8 +2611,8 @@ In `eshell', fish completion is only used when `pcomplete' fails."
         (buffer-substring start end)))))
 
 ;;; buffer names
-(setq! uniquify-min-dir-content 1
-       uniquify-trailing-separator-p 'forward)
+(setopt uniquify-min-dir-content 1
+        uniquify-trailing-separator-p 'forward)
 
 ;;; polymode
 (after! polymode
@@ -2664,10 +2664,10 @@ there's no need for `markdown-mode' to reduplicate the effort."
 ;; should probably just use org-capture
 
 (after! remember
-  (setq! remember-all-handler-functions t
-         remember-handler-functions '(remember-append-to-file remember-store-in-files remember-diary-extract-entries)
-         remember-data-directory (expand-file-name "remember" doom-data-dir)
-         remember-data-file (expand-file-name "remember.txt" doom-data-dir))
+  (setopt remember-all-handler-functions t
+          remember-handler-functions '(remember-append-to-file remember-store-in-files remember-diary-extract-entries)
+          remember-data-directory (expand-file-name "remember" doom-data-dir)
+          remember-data-file (expand-file-name "remember.txt" doom-data-dir))
 
   (advice-add #'remember-append-to-file :around #'akn/inhibit-read-only-a)
   (advice-add #'remember-store-in-files :around #'akn/inhibit-read-only-a)
@@ -2681,7 +2681,7 @@ there's no need for `markdown-mode' to reduplicate the effort."
 ;;;; diary
 
 (after! calendar
-  (setq! diary-file (expand-file-name "diary.txt" "~/org")))
+  (setopt diary-file (expand-file-name "diary.txt" "~/org")))
 
 ;;;; holidays
 
@@ -2926,7 +2926,7 @@ there's no need for `markdown-mode' to reduplicate the effort."
   ;; Set back from Doom's default, since the editorconfig maintainers say that
   ;; the elisp implementation is "faster and more secure"
   ;; (https://github.com/editorconfig/editorconfig-emacs/issues/230#issuecomment-701916590).
-  (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash)
+  (setopt editorconfig-get-properties-function #'editorconfig-core-get-properties-hash)
 
   ;; conf-mode isn't a child of prog-mode or text-mode, so editorconfig-mode
   ;; doesn't reapply in some cases after reverting the buffer.

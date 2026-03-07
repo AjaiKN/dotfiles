@@ -25,7 +25,7 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
@@ -141,18 +141,18 @@
 ;;; file-based stuff (diff-hl)
 
 (after! diff-hl
-  (setq! diff-hl-flydiff-delay 0.3)
+  (setopt diff-hl-flydiff-delay 0.3)
 
   ;; https://github.com/doomemacs/doomemacs/issues/8554
-  (setq! diff-hl-update-async
-         (cond ((featurep :system 'macos) nil)
-               ((<= emacs-major-version 30) 'thread)
-               (t)))
+  (setopt diff-hl-update-async
+          (cond ((featurep :system 'macos) nil)
+                ((<= emacs-major-version 30) 'thread)
+                (t)))
   ;; I want the gutter to change before saving even on macOS.
   ;; It works fine on macOS as long as diff-hl-update-async is nil.
   (add-hook 'diff-hl-mode-hook #'diff-hl-flydiff-mode)
 
-  (setq! diff-hl-show-hunk-inline-smart-lines nil)
+  (setopt diff-hl-show-hunk-inline-smart-lines nil)
   (add-hook 'global-diff-hl-mode-hook #'global-diff-hl-show-hunk-mouse-mode))
 
 ;; show staged changes in a different color
@@ -162,7 +162,7 @@
     '(diff-hl-reference-change :foreground "darkblue")
     '(diff-hl-reference-delete :foreground "darkblue")
     '(diff-hl-reference-insert :foreground "darkblue"))
-  (setq! diff-hl-highlight-reference-function #'diff-hl-highlight-on-fringe))
+  (setopt diff-hl-highlight-reference-function #'diff-hl-highlight-on-fringe))
 (after! diff-hl-margin
   (setf
    (alist-get 'reference diff-hl-margin-symbols-alist) "["))
@@ -244,11 +244,11 @@ If a prefix argument is provided, ask before reverting hunk."
   (add-hook! 'magit-status-sections-hook :append
              #'magit-insert-modules
              #'magit-insert-worktrees)
-  (setq! magit-module-sections-nested nil)
+  (setopt magit-module-sections-nested nil)
 
   ;; if I try to commit and nothing is staged, then stage everything without asking
-  (setq! magit-commit-ask-to-stage 'stage)
-  (setq! git-commit-style-convention-checks (remove 'overlong-summary-line git-commit-style-convention-checks))
+  (setopt magit-commit-ask-to-stage 'stage)
+  (setopt git-commit-style-convention-checks (remove 'overlong-summary-line git-commit-style-convention-checks))
 
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode)
@@ -256,7 +256,7 @@ If a prefix argument is provided, ask before reverting hunk."
   ;; Doom disables this by default.
   ;; If it turns out to be too aggressive, we could also try
   ;; adding hooks that run #'magit-save-repository-buffers
-  (setq! magit-save-repository-buffers 'dontask)
+  (setopt magit-save-repository-buffers 'dontask)
 
   (pushnew! magit-no-confirm
             'safe-with-wip
@@ -498,15 +498,15 @@ If a prefix argument is provided, ask before reverting hunk."
 ;;; vc
 
 ;; Doom sets this to '(SVN Git Hg)
-(setq! vc-handled-backends '(Git))
+(setopt vc-handled-backends '(Git))
 (when (executable-find "hg")
   (add-to-list 'vc-handled-backends 'Hg 'append))
 
 ;;; transient
 
 (after! (:or transient magit)
-  (setq! transient-default-level 7
-         transient-highlight-higher-levels t))
+  (setopt transient-default-level 7
+          transient-highlight-higher-levels t))
 (use-package! transient-showcase
   :commands (tsc-showcase akn/transient-showcase)
   :config

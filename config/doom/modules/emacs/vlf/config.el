@@ -63,7 +63,7 @@
   ;; cumulative line numbers we can implement this behaviour fairly easily.
   (add-hook 'vlf-after-chunk-update-hook #'+vlf-update-linum)
 
-  (setq! vlf-batch-size-remote (* 128 1024)))
+  (setopt vlf-batch-size-remote (* 128 1024)))
 
 (setq-hook! 'vlf-mode-hook
   ;; The other thing that doesn’t work too well with VLF is searching with

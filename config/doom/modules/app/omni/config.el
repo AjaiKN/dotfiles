@@ -4,12 +4,12 @@
   :defer t
   ;; :defer-incrementally t
   :config
-  (setq! consult-omni-alternate-browse-function #'xwidget-webkit-browse-url
-         consult-omni-default-interactive-command #'consult-omni-multi
-         ;; consult-omni-default-autosuggest-command #'consult-omni-dynamic-brave-autosuggest
-         consult-omni-show-preview t
-         consult-omni-default-preview-function #'xwidget-webkit-browse-url
-         consult-omni-preview-key "C-SPC"))
+  (setopt consult-omni-alternate-browse-function #'xwidget-webkit-browse-url
+          consult-omni-default-interactive-command #'consult-omni-multi
+          ;; consult-omni-default-autosuggest-command #'consult-omni-dynamic-brave-autosuggest
+          consult-omni-show-preview t
+          consult-omni-default-preview-function #'xwidget-webkit-browse-url
+          consult-omni-preview-key "C-SPC"))
 
 (after! (:and embark consult-omni)
   (require 'consult-omni-embark))

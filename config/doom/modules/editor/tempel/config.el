@@ -5,10 +5,10 @@
   :ghook ('(prog-mode-hook text-mode-hook conf-mode-hook) #'+tempel-setup-capf-h)
   :ghook ('doom-first-buffer-hook #'global-tempel-abbrev-mode)
   :config
-  (setq! tempel-path (list (expand-file-name "snippets/*.eld" doom-user-dir)))
+  (setopt tempel-path (list (expand-file-name "snippets/*.eld" doom-user-dir)))
   (add-to-list 'tempel-user-elements #'+tempel-add-user-elements)
 
-  (setq! tempel-done-on-region t)
+  (setopt tempel-done-on-region t)
 
   (map! :map tempel-map
         :gie "TAB"       #'tempel-next

@@ -32,7 +32,7 @@ new project directory.")
                              #'tabspaces-mode))
 
 (add-hook! 'doom-init-ui-hook :depth 99
-  (setq! tab-bar-new-tab-choice doom-fallback-buffer-name))
+  (setopt tab-bar-new-tab-choice doom-fallback-buffer-name))
 
 ;;; tab-bar
 (use-package! tab-bar
@@ -41,17 +41,17 @@ new project directory.")
   :commands +tab-bar-show-mode +tab-bar-show-in-minibuffer-mode
   :config
   (tab-bar-history-mode)
-  (setq! tab-bar-tab-hints t
-         tab-bar-new-tab-to 'rightmost
-         tab-bar-auto-width-max (let ((n 50)) `((,(* n 11)) ,n))
-         tab-bar-tab-name-function (lambda () (or (doom-project-name) "main"))
-         tab-bar-show t
-         tab-bar-history-limit 500
-         tab-bar-close-last-tab-choice
-         (lambda (_tab-to-close)
-           (if (or t (not (display-graphic-p)))
-               (doom/delete-frame-with-prompt)
-             (+workspace/clear-tab))))
+  (setopt tab-bar-tab-hints t
+          tab-bar-new-tab-to 'rightmost
+          tab-bar-auto-width-max (let ((n 50)) `((,(* n 11)) ,n))
+          tab-bar-tab-name-function (lambda () (or (doom-project-name) "main"))
+          tab-bar-show t
+          tab-bar-history-limit 500
+          tab-bar-close-last-tab-choice
+          (lambda (_tab-to-close)
+            (if (or t (not (display-graphic-p)))
+                (doom/delete-frame-with-prompt)
+              (+workspace/clear-tab))))
 
   (define-minor-mode +tab-bar-show-mode
     "Show the tab bar at the top of the screen."
@@ -61,7 +61,7 @@ new project directory.")
     (when (and tab-bar-show (not tab-bar-mode))
       (tab-bar-mode))
     ;; trigger the defcustom setter
-    (setq! tab-bar-show tab-bar-show))
+    (setopt tab-bar-show tab-bar-show))
   (define-minor-mode +tab-bar-show-in-minibuffer-mode
     "Show the tab bar in the minibuffer when switching tabs."
     :global t
@@ -122,21 +122,21 @@ new project directory.")
   :defer-incrementally tab-bar project vc seq cl-lib dired-x
   :init
   ;;;; sessions
-  (setq! tabspaces-session nil ; do this ourselves better
-         tabspaces-session-auto-restore nil
-         tabspaces-session-project-session-store (file-name-concat doom-state-dir "tabspaces-sessions/")
-         tabspaces-session-file (+tab-bar:doom-session-file))
+  (setopt tabspaces-session nil ; do this ourselves better
+          tabspaces-session-auto-restore nil
+          tabspaces-session-project-session-store (file-name-concat doom-state-dir "tabspaces-sessions/")
+          tabspaces-session-file (+tab-bar:doom-session-file))
   (unless (file-exists-p tabspaces-session-project-session-store)
     (mkdir tabspaces-session-project-session-store))
 
   (setq tabspaces-keymap-prefix nil)
   :config
-  (setq! tabspaces-default-tab "main"
-         tabspaces-remove-to-default t
-         tabspaces-exclude-buffers (list (regexp-opt (list doom-fallback-buffer-name "*scratch*")))
-         tabspaces-include-buffers (list)
-         tabspaces-initialize-project-with-todo nil
-         tabspaces-keymap-prefix nil)
+  (setopt tabspaces-default-tab "main"
+          tabspaces-remove-to-default t
+          tabspaces-exclude-buffers (list (regexp-opt (list doom-fallback-buffer-name "*scratch*")))
+          tabspaces-include-buffers (list)
+          tabspaces-initialize-project-with-todo nil
+          tabspaces-keymap-prefix nil)
 
   (add-hook! 'tabspaces-mode-hook
     (defun +tab-bar--override-doom-buffer-list-a ()
@@ -164,40 +164,40 @@ new project directory.")
   ;; these must be set before the bufferlo package is loaded
   (setq bufferlo-prefer-local-buffers 'tabs)
   :config
-  (setq! bufferlo-mode-line nil
-         bufferlo-mode-line-prefix "🐃" ; "🐮"
-         bufferlo-mode-line-set-active-prefix "Ⓢ"
-         bufferlo-mode-line-frame-prefix "Ⓕ"
-         bufferlo-mode-line-tab-prefix "Ⓣ"
-         bufferlo-mode-line-left-prefix nil
-         bufferlo-mode-line-right-suffix nil
-         bufferlo-kill-modified-buffers-policy nil ; 'retain-modified-kill-without-file-name nil 'retain-modified 'retain-modified-kill-without-file-name 'kill-modified
-         bufferlo-bookmark-inhibit-bookmark-point t
-         ;; bufferlo-delete-frame-kill-buffers-prompt t
-         bufferlo-bookmark-frame-save-on-delete 'when-bookmarked
-         bufferlo-bookmark-tab-save-on-close 'when-bookmarked
-         ;; bufferlo-close-tab-kill-buffers-prompt t
-         ;; bufferlo-bookmark-frame-load-make-frame 'restore-geometry
-         bufferlo-bookmark-frame-load-policy 'prompt
-         bufferlo-bookmark-frame-duplicate-policy 'prompt
-         bufferlo-bookmark-tab-replace-policy 'prompt ; 'new 'replace
-         bufferlo-bookmark-tab-duplicate-policy 'prompt
-         bufferlo-bookmark-tab-in-bookmarked-frame-policy 'allow
-         bufferlo-bookmark-tab-failed-buffer-policy 'placeholder
-         bufferlo-bookmarks-save-duplicates-policy 'prompt
-         bufferlo-bookmarks-save-frame-policy 'all
-         bufferlo-bookmarks-save-at-emacs-exit 'all
-         bufferlo-bookmarks-load-at-emacs-startup 'noload
-         bufferlo-bookmarks-auto-save-interval (* 60 2)
-         bufferlo-bookmarks-auto-save-messages nil
-         bufferlo-set-restore-geometry-policy 'all
-         bufferlo-set-restore-tabs-reuse-init-frame 'reuse ; nil 'reuse 'reuse-reset-geometry
-         bufferlo-set-restore-ignore-already-active 'prompt ; nil 'prompt 'ignore
-         bufferlo-frameset-restore-geometry 'bufferlo
-         bufferlo-frame-geometry-function #'bufferlo-frame-geometry-default
-         bufferlo-frame-sleep-for (cond ((featurep :system 'macos) 0.05)
-                                        ((featurep :system 'linux) 0.35)
-                                        (t 0.35)))
+  (setopt bufferlo-mode-line nil
+          bufferlo-mode-line-prefix "🐃" ; "🐮"
+          bufferlo-mode-line-set-active-prefix "Ⓢ"
+          bufferlo-mode-line-frame-prefix "Ⓕ"
+          bufferlo-mode-line-tab-prefix "Ⓣ"
+          bufferlo-mode-line-left-prefix nil
+          bufferlo-mode-line-right-suffix nil
+          bufferlo-kill-modified-buffers-policy nil ; 'retain-modified-kill-without-file-name nil 'retain-modified 'retain-modified-kill-without-file-name 'kill-modified
+          bufferlo-bookmark-inhibit-bookmark-point t
+          ;; bufferlo-delete-frame-kill-buffers-prompt t
+          bufferlo-bookmark-frame-save-on-delete 'when-bookmarked
+          bufferlo-bookmark-tab-save-on-close 'when-bookmarked
+          ;; bufferlo-close-tab-kill-buffers-prompt t
+          ;; bufferlo-bookmark-frame-load-make-frame 'restore-geometry
+          bufferlo-bookmark-frame-load-policy 'prompt
+          bufferlo-bookmark-frame-duplicate-policy 'prompt
+          bufferlo-bookmark-tab-replace-policy 'prompt ; 'new 'replace
+          bufferlo-bookmark-tab-duplicate-policy 'prompt
+          bufferlo-bookmark-tab-in-bookmarked-frame-policy 'allow
+          bufferlo-bookmark-tab-failed-buffer-policy 'placeholder
+          bufferlo-bookmarks-save-duplicates-policy 'prompt
+          bufferlo-bookmarks-save-frame-policy 'all
+          bufferlo-bookmarks-save-at-emacs-exit 'all
+          bufferlo-bookmarks-load-at-emacs-startup 'noload
+          bufferlo-bookmarks-auto-save-interval (* 60 2)
+          bufferlo-bookmarks-auto-save-messages nil
+          bufferlo-set-restore-geometry-policy 'all
+          bufferlo-set-restore-tabs-reuse-init-frame 'reuse ; nil 'reuse 'reuse-reset-geometry
+          bufferlo-set-restore-ignore-already-active 'prompt ; nil 'prompt 'ignore
+          bufferlo-frameset-restore-geometry 'bufferlo
+          bufferlo-frame-geometry-function #'bufferlo-frame-geometry-default
+          bufferlo-frame-sleep-for (cond ((featurep :system 'macos) 0.05)
+                                         ((featurep :system 'linux) 0.35)
+                                         (t 0.35)))
 
   (akn/after-idle! (13 :each-idle t :timer-name akn/bufferlo-autosave-timer)
     (bufferlo-bookmarks-save))
@@ -333,6 +333,6 @@ new project directory.")
   :defer t
   :defer-incrementally cl-lib bookmark map persist subr-x color warnings
   :config
-  (setq! activities-default-name-fn #'+workspace-current-name)
+  (setopt activities-default-name-fn #'+workspace-current-name)
   (activities-mode)
   (activities-tabs-mode))

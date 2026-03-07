@@ -194,14 +194,14 @@
 
 (after! ess
   ;; C-c C-o C-o
-  (setq! ess-roxy-template-alist
-         (list (cons "description" "")
-               ;(cons "details" ".. content for \\details{} ..")
-               ;(cons "title" "")
-               (cons "param" "")
-               (cons "return" "")
-               ;(cons "author" ess-user-full-name)
-               (cons "examples" ""))))
+  (setopt ess-roxy-template-alist
+          (list (cons "description" "")
+                ;(cons "details" ".. content for \\details{} ..")
+                ;(cons "title" "")
+                (cons "param" "")
+                (cons "return" "")
+                ;(cons "author" ess-user-full-name)
+                (cons "examples" ""))))
 
 ;;;; Data viewing
 

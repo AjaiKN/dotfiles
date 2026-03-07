@@ -19,22 +19,22 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
 
 
 ;;; Evil
-(setq!
+(setopt
  ;; In vim, v$ will highlight the newline at the end of the line too.
  ;; That doesn't really make sense to me.
  evil-v$-excludes-newline t
  ;; behavior is reversed: now use /g to make it substitute just the first occurence on each line
  evil-ex-substitute-global t)
 
-;; (setq! evil-search-module 'isearch)
-(setq! evil-search-module 'evil-search)
+;; (setopt evil-search-module 'isearch)
+(setopt evil-search-module 'evil-search)
 (use-package! evil-easymotion
   :commands (evilem-motion-ex-search-next
              evilem-motion-ex-search-previous
@@ -150,7 +150,7 @@ So to get the string deleted after a change, use M-y or C-p."
 ;;   :after #'evil-change
 ;;   (message "done changing"))
 
-(setq! evil-collection-setup-minibuffer t)
+(setopt evil-collection-setup-minibuffer t)
 (when (boundp '+default-minibuffer-maps)
   (map! :map ,+default-minibuffer-maps
         ;; jk (from `evil-escape-mode') should still work to go to normal state.
@@ -268,7 +268,7 @@ So to get the string deleted after a change, use M-y or C-p."
           (_ args))
       args))
 
-  (setq! ;; evil-cross-lines t
+  (setopt ;; evil-cross-lines t
          evil-snipe-scope 'whole-visible
          evil-quickscope-cross-lines t)
 
@@ -280,8 +280,8 @@ So to get the string deleted after a change, use M-y or C-p."
   :defer-incrementally t
   :ghook 'doom-first-input-hook
   :config
-  (setq! evil-owl-idle-delay (or (bound-and-true-p which-key-idle-delay) 0.4)
-         evil-owl-display-method 'window)
+  (setopt evil-owl-idle-delay (or (bound-and-true-p which-key-idle-delay) 0.4)
+          evil-owl-display-method 'window)
   (set-popup-rule! (rx "*evil-owl*")
     :side 'right
     :ttl nil
@@ -357,10 +357,10 @@ So to get the string deleted after a change, use M-y or C-p."
 ;;; evil-escape
 (after! evil-escape
   ;; allow both jk and kj to be equivalent to escape
-  (setq! evil-escape-key-sequence "jk"
-         evil-escape-unordered-key-sequence t
-         ;; original value = 0.1, doom increased it
-         evil-escape-delay 0.07))
+  (setopt evil-escape-key-sequence "jk"
+          evil-escape-unordered-key-sequence t
+          ;; original value = 0.1, doom increased it
+          evil-escape-delay 0.07))
 
 (map! :m "<escape>" (cmds! (not (memq evil-state '(operator replace)))
                            #'doom/escape))

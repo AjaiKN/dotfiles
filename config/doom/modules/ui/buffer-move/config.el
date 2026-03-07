@@ -4,7 +4,7 @@
   :defer t
   :defer-incrementally (windmove cl-lib)
   :config
-  (setq! buffer-move-behavior 'move)
+  (setopt buffer-move-behavior 'move)
   (defadvice! akn/undedicate-before-move-a (orig-fn direction)
     :around #'buf-move-to
     (with-window-non-dedicated (selected-window)

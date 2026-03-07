@@ -28,7 +28,7 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 ;; https://discourse.doomemacs.org/t/how-to-have-tool-bar-mode-0-apply-at-startup-to-avoid-large-title-bar-on-macos-sonoma-when-using-railwaycat-homebrew-emacsmacport/4222/2
 (add-hook 'doom-after-init-hook (lambda () (tool-bar-mode 1) (tool-bar-mode 0)))
@@ -61,7 +61,7 @@
 
 (when (or (daemonp)
           (member (getenv "TERM_PROGRAM") '("WezTerm" "ghostty")))
-  (setq! etcc-term-type-override 'kitty))
+  (setopt etcc-term-type-override 'kitty))
 ;; (setenv "TERM_PROGRAM" "Apple_Terminal")
 ;; (setenv "TERM_PROGRAM" "")
 
@@ -87,8 +87,8 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-;;(setq! doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+;;(setopt doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
+;;        doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
 ;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' (SPC h r f) to
@@ -159,7 +159,7 @@
                    (fset #'solaire-mode-reset #'ignore)
                    nil)
                   ((modulep! :ui doom) 'doom-one)))
-;; (setq! doom-theme 'doom-vibrant)
+;; (setopt doom-theme 'doom-vibrant)
 
 ;; (when (equal (daemonp) "term"))
 ;;   (pushnew! default-frame-alist '(background-color . unspecified))

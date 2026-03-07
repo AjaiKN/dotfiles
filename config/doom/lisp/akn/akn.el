@@ -383,7 +383,7 @@ The def* forms accepted are:
                 add-hook add-hook!
                 defvar defvar* defconst akn/defvar-setq
                 ;; not (yet?) implemented
-                set setf setq setq! setcar setcdr setenv setopt setplist
+                set setf setq setcar setcdr setenv setopt setplist
                 setq-hook! setq-local set-default set-register set-variable
                 setq-default setq-mode-local set-default-toplevel-value
                 defalias defclass defsubst defvar-1 defcustom define-inline
@@ -976,7 +976,7 @@ FILE defaults to the current `buffer-file-name'."
     (mixed-pitch-mode 1)))
 
 (defun akn/switch-font (font)
-  (setq! doom-font font)
+  (setopt doom-font font)
   (akn/reload-font))
 ;;;###autoload
 (defun akn/choose-font-family (font-family)
@@ -1006,7 +1006,7 @@ FILE defaults to the current `buffer-file-name'."
   (akn/switch-font akn/original-font))
 
 (defun akn/switch-variable-pitch-font (font)
-  (setq! doom-variable-pitch-font font)
+  (setopt doom-variable-pitch-font font)
   (akn/reload-font))
 ;;;###autoload
 (defun akn/choose-variable-pitch-font-family (font-family)

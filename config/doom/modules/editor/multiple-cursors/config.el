@@ -275,13 +275,13 @@
   (add-hook! 'evil-normal-state-entry-hook #'+multiple-cursors/mc->evil-mc))
 
 (after! evil-mc
-  (setq! evil-mc-enable-bar-cursor t)
+  (setopt evil-mc-enable-bar-cursor t)
   ;; evil-mc bar cursor doesn't really work in the terminal
   (add-hook! 'evil-mc-mode-hook
     (defun +multiple-cursors--set-evil-mc-enable-bar-cursor ()
       (interactive)
-      (setq! evil-mc-enable-bar-cursor
-             (and (display-graphic-p) t))))
+      (setopt evil-mc-enable-bar-cursor
+              (and (display-graphic-p) t))))
 
   (defadvice! +multiple-cursors--evil-mc-forward-to-last-non-comment-or-eol-a (&rest _)
     :after #'doom/forward-to-last-non-comment-or-eol

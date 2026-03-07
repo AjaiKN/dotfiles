@@ -22,26 +22,26 @@
   ;; TODO: fix auto hscrolling
   ;; https://lists.gnu.org/r/bug-gnu-emacs/2020-02/msg00626.html
 
-  (setq! tab-line-close-button (propertize "  ✕"
-                                           'keymap tab-line-tab-close-map
-                                           'mouse-face 'tab-line-close-highlight
-                                           'help-echo "Click to close tab")
-         tab-line-new-button   (propertize "+"
-                                           'keymap tab-line-add-map
-                                           'mouse-face 'tab-line-highlight
-                                           'face '(:foreground "gray")
-                                           'help-echo "Click to add tab")
-         ;; https://7d.nz/Init-org.html#tabline
-         tab-line-left-button  (propertize (if (char-displayable-p ?◀) " ◀ " " < ")
-                                           'keymap tab-line-left-map
-                                           'mouse-face 'tab-line-highlight
-                                           'face '(:foreground "gray")
-                                           'help-echo "Click to scroll left")
-         tab-line-right-button (propertize (if (char-displayable-p ?▶) " ▶ " " > ")
-                                           'keymap tab-line-right-map
-                                           'mouse-face 'tab-line-highlight
-                                           'face '(:foreground "gray")
-                                           'help-echo "Click to scroll right"))
+  (setopt tab-line-close-button (propertize "  ✕"
+                                            'keymap tab-line-tab-close-map
+                                            'mouse-face 'tab-line-close-highlight
+                                            'help-echo "Click to close tab")
+          tab-line-new-button   (propertize "+"
+                                            'keymap tab-line-add-map
+                                            'mouse-face 'tab-line-highlight
+                                            'face '(:foreground "gray")
+                                            'help-echo "Click to add tab")
+          ;; https://7d.nz/Init-org.html#tabline
+          tab-line-left-button  (propertize (if (char-displayable-p ?◀) " ◀ " " < ")
+                                            'keymap tab-line-left-map
+                                            'mouse-face 'tab-line-highlight
+                                            'face '(:foreground "gray")
+                                            'help-echo "Click to scroll left")
+          tab-line-right-button (propertize (if (char-displayable-p ?▶) " ▶ " " > ")
+                                            'keymap tab-line-right-map
+                                            'mouse-face 'tab-line-highlight
+                                            'face '(:foreground "gray")
+                                            'help-echo "Click to scroll right"))
 
   (map! [tab-line mouse-4]     #'+tabs/hscroll-left
         [tab-line mouse-5]     #'+tabs/hscroll-right
@@ -50,9 +50,9 @@
         [tab-line wheel-left]  #'+tabs/hscroll-left
         [tab-line wheel-right] #'+tabs/hscroll-right)
 
-  (setq! tab-line-tab-name-function #'+tabs-name-fn
-         ;; TODO: try `tab-line-tabs-fixed-window-buffers' (the default in 30+)
-         tab-line-tabs-function #'+tabs-fn)
+  (setopt tab-line-tab-name-function #'+tabs-name-fn
+          ;; TODO: try `tab-line-tabs-fixed-window-buffers' (the default in 30+)
+          tab-line-tabs-function #'+tabs-fn)
 
   ;; (map! :when (boundp 'tab-line-mode-map)
   ;;       :map tab-line-mode-map

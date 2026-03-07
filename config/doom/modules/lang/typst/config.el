@@ -29,10 +29,10 @@
        (:localleader "w" #'typst-ts-watch-mode))
                      ;; "o" #'typst-ts-compile))
 
-  (setq! typst-ts-grammar-location (car (doom-glob doom-cache-dir "tree-sitter/libtree-sitter-typst.*")))
+  (setopt typst-ts-grammar-location (car (doom-glob doom-cache-dir "tree-sitter/libtree-sitter-typst.*")))
 
-  (setq! typst-ts-watch-options '("--open")
-         typst-ts-fontification-precision-level 'max)
+  (setopt typst-ts-watch-options '("--open")
+          typst-ts-fontification-precision-level 'max)
   (after! dtrt-indent
     (add-to-list 'dtrt-indent-hook-mapping-list '(typst-ts-mode default typst-ts-indent-offset)))
   (after! editorconfig
@@ -147,7 +147,7 @@
                          #'+typst/preview-this-file)
         "C-c C-o" #'+typst/preview-browser)
   :config
-  (setq! typst-preview-browser "default")
+  (setopt typst-preview-browser "default")
   ;; (when (fboundp 'xwidget-webkit-browse-url)
-  ;;   (setq! typst-preview-browser "xwidget"))
-  (setq! typst-preview-invert-colors "never"))
+  ;;   (setopt typst-preview-browser "xwidget"))
+  (setopt typst-preview-invert-colors "never"))

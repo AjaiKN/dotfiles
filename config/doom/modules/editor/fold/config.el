@@ -237,8 +237,8 @@ If nil, the value of `+fold-ellipsis' is used."
   :defer-incrementally (hideshow
                         ring ansi-color ansi-osc regexp-opt comint)
   :config
-  (setq! comint-fold-remap-tab nil
-         comint-fold-fringe-indicator nil)
+  (setopt comint-fold-remap-tab nil
+          comint-fold-fringe-indicator nil)
   (map! :map comint-mode-map
         :gie "TAB"       (akn/cmds! (not (comint-after-pmark-p)) #'+fold/toggle)
         :gie "<tab>"     (akn/cmds! (not (comint-after-pmark-p)) #'+fold/toggle)

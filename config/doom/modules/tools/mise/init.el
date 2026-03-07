@@ -11,8 +11,8 @@
     (setenv "PATH" (concat with-colon (getenv "PATH"))))
   ;; add shims to exec-path
   (when (not (equal (car exec-path) shims-path))
-    (setq! exec-path (cons shims-path exec-path)))
+    (setopt exec-path (cons shims-path exec-path)))
   ;; remove any other Mise paths from exec-path
-  (setq! exec-path
+  (setopt exec-path
          (seq-filter (lambda (p) (not (string-match-p "local/share/mise/installs" p)))
                      exec-path)))

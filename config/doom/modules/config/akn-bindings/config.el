@@ -972,7 +972,7 @@ beginning of region."
 
 ;;; evil insert
 (when (modulep! +evil-insert)
-  (setq! evil-disable-insert-state-bindings t))
+  (setopt evil-disable-insert-state-bindings t))
 
 ;;;; evil insert state C-x
 

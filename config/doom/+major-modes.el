@@ -19,7 +19,7 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (require 'akn)
 
@@ -107,28 +107,28 @@
        [remap dired-up-directory] #'akn/dirvish-up-directory))
 
 (after! dired
-  (setq! dired-movement-style 'cycle-files
-         dired-mouse-drag-files t
-         mouse-drag-and-drop-region-cross-program t)
+  (setopt dired-movement-style 'cycle-files
+          dired-mouse-drag-files t
+          mouse-drag-and-drop-region-cross-program t)
   (setq-hook! 'dired-mode-hook
     line-move-visual nil))
 
 (after! dirvish
-  (setq! dirvish-quick-access-entries
-         '(("h" "~/"                          "home")
-           ("p" "~/prog/"                     "prog")
-           ("o" "~/Documents/obsidian-vault/" "obsidian vault")
-           ("," "~/.config/doom/"             "private config")
-           ("d" "~/.config/emacs/"            "doom source")
-           ("/" "/"                           "root")
-           ("t" "~/.Trash/"                   "trash")))
-  (setq! dirvish-subtree-prefix "  │ ")
+  (setopt dirvish-quick-access-entries
+          '(("h" "~/"                          "home")
+            ("p" "~/prog/"                     "prog")
+            ("o" "~/Documents/obsidian-vault/" "obsidian vault")
+            ("," "~/.config/doom/"             "private config")
+            ("d" "~/.config/emacs/"            "doom source")
+            ("/" "/"                           "root")
+            ("t" "~/.Trash/"                   "trash")))
+  (setopt dirvish-subtree-prefix "  │ ")
   (pushnew! dirvish-attributes 'collapse)
 
   ;; When `dirvish-use-header-line' is enabled, cycle-files doesn't work right.
-  (setq! dired-movement-style (if (and dirvish-use-header-line (eq dired-movement-style 'cycle-files))
-                                  'cycle
-                                'cycle-files))
+  (setopt dired-movement-style (if (and dirvish-use-header-line (eq dired-movement-style 'cycle-files))
+                                   'cycle
+                                 'cycle-files))
 
   (add-hook! 'akn/dirvish-side-mode-hook
     (defun akn/dirvish-side-hide-modeline-h ()
@@ -181,11 +181,11 @@
 (after! (:or dired dirvish-subtree)
   (if (and (featurep :system 'bsd)
            (not (executable-find "gls")))
-      (setq! dired-listing-switches           "-ahl"
-             dirvish-subtree-listing-switches "-Ahl")
+      (setopt dired-listing-switches           "-ahl"
+              dirvish-subtree-listing-switches "-Ahl")
     ;; see dirvish/docs/CUSTOMIZING.org > Usage of GNU =ls=
-    (setq! dired-listing-switches           "--all        -l --sort=version --human-readable --group-directories-first"
-           dirvish-subtree-listing-switches "--almost-all -l --sort=version --human-readable --group-directories-first")))
+    (setopt dired-listing-switches           "--all        -l --sort=version --human-readable --group-directories-first"
+            dirvish-subtree-listing-switches "--almost-all -l --sort=version --human-readable --group-directories-first")))
 
 ;;;; visiting directories from the command line with dired
 (add-hook! 'server-visit-hook
@@ -501,8 +501,8 @@ if no such symbol exists."
 (after! (:or find-func helpful)
   ;; Set C source directory
   ;; can download from https://gnu.askapache.com/emacs/
-  (setq! find-function-C-source-directory (or find-function-C-source-directory
-                                              (akn/existing-file-truename (concat "~/Downloads/emacs-" emacs-version "/src")))))
+  (setopt find-function-C-source-directory (or find-function-C-source-directory
+                                               (akn/existing-file-truename (concat "~/Downloads/emacs-" emacs-version "/src")))))
 ;; https://github.com/Wilfred/helpful/issues/250#issuecomment-954262620
 (after! helpful
   ;; Only needed when using Doom Emacs with (modulep! :ui popup).
@@ -775,7 +775,7 @@ off again if you're dealing with non-compressed plist files."
     (add-to-list 'evil-motion-state-modes 'launchctl-mode))
   ;; (akn/defvar-setq akn/launchctl-search-path1 '("~/Library/LaunchAgents/" "/Library/LaunchAgents/" "/Library/LaunchDaemons/" "/System/Library/LaunchAgents/" "/System/Library/LaunchDaemons/"))
   ;; (akn/defvar-setq akn/launchctl-search-path2 '("~/Library/LaunchAgents/"))
-  ;; (setq! launchctl-search-path akn/launchctl-search-path2)
+  ;; (setopt launchctl-search-path akn/launchctl-search-path2)
   ;; (defun akn/toggle-all-search-paths ()
   ;;   (interactive)
   ;;   (setq-local launchctl-search-path (if (equal launchctl-search-path akn/launchctl-search-path2)
@@ -846,8 +846,8 @@ off again if you're dealing with non-compressed plist files."
     (sly-quickload system)))
 
 (after! sly
-  (setq! sly-complete-symbol-function 'sly-flex-completions
-         sly-command-switch-to-existing-lisp 'always)
+  (setopt sly-complete-symbol-function 'sly-flex-completions
+          sly-command-switch-to-existing-lisp 'always)
 
   (add-hook 'sly-db-mode-hook (akn/mode-disabler #'evil-snipe-local-mode)))
 
@@ -987,7 +987,7 @@ or creates it if it does not exist."
 
 ;;; python
 (after! python
-  (setq! python-fill-docstring-style 'django))
+  (setopt python-fill-docstring-style 'django))
 
 (add-to-list 'interpreter-mode-alist
              (cons (rx bos "uv" eos) #'python-mode))
@@ -1066,18 +1066,18 @@ or creates it if it does not exist."
 ;;; rocq/coq/proof-general
 (after! (:or proof-config proof-useropts)
   (shut-up
-    (setq! proof-electric-terminator-enable t
-           proof-next-command-insert-space t
-           proof-autosend-enable nil
-           proof-autosend-delay 0.8
-           proof-imenu-enable t
-           proof-keep-response-history t
-           proof-minibuffer-messages t
-           proof-full-annotation t
-           proof-output-tooltips t
-           proof-query-file-save-when-activating-scripting t
-           proof-sticky-errors t
-           proof-script-fly-past-comments t)))
+    (setopt proof-electric-terminator-enable t
+            proof-next-command-insert-space t
+            proof-autosend-enable nil
+            proof-autosend-delay 0.8
+            proof-imenu-enable t
+            proof-keep-response-history t
+            proof-minibuffer-messages t
+            proof-full-annotation t
+            proof-output-tooltips t
+            proof-query-file-save-when-activating-scripting t
+            proof-sticky-errors t
+            proof-script-fly-past-comments t)))
 
 ;;; ruby
 (after! inf-ruby
@@ -1154,7 +1154,7 @@ or creates it if it does not exist."
       (apply oldfun args))))
 
 (defvar akn/original-auto-mode-interpreter-regexp auto-mode-interpreter-regexp)
-(setq!
+(setopt
  auto-mode-interpreter-regexp
  (rx (or (regexp akn/original-auto-mode-interpreter-regexp)
          ;; guess shell based on shellcheck directive at top of file
@@ -1175,7 +1175,7 @@ or creates it if it does not exist."
             "where" "zcompile" "zformat" "zftp" "zle" "zmodload" "zparseopts"
             "zprof" "zpty" "zregexparse" "zsocket" "ztcp")
 
-  (setq! sh-basic-offset 2))
+  (setopt sh-basic-offset 2))
 
 ;;; terminals
 ;;;; General
@@ -1372,10 +1372,10 @@ Open the vterm buffer reusing a window."
 
 ;;;; term
 (after! tramp
-  (setq! tramp-terminal-prompt-regexp
-         (rx (| (: "TERM = (" (* nonl) ")")
-                (: "Terminal type? [" (* nonl) "]"))
-             (* blank))))
+  (setopt tramp-terminal-prompt-regexp
+          (rx (| (: "TERM = (" (* nonl) ")")
+                 (: "Terminal type? [" (* nonl) "]"))
+              (* blank))))
 (map! :after term
       :mode term-mode
       :nie "C-d" #'term-send-eof)
@@ -1420,12 +1420,12 @@ Open the vterm buffer reusing a window."
 ;; NOTE: In shell mode, use comint-previous-prompt (C-c C-p), not term-previous-prompt
 
 (after! comint
-  (setq! comint-input-ring-size 3000
-         comint-input-ignoredups t
-         comint-pager "cat"
-         comint-input-autoexpand t
-         comint-scroll-to-bottom-on-input t
-         comint-insert-previous-argument-from-end t)
+  (setopt comint-input-ring-size 3000
+          comint-input-ignoredups t
+          comint-pager "cat"
+          comint-input-autoexpand t
+          comint-scroll-to-bottom-on-input t
+          comint-insert-previous-argument-from-end t)
 
   ;; https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Shell-echo.html
   (setq-hook! 'shell-mode-hook
@@ -1537,7 +1537,7 @@ Open the vterm buffer reusing a window."
 
 ;;; web
 (after! web-mode
-  (setq! web-mode-auto-close-style 2)
+  (setopt web-mode-auto-close-style 2)
 
   (map! :map web-mode-map
         ;; also see https://blog.binchen.org/posts/navigateselect-html-tags-in-emacs.html

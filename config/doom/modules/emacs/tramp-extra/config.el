@@ -13,7 +13,7 @@
                          (doom-glob "~/.ssh/config.*"))))
 
   ;; https://lists.gnu.org/archive/html/bug-gnu-emacs/2025-06/msg00810.html
-  (setq! tramp-inhibit-errors-if-setting-file-attributes-fail t))
+  (setopt tramp-inhibit-errors-if-setting-file-attributes-fail t))
 
 ;;; doom bugfixes
 
@@ -105,7 +105,7 @@
                      (insert "\n")
                      (insert-file-contents-literally "~/.ssh/config.local")))
                  (search-forward-regexp (rx bol (* blank) "Proxy") nil t)))))
-      (setq! tramp-use-connection-share nil))))
+      (setopt tramp-use-connection-share nil))))
 
 
 ;; https://discord.com/channels/406534637242810369/406624667496087572/1349607536235380780
@@ -239,4 +239,4 @@
   :demand t
 
   :config
-  (setq! tramp-rpc-deploy-prefer-build nil))
+  (setopt tramp-rpc-deploy-prefer-build nil))

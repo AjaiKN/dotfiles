@@ -14,7 +14,7 @@
   :defer-incrementally t
   :after-call doom-first-file-hook
   :config
-  (setq! fasd-enable-initial-prompt nil)
+  (setopt fasd-enable-initial-prompt nil)
   (global-fasd-mode)
   (after! marginalia
     (add-to-list 'marginalia-prompt-categories '("\\<fasd\\>" . file)))

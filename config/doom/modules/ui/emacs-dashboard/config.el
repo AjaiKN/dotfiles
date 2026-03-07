@@ -1,26 +1,26 @@
 ;;; ui/emacs-dashboard/config.el -*- lexical-binding: t; -*-
 
-(setq! dashboard-projects-backend (if (fboundp 'projectile-mode) 'projectile 'project-el)
-       dashboard-center-content t
-       dashboard-vertically-center-content t
-       dashboard-items
-       '((projects . 10)
-         (agenda . 10)
-         (bookmarks . 10)
-         (recents . 10))
-       dashboard-startupify-list
-       '(;; dashboard-insert-banner
-         ;; dashboard-insert-newline
-         ;; dashboard-insert-banner-title
-         ;; dashboard-insert-newline
-         dashboard-insert-init-info
-         dashboard-insert-items)
-         ;; dashboard-insert-newline
-         ;; dashboard-insert-footer)
-       dashboard-navigation-cycle t
-       dashboard-display-icons-p t
-       ;dashboard-startup-banner 'ascii
-       dashboard-icon-type 'nerd-icons)
+(setopt dashboard-projects-backend (if (fboundp 'projectile-mode) 'projectile 'project-el)
+        dashboard-center-content t
+        dashboard-vertically-center-content t
+        dashboard-items
+        '((projects . 10)
+          (agenda . 10)
+          (bookmarks . 10)
+          (recents . 10))
+        dashboard-startupify-list
+        '(;; dashboard-insert-banner
+          ;; dashboard-insert-newline
+          ;; dashboard-insert-banner-title
+          ;; dashboard-insert-newline
+          dashboard-insert-init-info
+          dashboard-insert-items)
+          ;; dashboard-insert-newline
+          ;; dashboard-insert-footer)
+        dashboard-navigation-cycle t
+        dashboard-display-icons-p t
+        ;dashboard-startup-banner 'ascii
+        dashboard-icon-type 'nerd-icons)
 
 ;; (add-hook 'dashboard-after-initialize-hook #'dashboard-next-section)
 

@@ -50,8 +50,8 @@
     #'+everywhere--frame-setup-h
     #'+everywhere--buffer-setup-h)
 
-  (setq! emacs-everywhere-major-mode-function #'markdown-mode)
-  ;; (setq! emacs-everywhere-clipboard-sleep-delay 0.01)
+  (setopt emacs-everywhere-major-mode-function #'markdown-mode)
+  ;; (setopt emacs-everywhere-clipboard-sleep-delay 0.01)
   ;; (add-hook! 'emacs-everywhere-init-hooks
   ;;            ;; one of the hooks is the one that copies, so we can't switch to this window until
   ;;            ;; that's done
@@ -69,7 +69,7 @@
   ;; (sleep-for emacs-everywhere-clipboard-sleep-delay)))
   ;; (yank)))
   (when (executable-find "pbcopy")
-    (setq! emacs-everywhere-copy-command (list "sh" "-c" "pbcopy < %f"))))
+    (setopt emacs-everywhere-copy-command (list "sh" "-c" "pbcopy < %f"))))
 
 ;;;; atomic-chrome (GhostText in Firefox)
 ;; https://discourse.doomemacs.org/t/emacs-for-editing-anything-anywhere-in-the-browser-discord-etc/129

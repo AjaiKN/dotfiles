@@ -4,7 +4,7 @@
   :when (executable-find "mise")
   :ghook ('doom-first-file-hook #'global-mise-mode)
   :config
-  ;; (setq! mise-debug t)
+  ;; (setopt mise-debug t)
   (akn/run-command `("mise" "trust" ,(file-truename "~/.config/mise/config.toml"))
                    :boring t))
 
