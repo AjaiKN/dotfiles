@@ -248,7 +248,8 @@ If a prefix argument is provided, ask before reverting hunk."
 
   ;; if I try to commit and nothing is staged, then stage everything without asking
   (setopt magit-commit-ask-to-stage 'stage)
-  (setopt git-commit-style-convention-checks (remove 'overlong-summary-line git-commit-style-convention-checks))
+  ;; TODO: why does setopt say it's the wrong type if I use setopt?
+  (setq git-commit-style-convention-checks (remove 'overlong-summary-line git-commit-style-convention-checks))
 
   ;; https://magit.vc/manual/magit/Wip-Modes.html
   (magit-wip-mode)

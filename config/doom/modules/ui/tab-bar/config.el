@@ -169,8 +169,8 @@ new project directory.")
           bufferlo-mode-line-set-active-prefix "Ⓢ"
           bufferlo-mode-line-frame-prefix "Ⓕ"
           bufferlo-mode-line-tab-prefix "Ⓣ"
-          bufferlo-mode-line-left-prefix nil
-          bufferlo-mode-line-right-suffix nil
+          bufferlo-mode-line-left-prefix ""
+          bufferlo-mode-line-right-suffix ""
           bufferlo-kill-modified-buffers-policy nil ; 'retain-modified-kill-without-file-name nil 'retain-modified 'retain-modified-kill-without-file-name 'kill-modified
           bufferlo-bookmark-inhibit-bookmark-point t
           ;; bufferlo-delete-frame-kill-buffers-prompt t
@@ -333,6 +333,7 @@ new project directory.")
   :defer t
   :defer-incrementally cl-lib bookmark map persist subr-x color warnings
   :config
-  (setopt activities-default-name-fn #'+workspace-current-name)
+  ;; TODO: why does setopt say it's the wrong type if I use setopt?
+  (setq activities-default-name-fn #'+workspace-current-name)
   (activities-mode)
   (activities-tabs-mode))

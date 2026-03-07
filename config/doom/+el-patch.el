@@ -314,6 +314,23 @@ position of EVENT."
 
     (popup-menu menu event)))
 
+;;;; cus-edit
+(use-package! cus-edit
+  :config/el-patch
+  ;; improve warning message
+  (el-patch-defun setopt--set (variable value)
+    (el-patch-wrap 2 0
+      (let ((custom-load-recursion t)) ;(doom does this with setopt--set@inhibit-load-symbol)
+        (custom-load-symbol variable)
+        ;; Check that the type is correct.
+        (when-let ((type (get variable 'custom-type)))
+          (unless (widget-apply (widget-convert type) :match value)
+            (el-patch-swap
+              (warn "Value `%S' does not match type %s" value type)
+              (warn "setopt %s: Value `%S' does not match type %s" variable value type))))
+        (put variable 'custom-check-value (list value))
+        (funcall (or (get variable 'custom-set) #'set-default) variable value)))))
+
 ;;;; projectile
 
 (use-package! projectile

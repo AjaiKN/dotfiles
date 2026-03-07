@@ -2612,7 +2612,8 @@ In `eshell', fish completion is only used when `pcomplete' fails."
 
 ;;; buffer names
 (setopt uniquify-min-dir-content 1
-        uniquify-trailing-separator-p 'forward)
+        uniquify-trailing-separator-p t
+        uniquify-buffer-name-style 'forward)
 
 ;;; polymode
 (after! polymode
