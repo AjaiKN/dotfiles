@@ -231,6 +231,8 @@ to normal state is deprioritized)."
   "L" #'akn/open-links
   (:when (modulep! :emacs calc)
    "c" #'calc-dispatch)
+  (:when (modulep! :lang mediawiki)
+   "w" #'+mediawiki/open)
   ;; Doom maps this, but then overrides it if (modulep! :emacs dired +dirvish) is enabled.
   (:when (modulep! :ui treemacs)
    :desc "Project sidebar" "p" #'+treemacs/toggle
