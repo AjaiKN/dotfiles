@@ -62,7 +62,7 @@
   (add-hook! '(+popup-buffer-mode-hook doom-switch-window-hook doom-switch-buffer-hook)
              #'+tabs-maybe-add-tab-line-for-popup-buffer)
 
-  (akn/pushnew tab-line-exclude-modes '+doom-dashboard-mode)
+  (akn/pushnew tab-line-exclude-modes '+dashboard-mode)
 
   (defadvice! +tabs--undedicate-a (fn &optional event &rest args)
     :around #'tab-line-select-tab

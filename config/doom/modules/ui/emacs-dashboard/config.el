@@ -45,13 +45,13 @@
     (add-hook 'doom-switch-buffer-hook #'+emacs-dashboard-reload-maybe)
     (add-hook 'delete-frame-functions #'+emacs-dashboard-reload-frame-h)
     ;; `persp-mode' integration: update `default-directory' when switching perspectives
-    ;; (add-hook 'persp-created-functions #'+doom-dashboard--persp-record-project-h)
-    ;; (add-hook 'persp-activated-functions #'+doom-dashboard--persp-detect-project-h)
+    ;; (add-hook 'persp-created-functions #'+dashboard--persp-record-project-h)
+    ;; (add-hook 'persp-activated-functions #'+dashboard--persp-detect-project-h)
     ;; HACK Fix #2219 where, in GUI daemon frames, the dashboard loses center
     ;;      alignment after switching (or killing) workspaces.
     (when (daemonp)
       (add-hook 'persp-activated-functions #'+emacs-dashboard-reload-maybe))))
-    ;; (add-hook 'persp-before-switch-functions #'+doom-dashboard--persp-record-project-h)))
+    ;; (add-hook 'persp-before-switch-functions #'+dashboard--persp-record-project-h)))
 
 (add-hook 'doom-init-ui-hook #'+emacs-dashboard-init-h 'append)
 

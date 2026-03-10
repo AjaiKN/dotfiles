@@ -176,7 +176,7 @@ Forked from Doom's deleted module of the same name
 ** :ui
 *** ⭐🐁 [[./ui/blamer][blamer]]: [[https://github.com/Artawower/blamer.el][blamer]] package (inline git blame for the current line)
 *** ⭐🐁 [[./ui/buffer-move][buffer-move]]: moving buffers between windows
-*** 🕰 [[./ui/emacs-dashboard][emacs-dashboard]]: an alternative to Doom's [[doom-module::ui doom-dashboard][:ui doom-dashboard]] module
+*** 🕰 [[./ui/emacs-dashboard][emacs-dashboard]]: an alternative to Doom's [[doom-module::ui dashboard][:ui dashboard]] module
 *** 🐁 [[./ui/extra-themes][extra-themes]]: some extra themes you can try or use
 *** 🕰🐁 [[./ui/golden-ratio][golden-ratio]]: auto-resize windows using the [[https://github.com/roman/golden-ratio.el][golden-ratio]] package, inspired by [[https://www.spacemacs.org/doc/DOCUMENTATION.html#golden-ratio][the Spacemacs integration]].
 *** ⭐🐁 [[./ui/highlight-numbers][highlight-numbers]]: highlight numbers in modes that don't highlight them

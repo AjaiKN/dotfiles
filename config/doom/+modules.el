@@ -96,8 +96,8 @@ returns true."
            *basic buffer-move
            deft              ; notational velocity for Emacs
            *basic doom              ; what makes DOOM look the way it does
-           *basic doom-dashboard    ; a nifty splash screen for Emacs
-           emacs-dashboard    ; another nifty splash screen for Emacs
+           *basic dashboard    ; a nifty splash screen for Emacs
+           ;; *basic emacs-dashboard    ; another nifty splash screen for Emacs
            doom-quit         ; DOOM quit-message prompts when you quit Emacs
            (emoji +unicode)  ; 🙂
            *extra extra-themes

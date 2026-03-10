@@ -359,7 +359,7 @@
    #'akn/vertico-sort-directories-first-alpha
    #'+corfu-add-cape-dabbrev-h
    #'+magit-revert-buffer-maybe-h
-   #'+doom-dashboard-reload-maybe-h
+   #'+dashboard-reload-maybe-h
    #'+file-templates-check-h
    #'doom-auto-revert-buffer-h
    #'doom-auto-revert-buffers-h

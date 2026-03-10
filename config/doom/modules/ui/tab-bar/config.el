@@ -144,10 +144,10 @@ new project directory.")
           (advice-add #'doom-buffer-list :override #'+workspace-buffer-list)
         (advice-remove #'doom-buffer-list #'+workspace-buffer-list))))
 
-  (when (fboundp '+doom-dashboard-reload-maybe-h)
+  (when (fboundp '+dashboard-reload-maybe-h)
     (add-hook! '(tab-bar-tab-post-select-functions
                  tab-bar-tab-post-open-functions)
-               #'+doom-dashboard-reload-maybe-h))
+               #'+dashboard-reload-maybe-h))
 
   ;; (advice-add #'tabspaces--local-buffer-p :before-while #'doom-buffer-frame-predicate)
   (advice-add #'tabspaces--local-buffer-p :before-while #'doom-real-buffer-p)
@@ -277,10 +277,10 @@ new project directory.")
           (advice-add #'doom-buffer-list :override #'+workspace-buffer-list)
         (advice-remove #'doom-buffer-list #'+workspace-buffer-list))))
 
-  (when (fboundp '+doom-dashboard-reload-maybe-h)
+  (when (fboundp '+dashboard-reload-maybe-h)
     (add-hook! '(tab-bar-tab-post-select-functions
                  tab-bar-tab-post-open-functions)
-               #'+doom-dashboard-reload-maybe-h))
+               #'+dashboard-reload-maybe-h))
 
   (advice-add #'doom/quicksave-session :override #'+tab-bar:doom-save-session)
   (advice-add #'doom/quickload-session :override #'+workspace/restore-last-session)

@@ -879,7 +879,7 @@ to normal state is deprioritized)."
  (:when (and (modulep! :editor evil) (modulep! +evil-insert))
    :gi [s-backspace] #'evil-delete-back-to-indentation)
 
- (:when (modulep! :ui doom-dashboard)
+ (:when (modulep! :ui dashboard)
    "s-<return>" #'akn/fullscreen-toggle)
 
  (:after evil-snipe
