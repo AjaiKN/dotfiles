@@ -7,28 +7,29 @@
 
 (setopt mediawiki-debug t)
 
-(setopt mediawiki-site-alist
-        '(("Wikipedia"
-           "https://en.wikipedia.org/w/"
-           ""
-           ""
-           ""
-           :description "English Wikipedia"
-           :first-page "Main Page")
-          ("Wiktionary"
-           "https://en.wiktionary.org/w/"
-           ""
-           ""
-           ""
-           :description "English Wiktionary"
-           :first-page "Main Page")
-          ("Wikimedia Commons"
-           "https://commons.wikimedia.org/w/"
-           ""
-           ""
-           ""
-           :description "Wikimedia Commons"
-           :first-page "Main Page")))
+;; TODO: PR: fix `mediawiki-site-alist' defcustom type for setopt
+(setq mediawiki-site-alist
+      '(("Wikipedia"
+         "https://en.wikipedia.org/w/"
+         ""
+         ""
+         ""
+         :description "English Wikipedia"
+         :first-page "Main Page")
+        ("Wiktionary"
+         "https://en.wiktionary.org/w/"
+         ""
+         ""
+         ""
+         :description "English Wiktionary"
+         :first-page "Main Page")
+        ("Wikimedia Commons"
+         "https://commons.wikimedia.org/w/"
+         ""
+         ""
+         ""
+         :description "Wikimedia Commons"
+         :first-page "Main Page")))
 
 (add-hook 'mediawiki-mode-hook #'doom-mark-buffer-as-real-h)
 (setq-hook! 'mediawiki-mode-hook
