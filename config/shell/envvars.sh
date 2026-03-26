@@ -130,5 +130,8 @@ fi
 # https://aquaproj.github.io/docs/tutorial/global-config
 export AQUA_GLOBAL_CONFIG="${AQUA_GLOBAL_CONFIG:-}:${XDG_CONFIG_HOME:-$HOME/.config}/aquaproj-aqua/aqua.yaml"
 
+# for WikiShield
+export OLLAMA_ORIGINS="https://*.wikipedia.org"
+
 ## AKN_SHELL_ENVVARS_LOADED
 export AKN_SHELL_ENVVARS_LOADED=1
