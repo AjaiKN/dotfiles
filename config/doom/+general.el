@@ -51,6 +51,12 @@
       magit-delete-by-moving-to-trash t
       remote-file-name-inhibit-delete-by-moving-to-trash nil)
 
+;; added after doom remapped some stuff
+;; command-completion-default-include-p
+(setq read-extended-command-predicate nil)
+(global-set-key [remap eval-region] nil)
+(global-set-key [remap eval-buffer] nil)
+
 ;;; modeline
 
 ;; light modeline and regular doom-modeline
