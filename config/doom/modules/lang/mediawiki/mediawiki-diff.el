@@ -32,8 +32,8 @@
         (delete-region (point-min) (point-max))
         (insert newstr)
         (mediawiki-mode)))
-    (ediff-buffers oldbuf newbuf)))
+    (diff-buffers oldbuf newbuf)))
 
 ;; (mediawiki-diff "Wikipedia" 1346888097 1346175866)
 ;; (mediawiki-diff "Wikipedia" 1347143285 1316383300)
-(mediawiki-diff "Wikipedia" 1347143524 1346888097)
+;; (mediawiki-diff "Wikipedia" 1347143524 1346888097)
