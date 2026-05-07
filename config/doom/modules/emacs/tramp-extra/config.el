@@ -233,10 +233,6 @@
 
 (use-package! tramp-rpc
   :when (modulep! +rpc)
-
-  ;; TODO: remove this paragraph (and add :defer t) if tramp-rpc's autoloads are fixed (also from ./packages.el)
-  :after tramp
-  :demand t
-
+  :defer t
   :config
   (setopt tramp-rpc-deploy-prefer-build nil))
