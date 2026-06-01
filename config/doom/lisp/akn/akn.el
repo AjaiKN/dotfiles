@@ -232,6 +232,10 @@ This is a variadic `cl-pushnew'.
 This is taken from Doom's `pushnew!' function, which was deprecated."
   (declare (indent 1))
   (let ((var (make-symbol "result")))
+    ;; allow PLACE to be quoted, for compatibility with `add-to-list'
+    (pcase place
+      (`(quote ,(and (pred symbolp) sym))
+       (setq place sym)))
     `(dolist (,var (list ,@values) (with-no-warnings ,place))
        (cl-pushnew ,var ,place :test #'equal))))
 
