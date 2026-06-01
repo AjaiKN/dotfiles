@@ -68,6 +68,24 @@
 
 (add-hook 'csv-mode-hook #'csv-align-mode)
 
+;; raise so-long thresholds for CSVs
+(when (and (version<= 29 emacs-version)
+           (featurep 'native-compile)
+           (native-comp-available-p))
+  ;; line length
+  (akn/advise-letf! doom-so-long-p (akn/csv-a)
+    (so-long-threshold (if (string-match-p (rx (or ".csv" ".tsv" ".psv") eos)
+                                           (or buffer-file-name ""))
+                           (max so-long-threshold 100000)
+                         so-long-threshold)))
+  ;; num lines
+  (akn/pushnew doom-file-lines-threshold-alist
+    (cons (rx (or ".csv" ".tsv" ".psv") eos) 100000)))
+;; don't word wrap
+(akn/pushnew +word-wrap-disabled-modes #'csv-mode) ; not sure why this line isn't enough
+(add-hook! 'csv-mode-local-vars-hook :append
+  (+word-wrap-mode -1))
+
 ;;; dired/dirvish
 (map! (:after (:or dired dirvish)
        :map (dired-mode-map wdired-mode-map dirvish-mode-map)

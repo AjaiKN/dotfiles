@@ -2488,6 +2488,10 @@ file modes."
     '(display-line-numbers . nil)
     '(display-line-numbers-type . nil)))
 
+;; doom doesn't use `setq-default' for some reason?
+(setq-default so-long-function #'turn-on-so-long-minor-mode
+              so-long-revert-function #'turn-off-so-long-minor-mode)
+
 ;;; hardtime
 
 ;; https://github.com/ichernyshovvv/hardtime.el
