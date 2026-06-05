@@ -69,7 +69,7 @@
 (add-hook 'csv-mode-hook #'csv-align-mode)
 
 ;; raise so-long thresholds for CSVs
-(when (and (version<= 29 emacs-version)
+(when (and (version<= "29" emacs-version)
            (featurep 'native-compile)
            (native-comp-available-p))
   ;; line length
