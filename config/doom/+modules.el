@@ -284,7 +284,7 @@ returns true."
            *basic (nix +tree-sitter)               ; I hereby declare "nix geht mehr!"
            *extra (ocaml +tree-sitter)             ; an objective camel
            *extra (org +pretty +noter +dragndrop +pandoc)               ; organize your plain life in plain text (NOTE: disable +pretty if org gets slow)
-           php               ; perl's insecure younger brother
+           *basic (php +tree-sitter)               ; perl's insecure younger brother
            plantuml          ; diagrams for confusing people more
            *extra graphviz          ; diagrams for confusing yourself even more
            *extra pdf-raw
