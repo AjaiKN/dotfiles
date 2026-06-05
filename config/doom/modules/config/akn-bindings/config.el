@@ -822,6 +822,9 @@ to normal state is deprioritized)."
 ;;; major/minor mode keymaps
 
 (map!
+ (:map ,+default-minibuffer-maps
+  "C-v" #'yank)
+
  (:when (modulep! :editor fold)
    :after cus-edit
    :map custom-mode-map
@@ -861,20 +864,20 @@ to normal state is deprioritized)."
                                 #'+regex/xr-try-replace-at-point)))
 
  (:map help-map
-            "s-;" (cmd! (message "%s"
-                                 (let ((arg current-prefix-arg))
-                                  (if-let* ((targets (embark--targets)))
-                                        (let* ((target
-                                                (or (nth
-                                                     (if (or (null arg) (minibufferp))
-                                                         0
-                                                       (mod (prefix-numeric-value arg) (length targets)))
-                                                     targets)))
-                                               (type (plist-get target :type))
-                                               (default-action (embark--default-action type))
-                                               (action (or (command-remapping default-action) default-action)))
-                                          action)
-                                    "no command")))))
+       "s-;" (cmd! (message "%s"
+                            (let ((arg current-prefix-arg))
+                              (if-let* ((targets (embark--targets)))
+                                  (let* ((target
+                                          (or (nth
+                                               (if (or (null arg) (minibufferp))
+                                                   0
+                                                 (mod (prefix-numeric-value arg) (length targets)))
+                                               targets)))
+                                         (type (plist-get target :type))
+                                         (default-action (embark--default-action type))
+                                         (action (or (command-remapping default-action) default-action)))
+                                    action)
+                                "no command")))))
 
  (:when (and (modulep! :editor evil) (modulep! +evil-insert))
    :gi [s-backspace] #'evil-delete-back-to-indentation)
@@ -893,7 +896,7 @@ to normal state is deprioritized)."
  (:map (text-mode-map org-mode-map markdown-mode-map akn/new-file-mode-map global-map)
        "s-C" #'count-words)
 
-      ;; with-editor-mode is used by commit message editors in magit, for example
+ ;; with-editor-mode is used by commit message editors in magit, for example
  (:after with-editor
   :map with-editor-mode-map
   ;; like vscode commit messages

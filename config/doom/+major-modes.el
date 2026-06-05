@@ -1040,7 +1040,7 @@ or creates it if it does not exist."
 
 (use-package! racket-mode
   :config
-  (map! :mode racket-mode
+  (map! :map (racket-mode-map racket-hash-lang-mode-map)
         ;; "s-r" #'racket-run-and-switch-to-repl
         "s-e" #'akn/racket-toggle-repl
         "s-i" #'+format/region-or-buffer)
@@ -1053,7 +1053,7 @@ or creates it if it does not exist."
   (defun insert-lozenge ()
     (interactive nil racket-mode racket-hash-lang-mode)
     (insert "◊"))
-  (map! :map racket-mode-map
+  (map! :map (racket-mode-map racket-hash-lang-mode-map)
         "s-L" #'insert-lozenge)
 
   (add-hook! 'racket-xp-mode-hook
@@ -1068,13 +1068,15 @@ or creates it if it does not exist."
   (add-to-list '+lookup-provider-url-alist
                '("Racket Manuals" "https://docs.racket-lang.org/search/index.html?q=%s"))
 
-  (add-hook 'racket-hash-lang-mode-hook (akn/mode-disabler #'smartparens-mode)))
+  (add-hook 'racket-hash-lang-mode-hook (akn/mode-disabler #'smartparens-mode))
+
+  ;; like in DrRacket
+  (add-hook! '(racket-mode-hook racket-hash-lang-mode-hook) #'racket-smart-open-bracket-mode))
 
 ;; (defun akn/racket-docs-local (query)
 ;;   (message "%s" query)
 ;;   (call-process "raco" nil "*raco-docs*" nil
 ;;                 "docs" (or query "")))
-
 ;; (add-to-list '+lookup-provider-url-alist
 ;;              '("Racket Manuals (local)" akn/racket-docs-local)))
 
