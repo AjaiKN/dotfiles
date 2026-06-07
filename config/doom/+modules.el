@@ -280,6 +280,7 @@ returns true."
            *basic markdown          ; writing docs for people to ignore
            *extra mediawiki ; Wikipedia
            *extra obsidian
+           odin
            *extra mercury
            nim               ; python + lisp at the speed of c
            *basic (nix +tree-sitter)               ; I hereby declare "nix geht mehr!"
