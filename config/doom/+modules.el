@@ -183,6 +183,7 @@ returns true."
            *basic vterm             ; the best terminal emulation in Emacs
            *basic mistty
            *basic eat
+           *basic ghostel
 
            :checkers
            *basic syntax              ; tasing you for every semicolon you forget

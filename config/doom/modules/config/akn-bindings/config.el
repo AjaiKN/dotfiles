@@ -225,6 +225,9 @@ to normal state is deprioritized)."
   (:when (modulep! :term mistty)
     "q" #'+mistty/toggle
     "Q" #'+mistty/here)
+  (:when (modulep! :term ghostel)
+    "g" #'+ghostel/toggle
+    "G" #'+ghostel/here)
 
   "C-c" #'akn/open-in-vscode
   "C" #'akn/open-project-in-vscode
