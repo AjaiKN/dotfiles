@@ -1679,18 +1679,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
         [remap save-buffer] #'Custom-save))
 
 ;;; xterm-color
-(after! compile
-  (require 'xterm-color)
 
-  ;; https://github.com/atomontage/xterm-color?tab=readme-ov-file#compilation-buffers
-  ;; WARNING: "This compilation-mode configuration will break ag.el and rg.el,
-  ;; since these packages expect ANSI control sequences to be part of
-  ;; compilation output so that they can be used for matching."
-  (add-to-list 'compilation-environment "TERM=xterm-256color"))
-(defadvice! akn/xterm-color--advice-compilation-filter-a (f proc string)
-  :around #'compilation-filter
-  (funcall f proc (xterm-color-filter string)))
-
+;;;; comint / shell-mode
 ;; TODO: fix echoing and prompt
 ;; (after! shell
 ;;   (require 'xterm-color)
@@ -1712,6 +1702,18 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;;
 ;;         (comint-simple-send (get-buffer-process (current-buffer)) "TERM=xterm-256color")))))
 
+;;;; compilation buffers
+(after! compile
+  (require 'xterm-color)
+  ;; https://github.com/atomontage/xterm-color?tab=readme-ov-file#compilation-buffers
+  ;; WARNING: "This compilation-mode configuration will break ag.el and rg.el,
+  ;; since these packages expect ANSI control sequences to be part of
+  ;; compilation output so that they can be used for matching."
+  (add-to-list 'compilation-environment "TERM=xterm-256color")
+  (define-advice compilation-filter (:around (f proc string) xterm-color)
+    (funcall f proc (xterm-color-filter string))))
+
+;;;; eshell
 (after! eshell
   (require 'xterm-color)
 
@@ -1722,6 +1724,7 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   (add-to-list 'eshell-preoutput-filter-functions #'xterm-color-filter)
   (setq eshell-output-filter-functions (remove #'eshell-handle-ansi-color eshell-output-filter-functions))
   (setenv "TERM" "xterm-256color"))
+
 ;;; elisp
 (map!
  (:mode (emacs-lisp-mode lisp-interaction-mode)
