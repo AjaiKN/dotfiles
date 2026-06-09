@@ -1601,6 +1601,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 (after! 'rust-prog-mode
   (advice-add #'adaptive-wrap-fill-context-prefix :around #'akn/disable-slow-adaptive-fill-functions-a))
 
+(setopt +word-wrap-extra-indent 'double)
+
 ;;; isearch
 (after! isearch
   (map! :map isearch-mode-map
