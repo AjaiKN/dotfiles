@@ -416,7 +416,7 @@ If DIR is not supplied it's set to the current directory by default."
                (version< emacs-version "31.1"))
       ;; NOTE: I think the definition of treesit-ensure-installed has changed
       ;; since then in emacs master.
-      (load! "modules/tools/tree-sitter/autoload/compat-30" doom-emacs-dir)))
+      (load! "sources/doom+/modules/tools/tree-sitter/autoload/compat-30" doom-emacs-dir)))
 
   (el-patch-defun treesit-ensure-installed (lang)
     "Ensure that the grammar library for the language LANG is installed.
@@ -453,7 +453,7 @@ the grammar library if it's unavailable."
  (load-in-progress
   ;; If we're loading this file, don't block startup
   (akn/after-idle! ((* 60 8) :timer-name akn/el-patch-timer)
-    (unless (version< emacs-version "31") ; `treesit-ensure-installed' (TODO: remove when Doom updates in ~/.config/emacs/modules/tools/tree-sitter/autoload/compat-30)
+    (unless (version< emacs-version "31") ; `treesit-ensure-installed' (TODO: remove when Doom updates in ~/.config/emacs/sources/doom+/modules/tools/tree-sitter/autoload/compat-30)
       (el-patch-validate-all))))
  (t
   ;; If we're interactively using `eval-buffer', validate immediately

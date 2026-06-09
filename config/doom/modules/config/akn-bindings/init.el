@@ -15,7 +15,7 @@
     (setq doom-leader-alt-key-states '(normal visual insert emacs motion operator replace global)))
 
   (akn/define-leader-keys)
-  ;; In non-evil mode, ~/.config/emacs/modules/config/default/+emacs-bindings.el
+  ;; In non-evil mode, ~/.config/emacs/sources/doom+/modules/config/default/+emacs-bindings.el
   ;; gets loaded, and that file sets `doom-leader-alt-key' and
   ;; `doom-localleader-alt-key', so we need to set them again.
   (add-hook 'doom-after-modules-config-hook #'akn/define-leader-keys))
