@@ -52,7 +52,7 @@
 (after! (:or term vterm shell eshell eat mistty)
   (set-popup-rule! (rx (or (seq bol "*doom:" (or "term" "vterm" "shell" "eshell" "ghostel") "-popup:")
                            (seq (or "*" "-") (or "eat" "mistty") "*")
-                           (seq "ghostel*")
+                           (or "*ghostel" "ghostel*")
                            (seq "*vterm")))
     :vslot -5 :size 0.25 :select t :modeline nil :quit #'akn/insert-state-and-close-popup-h :ttl nil))
 (defun akn/insert-state-and-close-popup-h (window)

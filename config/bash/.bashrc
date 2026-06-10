@@ -168,7 +168,7 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-		xterm-color|*-256color|wezterm*) color_prompt=yes;;
+		xterm-color|*-256color|wezterm*|ghostel*) color_prompt=yes;;
 esac
 
 if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
@@ -278,7 +278,7 @@ case "$TERM" in
 	"dumb")
 		:
 		;;
-	xterm*|rxvt*|eterm*|screen*|wezterm*)
+	xterm*|rxvt*|eterm*|screen*|wezterm*|ghostel*)
 		PS0="\e[2 q\2"
 		;;
 	*)

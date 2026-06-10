@@ -35,7 +35,7 @@ function title {
   setopt localoptions nopromptsubst
 
   # Don't set the title if inside emacs, unless using vterm
-  [[ -n "${INSIDE_EMACS:-}" && "$INSIDE_EMACS" != vterm ]] && return
+  [[ -n "${INSIDE_EMACS:-}" && "$INSIDE_EMACS" != vterm* && "$INSIDE_EMACS" != ghostel* ]] && return
 
   # if $2 is unset use $1 as default
   # if it is set and empty, leave it as is
@@ -129,7 +129,7 @@ function omz_termsupport_preexec {
 
 autoload -Uz add-zsh-hook
 
-if [[ -z "$INSIDE_EMACS" || "$INSIDE_EMACS" = vterm ]]; then
+if [[ -z "$INSIDE_EMACS" || "$INSIDE_EMACS" = vterm* || "$INSIDE_EMACS" = ghostel* ]]; then
   add-zsh-hook precmd omz_termsupport_precmd
   add-zsh-hook preexec omz_termsupport_preexec
 fi
@@ -154,7 +154,7 @@ fi
 # Don't define the function if we're in an unsupported terminal
 case "$TERM" in
   # all of these either process OSC 7 correctly or ignore entirely
-  xterm*|putty*|rxvt*|konsole*|mlterm*|alacritty*|screen*|tmux*|wezterm*) ;;
+  xterm*|putty*|rxvt*|konsole*|mlterm*|alacritty*|screen*|tmux*|wezterm*|ghostel*) ;;
   contour*|foot*) ;;
   *)
     # Terminal.app and iTerm2 process OSC 7 correctly
