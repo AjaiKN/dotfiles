@@ -17,7 +17,17 @@
         :nviemorg "s-<right>"     (+ghostel--dumb-key "e" "ctrl")
         :nviemorg "s-<backspace>" (+ghostel--dumb-key "u" "ctrl")
         :nviemorg "M-<left>"      (+ghostel--dumb-key "b" "meta")
-        :nviemorg "M-<right>"     (+ghostel--dumb-key "f" "meta")))
+        :nviemorg "M-<right>"     (+ghostel--dumb-key "f" "meta"))
+
+  (add-hook! 'ghostel-mode-hook
+    (defun akn/fewfjiewfijeiwjwieee ()
+      (add-hook! 'post-command-hook :local
+        (defun akn/thingyfjeiwjfwei ()
+          (when-let* ((start-pos (and (markerp ghostel--line-input-start) (marker-position ghostel--line-input-start)))
+                      (end-pos (and (markerp ghostel--line-input-end) (marker-position ghostel--line-input-end)))
+                      ((< start-pos end-pos))
+                      (inhibit-read-only t))
+            (put-text-property start-pos end-pos 'field 'ghostel-input)))))))
 
 (use-package! evil-ghostel
   :when (modulep! :editor evil)
