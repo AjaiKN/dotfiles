@@ -1,5 +1,7 @@
 ;;; term/eshell-extra/+howardism-last-results.el -*- lexical-binding: t; -*-
 
+(require 'ring)
+
 ;; https://howardism.org/Technical/Emacs/eshell-why.html
 ;; https://github.com/howardabrams/hamacs/blob/main/ha-eshell.org#last-results (CC0)
 
