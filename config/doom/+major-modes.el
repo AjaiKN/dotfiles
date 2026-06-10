@@ -1305,13 +1305,22 @@ Copied from `embark-kill-ring-remove'."
     :gie "M-<right>"     (cmd! (vterm-send-key (kbd "C-f")))
     :gie "M-<left>"      (cmd! (vterm-send-key (kbd "C-b")))
     :gie "s-<backspace>" (cmd! (vterm-send-key (kbd "C-u")))
-    :gie "s-<left>"      (cmd! (vterm-send-key (kbd "C-a")))
-    :gie "s-<right>"     (cmd! (vterm-send-key (kbd "C-e")))
-    :gie "<escape>" (cmd! (if (not akn/vterm-escape-mode)
-                              (akn/vterm-escape-mode 1)
-                            (akn/vterm-escape-mode -1)
-                            (vterm-send-key "a")
-                            (doom/escape)))
+    :gie "s-<left>"      #'+vterm/beginning-of-line ;(cmd! (vterm-send-key (kbd "C-a")))
+    :gie "s-<right>"     (cmd! (vterm-send-key (kbd "C-e"))) ;#'vterm-end-of-line
+    :gie "<escape>"
+    (akn/cmds! (not (bound-and-true-p evil-local-mode)) nil
+               (bound-and-true-p evil-collection-vterm-send-escape-to-vterm-p)
+               (cmd! (if (not akn/vterm-escape-mode)
+                         (akn/vterm-escape-mode 1)
+                       (akn/vterm-escape-mode -1)
+                       (vterm-send-key "a")
+                       (doom/escape)))
+               (vterm--at-prompt-p) (cmd! (let ((evil-move-cursor-back nil)) (evil-normal-state)))
+               t #'evil-normal-state)
+    :gie "C-c C-z" #'evil-collection-vterm-toggle-send-escape
+    [remap evil-collection-vterm-toggle-send-escape]
+    (cmd! (setq-local evil-collection-vterm-send-escape-to-vterm-p
+                      (not evil-collection-vterm-send-escape-to-vterm-p)))
     :gie "SPC"      (cmd! (if (not akn/vterm-escape-mode)
                               (vterm-send-key "SPC")
                             (vterm-send-key "a")
@@ -1322,6 +1331,16 @@ Copied from `embark-kill-ring-remove'."
                   (comint-send-invisible "Enter password: ")
                   (vterm-send-string "\n")
                   (clear-this-command-keys)))
+
+  (setopt evil-collection-vterm-send-escape-to-vterm-p nil
+          evil-collection-vterm-move-cursor-back t)
+
+  (setq-hook! 'vterm-mode-hook
+    term-prompt-regexp
+    (rx bol
+        (* (not (any "#$%>»❯▶❮V" "\\n")))
+        (+ (any "#$%>»❯▶❮V"))
+        (? " ")))
 
   ;; disable ligatures
   (set-ligatures! 'vterm-mode nil)
@@ -1412,7 +1431,7 @@ Open the vterm buffer reusing a window."
                         (rx bol
                             (* (not (any "#$%>»❯▶❮V" "\\n")))
                             (+ (any "#$%>»❯▶❮V"))
-                            (* " ")))))))))
+                            (? " ")))))))))
 ;; (add-hook 'term-mode-hook #'term-line-mode)
 ;; (defadvice! akn/term-no-insert-char-mode-a (&rest _)
 ;;   :override #'evil-collection-term-switch-to-char-mode-on-insert
