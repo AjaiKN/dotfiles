@@ -21,13 +21,24 @@
 
   (add-hook! 'ghostel-mode-hook
     (defun akn/fewfjiewfijeiwjwieee ()
-      (add-hook! 'post-command-hook :local
+      (add-hook! '(pre-command-hook post-command-hook) :local
         (defun akn/thingyfjeiwjfwei ()
           (when-let* ((start-pos (and (markerp ghostel--line-input-start) (marker-position ghostel--line-input-start)))
                       (end-pos (and (markerp ghostel--line-input-end) (marker-position ghostel--line-input-end)))
                       ((< start-pos end-pos))
                       (inhibit-read-only t))
-            (put-text-property start-pos end-pos 'field 'ghostel-input)))))))
+            (put-text-property start-pos end-pos 'field 'ghostel-input)
+            (put-text-property start-pos end-pos 'front-sticky t))
+          (save-excursion
+            (unless (get-text-property (point) 'ghostel-input)
+              (ignore-errors
+                (forward-char -1)))
+            (when-let* (((get-text-property (point) 'ghostel-input))
+                        (start-pos (previous-single-property-change (point) 'ghostel-input))
+                        (start-pos (1+ start-pos))
+                        (end-pos (next-single-property-change (point) 'ghostel-input)))
+              (put-text-property start-pos end-pos 'field 'ghostel-input)
+              (put-text-property start-pos end-pos 'front-sticky t))))))))
 
 (use-package! evil-ghostel
   :when (modulep! :editor evil)
