@@ -24,7 +24,7 @@ git submodule init config/nano vendor config/zsh/themes "$@"
 # ! command -v emacs >/dev/null 2>&1 || git submodule init config/emacs config/doom
 
 # update all submodules
-git -c submodule.fetchJobs=0 submodule update --recursive # --depth=1
+git -c submodule.fetchJobs=0 submodule update --recursive --depth=1
 
 # shellcheck disable=SC2016
 git submodule --quiet foreach '"$toplevel"/submodules-update--checkout-branch.sh'
