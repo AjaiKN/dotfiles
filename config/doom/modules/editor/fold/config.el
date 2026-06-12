@@ -1,8 +1,7 @@
 ;;; editor/fold/config.el -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (require 'akn-doom-use-package)
-  (require 'doom-keybinds))
+  (require 'akn-doom-use-package))
 
 (defun +fold--to-char (thing)
   (cond

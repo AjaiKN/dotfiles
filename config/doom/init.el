@@ -28,13 +28,13 @@
 
 (defvar akn/private-doom-dir "~/.config/doom.private/")
 
-(after! doom-start
+(add-hook! 'doom-after-modules-init-hook
   (when (not (fboundp 'gcmh-mode))
     ;; Don't enable gcmh-mode if the package isn't installed
     (remove-hook 'doom-first-buffer-hook 'gcmh-mode)))
 
 ;; can remove this paragraph after Doom 3
-(after! (:or emacs doom doom-projects)
+(defun akn/change-doom-dirs ()
   (require 'xdg)
   (setopt doom-data-dir
           (if (featurep :system 'windows)
@@ -74,8 +74,11 @@
                  (move-file-to-trash source))
                (message "ln -s %s %s" target source)
                (make-symbolic-link target source)))))
+(akn/change-doom-dirs)
 (after! doom
+  (akn/change-doom-dirs)
   (setq user-emacs-directory doom-profile-cache-dir))
+(add-hook 'doom-after-modules-init-hook #'akn/change-doom-dirs)
 
 (defvar akn/terminal-daemon-p
   (equal (daemonp) "term"))

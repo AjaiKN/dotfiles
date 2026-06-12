@@ -8,7 +8,6 @@
   ;; (require 'doom-packages)
   (require 'akn-doom-use-package)
   ;; (require 'doom-modules)
-  (require 'doom-keybinds)
   (require 'subr-x))
 
 (eval-and-compile

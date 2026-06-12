@@ -1,8 +1,7 @@
 ;;; lang/linear-program/config.el -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (require 'akn-doom-use-package)
-  (require 'doom-keybinds))
+  (require 'akn-doom-use-package))
 
 (use-package! linear-program-mode
   :defer t

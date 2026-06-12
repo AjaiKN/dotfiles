@@ -17,10 +17,9 @@
   (require 'tramp)
   (require 'macroexp)
   (require 'doom nil t)
-  (require 'akn-doom-use-package nil t)
   ;; (require 'doom-packages)
   ;; (require 'doom-modules)
-  (require 'doom-ui nil t))
+  (require 'akn-doom-use-package nil t))
 (eval-and-compile
   (require 'doom-lib nil t)
   (require 'compat)
@@ -997,24 +996,25 @@ FILE defaults to the current `buffer-file-name'."
 ;;;###autoload
 (defun akn/choose-font-family (font-family)
   (interactive
-   (list (akn/completing-read
-          "Font name: "
-          (and window-system
-               (fboundp #'font-family-list)
-               (font-family-list))
-          :predicate nil
-          :require-match t
-          :default (if (or (stringp doom-font) (null doom-font))
-                       doom-font
-                     (symbol-name (font-get doom-font :family)))
-          :preview-key "C-SPC"
-          :state (lambda (action selected-font)
-                   (pcase action
-                     ('setup
-                      (setq akn/preview--original-font doom-font))
-                     ('preview
-                      (ignore-errors
-                        (akn/switch-font (or selected-font akn/preview--original-font)))))))))
+   (let ((doom-font (if (boundp 'doom-font) doom-font (error "doom-font variable doesn't exist"))))
+     (list (akn/completing-read
+            "Font name: "
+            (and window-system
+                 (fboundp #'font-family-list)
+                 (font-family-list))
+            :predicate nil
+            :require-match t
+            :default (if (or (stringp doom-font) (null doom-font))
+                         doom-font
+                       (symbol-name (font-get doom-font :family)))
+            :preview-key "C-SPC"
+            :state (lambda (action selected-font)
+                     (pcase action
+                       ('setup
+                        (setq akn/preview--original-font doom-font))
+                       ('preview
+                        (ignore-errors
+                          (akn/switch-font (or selected-font akn/preview--original-font))))))))))
   (akn/switch-font font-family))
 ;;;###autoload
 (defun akn/reset-font ()
@@ -1027,24 +1027,25 @@ FILE defaults to the current `buffer-file-name'."
 ;;;###autoload
 (defun akn/choose-variable-pitch-font-family (font-family)
   (interactive
-   (list (akn/completing-read
-          "Font name: "
-          (and window-system
-               (fboundp #'font-family-list)
-               (font-family-list))
-          :predicate nil
-          :require-match t
-          :default (if (stringp doom-variable-pitch-font)
-                       doom-variable-pitch-font
-                     (symbol-name (font-get doom-variable-pitch-font :family)))
-          :preview-key "C-SPC"
-          :state (lambda (action selected-font)
-                   (pcase action
-                     ('setup
-                      (setq akn/preview--original-vp-font doom-variable-pitch-font))
-                     ('preview
-                      (ignore-errors
-                        (akn/switch-variable-pitch-font (or selected-font akn/preview--original-vp-font)))))))))
+   (let ((doom-variable-pitch-font (if (boundp 'doom-variable-pitch-font) doom-variable-pitch-font (error "doom-variable-pitch-font variable doesn't exist"))))
+     (list (akn/completing-read
+            "Font name: "
+            (and window-system
+                 (fboundp #'font-family-list)
+                 (font-family-list))
+            :predicate nil
+            :require-match t
+            :default (if (stringp doom-variable-pitch-font)
+                         doom-variable-pitch-font
+                       (symbol-name (font-get doom-variable-pitch-font :family)))
+            :preview-key "C-SPC"
+            :state (lambda (action selected-font)
+                     (pcase action
+                       ('setup
+                        (setq akn/preview--original-vp-font doom-variable-pitch-font))
+                       ('preview
+                        (ignore-errors
+                          (akn/switch-variable-pitch-font (or selected-font akn/preview--original-vp-font))))))))))
   (akn/switch-variable-pitch-font font-family))
 ;;;###autoload
 (defun akn/reset-variable-pitch-font ()

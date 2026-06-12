@@ -2,7 +2,6 @@
 
 (eval-when-compile
   (require 'akn-doom-use-package)
-  (require 'doom-keybinds)
   (require 'doom-lib)
   (require 'akn))
 

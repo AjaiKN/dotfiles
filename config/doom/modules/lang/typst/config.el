@@ -2,7 +2,6 @@
 
 (eval-and-compile
   (require 'akn-doom-use-package)
-  (require 'doom-keybinds)
   (require 'akn))
 
 (use-package! typst-ts-mode

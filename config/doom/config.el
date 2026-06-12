@@ -24,7 +24,6 @@
   ;; (require 'doom-packages)
   (require 'akn-doom-use-package)
   ;; (require 'doom-modules)
-  (require 'doom-keybinds)
   (require 'subr-x))
 
 (eval-and-compile
@@ -32,17 +31,6 @@
 
 ;; https://discourse.doomemacs.org/t/how-to-have-tool-bar-mode-0-apply-at-startup-to-avoid-large-title-bar-on-macos-sonoma-when-using-railwaycat-homebrew-emacsmacport/4222/2
 (add-hook 'doom-after-init-hook (lambda () (tool-bar-mode 1) (tool-bar-mode 0)))
-
-;; undisable customize stuff
-(after! (:or cus-edit doom-ui)
-  (dolist (sym '(customize-option customize-browse customize-group customize-face
-                 customize-rogue customize-saved customize-apropos
-                 customize-changed customize-unsaved customize-variable
-                 customize-set-value customize-customized customize-set-variable
-                 customize-apropos-faces customize-save-variable
-                 customize-apropos-groups customize-apropos-options
-                 customize-changed-options customize-save-customized))
-    (put sym 'disabled nil)))
 
 (require 'akn)
 

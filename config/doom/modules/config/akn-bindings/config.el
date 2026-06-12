@@ -2,8 +2,6 @@
 
 (require 'akn)
 (require 'general)
-(eval-when-compile
-  (require 'doom-keybinds))
 
 ;;; fullscreen stuff
 
