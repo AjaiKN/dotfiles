@@ -145,7 +145,15 @@ alias move="mv -i"
 alias copy="cp -i"
 
 # https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/cp/cp.plugin.zsh
+# "This plugin defines a cpv function that uses rsync so that you get the features and security of this command."
+# for local files only
 alias cpv='rsync -pogbr -hhh --backup-dir="/tmp/rsync-${USERNAME}" -e /dev/null --progress'
+
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rsync/rsync.plugin.zsh
+alias rsync-copy="rsync -avz --progress -h"
+alias rsync-move="rsync -avz --progress -h --remove-source-files"
+alias rsync-update="rsync -avzu --progress -h"
+alias rsync-synchronize="rsync -avzu --delete --progress -h"
 
 alias trash=zap
 
