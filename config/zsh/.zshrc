@@ -237,6 +237,11 @@ load_plugins
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
 
+# omz-termsupport
+if [[ -n $SSH_CLIENT || -n $SSH_TTY || -n $SSH_CONNECTION || $USER != (#i)*ajai* || $HOST != (#i)*ajai* ]]; then
+  ZSH_THEME_TERM_TAB_TITLE_IDLE='%n@%m:'
+fi
+
 ### Misc
 
 # Sets color variable such as $fg, $bg, $color and $reset_color
