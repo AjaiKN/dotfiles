@@ -19,6 +19,9 @@
         :nviemorg "M-<left>"      (+ghostel--dumb-key "b" "meta")
         :nviemorg "M-<right>"     (+ghostel--dumb-key "f" "meta"))
 
+  (setopt ghostel-enable-osc52 t
+          ghostel-module-auto-install 'download)
+
   (add-hook! 'ghostel-mode-hook
     (defun akn/fewfjiewfijeiwjwieee ()
       (add-hook! '(pre-command-hook post-command-hook) :local
@@ -45,7 +48,7 @@
   :after (ghostel evil)
   :hook (ghostel-mode . evil-ghostel-mode))
 
-;; TODO: disable xterm-color before enabling these:
+;; NOTE: disable xterm-color before enabling these:
 
 ;; (use-package! ghostel-compile
 ;;   :defer t
