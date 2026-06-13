@@ -23,9 +23,9 @@
           ghostel-module-auto-install 'download)
 
   (add-hook! 'ghostel-mode-hook
-    (defun akn/fewfjiewfijeiwjwieee ()
+    (defun +ghostel--set-field-every-command-h ()
       (add-hook! '(pre-command-hook post-command-hook) :local
-        (defun akn/thingyfjeiwjfwei ()
+        (defun +ghostel--set-field-h ()
           (when-let* ((start-pos (and (markerp ghostel--line-input-start) (marker-position ghostel--line-input-start)))
                       (end-pos (and (markerp ghostel--line-input-end) (marker-position ghostel--line-input-end)))
                       ((< start-pos end-pos))
