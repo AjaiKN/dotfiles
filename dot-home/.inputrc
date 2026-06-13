@@ -1,6 +1,8 @@
 # For Readline
 # Used in things like bash, irb, python repl
 
+set history-size 100000000
+
 $if term=dumb
 	# https://www.gnu.org/software/emacs/manual/html_node/tramp/Frequently-Asked-Questions.html
 $else
