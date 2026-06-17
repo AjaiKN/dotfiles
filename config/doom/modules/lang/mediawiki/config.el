@@ -93,4 +93,19 @@
 (akn/advise-letf! mediawiki-pop-to-buffer (+mediawiki--same-window-a)
   (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
 
+(define-advice mediawiki-api-call (:filter-args (args) +mediawiki--assert-user-a)
+  (cl-destructuring-bind (sitename action &optional params) args
+    (when (or (equal action "edit")
+              (and (equal action "query")
+                   (member (cons "meta" "tokens") params)
+                   (member (cons "type" "csrf") params)))
+      (setq params (append params
+                           (list
+                            (cons "assert" "user")
+                            (cons "assertuser" (let ((username (mediawiki-site-username sitename)))
+                                                 (when (string-match (rx bos (group (* (not "@"))) "@" (* anything) eos) username)
+                                                   (setq username (match-string 1 username)))
+                                                 username))))))
+    (list sitename action params)))
+
 (akn/pushnew +word-wrap-text-modes #'mediawiki-mode #'mediawiki-file-mode #'mediawiki-draft-mode)
