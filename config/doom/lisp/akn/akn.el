@@ -17,8 +17,7 @@
   (require 'tramp)
   (require 'macroexp)
   (require 'doom nil t)
-  ;; (require 'doom-packages)
-  ;; (require 'doom-modules)
+  (require 'doom-emacs nil t)
   (require 'akn-doom-use-package nil t))
 (eval-and-compile
   (require 'doom-lib nil t)

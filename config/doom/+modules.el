@@ -300,6 +300,7 @@ returns true."
            *basic rst               ; ReST in peace
            *extra (ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
            *extra (rust +lsp +tree-sitter)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+           scad              ; trust the preview, regret the render
            scala             ; java, but good
            *extra (scheme +guile)   ; a fully conniving family of lisps
            *basic (sh +fish +powershell +lsp)        ; +tree-sitter ; she sells {ba,z,fi}sh shells on the C xor
