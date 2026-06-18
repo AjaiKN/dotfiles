@@ -1,6 +1,8 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; editor/fold/packages.el
 
+;; TODO: try https://github.com/jamescherti/kirigami.el / https://www.jamescherti.com/emacs-the-definitive-guide-to-code-folding/
+
 (package! hideshow :built-in t)
 
 (package! vimish-fold :pin "f71f374d28a83e5f15612fa64aac1b2e78be2dcd")
