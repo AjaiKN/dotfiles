@@ -24,13 +24,6 @@ else
 fi
 set -x
 
-## core.untrackedCache
-if git update-index --test-untracked-cache; then
-	git config "${comment[@]}" --file="$HOME/.gitconfig" core.untrackedCache true
-else
-	git config "${comment[@]}" --file="$HOME/.gitconfig" core.untrackedCache false
-fi
-
 ## checkout.workers
 # https://matheustavares.dev/posts/parallel-checkout
 # only effective for performance on SSDs or NFS
@@ -58,4 +51,19 @@ then
 else
 	# TODO: `--unset` is deprecated; switch to `unset`
 	git config --unset --file="$HOME/.gitconfig" checkout.workers || :
+fi
+
+## core.untrackedCache
+
+if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != true ]; then
+	echo "To check whether core.untrackedCache should be set, this needs to be run from inside a git repo"
+	exit 1
+fi
+
+if git update-index --test-untracked-cache; then
+	git config "${comment[@]}" --file="$HOME/.gitconfig" core.untrackedCache true
+	git config "${comment[@]}" core.untrackedCache true
+else
+	git config "${comment[@]}" --file="$HOME/.gitconfig" core.untrackedCache false
+	git config "${comment[@]}" core.untrackedCache false
 fi
