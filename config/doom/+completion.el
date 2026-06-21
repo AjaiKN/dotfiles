@@ -288,8 +288,8 @@
 ;;; abbrev-mode
 ;; mainly for tempel-abbrev-mode
 (add-hook! '(java-mode-hook java-ts-mode-hook
-             sh-base-mode-hook
-             mediawiki-mode-hook)
+             sh-base-mode-hook)
+             ;; mediawiki-mode-hook)
            #'abbrev-mode)
 
 

@@ -49,6 +49,8 @@
       [remap mediawiki-open-page-at-point] #'+mediawiki/open-page-at-point
       :mn "RET" (akn/cmds! (+mediawiki-page-at-point) #'+mediawiki/open-page-at-point)
       [remap mediawiki-save] #'+mediawiki/save
+      [remap mediawiki-do-login] #'+mediawiki/login
+      [remap mediawiki-do-logout] #'+mediawiki/logout
       [remap save-buffer]                   (akn/cmds! (+mediawiki-virtual-p) #'+mediawiki/save)
       [remap browse-url-of-file]            (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-browse)
       [remap +macos/reveal-in-finder]       (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-browse)
@@ -95,10 +97,10 @@
 
 (define-advice mediawiki-api-call (:filter-args (args) +mediawiki--assert-user-a)
   (cl-destructuring-bind (sitename action &optional params) args
-    (when (or (equal action "edit")
-              (and (equal action "query")
-                   (member (cons "meta" "tokens") params)
-                   (member (cons "type" "csrf") params)))
+    (when (or (equal action "edit"))
+              ;; (and (equal action "query")
+              ;;      (member (cons "meta" "tokens") params)
+              ;;      (member (cons "type" "csrf") params)))
       (setq params (append params
                            (list
                             (cons "assert" "user")
@@ -114,3 +116,8 @@
   (mapc (lambda (x)
             (modify-syntax-entry x "." mediawiki-mode-syntax-table))
         "|*-=:#;'\""))
+
+(define-advice mediawiki-retry-save-page (:around (fn sitename &rest args) +mediawiki--login-a)
+  (+mediawiki/login sitename)
+  (akn/letf! ((#'mediawiki-do-login #'ignore))
+    (apply fn sitename args)))

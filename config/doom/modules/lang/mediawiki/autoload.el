@@ -44,7 +44,7 @@
                (+mediawiki-page-at-point))
           (+mediawiki--read-page mediawiki-site)))))
   (unless (mediawiki-logged-in-p site)
-    (mediawiki-do-login site))
+    (+mediawiki/login site))
   (if-let* ((page (mediawiki-translate-pagename page))
             (bufname (concat site ": " page))
             (buf (get-buffer bufname))
@@ -71,7 +71,7 @@
       (revert-buffer--default ignore-auto noconfirm)
     (run-hooks 'before-revert-hook)
     (unless (mediawiki-logged-in-p mediawiki-site)
-      (mediawiki-do-login mediawiki-site))
+      (+mediawiki/login mediawiki-site))
     (setq-local buffer-file-coding-system 'utf-8
                 mediawiki-page-title (mediawiki-translate-pagename mediawiki-page-title))
     ;; Get page content and metadata, ensuring metadata is saved in current buffer
@@ -107,3 +107,24 @@
         (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
     (edit-indirect-region (point-min) (point-max) t)
     (+mediawiki-indirect-mode)))
+
+;;;###autoload
+(defun +mediawiki/login (&optional site)
+  (interactive
+   (list
+    (if current-prefix-arg
+        (mediawiki-prompt-for-site))))
+  (let ((newsite
+         (let ((mediawiki-site site))
+           (mediawiki-do-login (or site mediawiki-site mediawiki-site-default)))))
+    (when (derived-mode-p 'mediawiki-mode)
+      (setq-local mediawiki-site (or newsite site mediawiki-site)))))
+
+;;;###autoload
+(defun +mediawiki/logout (&optional site)
+  (interactive
+   (list
+    (if current-prefix-arg
+        (mediawiki-prompt-for-site))))
+  (let ((mediawiki-site site))
+    (mediawiki-do-logout (or site mediawiki-site mediawiki-site-default))))
