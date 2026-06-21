@@ -3,7 +3,7 @@
 
 (require 'doom)
 (require 'doom-lib)
-(doom-require 'doom-lib 'packages)
+(require 'doom-packages)
 (load (file-name-concat doom-emacs-dir "modules/doom/compat/+use-package") nil 'nomessage)
 
 (provide 'akn-doom-use-package)
