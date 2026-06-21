@@ -109,3 +109,8 @@
     (list sitename action params)))
 
 (akn/pushnew +word-wrap-text-modes #'mediawiki-mode #'mediawiki-file-mode #'mediawiki-draft-mode)
+
+(after! mediawiki-mode
+  (mapc (lambda (x)
+            (modify-syntax-entry x "." mediawiki-mode-syntax-table))
+        "|*-=:#;'\""))
