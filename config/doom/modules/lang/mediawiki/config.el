@@ -105,7 +105,8 @@
                            (list
                             (cons "assert" "user")
                             (cons "assertuser" (let ((username (mediawiki-site-username sitename)))
-                                                 (when (string-match (rx bos (group (* (not "@"))) "@" (* anything) eos) username)
+                                                 (when (string-match (rx bos (group (* (not "@"))) "@" (* anything) eos)
+                                                                     username)
                                                    (setq username (match-string 1 username)))
                                                  username))))))
     (list sitename action params)))
