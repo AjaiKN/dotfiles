@@ -318,6 +318,9 @@ enabled, and when disabled resets them to their original values."
 ;;;###autoload
 (defalias 'akn/follow-mode-split #'follow-delete-other-windows-and-split)
 
+(defalias 'akn/diff-buffer-with-saved #'diff-buffer-with-file)
+(defalias 'akn/diff-unsaved-buffer #'diff-buffer-with-file)
+
 ;;; macros for defining things
 (defmacro akn/defun (name &rest stuff)
   "Just like `defun', except return NAME.

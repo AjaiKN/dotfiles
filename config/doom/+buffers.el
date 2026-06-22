@@ -474,6 +474,10 @@ name and is empty, it'll still try to save it."
               (funcall (buffer-local-value 'major-mode parent-buf)))))
   (add-hook 'edit-indirect-after-creation-hook #'doom-mark-buffer-as-real-h))
 
+;;; advice
+(define-advice diff-buffer-with-file (:before (&rest _) akn/use-current-buffer-instead-of-prompting-a)
+  (interactive))
+
 ;;; file-local variables
 
 ;; Local Variables:
