@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; lang/applescript/packages.el
+;;; lang/applescript/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;; (package! applescript-mode :pin "82e5c35d0de9c8db6281aed21105f09acbb69eba")
 

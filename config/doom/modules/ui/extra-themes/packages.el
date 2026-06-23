@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; ui/extra-themes/packages.el
+;;; ui/extra-themes/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! lambda-themes           :pin "fa5841951906dae06718c30d469afc2a8a803a5e" :disable nil                                      :recipe (:host github :repo "lambda-emacs/lambda-themes"))
 (package! nano-theme              :pin "e238b2a67e3ca538054dd60f4b6eec2f533efac1" :disable nil)

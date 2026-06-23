@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; lang/typst/packages.el
+;;; lang/typst/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! typst-ts-mode :pin "7c2ef0d5bd2b5a8727fe6d00938c47ba562e0c94"
   :recipe (:type git :host codeberg :repo "meow_king/typst-ts-mode"))

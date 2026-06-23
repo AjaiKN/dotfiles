@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; editor/license-headers/packages.el
+;;; editor/license-headers/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! headlice :pin "1d56771651a608aeb2093c267a7d94511b25caff"
   :recipe (:type git

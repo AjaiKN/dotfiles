@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; os/exwm/packages.el
+;;; os/exwm/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;; https://github.com/LemonBreezes/cyber-angel-emacs
 

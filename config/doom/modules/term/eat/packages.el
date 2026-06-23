@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; term/eat/packages.el
+;;; term/eat/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! eat
   :pin "c8d54d649872bfe7b2b9f49ae5c2addbf12d3b99"

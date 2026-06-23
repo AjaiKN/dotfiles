@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; editor/tempel/packages.el
+;;; editor/tempel/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! tempel)
   ;; :recipe (:local-repo "~/prog/emacs/tempel"))

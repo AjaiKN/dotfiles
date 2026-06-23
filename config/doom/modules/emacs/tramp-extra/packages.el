@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; emacs/tramp-extra/packages.el
+;;; emacs/tramp-extra/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (when (modulep! +hlo)
   (package! tramp-hlo :pin "b726b4042e96ac5cead396c8d12c01e6bad2bd78"

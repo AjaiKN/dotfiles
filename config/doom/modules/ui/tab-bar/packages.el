@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; ui/tab-bar/packages.el
+;;; ui/tab-bar/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! tab-bar :type 'built-in)
 (if (modulep! +bufferlo)

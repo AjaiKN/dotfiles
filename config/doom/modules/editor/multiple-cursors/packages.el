@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; editor/multiple-cursors/packages.el
+;;; editor/multiple-cursors/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! multiple-cursors :pin "ddd677091afc7d65ce56d11866e18aeded110ada")
 

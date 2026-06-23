@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; eval: (+word-wrap-mode -1); -*-
-;;; $DOOMDIR/packages.el
+;;; packages.el -*- lexical-binding: t; no-byte-compile: t; eval: (+word-wrap-mode -1); -*-
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or

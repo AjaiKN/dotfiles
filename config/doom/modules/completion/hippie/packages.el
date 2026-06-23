@@ -1,4 +1,3 @@
-;; -*- no-byte-compile: t; -*-
-;;; completion/hippie/packages.el
+;;; completion/hippie/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! hippie-exp :built-in t)

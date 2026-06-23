@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; editor/fold/packages.el
+;;; editor/fold/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 ;; TODO: try https://github.com/jamescherti/kirigami.el / https://www.jamescherti.com/emacs-the-definitive-guide-to-code-folding/
 

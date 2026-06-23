@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; ui/highlight-symbol/packages.el
+;;; ui/highlight-symbol/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! symbol-overlay :pin "6151f4279bd94b5960149596b202cdcb45cacec2")
 (when (modulep! :editor multiple-cursors)
