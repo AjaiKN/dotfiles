@@ -113,6 +113,17 @@
 
 (akn/pushnew +word-wrap-text-modes #'mediawiki-mode #'mediawiki-file-mode #'mediawiki-draft-mode)
 
+;; (defun akn/syntax-table-set (&rest args)
+;;   (let ((table (when (syntax-table-p (car args)) (pop args))))
+;;     (while args
+;;       (let ((chars (pop args))
+;;             (newentry (pop args)))
+;;         (mapc (lambda (c)
+;;                 (modify-syntax-entry c newentry table))
+;;               (if (characterp chars)
+;;                   (string chars)
+;;                 chars))))))
+
 (after! mediawiki-mode
   (mapc (lambda (x)
             (modify-syntax-entry x "." mediawiki-mode-syntax-table))

@@ -17,6 +17,11 @@
         adaptive-fill-function (lambda () fill-prefix))
   (add-hook 'tabulated-list-revert-hook #'tabulated-list-init-header nil 'local))
 
+(map! :map mediawiki-mode-map
+      [remap magit-log-buffer-file] #'mediawiki-hist)
+(map! :map mediawiki-hist-mode-map
+      :niemg "RET" #'mediawiki-diff)
+
 (defun mediawiki-hist-entries ()
   (let* ((res
           (mediawiki-api-query-revisions

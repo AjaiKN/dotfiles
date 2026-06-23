@@ -1,6 +1,13 @@
 ;;; mediawiki-diff.el -*- lexical-binding: t; -*-
 
+;;;###autoload
 (defun mediawiki-diff (sitename id1 id2)
+  (interactive
+   (list mediawiki-site
+         (tabulated-list-get-id)
+         (tabulated-list-get-id (save-excursion (forward-line) (point)))))
+  (when (stringp id1) (setq id1 (string-to-number id1)))
+  (when (stringp id2) (setq id2 (string-to-number id2)))
   (let* ((oldid (min id1 id2))
          (newid (max id1 id2))
          (res (mediawiki-api-call
