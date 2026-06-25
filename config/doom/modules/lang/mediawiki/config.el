@@ -46,11 +46,15 @@
 (map! :after mediawiki-mode
       :map mediawiki-mode-map
       [remap mediawiki-open] #'+mediawiki/open
+      [remap wikipedia-open] #'+mediawiki/open
       [remap mediawiki-open-page-at-point] #'+mediawiki/open-page-at-point
       :mn "RET" (akn/cmds! (+mediawiki-page-at-point) #'+mediawiki/open-page-at-point)
       [remap mediawiki-save] #'+mediawiki/save
+      [remap wikipedia-save] #'+mediawiki/save
       [remap mediawiki-do-login] #'+mediawiki/login
+      [remap wikipedia-login] #'+mediawiki/login
       [remap mediawiki-do-logout] #'+mediawiki/logout
+      [remap wikipedia-logout] #'+mediawiki/logout
       [remap save-buffer]                   (akn/cmds! (+mediawiki-virtual-p) #'+mediawiki/save)
       [remap browse-url-of-file]            (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-browse)
       [remap +macos/reveal-in-finder]       (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-browse)
@@ -58,6 +62,8 @@
       [remap +vc/browse-at-remote-kill]     (akn/cmds! (+mediawiki-virtual-p) (cmd! (kill-new (mediawiki-make-url mediawiki-page-title "view"))))
       [remap +vc/browse-at-remote-homepage] (akn/cmds! (+mediawiki-virtual-p) (cmd! (browse-url (mediawiki-site-url mediawiki-site))))
       [remap +vc/browse-at-remote-homepage] (akn/cmds! (+mediawiki-virtual-p) (cmd! (kill-new (mediawiki-site-url mediawiki-site))))
+      [remap diff-buffer-with-file]         (akn/cmds! (+mediawiki-virtual-p) #'mediawiki-diff-to-live)
+      [remap magit-log-buffer-file]         (akn/cmds! (+mediawiki-virtual-p) #'+mediawiki/history)
       "M-RET" #'mediawiki-terminate-paragraph
       "M-<return>" #'mediawiki-terminate-paragraph
       "s-S" #'mediawiki-save-as
@@ -65,7 +71,17 @@
       :i "s-b" #'mediawiki-insert-bold
       "s-i" (akn/cmds! (use-region-p) #'mediawiki-insert-italics)
       :i "s-i" #'mediawiki-insert-italics
-      "C-c C-l" #'+mediawiki/insert-link)
+      "C-c C-l" #'+mediawiki/insert-link
+
+      :map mediawiki-history-mode-map
+      :mn "RET" #'mediawiki-history-view-revision
+      :mn "d"   #'mediawiki-history-diff-to-previous
+      :mn "D"   #'mediawiki-history-diff-to-current
+      :mn "e"   #'mediawiki-history-diff-revisions
+      :mn "R"   #'mediawiki-history-restore-revision
+      :mn "o"   #'mediawiki-history-browse-revision
+      :mn "c"   #'mediawiki-history-diff-to-current
+      :mn "p"   #'mediawiki-history-open-page)
 
 ;; TODO: article name completion, async with consult (maybe use consult-omni-wikipedia?)
 
@@ -89,6 +105,9 @@
 
 (akn/advise-letf! mediawiki-pop-to-buffer (+mediawiki--same-window-a)
   (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
+(set-popup-rule! (rx bos "*MW History: ") :ignore t)
+
+(add-hook 'mediawiki-history-mode-hook #'akn/mark-buffer-real)
 
 (define-advice mediawiki-api-call (:filter-args (args) +mediawiki--assert-user-a)
   (cl-destructuring-bind (sitename action &optional params) args
@@ -128,3 +147,25 @@
   (+mediawiki/login sitename)
   (akn/letf! ((#'mediawiki-do-login #'ignore))
     (apply fn sitename args)))
+
+;; TODO: bug? PR?
+(define-advice mediawiki-api-get-revision-content (:filter-args (args) +mediawiki--num-to-string-a)
+  (cl-destructuring-bind (sitename title revid &rest rest) args
+    (when (numberp revid)
+      (setq revid (number-to-string revid)))
+    `(,sitename ,title ,revid ,@rest)))
+
+;;;; Wikipedia
+
+(use-package! wikipedia
+  :when (modulep! +wikipedia)
+  :defer t
+  :init
+  (define-advice mediawiki-edit (:around (fn sitename &rest args) +mediawiki--wikipedia-edit-mode-a)
+    (let ((ret-buffer (apply fn sitename args)))
+      (when-let* (((bufferp ret-buffer))
+                  (domain (cadr (assoc sitename mediawiki-site-alist)))
+                  ((string-match-p "\\<wikipedia.org\\>" domain)))
+        (with-current-buffer ret-buffer
+          (wikipedia-edit-mode)))
+      ret-buffer)))

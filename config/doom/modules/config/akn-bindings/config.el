@@ -710,6 +710,7 @@ to normal state is deprioritized)."
                      (thing-at-point-file-at-point) #'find-file-at-point
                      (derived-mode-p 'helpful-mode) #'helpful-at-point
                      (derived-mode-p 'embark-collect-mode) #'embark-act
+                     (and (derived-mode-p 'special-mode) (keymap-local-lookup "RET")) it
                      ;; (doom-thing-at-point-or-region) #'+lookup/definition
                      (let ((arg current-prefix-arg))
                        (require 'embark)
