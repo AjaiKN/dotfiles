@@ -51,8 +51,6 @@
       (or (and (not current-prefix-arg)
                (+mediawiki-page-at-point))
           (+mediawiki--read-page mediawiki-site)))))
-  (unless (mediawiki-logged-in-p site)
-    (+mediawiki/login site))
   (if-let* ((page (mediawiki-translate-pagename page))
             (bufname (concat site ": " page))
             (buf (get-buffer bufname))
@@ -78,8 +76,6 @@
           buffer-file-name)
       (revert-buffer--default ignore-auto noconfirm)
     (run-hooks 'before-revert-hook)
-    (unless (mediawiki-logged-in-p mediawiki-site)
-      (+mediawiki/login mediawiki-site))
     (setq-local buffer-file-coding-system 'utf-8
                 mediawiki-page-title (mediawiki-translate-pagename mediawiki-page-title))
     ;; Get page content and metadata, ensuring metadata is saved in current buffer
