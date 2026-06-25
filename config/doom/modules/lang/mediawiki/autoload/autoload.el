@@ -1,14 +1,15 @@
 ;;; lang/mediawiki/autoload.el -*- lexical-binding: t; -*-
 
 (require 'mediawiki)
-(when (modulep! +wikipedia)
-  (require 'wikipedia))
+;; (when (modulep! +wikipedia)
+;;   (require 'wikipedia))
 
 (defun +mediawiki--wikipedia-p ()
-  (and-let* (((modulep! +wikipedia))
-             (site (or mediawiki-site mediawiki-site-default))
-             (domain (cadr (assoc site mediawiki-site-alist)))
-             ((string-match-p "\\<wikipedia.org\\>" domain)))))
+  ;; (and-let* (((modulep! +wikipedia))
+  ;;            (site (or mediawiki-site mediawiki-site-default))
+  ;;            (domain (cadr (assoc site mediawiki-site-alist)))
+  ;;            ((string-match-p "\\<wikipedia.org\\>" domain)))))
+  nil)
 
 (defun +mediawiki--read-page (site)
   (let* ((mediawiki-site site)

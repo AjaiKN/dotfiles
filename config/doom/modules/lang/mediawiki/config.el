@@ -157,15 +157,15 @@
 
 ;;;; Wikipedia
 
-(use-package! wikipedia
-  :when (modulep! +wikipedia)
-  :defer t
-  :init
-  (define-advice mediawiki-edit (:around (fn sitename &rest args) +mediawiki--wikipedia-edit-mode-a)
-    (let ((ret-buffer (apply fn sitename args)))
-      (when-let* (((bufferp ret-buffer))
-                  (domain (cadr (assoc sitename mediawiki-site-alist)))
-                  ((string-match-p "\\<wikipedia.org\\>" domain)))
-        (with-current-buffer ret-buffer
-          (wikipedia-edit-mode)))
-      ret-buffer)))
+;; (use-package! wikipedia
+;;   :when (modulep! +wikipedia)
+;;   :defer t
+;;   :init
+;;   (define-advice mediawiki-edit (:around (fn sitename &rest args) +mediawiki--wikipedia-edit-mode-a)
+;;     (let ((ret-buffer (apply fn sitename args)))
+;;       (when-let* (((bufferp ret-buffer))
+;;                   (domain (cadr (assoc sitename mediawiki-site-alist)))
+;;                   ((string-match-p "\\<wikipedia.org\\>" domain)))
+;;         (with-current-buffer ret-buffer
+;;           (wikipedia-edit-mode)))
+;;       ret-buffer)))
