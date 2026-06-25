@@ -77,11 +77,6 @@
 (after! savehist
   (add-to-list 'savehist-additional-variables 'mediawiki-page-history))
 
-(define-advice mediawiki-add-page-history (:before-while (sitename title) +mediawiki--no-repeats-a)
-  (not
-   (and-let* ((hist (cdr (assoc-string sitename mediawiki-page-history))))
-     (equal title (car hist)))))
-
 (define-advice mediawiki-pagelist-find-page (:around (fn pagelist title &rest args) +mediawiki--normalized-title-a)
   (when-let* ( (normalized (assq 'normalized pagelist))
                (normalized-body (cddr normalized))
