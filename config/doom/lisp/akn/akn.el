@@ -672,6 +672,11 @@ is :around, :before, :after, :override, :after-until,
   (akn/letf! ((#'ask-user-about-lock #'ignore))
     (apply fn args)))
 
+;;;###autoload
+(defun akn/without-restriction-a (fn &rest args)
+  (without-restriction
+    (apply fn args)))
+
 ;;; function for prioritizing keymaps
 (defun akn/prioritize-minor-mode-keymap (minor-mode-name)
   "Prioritize MINOR-MODE-NAME's map over other minor mode maps.
