@@ -18,27 +18,40 @@
          (start-page (mediawiki-site-first-page mediawiki-site)))
     (set temp-history-symbol (or hist (list start-page)))
     (akn/completing-read "Wiki Page: "
-                         (when (require 'consult nil t)
-                           (consult--dynamic-collection
-                               (lambda (input)
-                                 (when input
-                                   (let ((data
-                                          (request-response-data
-                                           (request (concat (mediawiki-site-url "Wikipedia") "rest.php/v1/search/title")
-                                             :params `((q . ,input))
-                                             :parser #'json-read
-                                             :timeout 2
-                                             :sync t
-                                             :success
-                                             (cl-function
-                                              (lambda (&key data &allow-other-keys)
-                                                (cl-loop for page-object across (alist-get 'pages data)
-                                                         collect (alist-get 'title page-object))))))))
-                                     (cl-loop for page-object across (alist-get 'pages data)
-                                              collect (alist-get 'title page-object)))))))
+                         (if (require 'consult nil t)
+                             (consult--dynamic-collection
+                                 (lambda (input)
+                                   (seq-uniq
+                                    (append
+                                     (let ((downcase-input (downcase input)))
+                                       (cl-loop for page in hist
+                                                when (string-prefix-p downcase-input (downcase page))
+                                                collect (cons page page)))
+                                     (when (length> input 0)
+                                       (let ((data
+                                              (request-response-data
+                                               (request (concat (mediawiki-site-url "Wikipedia") "rest.php/v1/search/title")
+                                                 :params `((q . ,input))
+                                                 :parser #'json-read
+                                                 :timeout 0.5
+                                                 :sync t))))
+                                         (cl-loop for page-object across (alist-get 'pages data)
+                                                  collect
+                                                  (cons (concat (alist-get 'title page-object)
+                                                                (propertize " " 'display '(space :align-to 70))
+                                                                (propertize
+                                                                 (or (alist-get 'description page-object) "")
+                                                                 'face
+                                                                 'completions-annotations))
+                                                        (alist-get 'title page-object))))))
+                                    (lambda (x y) (equal (cdr x) (cdr y)))))
+                               :min-input 0)
+                           hist)
                          :initial (+mediawiki-page-at-point)
                          :history temp-history-symbol
-                         :default start-page)))
+                         :default start-page
+                         :sort nil
+                         :lookup #'consult--lookup-cdr)))
 
 
 ;;;###autoload
