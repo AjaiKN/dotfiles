@@ -35,8 +35,8 @@
   :defer-incrementally (flx)
   :config
   ;; https://github.com/jojojames/fussy?tab=readme-ov-file#my-configuration
-  (setq! fussy-compare-same-score-fn #'fussy-histlen->strlen<)
-  (setq! fussy-propertize-fn #'fussy-propertize-common-part)
+  (setopt fussy-compare-same-score-fn #'fussy-histlen->strlen<)
+  (setopt fussy-propertize-fn #'fussy-propertize-common-part)
 
   ;; https://github.com/jojojames/fussy?tab=readme-ov-file#scoring-backends
   (shut-up
@@ -48,7 +48,7 @@
   ;; https://github.com/jojojames/fussy?tab=readme-ov-file#filtering-choices
   ;; NOTE: Confusingly, `fussy-filter-default' is not actually the default (the default is `fussy-filter-flex').
   ;; `fussy-filter-default' seems like it really is buggy.
-  (setq! fussy-filter-fn #'fussy-filter-flex)
+  (setopt fussy-filter-fn #'fussy-filter-flex)
   (use-package! orderless :defer t :if (memq fussy-filter-fn '(fussy-filter-orderless fussy-filter-orderless-flex)) :autoload (orderless-filter)))
 
 (defadvice! akn/fussy-ignore-spaces-a (args)

@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; tools/upload/packages.el
+;;; tools/upload/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! ssh-deploy
   :recipe (:host github :repo "emacsmirror/ssh-deploy")

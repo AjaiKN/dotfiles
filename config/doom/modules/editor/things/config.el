@@ -12,14 +12,14 @@
   :when (modulep! :editor evil)
   :after-call doom-first-buffer-hook
   :config
-  (setq! things-evil-inner-key "i"
-         things-evil-a-key "a"
-         things-evil-inside-key nil
-         things-evil-around-key nil
+  (setopt things-evil-inner-key "i"
+          things-evil-a-key "a"
+          things-evil-inside-key nil
+          things-evil-around-key nil
 
-         things-evil-next-key "n"
-         things-evil-last-key "l"
-         things-evil-remote-key "r")
+          things-evil-next-key "n"
+          things-evil-last-key "l"
+          things-evil-remote-key "r")
 
   ;; (general-def '(visual operator) "RET" #'things-evil-last-text-object)
 

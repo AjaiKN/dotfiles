@@ -87,8 +87,8 @@
       0))
 
 (when (modulep! :ui smooth-scroll +interpolate)
-  (setq! good-scroll-step 1
-         good-scroll-duration 0.15)
+  (setopt good-scroll-step 1
+          good-scroll-duration 0.15)
 
   ;; TODO: PR
   (after! good-scroll

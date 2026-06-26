@@ -9,7 +9,7 @@
   ;; :defer-incrementally (cl-lib color face-remap thingatpt subr-x compat dash)
   :config
   ;; dim parens
-  (setq! prism-parens t)
+  (setopt prism-parens t)
 
   (add-hook! 'prism-mode-hook
     (defun +prism-set-faces-h ()

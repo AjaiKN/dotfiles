@@ -5,7 +5,7 @@
 (use-package! ledger-mode
   :mode ("\\.hledger\\'" "\\.ledger\\'")
   :config
-  (setq!
+  (setopt
    ledger-binary-path (expand-file-name "hledger.sh" (dir!)) ;"hledger"
    ledger-default-date-string "%Y-%m-%d"
 

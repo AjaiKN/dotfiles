@@ -24,25 +24,13 @@
   ;; (require 'doom-packages)
   (require 'akn-doom-use-package)
   ;; (require 'doom-modules)
-  (require 'doom-keybinds)
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 ;; https://discourse.doomemacs.org/t/how-to-have-tool-bar-mode-0-apply-at-startup-to-avoid-large-title-bar-on-macos-sonoma-when-using-railwaycat-homebrew-emacsmacport/4222/2
 (add-hook 'doom-after-init-hook (lambda () (tool-bar-mode 1) (tool-bar-mode 0)))
-
-;; undisable customize stuff
-(after! (:or cus-edit doom-ui)
-  (dolist (sym '(customize-option customize-browse customize-group customize-face
-                 customize-rogue customize-saved customize-apropos
-                 customize-changed customize-unsaved customize-variable
-                 customize-set-value customize-customized customize-set-variable
-                 customize-apropos-faces customize-save-variable
-                 customize-apropos-groups customize-apropos-options
-                 customize-changed-options customize-save-customized))
-    (put sym 'disabled nil)))
 
 (require 'akn)
 
@@ -61,7 +49,7 @@
 
 (when (or (daemonp)
           (member (getenv "TERM_PROGRAM") '("WezTerm" "ghostty")))
-  (setq! etcc-term-type-override 'kitty))
+  (setopt etcc-term-type-override 'kitty))
 ;; (setenv "TERM_PROGRAM" "Apple_Terminal")
 ;; (setenv "TERM_PROGRAM" "")
 
@@ -87,8 +75,8 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-;;(setq! doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
-;;      doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
+;;(setopt doom-font (font-spec :family "Fira Code" :size 12 :weight 'semi-light)
+;;        doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
 ;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' (SPC h r f) to
@@ -159,10 +147,10 @@
                    (fset #'solaire-mode-reset #'ignore)
                    nil)
                   ((modulep! :ui doom) 'doom-one)))
-;; (setq! doom-theme 'doom-vibrant)
+;; (setopt doom-theme 'doom-vibrant)
 
 ;; (when (equal (daemonp) "term"))
-;;   (pushnew! default-frame-alist '(background-color . unspecified))
+;;   (akn/pushnew default-frame-alist '(background-color . unspecified))
 ;;   (set-face-background 'default 'unspecified)
 ;;   (custom-set-faces! '(default :background nil))
 ;;   (add-hook! 'doom-load-theme-hook
@@ -334,6 +322,8 @@
 
 (defvar akn/funcs-to-compile
   (list
+   #'setopt--set@inhibit-load-symbol
+   #'self-insert-command@akn/no-abbrev-sometimes-a
    #'akn/line-numbers-on-when-narrowing-a
    #'akn/line-numbers-off-when-widening-a
    #'akn/set-jump-before-mwheel-scroll-h
@@ -357,7 +347,7 @@
    #'akn/vertico-sort-directories-first-alpha
    #'+corfu-add-cape-dabbrev-h
    #'+magit-revert-buffer-maybe-h
-   #'+doom-dashboard-reload-maybe-h
+   #'+dashboard-reload-maybe-h
    #'+file-templates-check-h
    #'doom-auto-revert-buffer-h
    #'doom-auto-revert-buffers-h
@@ -397,17 +387,20 @@
    #'akn/fix-ws-butler-in-evil-mode/before-save-a
    #'akn/fix-ws-butler-in-evil-mode/after-save-a))
 (akn/after-idle! ((* 60 12) :timer-name akn/func-compile-timer :cancel-old-timer t)
-  (akn/after-idle! (10 :repeat t :timer-name akn/func-compile-timer2 :cancel-old-timer t)
+  (akn/after-idle! (1 :repeat t :timer-name akn/func-compile-timer2 :cancel-old-timer t)
     (if-let* ((fn (pop akn/funcs-to-compile)))
         (dlet ((shut-up-ignore doom-debug-mode))
-          (doom-log "compile-functions: %s" fn)
           (shut-up
             (let (byte-compile-warnings)
-              (or (if (featurep 'native-compile)
-                      (or (native-comp-function-p (indirect-function fn))
-                          (ignore-errors (native-compile fn))))
-                  (byte-code-function-p fn)
-                  (byte-compile fn)))))
+              (when (fboundp fn)
+                (doom-log "compiling: %s" fn)
+                (when (autoloadp (symbol-function fn))
+                  (autoload-do-load (symbol-function fn)))
+                (or (and (featurep 'native-compile)
+                         (or (native-comp-function-p (indirect-function fn))
+                             (ignore-errors (native-compile fn))))
+                    (byte-code-function-p fn)
+                    (byte-compile fn))))))
       (cancel-timer akn/func-compile-timer))))
 
 

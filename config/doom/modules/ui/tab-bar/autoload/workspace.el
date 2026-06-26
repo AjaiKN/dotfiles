@@ -331,7 +331,7 @@ end of the workspace list."
   (interactive)
   (with-current-buffer (doom-fallback-buffer)
     (setq default-directory "~"
-          +doom-dashboard--last-cwd nil))
+          +dashboard--last-cwd nil))
   (tab-bar-rename-tab ""))
 
 ;;;###autoload
@@ -353,7 +353,7 @@ directory."
     (tab-bar-close-tab))
   (with-current-buffer (doom-fallback-buffer)
     (setq default-directory "~"
-          +doom-dashboard--last-cwd nil)))
+          +dashboard--last-cwd nil)))
 
 ;;; Tabs display in minibuffer
 

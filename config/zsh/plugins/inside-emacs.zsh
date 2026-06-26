@@ -30,6 +30,18 @@ fi
 ### Emacs eat integration
 [ -n "$EAT_SHELL_INTEGRATION_DIR" ] && safe_source "$EAT_SHELL_INTEGRATION_DIR/zsh" && __eat_enable_integration && TERM=xterm-256color
 
+### Emacs ghostel
+if [[ "${INSIDE_EMACS%%,*}" = 'ghostel' ]]; then
+	# Use ghostel_cmd to send commands to the ghostel buffer:
+	#   ghostel_cmd find-file $(realpath my_file.txt)
+	#   ghostel_cmd message "Hello from ghostel"
+	# To enable new commands, you have to customize Emacs's variable ghostel-eval-cmds.
+	unalias em
+	function em () {
+		ghostel_cmd find-file-other-window "$(realpath "${@:-.}")"
+	}
+fi
+
 ### Emacs mistty
 if [[ "$TERM" = "eterm-color" ]]; then
 	ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#666666"

@@ -96,8 +96,8 @@ returns true."
            *basic buffer-move
            deft              ; notational velocity for Emacs
            *basic doom              ; what makes DOOM look the way it does
-           *basic doom-dashboard    ; a nifty splash screen for Emacs
-           emacs-dashboard    ; another nifty splash screen for Emacs
+           *basic dashboard    ; a nifty splash screen for Emacs
+           ;; *basic emacs-dashboard    ; another nifty splash screen for Emacs
            doom-quit         ; DOOM quit-message prompts when you quit Emacs
            (emoji +unicode)  ; 🙂
            *extra extra-themes
@@ -146,6 +146,7 @@ returns true."
            *basic rotate-text       ; cycle region at point between text candidates
            *extra smart-tabs
            *basic snippets          ; my elves. They type so I don't have to
+           *basic tempel ; replacement for :editor snippets
            *extra symex
            things
            *extra titlecase
@@ -182,6 +183,7 @@ returns true."
            *basic vterm             ; the best terminal emulation in Emacs
            *basic mistty
            *basic eat
+           *basic ghostel
 
            :checkers
            *basic syntax              ; tasing you for every semicolon you forget
@@ -276,13 +278,15 @@ returns true."
            *extra lean              ; for folks with too much to prove
            *basic (lua +fennel)               ; one-based indices? one-based indices
            *basic markdown          ; writing docs for people to ignore
+           *extra mediawiki ; Wikipedia
            *extra obsidian
+           odin
            *extra mercury
            nim               ; python + lisp at the speed of c
            *basic (nix +tree-sitter)               ; I hereby declare "nix geht mehr!"
            *extra (ocaml +tree-sitter)             ; an objective camel
            *extra (org +pretty +noter +dragndrop +pandoc)               ; organize your plain life in plain text (NOTE: disable +pretty if org gets slow)
-           php               ; perl's insecure younger brother
+           *basic (php +tree-sitter)               ; perl's insecure younger brother
            plantuml          ; diagrams for confusing people more
            *extra graphviz          ; diagrams for confusing yourself even more
            *extra pdf-raw
@@ -296,6 +300,7 @@ returns true."
            *basic rst               ; ReST in peace
            *extra (ruby +rails)     ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
            *extra (rust +lsp +tree-sitter)       ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+           scad              ; trust the preview, regret the render
            scala             ; java, but good
            *extra (scheme +guile)   ; a fully conniving family of lisps
            *basic (sh +fish +powershell +lsp)        ; +tree-sitter ; she sells {ba,z,fi}sh shells on the C xor

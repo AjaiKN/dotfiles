@@ -70,9 +70,9 @@
   (add-hook 'mistty-mode-hook #'+mistty--turn-off-corfu-mode)
 
   ;; settings
-  (setq! mistty-skip-empty-spaces t
-         mistty-stable-delay-s 0.05
-         mistty-timeout-s 0.1)
+  (setopt mistty-skip-empty-spaces t
+          mistty-stable-delay-s 0.05
+          mistty-timeout-s 0.1)
 
   ;; setting cursor right
   (advice-add #'mistty--post-command :after #'mistty--set-cursor-right-a)

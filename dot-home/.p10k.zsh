@@ -124,6 +124,19 @@
   typeset -g POWERLEVEL9K_{LEFT,RIGHT}_SUBSEGMENT_SEPARATOR=' '  # separate segments with a space
   typeset -g POWERLEVEL9K_{LEFT,RIGHT}_SEGMENT_SEPARATOR=        # no end-of-line symbol
 
+  function prompt_my_vterm_end_marker {
+    if [[ "$INSIDE_EMACS" = "vterm"* ]] && [[ "$TERM" != "dumb" ]] ; then
+      p10k segment -t "$(printf "\e]%s\e\\" "51;A")"
+    fi
+  }
+  if [[ "$INSIDE_EMACS" = "vterm"* ]] && { ! [[ "$TERM" = "dumb" ]] }; then
+    POWERLEVEL9K_LEFT_PROMPT_ELEMENTS+=(my_vterm_end_marker)
+    # remove the extra space caused by adding the non-empty extra segment
+    typeset -g POWERLEVEL9K_LEFT_SEGMENT_END_SEPARATOR=''
+  fi
+  # function instant_prompt_my_vterm_end_marker {
+  # }
+
   # When set to true, icons appear before content on both sides of the prompt. When set
   # to false, icons go after content. If empty or not set, icons go before content in the left
   # prompt and after content in the right prompt.
@@ -904,9 +917,11 @@
   # Default context format (no privileges, no SSH): user@hostname.
   typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%n@%m'
 
-  # Don't show context unless running with privileges or in SSH.
-  # Tip: Remove the next line to always show context.
-  typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
+  if ! [[ $USER != (#i)*ajai* || $HOST != (#i)*ajai* ]]; then
+    # Don't show context unless running with privileges or in SSH.
+    # Tip: Remove the next line to always show context.
+    typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
+  fi
 
   # Custom icon.
   # typeset -g POWERLEVEL9K_CONTEXT_VISUAL_IDENTIFIER_EXPANSION='⭐'

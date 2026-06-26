@@ -8,6 +8,7 @@
 [misc]
 # Run specific steps - same options as the command line flag
 only = [
+  "atuin",
   "aqua",
   "brew_cask",
   "brew_formula",
@@ -22,6 +23,7 @@ only = [
   "system",
   "tldr",
   # "typst",
+  # "yazi",
 
   #Languages
   "bun",
@@ -41,6 +43,7 @@ only = [
   "rustup",
   "stack",
   "zigup",
+  # "zvm",
 
   #JavaScript
   "node",
@@ -56,6 +59,7 @@ only = [
   # "pip_review_local",
   # "pipupgrade",
   "pipx",
+  "pipxu",
   # "poetry",
   # "pyenv",
   "uv",
@@ -67,12 +71,33 @@ only = [
   "micro",
   # "vim",
   "vscode",
+  "vscode_insiders",
+  "vscodium",
+  "vscodium_insiders",
+  "jetbrains_aqua",
+  "jetbrains_clion",
+  "jetbrains_datagrip",
+  "jetbrains_dataspell",
+  "jetbrains_gateway",
+  "jetbrains_goland",
+  "jetbrains_idea",
+  "jetbrains_mps",
+  "jetbrains_phpstorm",
+  "jetbrains_pycharm",
+  "jetbrains_rider",
+  "jetbrains_rubymine",
+  "jetbrains_rustrover",
+  "jetbrains_toolbox",
+  "jetbrains_webstorm",
 
   #Don't have
+  "android_studio",
   "asdf",
   "atom",
   "certbot",
   "chezmoi",
+  "choosenim",
+  "cursor",
   # "home_manager",
   "juliaup",
   # "macports",
@@ -89,26 +114,30 @@ only = [
   # "wsl_update",
 
   #Linux
+  # "app_man",
   "auto_cpufreq",
   "config_update",
+  # "deb_get",
+  # "distrobox",
+  # "falconf",
   "flatpak",
   "gnome_shell_extensions",
   "guix",
   "dkp_pacman",
+  "hyprpm",
+  "mandb",
   "pacdef",
   "pacstall",
+  # "pkgfile",
   "restarts",
   "snap",
 
-  # "app_man",
+  # "am",
   # "audit",
   # "bin",
   # "bob",
-  # "choosenim",
   # "clam_av_db",
   # "composer",
-  # "deb_get",
-  # "distrobox",
   # "elan",
   # "firmware",
   # "flutter",
@@ -143,7 +172,6 @@ only = [
   # "vcpkg",
   # "waydroid",
   # "winget",
-  # "zvm",
 ]
 
 # Run `sudo -v` to cache credentials at the start of the run

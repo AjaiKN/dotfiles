@@ -36,7 +36,6 @@ ${HOMEBREW_PREFIX:-/opt/homebrew}/sbin:\
 /sbin:\
 $PATH:\
 $HOMEBREW_PREFIX/opt/trash-cli/bin:\
-$HOME/.antigravity/antigravity/bin:\
 /opt/R/arm64/gfortran/bin:\
 /Applications/Firefox.app/Contents/MacOS:\
 /Applications/Gnucash.app/Contents/Resources/bin:\

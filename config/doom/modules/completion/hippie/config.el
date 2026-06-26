@@ -3,7 +3,9 @@
 ;; https://tecosaur.github.io/emacs-config/#hippie-expand
 (after! hippie-exp
   (setq hippie-expand-try-functions-list
-        `(,@(when (modulep! :editor snippets)
+        `(,@(when (modulep! :editor tempel)
+              '(+tempel-hippie-try-expand))
+          ,@(when (modulep! :editor snippets)
               (autoload #'yas-hippie-try-expand "yasnippet")
               '(yas-hippie-try-expand))
           try-expand-dabbrev-visible

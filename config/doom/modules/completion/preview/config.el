@@ -10,9 +10,9 @@
   :config
   (global-completion-preview-mode)
   (add-to-list 'global-completion-preview-modes 'minibuffer-mode)
-  (pushnew! (alist-get 'not global-completion-preview-modes)
-            'org-mode
-            'text-mode)
+  (akn/pushnew (alist-get 'not global-completion-preview-modes)
+    'org-mode
+    'text-mode)
 
   ;; Show the preview already after two symbol characters
   (setq completion-preview-minimum-symbol-length 2)
@@ -35,23 +35,26 @@ end of the line."
   (after! corfu
     ;; also `corfu-sort-override-function'?
     (setq completion-preview-sort-function
-          (lambda (&rest args) (apply corfu-sort-function args))))
+          (lambda (&rest args) (apply (or corfu-sort-override-function corfu-sort-function) args))))
 
   ;; Non-standard commands to that should show the preview:
 
-  (pushnew! completion-preview-commands
-            #'org-self-insert-command
-            #'paredit-backward-delete
-            #'quail-self-insert-command
-            #'eshell-self-insert-command
-            #'semantic-complete-self-insert)
+  (akn/pushnew completion-preview-commands
+    #'org-self-insert-command
+    #'paredit-backward-delete
+    #'quail-self-insert-command
+    #'eshell-self-insert-command
+    #'semantic-complete-self-insert)
 
   ;; Bindings that take effect when the preview is shown:
   ;; Cycle the completion candidate that the preview shows
   (map! :map completion-preview-active-mode-map
-        "<right>" (akn/cmds! (or (eolp) (derived-mode-p 'eshell-mode 'comint-mode 'minibuffer-mode))
-                             #'completion-preview-insert)
+        :gie "<right>" (akn/cmds! (or (eolp) (derived-mode-p 'eshell-mode 'comint-mode 'minibuffer-mode))
+                                  #'completion-preview-insert)
         "M-n" #'completion-preview-next-candidate
         "M-p" #'completion-preview-prev-candidate
         ;; Convenient alternative to C-i after typing one of the above
-        "M-i" #'completion-preview-insert))
+        :gie "M-i" #'completion-preview-insert
+        (:when t ;(not akn/should-tab-cycle-candidates)
+          :gie "TAB" #'completion-preview-insert
+          :gie "<tab>" #'completion-preview-insert)))

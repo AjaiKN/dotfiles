@@ -15,11 +15,10 @@
   ;; (require 'doom-packages)
   (require 'akn-doom-use-package)
   ;; (require 'doom-modules)
-  (require 'doom-keybinds)
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
@@ -50,8 +49,9 @@
 (after! ielm (set-popup-rule! (rx bol "*ielm") :size 10 :vslot -8 :select t :quit #'akn/insert-state-and-close-popup-h :ttl nil))
 ;; not working for term right now, but the others work
 (after! (:or term vterm shell eshell eat mistty)
-  (set-popup-rule! (rx (or (seq bol "*doom:" (or "term" "vterm" "shell" "eshell") "-popup:")
+  (set-popup-rule! (rx (or (seq bol "*doom:" (or "term" "vterm" "shell" "eshell" "ghostel") "-popup:")
                            (seq (or "*" "-") (or "eat" "mistty") "*")
+                           (or "*ghostel" "ghostel*")
                            (seq "*vterm")))
     :vslot -5 :size 0.25 :select t :modeline nil :quit #'akn/insert-state-and-close-popup-h :ttl nil))
 (defun akn/insert-state-and-close-popup-h (window)
@@ -72,7 +72,7 @@
 (set-popup-rule! '(major-mode . profiler-report-mode) :quit nil)
 
 ;; not sure (see `auto-revert-mode' docs)
-(setq!
+(setopt
  ;; default: `revert-buffer-insert-file-contents--default-function'
  revert-buffer-insert-file-contents-function #'revert-buffer-insert-file-contents-delicately
  ;; default: 2.0
@@ -105,6 +105,8 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                   undelicately)
              #'revert-buffer-insert-file-contents--default-function
            revert-buffer-insert-file-contents-function)))
+    (when (bound-and-true-p better-backup-buffer-mode)
+      (better-backup--buffer-backup-maybe))
     (cond
      ((derived-mode-p 'org-agenda-mode)
       (org-agenda-redo))
@@ -158,7 +160,7 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                        (t "")))))
      (t
       (when (and (not even-if-modified)
-                 (memq revert-buffer-function (list #'revert-buffer--default 'vlf-revert))
+                 (memq revert-buffer-function (list #'revert-buffer--default 'vlf-revert #'+mediawiki-revert-buffer-fn))
                  (buffer-modified-p))
         (user-error "Buffer modified, not reverting"))
       (message "Reverting `%s' buffer%s%s..."
@@ -178,9 +180,13 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
                (if (eq revert-buffer-function #'revert-buffer--default)
                    ""
                  (format-message " (`%s')" revert-buffer-function)))))
+    (when (bound-and-true-p better-backup-buffer-mode)
+      (better-backup--buffer-backup-maybe))
     (akn/record-buffer)))
 (defun akn/hard-reload-buffer (&optional even-if-modified)
   (interactive (list current-prefix-arg))
+  (when (bound-and-true-p better-backup-buffer-mode)
+    (better-backup--buffer-backup-maybe))
   (cond
    ((derived-mode-p 'org-agenda-mode)
     (org-agenda-redo t))
@@ -189,6 +195,30 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
     (notmuch-refresh-all-buffers))
    ((derived-mode-p 'stgit-mode)
     (call-interactively #'stgit-repair))
+   ((and (modulep! :lang mediawiki)
+         (+mediawiki-virtual-p))
+    (if (and (not even-if-modified) (buffer-modified-p))
+        (akn/reload-buffer)
+      (let ((site mediawiki-site)
+            (page mediawiki-page-title)
+            (buf (current-buffer))
+            (temp-buf (generate-new-buffer "*temp-reloading-buffer*")))
+        (unwind-protect
+            (with-window-non-dedicated nil
+              (set-window-buffer nil temp-buf)
+              (message "Killing buffer...")
+              (if even-if-modified
+                  (progn
+                    (when (buffer-modified-p) (do-auto-save nil t))
+                    (set-buffer-modified-p nil)
+                    (let ((kill-buffer-query-functions))
+                      (kill-buffer buf)))
+                (kill-buffer buf))
+              (message "Reopening file...")
+              (+mediawiki/open site page)
+              (message "Reopening file...done"))
+          (with-temp-message "Killing temp buffer..."
+            (kill-buffer temp-buf))))))
    ((and (not even-if-modified) (buffer-modified-p))
     (akn/reload-buffer nil t t))
    (t
@@ -213,6 +243,8 @@ Interactively, run \\[universal-argument] \\[universal-argument] \\[akn/reload-b
             (with-temp-message "Killing temp buffer..."
               (kill-buffer temp-buf))))
       (akn/reload-buffer nil t t))))
+  (when (bound-and-true-p better-backup-buffer-mode)
+    (better-backup--buffer-backup-maybe))
   (akn/record-buffer))
 
 (defun akn/revert-buffer-keep-read-only (&optional ignore-auto noconfirm preserve-modes)
@@ -368,11 +400,14 @@ no file name."
        "p" #'python-mode))
 
 (defun akn/add-lexical-binding ()
+  (interactive)
   (save-excursion
-    (goto-char 1)
-    (unless (search-forward "lexical-binding: t" nil t)
-      (goto-char 1)
-      (insert ";;; -*- lexical-binding: t; -*-\n"))))
+    (add-file-local-variable-prop-line 'lexical-binding t)
+    (without-restriction
+      (goto-char (point-min))
+      (when (looking-at-p ";; ")
+        (insert ";")))
+    (setq-local lexical-binding t)))
 (add-hook! 'emacs-lisp-mode-hook
   (defun akn/add-lexical-binding-h ()
     (when (and akn/new-file-mode (not buffer-read-only))
@@ -402,7 +437,7 @@ name and is empty, it'll still try to save it."
   :demand t
   :config
   ;; make windmove also be able to move to frame
-  (setq! framemove-hook-into-windmove t)
+  (setopt framemove-hook-into-windmove t)
 
   (defadvice! akn/framemove--should-be-user-error-a (fn &rest args)
     :around #'fm-next-frame
@@ -428,6 +463,20 @@ name and is empty, it'll still try to save it."
                 (doom-quit-p "Close frame?"))
         (delete-frame))
     (save-buffers-kill-emacs)))
+
+;;; edit-indirect
+
+(after! edit-indirect
+  (setopt edit-indirect-guess-mode-function
+          (lambda (parent-buf &rest _)
+            (normal-mode)
+            (when (eq major-mode 'fundamental-mode)
+              (funcall (buffer-local-value 'major-mode parent-buf)))))
+  (add-hook 'edit-indirect-after-creation-hook #'doom-mark-buffer-as-real-h))
+
+;;; advice
+(define-advice diff-buffer-with-file (:before (&rest _) akn/use-current-buffer-instead-of-prompting-a)
+  (interactive))
 
 ;;; file-local variables
 

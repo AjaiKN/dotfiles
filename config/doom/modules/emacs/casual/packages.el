@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; emacs/casual/packages.el
+;;; emacs/casual/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! casual :pin "0c0a386bb9e73532679a29a270cfdd2c6e386d66")
 (package! casual-avy :pin "c5bc8e9d57a843f75e6125f097550414af3d5ec7")

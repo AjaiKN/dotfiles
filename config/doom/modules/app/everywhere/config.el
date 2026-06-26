@@ -50,8 +50,8 @@
     #'+everywhere--frame-setup-h
     #'+everywhere--buffer-setup-h)
 
-  (setq! emacs-everywhere-major-mode-function #'markdown-mode)
-  ;; (setq! emacs-everywhere-clipboard-sleep-delay 0.01)
+  (setopt emacs-everywhere-major-mode-function #'markdown-mode)
+  ;; (setopt emacs-everywhere-clipboard-sleep-delay 0.01)
   ;; (add-hook! 'emacs-everywhere-init-hooks
   ;;            ;; one of the hooks is the one that copies, so we can't switch to this window until
   ;;            ;; that's done
@@ -69,7 +69,7 @@
   ;; (sleep-for emacs-everywhere-clipboard-sleep-delay)))
   ;; (yank)))
   (when (executable-find "pbcopy")
-    (setq! emacs-everywhere-copy-command (list "sh" "-c" "pbcopy < %f"))))
+    (setopt emacs-everywhere-copy-command (list "sh" "-c" "pbcopy < %f"))))
 
 ;;;; atomic-chrome (GhostText in Firefox)
 ;; https://discourse.doomemacs.org/t/emacs-for-editing-anything-anywhere-in-the-browser-discord-etc/129
@@ -79,6 +79,18 @@
   :defer 5
   :after-call (akn/emacs-focus-out-hook server-mode-on-hook)
   :config
+  (when (modulep! :lang mediawiki)
+    (let ((regex (rx bos
+                     (? (* (not "/") "://"))
+                     (? (* (not "/")) ".")
+                     (or "w.wiki" "mediawiki.org" "wikibooks.org" "wikidata.org"
+                         "wikifunctions.org" "wikimedia.org"
+                         "wikimediafoundation.org" "wikinews.org" "wikipedia.org"
+                         "wikiquote.org" "wikisource.org" "wikiversity.org"
+                         "wikivoyage.org" "wiktionary.org" "wmfusercontent.org")
+                     (or eos "/"))))
+      (setf (alist-get regex atomic-chrome-url-major-mode-alist) #'mediawiki-file-mode)))
+
   (map! :map atomic-chrome-edit-mode-map
         [remap server-edit] #'atomic-chrome-close-current-buffer)
 
@@ -101,4 +113,5 @@
   (setq atomic-chrome-buffer-open-style 'frame
         atomic-chrome-buffer-frame-width  80
         atomic-chrome-buffer-frame-height 12)
-  (atomic-chrome-start-server))
+  (unless akn/terminal-only-p
+    (atomic-chrome-start-server)))

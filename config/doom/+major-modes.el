@@ -15,11 +15,10 @@
   ;; (require 'doom-packages)
   (require 'akn-doom-use-package)
   ;; (require 'doom-modules)
-  (require 'doom-keybinds)
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (require 'akn)
 
@@ -68,6 +67,24 @@
 
 (add-hook 'csv-mode-hook #'csv-align-mode)
 
+;; raise so-long thresholds for CSVs
+(when (and (version<= "29" emacs-version)
+           (featurep 'native-compile)
+           (native-comp-available-p))
+  ;; line length
+  (akn/advise-letf! doom-so-long-p (akn/csv-a)
+    (so-long-threshold (if (string-match-p (rx (or ".csv" ".tsv" ".psv") eos)
+                                           (or buffer-file-name ""))
+                           (max so-long-threshold 100000)
+                         so-long-threshold)))
+  ;; num lines
+  (akn/pushnew doom-file-lines-threshold-alist
+    (cons (rx (or ".csv" ".tsv" ".psv") eos) 100000)))
+;; don't word wrap
+(akn/pushnew +word-wrap-disabled-modes #'csv-mode) ; not sure why this line isn't enough
+(add-hook! 'csv-mode-local-vars-hook :append
+  (+word-wrap-mode -1))
+
 ;;; dired/dirvish
 (map! (:after (:or dired dirvish)
        :map (dired-mode-map wdired-mode-map dirvish-mode-map)
@@ -107,28 +124,28 @@
        [remap dired-up-directory] #'akn/dirvish-up-directory))
 
 (after! dired
-  (setq! dired-movement-style 'cycle-files
-         dired-mouse-drag-files t
-         mouse-drag-and-drop-region-cross-program t)
+  (setopt dired-movement-style 'cycle-files
+          dired-mouse-drag-files t
+          mouse-drag-and-drop-region-cross-program t)
   (setq-hook! 'dired-mode-hook
     line-move-visual nil))
 
 (after! dirvish
-  (setq! dirvish-quick-access-entries
-         '(("h" "~/"                          "home")
-           ("p" "~/prog/"                     "prog")
-           ("o" "~/Documents/obsidian-vault/" "obsidian vault")
-           ("," "~/.config/doom/"             "private config")
-           ("d" "~/.config/emacs/"            "doom source")
-           ("/" "/"                           "root")
-           ("t" "~/.Trash/"                   "trash")))
-  (setq! dirvish-subtree-prefix "  │ ")
-  (pushnew! dirvish-attributes 'collapse)
+  (setopt dirvish-quick-access-entries
+          '(("h" "~/"                          "home")
+            ("p" "~/prog/"                     "prog")
+            ("o" "~/Documents/obsidian-vault/" "obsidian vault")
+            ("," "~/.config/doom/"             "private config")
+            ("d" "~/.config/emacs/"            "doom source")
+            ("/" "/"                           "root")
+            ("t" "~/.Trash/"                   "trash")))
+  (setopt dirvish-subtree-prefix "  │ ")
+  (akn/pushnew dirvish-attributes 'collapse)
 
   ;; When `dirvish-use-header-line' is enabled, cycle-files doesn't work right.
-  (setq! dired-movement-style (if (and dirvish-use-header-line (eq dired-movement-style 'cycle-files))
-                                  'cycle
-                                'cycle-files))
+  (setopt dired-movement-style (if (and dirvish-use-header-line (eq dired-movement-style 'cycle-files))
+                                   'cycle
+                                 'cycle-files))
 
   (add-hook! 'akn/dirvish-side-mode-hook
     (defun akn/dirvish-side-hide-modeline-h ()
@@ -181,11 +198,11 @@
 (after! (:or dired dirvish-subtree)
   (if (and (featurep :system 'bsd)
            (not (executable-find "gls")))
-      (setq! dired-listing-switches           "-ahl"
-             dirvish-subtree-listing-switches "-Ahl")
+      (setopt dired-listing-switches           "-ahl"
+              dirvish-subtree-listing-switches "-Ahl")
     ;; see dirvish/docs/CUSTOMIZING.org > Usage of GNU =ls=
-    (setq! dired-listing-switches           "--all        -l --sort=version --human-readable --group-directories-first"
-           dirvish-subtree-listing-switches "--almost-all -l --sort=version --human-readable --group-directories-first")))
+    (setopt dired-listing-switches           "--all        -l --sort=version --human-readable --group-directories-first"
+            dirvish-subtree-listing-switches "--almost-all -l --sort=version --human-readable --group-directories-first")))
 
 ;;;; visiting directories from the command line with dired
 (add-hook! 'server-visit-hook
@@ -501,8 +518,8 @@ if no such symbol exists."
 (after! (:or find-func helpful)
   ;; Set C source directory
   ;; can download from https://gnu.askapache.com/emacs/
-  (setq! find-function-C-source-directory (or find-function-C-source-directory
-                                              (akn/existing-file-truename (concat "~/Downloads/emacs-" emacs-version "/src")))))
+  (setopt find-function-C-source-directory (or find-function-C-source-directory
+                                               (akn/existing-file-truename (concat "~/Downloads/emacs-" emacs-version "/src")))))
 ;; https://github.com/Wilfred/helpful/issues/250#issuecomment-954262620
 (after! helpful
   ;; Only needed when using Doom Emacs with (modulep! :ui popup).
@@ -653,7 +670,7 @@ This is to mimic the behavior of RET in Stand-alone GNU Info."
               (toggle-frame-tab-bar))))))))
 
 (after! info
-  (pushnew! Info-directory-list)
+  (akn/pushnew Info-directory-list)
   (cl-callf append
       Info-additional-directory-list
       (doom-glob (or (getenv-internal "HOMEBREW_CELLAR") "/opt/homebrew/Cellar")
@@ -775,7 +792,7 @@ off again if you're dealing with non-compressed plist files."
     (add-to-list 'evil-motion-state-modes 'launchctl-mode))
   ;; (akn/defvar-setq akn/launchctl-search-path1 '("~/Library/LaunchAgents/" "/Library/LaunchAgents/" "/Library/LaunchDaemons/" "/System/Library/LaunchAgents/" "/System/Library/LaunchDaemons/"))
   ;; (akn/defvar-setq akn/launchctl-search-path2 '("~/Library/LaunchAgents/"))
-  ;; (setq! launchctl-search-path akn/launchctl-search-path2)
+  ;; (setopt launchctl-search-path akn/launchctl-search-path2)
   ;; (defun akn/toggle-all-search-paths ()
   ;;   (interactive)
   ;;   (setq-local launchctl-search-path (if (equal launchctl-search-path akn/launchctl-search-path2)
@@ -846,8 +863,8 @@ off again if you're dealing with non-compressed plist files."
     (sly-quickload system)))
 
 (after! sly
-  (setq! sly-complete-symbol-function 'sly-flex-completions
-         sly-command-switch-to-existing-lisp 'always)
+  (setopt sly-complete-symbol-function 'sly-flex-completions
+          sly-command-switch-to-existing-lisp 'always)
 
   (add-hook 'sly-db-mode-hook (akn/mode-disabler #'evil-snipe-local-mode)))
 
@@ -987,7 +1004,7 @@ or creates it if it does not exist."
 
 ;;; python
 (after! python
-  (setq! python-fill-docstring-style 'django))
+  (setopt python-fill-docstring-style 'django))
 
 (add-to-list 'interpreter-mode-alist
              (cons (rx bos "uv" eos) #'python-mode))
@@ -1022,7 +1039,7 @@ or creates it if it does not exist."
 
 (use-package! racket-mode
   :config
-  (map! :mode racket-mode
+  (map! :map (racket-mode-map racket-hash-lang-mode-map)
         ;; "s-r" #'racket-run-and-switch-to-repl
         "s-e" #'akn/racket-toggle-repl
         "s-i" #'+format/region-or-buffer)
@@ -1035,7 +1052,7 @@ or creates it if it does not exist."
   (defun insert-lozenge ()
     (interactive nil racket-mode racket-hash-lang-mode)
     (insert "◊"))
-  (map! :map racket-mode-map
+  (map! :map (racket-mode-map racket-hash-lang-mode-map)
         "s-L" #'insert-lozenge)
 
   (add-hook! 'racket-xp-mode-hook
@@ -1050,13 +1067,15 @@ or creates it if it does not exist."
   (add-to-list '+lookup-provider-url-alist
                '("Racket Manuals" "https://docs.racket-lang.org/search/index.html?q=%s"))
 
-  (add-hook 'racket-hash-lang-mode-hook (akn/mode-disabler #'smartparens-mode)))
+  (add-hook 'racket-hash-lang-mode-hook (akn/mode-disabler #'smartparens-mode))
+
+  ;; like in DrRacket
+  (add-hook! '(racket-mode-hook racket-hash-lang-mode-hook) #'racket-smart-open-bracket-mode))
 
 ;; (defun akn/racket-docs-local (query)
 ;;   (message "%s" query)
 ;;   (call-process "raco" nil "*raco-docs*" nil
 ;;                 "docs" (or query "")))
-
 ;; (add-to-list '+lookup-provider-url-alist
 ;;              '("Racket Manuals (local)" akn/racket-docs-local)))
 
@@ -1066,18 +1085,18 @@ or creates it if it does not exist."
 ;;; rocq/coq/proof-general
 (after! (:or proof-config proof-useropts)
   (shut-up
-    (setq! proof-electric-terminator-enable t
-           proof-next-command-insert-space t
-           proof-autosend-enable nil
-           proof-autosend-delay 0.8
-           proof-imenu-enable t
-           proof-keep-response-history t
-           proof-minibuffer-messages t
-           proof-full-annotation t
-           proof-output-tooltips t
-           proof-query-file-save-when-activating-scripting t
-           proof-sticky-errors t
-           proof-script-fly-past-comments t)))
+    (setopt proof-electric-terminator-enable t
+            proof-next-command-insert-space t
+            proof-autosend-enable nil
+            proof-autosend-delay 0.8
+            proof-imenu-enable t
+            proof-keep-response-history t
+            proof-minibuffer-messages t
+            proof-full-annotation t
+            proof-output-tooltips t
+            proof-query-file-save-when-activating-scripting t
+            proof-sticky-errors t
+            proof-script-fly-past-comments t)))
 
 ;;; ruby
 (after! inf-ruby
@@ -1154,7 +1173,7 @@ or creates it if it does not exist."
       (apply oldfun args))))
 
 (defvar akn/original-auto-mode-interpreter-regexp auto-mode-interpreter-regexp)
-(setq!
+(setopt
  auto-mode-interpreter-regexp
  (rx (or (regexp akn/original-auto-mode-interpreter-regexp)
          ;; guess shell based on shellcheck directive at top of file
@@ -1165,17 +1184,17 @@ or creates it if it does not exist."
           (group-n 2 (+ (not (any "\t\n "))))))))
 
 (after! sh-script
-  (pushnew! (cddr (alist-get 'zsh sh-builtins))
-            "zstyle"
-            ;; somem others from `man zshbuiltins':
-            "cap" "clone" "command" "comparguments" "compcall" "compdescribe"
-            "compfiles" "compgroups" "compquote" "comptags" "comptry"
-            "compvalues" "echoti" "emulate" "float" "getcap" "job" "last"
-            "nocorrect" "noglob" "printf" "pushln" "setcap" "stat" "test" "trap"
-            "where" "zcompile" "zformat" "zftp" "zle" "zmodload" "zparseopts"
-            "zprof" "zpty" "zregexparse" "zsocket" "ztcp")
+  (akn/pushnew (cddr (alist-get 'zsh sh-builtins))
+    "zstyle"
+    ;; somem others from `man zshbuiltins':
+    "cap" "clone" "command" "comparguments" "compcall" "compdescribe"
+    "compfiles" "compgroups" "compquote" "comptags" "comptry"
+    "compvalues" "echoti" "emulate" "float" "getcap" "job" "last"
+    "nocorrect" "noglob" "printf" "pushln" "setcap" "stat" "test" "trap"
+    "where" "zcompile" "zformat" "zftp" "zle" "zmodload" "zparseopts"
+    "zprof" "zpty" "zregexparse" "zsocket" "ztcp")
 
-  (setq! sh-basic-offset 2))
+  (setopt sh-basic-offset 2))
 
 ;;; terminals
 ;;;; General
@@ -1285,13 +1304,22 @@ Copied from `embark-kill-ring-remove'."
     :gie "M-<right>"     (cmd! (vterm-send-key (kbd "C-f")))
     :gie "M-<left>"      (cmd! (vterm-send-key (kbd "C-b")))
     :gie "s-<backspace>" (cmd! (vterm-send-key (kbd "C-u")))
-    :gie "s-<left>"      (cmd! (vterm-send-key (kbd "C-a")))
-    :gie "s-<right>"     (cmd! (vterm-send-key (kbd "C-e")))
-    :gie "<escape>" (cmd! (if (not akn/vterm-escape-mode)
-                              (akn/vterm-escape-mode 1)
-                            (akn/vterm-escape-mode -1)
-                            (vterm-send-key "a")
-                            (doom/escape)))
+    :gie "s-<left>"      #'+vterm/beginning-of-line ;(cmd! (vterm-send-key (kbd "C-a")))
+    :gie "s-<right>"     (cmd! (vterm-send-key (kbd "C-e"))) ;#'vterm-end-of-line
+    :gie "<escape>"
+    (akn/cmds! (not (bound-and-true-p evil-local-mode)) nil
+               (bound-and-true-p evil-collection-vterm-send-escape-to-vterm-p)
+               (cmd! (if (not akn/vterm-escape-mode)
+                         (akn/vterm-escape-mode 1)
+                       (akn/vterm-escape-mode -1)
+                       (vterm-send-key "a")
+                       (doom/escape)))
+               (vterm--at-prompt-p) (cmd! (let ((evil-move-cursor-back nil)) (evil-normal-state)))
+               t #'evil-normal-state)
+    :gie "C-c C-z" #'evil-collection-vterm-toggle-send-escape
+    [remap evil-collection-vterm-toggle-send-escape]
+    (cmd! (setq-local evil-collection-vterm-send-escape-to-vterm-p
+                      (not evil-collection-vterm-send-escape-to-vterm-p)))
     :gie "SPC"      (cmd! (if (not akn/vterm-escape-mode)
                               (vterm-send-key "SPC")
                             (vterm-send-key "a")
@@ -1302,6 +1330,16 @@ Copied from `embark-kill-ring-remove'."
                   (comint-send-invisible "Enter password: ")
                   (vterm-send-string "\n")
                   (clear-this-command-keys)))
+
+  (setopt evil-collection-vterm-send-escape-to-vterm-p nil
+          evil-collection-vterm-move-cursor-back t)
+
+  (setq-hook! 'vterm-mode-hook
+    term-prompt-regexp
+    (rx bol
+        (* (not (any "#$%>»❯▶❮V" "\\n")))
+        (+ (any "#$%>»❯▶❮V"))
+        (? " ")))
 
   ;; disable ligatures
   (set-ligatures! 'vterm-mode nil)
@@ -1372,10 +1410,10 @@ Open the vterm buffer reusing a window."
 
 ;;;; term
 (after! tramp
-  (setq! tramp-terminal-prompt-regexp
-         (rx (| (: "TERM = (" (* nonl) ")")
-                (: "Terminal type? [" (* nonl) "]"))
-             (* blank))))
+  (setopt tramp-terminal-prompt-regexp
+          (rx (| (: "TERM = (" (* nonl) ")")
+                 (: "Terminal type? [" (* nonl) "]"))
+              (* blank))))
 (map! :after term
       :mode term-mode
       :nie "C-d" #'term-send-eof)
@@ -1392,7 +1430,7 @@ Open the vterm buffer reusing a window."
                         (rx bol
                             (* (not (any "#$%>»❯▶❮V" "\\n")))
                             (+ (any "#$%>»❯▶❮V"))
-                            (* " ")))))))))
+                            (? " ")))))))))
 ;; (add-hook 'term-mode-hook #'term-line-mode)
 ;; (defadvice! akn/term-no-insert-char-mode-a (&rest _)
 ;;   :override #'evil-collection-term-switch-to-char-mode-on-insert
@@ -1420,12 +1458,12 @@ Open the vterm buffer reusing a window."
 ;; NOTE: In shell mode, use comint-previous-prompt (C-c C-p), not term-previous-prompt
 
 (after! comint
-  (setq! comint-input-ring-size 3000
-         comint-input-ignoredups t
-         comint-pager "cat"
-         comint-input-autoexpand t
-         comint-scroll-to-bottom-on-input t
-         comint-insert-previous-argument-from-end t)
+  (setopt comint-input-ring-size 3000
+          comint-input-ignoredups t
+          comint-pager "cat"
+          comint-input-autoexpand t
+          comint-scroll-to-bottom-on-input t
+          comint-insert-previous-argument-from-end t)
 
   ;; https://www.gnu.org/software/emacs/manual/html_node/efaq-w32/Shell-echo.html
   (setq-hook! 'shell-mode-hook
@@ -1468,11 +1506,11 @@ Open the vterm buffer reusing a window."
   (eshell-vterm-mode))
 
 (after! eshell
-  (pushnew! eshell-modules-list
-            'eshell-elecslash
-            'eshell-rebind
-            ;; 'eshell-smart
-            'eshell-xtra)
+  (akn/pushnew eshell-modules-list
+    'eshell-elecslash
+    'eshell-rebind
+    ;; 'eshell-smart
+    'eshell-xtra)
 
   ;; Now we can type "v irb" to run irb in visual mode, for example.
   ;; (And we've set up visual mode to use vterm.)
@@ -1511,6 +1549,19 @@ Open the vterm buffer reusing a window."
                                     nil t)
             (eshell/alias (match-string-no-properties 1) (match-string-no-properties 2))))))))
 
+;;; thread-list-mode
+(put 'list-threads 'disabled nil)
+(after! threads
+  (set-popup-rule! (rx "*Threads*"))
+  (akn/advise-letf! list-threads (akn/obey-display-action-a)
+    (switch-to-buffer-obey-display-actions t))
+  (define-advice thread-list-send-quit-signal (:before-while (&rest _) akn/confirm-a)
+    (or (not (called-interactively-p 'any))
+        (y-or-n-p "Manually canceling threads can ruin your Emacs session. Are you sure you want to send a quit signal? ")))
+  (define-advice thread-list-send-error-signal (:before-while (&rest _) akn/confirm-a)
+    (or (not (called-interactively-p 'any))
+        (y-or-n-p "Manually canceling threads can ruin your Emacs session. Are you sure you want to send an error signal? "))))
+
 ;;; vdiff
 (use-package! vdiff
   :config
@@ -1524,7 +1575,7 @@ Open the vterm buffer reusing a window."
 
 ;;; web
 (after! web-mode
-  (setq! web-mode-auto-close-style 2)
+  (setopt web-mode-auto-close-style 2)
 
   (map! :map web-mode-map
         ;; also see https://blog.binchen.org/posts/navigateselect-html-tags-in-emacs.html

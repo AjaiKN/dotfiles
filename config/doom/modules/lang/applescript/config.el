@@ -3,7 +3,7 @@
 (use-package! apples-mode
   :defer t
   :config
-  (setq! apples-indent-offset (default-value 'tab-width)))
+  (setopt apples-indent-offset (default-value 'tab-width)))
 
 ;; By default, Script Editor.app saves AppleScript in the compiled ".scpt"
 ;; format (https://apple.stackexchange.com/q/163134) rather than as plain text

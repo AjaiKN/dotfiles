@@ -62,19 +62,19 @@
         ;; parinfer-rust opens a new diff-mode buffer after every command,
         ;; resolving aliases introduces a bunch of input lag.
         pulsar-resolve-pulse-function-aliases nil)
-  (pushnew! pulsar-pulse-functions
-            #'beginning-of-buffer
-            #'end-of-buffer
-            #'akn/dired-goto-beginning
-            #'akn/dired-goto-end
-            #'+fold/open-all
-            #'+fold/close-all
-            #'+fold/table-of-contents
-            #'+fold/overview
-            #'+fold/all-headings
-            #'+fold/unfold-all-headings
-            #'+fold/outline-cycle-all
-            #'+fold/outline-cycle-all-simple)
+  (akn/pushnew pulsar-pulse-functions
+    #'beginning-of-buffer
+    #'end-of-buffer
+    #'akn/dired-goto-beginning
+    #'akn/dired-goto-end
+    #'+fold/open-all
+    #'+fold/close-all
+    #'+fold/table-of-contents
+    #'+fold/overview
+    #'+fold/all-headings
+    #'+fold/unfold-all-headings
+    #'+fold/outline-cycle-all
+    #'+fold/outline-cycle-all-simple)
   (pulsar-global-mode)
 
   (after! so-long

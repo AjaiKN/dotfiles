@@ -1,4 +1,3 @@
-;; -*- no-byte-compile: t; -*-
-;;; lang/uiua/packages.el
+;;; lang/uiua/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! uiua-ts-mode)

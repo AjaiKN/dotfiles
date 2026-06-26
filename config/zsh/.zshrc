@@ -222,7 +222,7 @@ plugin edit-command-line
 plugin autocorrect
 (( $+commands[atuin] )) && plugin atuin
 
-if [[ $TERM != dumb && ( -z $INSIDE_EMACS || $INSIDE_EMACS = vterm* || $TERM = eterm-color ) ]]; then
+if [[ $TERM != dumb && ( -z $INSIDE_EMACS || $INSIDE_EMACS = vterm* || $INSIDE_EMACS = ghostel* || $TERM = eterm-color ) ]]; then
 	is-at-least 4.3.11 && plugin zsh-users/zsh-syntax-highlighting
 	ZSH_AUTOSUGGEST_MANUAL_REBIND=1
 	# this should be the very last plugin, since I'm setting ZSH_AUTOSUGGEST_MANUAL_REBIND=1
@@ -236,6 +236,11 @@ load_plugins
 ### Plugin customization (after)
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
+
+# omz-termsupport
+if [[ -n $SSH_CLIENT || -n $SSH_TTY || -n $SSH_CONNECTION || $USER != (#i)*ajai* || $HOST != (#i)*ajai* ]]; then
+  ZSH_THEME_TERM_TAB_TITLE_IDLE='%n@%m:'
+fi
 
 ### Misc
 

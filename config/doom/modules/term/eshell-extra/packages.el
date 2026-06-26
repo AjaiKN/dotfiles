@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; term/eshell-extra/packages.el
+;;; term/eshell-extra/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! dash)
 (package! s)

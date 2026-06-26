@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; completion/fuzzy/packages.el
+;;; completion/fuzzy/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! fussy                   :pin "163ded34be3e9230702201d0abe1e7b85e815c2d" :disable nil)
 (when (or (modulep! +all) (modulep! +flx-rs))

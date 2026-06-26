@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; tools/llm/packages.el
+;;; tools/llm-extra/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! copilot :pin "8e43edf1f3efe094ea42a21863b3b742a339742c"
   :recipe (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist")))

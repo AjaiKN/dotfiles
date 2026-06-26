@@ -3,8 +3,8 @@
 (require 'akn)
 
 (after! projectile
-  (pushnew! projectile-project-root-files "DESCRIPTION" ".here")
-  (pushnew! projectile-project-root-files-top-down-recurring "remake.yml"))
+  (akn/pushnew projectile-project-root-files "DESCRIPTION" ".here")
+  (akn/pushnew projectile-project-root-files-top-down-recurring "remake.yml"))
 
 
 ;;; ESS
@@ -34,6 +34,9 @@
                  (let ((default-directory dir))
                    (or (file-exists-p ".here")
                        (ignore-errors (doom-glob "*.Rproj"))
+                       (file-exists-p ".vscode/settings.json")
+                       (file-exists-p "_quarto.yml")
+                       (file-exists-p "renv.lock")
                        (file-exists-p "DESCRIPTION")
                        (file-exists-p "remake.yml")
                        (file-exists-p ".projectile") (file-exists-p ".project")
@@ -75,7 +78,7 @@
 
   ;; can re-enable this on a per-project basis
   (after! flycheck
-    (pushnew! (default-value 'flycheck-disabled-checkers) 'r-lintr))
+    (akn/pushnew (default-value 'flycheck-disabled-checkers) 'r-lintr))
 
   (set-company-backend! '(ess-r-mode inferior-ess-r-mode)
     '(company-R-args company-R-objects company-dabbrev-code :separate))
@@ -194,14 +197,14 @@
 
 (after! ess
   ;; C-c C-o C-o
-  (setq! ess-roxy-template-alist
-         (list (cons "description" "")
-               ;(cons "details" ".. content for \\details{} ..")
-               ;(cons "title" "")
-               (cons "param" "")
-               (cons "return" "")
-               ;(cons "author" ess-user-full-name)
-               (cons "examples" ""))))
+  (setopt ess-roxy-template-alist
+          (list (cons "description" "")
+                ;(cons "details" ".. content for \\details{} ..")
+                ;(cons "title" "")
+                (cons "param" "")
+                (cons "return" "")
+                ;(cons "author" ess-user-full-name)
+                (cons "examples" ""))))
 
 ;;;; Data viewing
 

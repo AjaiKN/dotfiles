@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; lang/ess/packages.el
+;;; lang/ess/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! ess :pin "f8c464dc1b017b5397f8ec9955f7856493af1179")
 (package! ess-R-data-view :pin "d6e98d3ae1e2a2ea39a56eebcdb73e99d29562e9")

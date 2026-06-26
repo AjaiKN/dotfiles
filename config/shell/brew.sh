@@ -38,3 +38,5 @@ if [ -x "$HOMEBREW_PREFIX"/bin/brew ]; then
 		export CPPFLAGS="-I$HOMEBREW_PREFIX/opt/llvm/include"
 	fi
 fi
+
+export HOMEBREW_NO_ASK=1

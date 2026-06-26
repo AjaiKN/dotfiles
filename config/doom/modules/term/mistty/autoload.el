@@ -115,7 +115,7 @@ belongs according to the underlying terminal."
            (string-match (rx bol
                              (* (not (any "#$%>»❯▶❮V" "\\n")))
                              (+ (any "#$%>»❯▶❮V"))
-                             " ")
+                             (? " "))
                          (thing-at-point 'line))
            (match-end 0)
            (save-excursion (beginning-of-line)

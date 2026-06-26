@@ -17,7 +17,7 @@
       (if-let* ((input-source (ignore-errors (mac-input-source)))
                 (input-method (alist-get input-source +reverse-im-input-source-alist nil nil #'equal)))
           (progn
-            (setq! reverse-im-input-methods (list input-method))
+            (setopt reverse-im-input-methods (list input-method))
             (reverse-im-mode))
         (when (bound-and-true-p reverse-im-mode)
           (reverse-im-mode -1)))))

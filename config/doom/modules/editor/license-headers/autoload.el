@@ -2,7 +2,7 @@
 
 (require 'akn)
 
-(setq! headlice-use-spdx-headers t)
+(setopt headlice-use-spdx-headers t)
 
 (defun +license-headers/create-license ()
   "Like `headlice-create-license', but always prompt for directory."

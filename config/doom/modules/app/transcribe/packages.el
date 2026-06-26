@@ -1,5 +1,4 @@
-;; -*- no-byte-compile: t; -*-
-;;; app/transcribe/packages.el
+;;; app/transcribe/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
 (package! emms :pin "e3824b81b11ac71b9bb0993a3a3d3647b923a377")
 

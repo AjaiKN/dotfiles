@@ -41,7 +41,7 @@ libraries. It is the equivalent of the following shell commands:
         ;; exit codes 16-192 are "reserved for the user's extensions"
         (exit! 90))))))
 
-(defcli! ((check-for-updates outdated))
+(defcli! ((check-for-updates outdated cfu))
     ()
   "Check if Doom's core has any updates available.
 

@@ -15,11 +15,10 @@
   ;; (require 'doom-packages)
   (require 'akn-doom-use-package)
   ;; (require 'doom-modules)
-  (require 'doom-keybinds)
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
@@ -45,11 +44,17 @@
 ;; only works in insert state
 (setq mouse-drag-and-drop-region t)
 
-;; (setq! frame-title-format "%b")
+;; (setopt frame-title-format "%b")
 
 (setq delete-by-moving-to-trash (not noninteractive) ; Doom only does this by default on Mac for some reason
       magit-delete-by-moving-to-trash t
       remote-file-name-inhibit-delete-by-moving-to-trash nil)
+
+;; added after doom remapped some stuff
+;; command-completion-default-include-p
+(setq read-extended-command-predicate nil)
+(global-set-key [remap eval-region] nil)
+(global-set-key [remap eval-buffer] nil)
 
 ;;; modeline
 
@@ -57,10 +62,10 @@
 (add-hook! '(+modeline-global-mode-hook doom-modeline-mode-hook)
   (defun akn/modeline-stuff ()
     (interactive)
-    (setq! display-time-default-load-average nil)
+    (setopt display-time-default-load-average nil)
     (display-time-mode 1)
 
-    (setq! battery-mode-line-format "[%b%p%%, %t left]  ")
+    (setopt battery-mode-line-format "[%b%p%%, %t left]  ")
     (unless (string-match-p "^Power N/A" (shut-up (battery)))
       (display-battery-mode 1))))
 
@@ -73,13 +78,13 @@
   :defer t
   :when (modulep! :ui modeline -light)
   :init
-  (setq! doom-modeline-buffer-encoding (if (featurep :system 'windows) t 'nondefault)
-         doom-modeline-always-show-macro-register t
-         ;; doom-modeline-minor-modes t
-         doom-modeline-enable-word-count t)
+  (setopt doom-modeline-buffer-encoding (if (featurep :system 'windows) t 'nondefault)
+          doom-modeline-always-show-macro-register t
+          ;; doom-modeline-minor-modes t
+          doom-modeline-enable-word-count t)
   :config
-  (pushnew! doom-modeline-continuous-word-count-modes
-            'text-mode))
+  (akn/pushnew doom-modeline-continuous-word-count-modes
+    'text-mode))
 
 ;;;; doom modeline +light
 
@@ -120,22 +125,22 @@
   ;; (advice-add #'persp-frame-switch  :after #'akn/+modeline--generate-buffer-id-cache-h)
   ;; (advice-add #'persp-window-switch :after #'akn/+modeline--generate-buffer-id-cache-h)
 
-  (setq! frame-title-format
-         '(""
-           ;; akn/title-bar-workspace-cache
-           ;; +modeline-buffer-identification
-           ((:eval (propertize (or +modeline--buffer-id-cache "%b")
-                               'face (cond ((buffer-modified-p) '(error bold mode-line-buffer-id))
-                                           ((+modeline-active) 'mode-line-buffer-id))
-                               'help-echo (or +modeline--buffer-id-cache (buffer-name)))))
-           " (%+)")))
+  (setopt frame-title-format
+          '(""
+            ;; akn/title-bar-workspace-cache
+            ;; +modeline-buffer-identification
+            ((:eval (propertize (or +modeline--buffer-id-cache "%b")
+                                'face (cond ((buffer-modified-p) '(error bold mode-line-buffer-id))
+                                            ((+modeline-active) 'mode-line-buffer-id))
+                                'help-echo (or +modeline--buffer-id-cache (buffer-name)))))
+            " (%+)")))
 
 ;;;; modeline word count
 
 (use-package! org-wc
   :autoload akn/org-word-count-number
   :config
-  (setq! org-wc-default-link-count 'description)
+  (setopt org-wc-default-link-count 'description)
   ;; TODO: PR
   (defadvice! akn/org-wc/remove-cached-word-counts-a (beg end &rest _)
     :before #'org-word-count
@@ -185,7 +190,7 @@ it just displays it."
 
 ;;; recentf
 
-(setq! recentf-case-fold-search t)
+(setopt recentf-case-fold-search t)
 
 (defun akn/keep-predicate (file)
   "Faster version of `recentf-keep-default-predicate'.
@@ -211,8 +216,12 @@ are exactly the same too."
   (setq recentf-keep (remq #'recentf-keep-default-predicate recentf-keep))
   (add-to-list 'recentf-keep #'akn/keep-predicate)
 
-  (add-to-list 'recentf-exclude (rx ".local/etc/workspaces/autosave" eos))
-  (add-to-list 'recentf-exclude (rx "/elgrep-data.el" eos))
+  (akn/pushnew recentf-exclude
+    (rx ".local/etc/workspaces/autosave" eos)
+    (rx "/elgrep-data.el" eos)
+    (rx ".local/share/doom/bookmarks" eos)
+    (rx ".local/share/doom")
+    (rx ".local/state/doom"))
   ;; originally 20, Doom set to 200
   (setq recentf-max-saved-items (max 5000 recentf-max-saved-items))
 
@@ -223,7 +232,7 @@ are exactly the same too."
 
   ;; Doom wants to do this on emacs quit, but I don't.
   (remove-hook 'kill-emacs-hook #'recentf-cleanup)
-  (setq! recentf-auto-cleanup (* 22 60))
+  (setopt recentf-auto-cleanup (* 22 60))
 
   ;; timer for autosaving recentf
   (akn/after-idle! (63 :each-idle t :timer-name akn/recentf-timer)
@@ -256,10 +265,10 @@ are exactly the same too."
       (add-to-list '+reverse-im-input-source-alist '("com.apple.keylayout.Devanagari-QWERTY" . "devanagari-qwerty"))
       (require 'devanagari-qwerty)))
   :config
-  (setq! default-input-method "devanagari-qwerty"))
+  (setopt default-input-method "devanagari-qwerty"))
 
-;; (setq! default-input-method "devanagari-itrans")
-;; (setq! default-input-method "devanagari-kyoto-harvard")
+;; (setopt default-input-method "devanagari-itrans")
+;; (setopt default-input-method "devanagari-kyoto-harvard")
 
 ;;; which-key
 
@@ -293,22 +302,22 @@ are exactly the same too."
 
   ;; "I also think that having evil- appear in so many popups is a bit too verbose, let’s change that, and do a few other similar tweaks while we’re at it."
   (setq which-key-allow-multiple-replacements t)
-  (pushnew!
-   which-key-replacement-alist
-   `((""              . ,(rx bos (? "+") "evil" (? (any ":-")) (? "a-") (group (* nonl)))) . (nil . "-\\1"))
-   `((""              . ,(rx "-and-"))                                                     . (nil . "-&-"))
-   `((,(rx bos "g z") . ,(rx bos "+multiple-cursors/evil" (group (* nonl))))               . (nil . "+\\1"))
-   `((,(rx bos "g z") . ,(rx "make"))                                                      . (nil . "mk"))
-   `((,(rx bos "g z") . ,(rx "move"))                                                      . (nil . "mv"))
-   `((,(rx bos "g s") . ,(rx bos "evilem-" (? "-") "motion-" (group (* nonl))))            . (nil . "-\\1")))
+  (akn/pushnew
+      which-key-replacement-alist
+    `((""              . ,(rx bos (? "+") "evil" (? (any ":-")) (? "a-") (group (* nonl)))) . (nil . "-\\1"))
+    `((""              . ,(rx "-and-"))                                                     . (nil . "-&-"))
+    `((,(rx bos "g z") . ,(rx bos "+multiple-cursors/evil" (group (* nonl))))               . (nil . "+\\1"))
+    `((,(rx bos "g z") . ,(rx "make"))                                                      . (nil . "mk"))
+    `((,(rx bos "g z") . ,(rx "move"))                                                      . (nil . "mv"))
+    `((,(rx bos "g s") . ,(rx bos "evilem-" (? "-") "motion-" (group (* nonl))))            . (nil . "-\\1")))
   ;; '(("\\`SPC w" . "\\`\\(.*\\)-?-?window-?-?\\(.*\\)") . (nil . "\\1\\2"))))
-  ;; (setq!)
+  ;; (setopt)
   ;; (setq which-key-replacement-alist (cdddr which-key-replacement-alist))
-  ;; (setq! which-key-unicode-correction 3)
+  ;; (setopt which-key-unicode-correction 3)
   ;; added a zero-width space (https://en.wikipedia.org/wiki/Zero-width_space) to correct for it
-  ;; (setq! which-key-dont-use-unicode t)
-  ;; (setq! which-key-ellipsis "..")
-  (setq! which-key-ellipsis "…"))
+  ;; (setopt which-key-dont-use-unicode t)
+  ;; (setopt which-key-ellipsis "..")
+  (setopt which-key-ellipsis "…"))
 
 ;;;; which-key bug fix
 
@@ -431,43 +440,6 @@ Copied from `sp-ruby-def-post-handler'."
   (sp-pair "=" "=" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p))
   (sp-pair "/" "/" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p))
   (sp-pair "$" "$" :actions '(wrap) :when (list #'sp-in-comment-p #'sp-in-string-p #'sp-in-docstring-p)))
-
-;; experimental, might remove
-(after! (:and smartparens sh-script)
-  (defun akn/sp-sh-post-handler (_id action _context)
-    (when (equal action 'insert)
-      (save-excursion
-        (forward-line)
-        (goto-char (pos-bol))
-        (indent-according-to-mode))))
-
-  (require 'dash)
-  (sp-with-modes '(sh-mode sh-base-mode bash-ts-mode)
-    (sp-local-pair "if" "; then\nfi"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "for" "; do\ndone"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "while" "; do\ndone"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "until" "; do\ndone"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))
-    (sp-local-pair "case" " in\nesac"
-                   :when '(("SPC"))
-                   :actions '(insert)
-                   :unless (list #'sp-in-string-p #'sp-in-comment-p (-not #'sp-point-after-bol-p) (-not #'sp-point-before-eol-p))
-                   :post-handlers (list #'akn/sp-sh-post-handler))))
 
 ;;; embrace
 
@@ -697,15 +669,15 @@ underscores in all modes."
   ;; Disable `prettify-symbols-mode' in terminal buffers, since it seems to
   ;; cause a bug where lines get duplicated when I'm moving between lines.
   (when akn/terminal-only-p
-    (setq! +ligatures-extras-in-modes nil)))
+    (setopt +ligatures-extras-in-modes nil)))
 
 ;;; Jump back before scroll - and other jumping stuff
 (map! "s-b"   #'better-jumper-jump-backward
       "M-s-b" #'better-jumper-jump-forward)
 
 (after! better-jumper
-  (setq! better-jumper-context 'buffer
-         better-jumper-use-savehist t))
+  (setopt better-jumper-context 'buffer
+          better-jumper-use-savehist t))
 
 ;; Using both buffer and window context
 ;;
@@ -849,7 +821,7 @@ underscores in all modes."
 
 ;;; bookmarks
 
-(setq!
+(setopt
  ;; Save to bookmarks file every time bookmarks change.
  bookmark-save-flag 1
  ;; If the bookmark file changes on disk, reload it without prompting.
@@ -859,16 +831,16 @@ underscores in all modes."
 
 (when (modulep! :editor whitespace)
   ;; might want to turn this off at some point
-  (setq! +whitespace-guess-in-projects t)
-  (pushnew! +whitespace-guess-excluded-modes
-            'elm-mode))
+  (setopt +whitespace-guess-in-projects t)
+  (akn/pushnew +whitespace-guess-excluded-modes
+    'elm-mode))
 
 ;;;; Tabs & spaces
 
-(setq! tab-width 2
-       standard-indent 2)
+(setopt tab-width 2
+        standard-indent 2)
 
-(setq! backward-delete-char-untabify-method nil)
+(setopt backward-delete-char-untabify-method nil)
 
 (defvar-local akn/evil-shift-width-different-from-tab-width nil
   "If this is non-nil, `evil-shift-width' won't be set equal to `tab-width'.")
@@ -888,6 +860,7 @@ underscores in all modes."
     lfe-mode
     common-lisp-mode
     lisp-interaction-mode
+    lisp-data-mode
     ielm-mode
     slime-repl-mode
     inferior-emacs-lisp-mode
@@ -966,7 +939,7 @@ underscores in all modes."
   ;;    the written file). While sometimes convenient, this behavior is not
   ;;    intuitive. To the average user it looks like whitespace cleanup is failing,
   ;;    which causes folks to redundantly install their own."
-  (setq! ws-butler-keep-whitespace-before-point t)
+  (setopt ws-butler-keep-whitespace-before-point t)
 
   ;; ws-butler doesn't seem to work too well in polymodes
   (setq-hook! '(polymode-init-inner-hook
@@ -1040,7 +1013,7 @@ underscores in all modes."
         parinfer-rust-auto-download nil))
 
 (after! parinfer-rust-mode
-  (setq! parinfer-rust-buffer-replace-strategy 'safe))
+  (setopt parinfer-rust-buffer-replace-strategy 'safe))
 
 (map! [remap parinfer-rust-toggle-disable] #'akn/parinfer-toggle
       :map (lisp-mode-shared-map parinfer-rust-mode-map akn/lisp-like-mode-map)
@@ -1065,120 +1038,120 @@ underscores in all modes."
       (and buffer-file-name (string-match-p (rx "config/emacs/") buffer-file-name))))
 
 (after! parinfer-rust-mode
-  (pushnew! parinfer-rust-treat-command-as
-            '(evil-open-below . "paren")
-            '(evil-open-above . "paren")
-            '(newline-and-indent . "paren")
-            '(+default/newline-above . "paren")
-            '(+default/newline-below . "paren")
-            '(+evil/shift-right . "indent")
-            '(+evil/shift-left . "indent")
-            '(evil-shift-right-line . "smart")
-            '(evil-shift-left-line . "smart")
-            '(evil-shift-right . "smart")
-            '(evil-shift-left . "smart")
-            '(doom/backward-kill-to-bol-and-indent . "smart")
-            '(evil-delete-back-to-indentation . "smart")
-            '(sp-comment . "paren")
-            '(sp-newline . "paren")
-            '(sp-up-sexp . "paren")
-            '(sp-copy-sexp . "paren")
-            '(sp-down-sexp . "paren")
-            '(sp-emit-sexp . "paren")
-            '(sp-join-sexp . "paren")
-            '(sp-kill-sexp . "paren")
-            '(sp-kill-word . "paren")
-            '(sp-mark-sexp . "paren")
-            '(sp-next-sexp . "paren")
-            '(sp-clone-sexp . "paren")
-            '(sp-raise-sexp . "paren")
-            '(sp-split-sexp . "paren")
-            '(sp-wrap-curly . "paren")
-            '(sp-wrap-round . "paren")
-            '(sp-absorb-sexp . "paren")
-            '(sp-cheat-sheet . "paren")
-            '(sp-delete-char . "paren")
-            '(sp-delete-sexp . "paren")
-            '(sp-delete-word . "paren")
-            '(sp-end-of-sexp . "paren")
-            '(sp-kill-region . "paren")
-            '(sp-kill-symbol . "paren")
-            '(sp-region-ok-p . "paren")
-            '(sp-rewrap-sexp . "paren")
-            '(sp-splice-sexp . "paren")
-            '(sp-unwrap-sexp . "paren")
-            '(sp-wrap-cancel . "paren")
-            '(sp-wrap-square . "paren")
-            '(sp-change-inner . "paren")
-            '(sp-forward-sexp . "paren")
-            '(sp-indent-defun . "paren")
-            '(sp-backward-sexp . "paren")
-            '(sp-delete-region . "paren")
-            '(sp-delete-symbol . "paren")
-            '(sp-html-next-tag . "paren")
-            '(sp-previous-sexp . "paren")
-            '(sp-convolute-sexp . "paren")
-            '(sp-forward-symbol . "paren")
-            '(sp-narrow-to-sexp . "paren")
-            '(sp-transpose-sexp . "paren")
-            '(sp-backward-symbol . "paren")
-            '(sp-describe-system . "paren")
-            '(sp-kill-whole-line . "paren")
-            '(sp-add-to-next-sexp . "paren")
-            '(sp-backward-up-sexp . "paren")
-            '(sp-change-enclosing . "paren")
-            '(sp-end-of-next-sexp . "paren")
-            '(sp-kill-hybrid-sexp . "paren")
-            '(sp-push-hybrid-sexp . "paren")
-            '(sp-beginning-of-sexp . "paren")
-            '(sp-forward-barf-sexp . "paren")
-            '(sp-html-previous-tag . "paren")
-            '(sp-prefix-tag-object . "paren")
-            '(sp-select-next-thing . "paren")
-            '(sp-slurp-hybrid-sexp . "paren")
-            '(sp-backward-barf-sexp . "paren")
-            '(sp-backward-copy-sexp . "paren")
-            '(sp-backward-down-sexp . "paren")
-            '(sp-backward-kill-sexp . "paren")
-            '(sp-backward-kill-word . "paren")
-            '(sp-dedent-adjust-sexp . "paren")
-            '(sp-extract-after-sexp . "paren")
-            '(sp-forward-slurp-sexp . "paren")
-            '(sp-forward-whitespace . "paren")
-            '(sp-indent-adjust-sexp . "paren")
-            '(sp-prefix-pair-object . "paren")
-            '(sp-backward-slurp-sexp . "paren")
-            '(sp-backward-whitespace . "paren")
-            '(sp-extract-before-sexp . "paren")
-            '(sp-show-enclosing-pair . "paren")
-            '(sp-swap-enclosing-sexp . "paren")
-            '(sp-add-to-previous-sexp . "paren")
-            '(sp-backward-delete-char . "paren")
-            '(sp-backward-delete-sexp . "paren")
-            '(sp-backward-delete-word . "paren")
-            '(sp-backward-kill-symbol . "paren")
-            '(sp-backward-unwrap-sexp . "paren")
-            '(sp-end-of-previous-sexp . "paren")
-            '(sp-prefix-symbol-object . "paren")
-            '(sp-use-paredit-bindings . "paren")
-            '(sp-forward-parallel-sexp . "paren")
-            '(sp-prefix-save-excursion . "paren")
-            '(sp-select-previous-thing . "paren")
-            '(sp-transpose-hybrid-sexp . "paren")
-            '(sp-backward-delete-symbol . "paren")
-            '(sp-backward-parallel-sexp . "paren")
-            '(sp-beginning-of-next-sexp . "paren")
-            '(sp-highlight-current-sexp . "paren")
-            '(sp-skip-forward-to-symbol . "paren")
-            '(sp-skip-backward-to-symbol . "paren")
-            '(sp-use-smartparens-bindings . "paren")
-            '(sp-beginning-of-previous-sexp . "paren")
-            '(sp-remove-active-pair-overlay . "paren")
-            '(sp-select-next-thing-exchange . "paren")
-            '(sp-splice-sexp-killing-around . "paren")
-            '(sp-splice-sexp-killing-forward . "paren")
-            '(sp-splice-sexp-killing-backward . "paren")
-            '(sp-select-previous-thing-exchange . "paren")))
+  (akn/pushnew parinfer-rust-treat-command-as
+    '(evil-open-below . "paren")
+    '(evil-open-above . "paren")
+    '(newline-and-indent . "paren")
+    '(+default/newline-above . "paren")
+    '(+default/newline-below . "paren")
+    '(+evil/shift-right . "indent")
+    '(+evil/shift-left . "indent")
+    '(evil-shift-right-line . "smart")
+    '(evil-shift-left-line . "smart")
+    '(evil-shift-right . "smart")
+    '(evil-shift-left . "smart")
+    '(doom/backward-kill-to-bol-and-indent . "smart")
+    '(evil-delete-back-to-indentation . "smart")
+    '(sp-comment . "paren")
+    '(sp-newline . "paren")
+    '(sp-up-sexp . "paren")
+    '(sp-copy-sexp . "paren")
+    '(sp-down-sexp . "paren")
+    '(sp-emit-sexp . "paren")
+    '(sp-join-sexp . "paren")
+    '(sp-kill-sexp . "paren")
+    '(sp-kill-word . "paren")
+    '(sp-mark-sexp . "paren")
+    '(sp-next-sexp . "paren")
+    '(sp-clone-sexp . "paren")
+    '(sp-raise-sexp . "paren")
+    '(sp-split-sexp . "paren")
+    '(sp-wrap-curly . "paren")
+    '(sp-wrap-round . "paren")
+    '(sp-absorb-sexp . "paren")
+    '(sp-cheat-sheet . "paren")
+    '(sp-delete-char . "paren")
+    '(sp-delete-sexp . "paren")
+    '(sp-delete-word . "paren")
+    '(sp-end-of-sexp . "paren")
+    '(sp-kill-region . "paren")
+    '(sp-kill-symbol . "paren")
+    '(sp-region-ok-p . "paren")
+    '(sp-rewrap-sexp . "paren")
+    '(sp-splice-sexp . "paren")
+    '(sp-unwrap-sexp . "paren")
+    '(sp-wrap-cancel . "paren")
+    '(sp-wrap-square . "paren")
+    '(sp-change-inner . "paren")
+    '(sp-forward-sexp . "paren")
+    '(sp-indent-defun . "paren")
+    '(sp-backward-sexp . "paren")
+    '(sp-delete-region . "paren")
+    '(sp-delete-symbol . "paren")
+    '(sp-html-next-tag . "paren")
+    '(sp-previous-sexp . "paren")
+    '(sp-convolute-sexp . "paren")
+    '(sp-forward-symbol . "paren")
+    '(sp-narrow-to-sexp . "paren")
+    '(sp-transpose-sexp . "paren")
+    '(sp-backward-symbol . "paren")
+    '(sp-describe-system . "paren")
+    '(sp-kill-whole-line . "paren")
+    '(sp-add-to-next-sexp . "paren")
+    '(sp-backward-up-sexp . "paren")
+    '(sp-change-enclosing . "paren")
+    '(sp-end-of-next-sexp . "paren")
+    '(sp-kill-hybrid-sexp . "paren")
+    '(sp-push-hybrid-sexp . "paren")
+    '(sp-beginning-of-sexp . "paren")
+    '(sp-forward-barf-sexp . "paren")
+    '(sp-html-previous-tag . "paren")
+    '(sp-prefix-tag-object . "paren")
+    '(sp-select-next-thing . "paren")
+    '(sp-slurp-hybrid-sexp . "paren")
+    '(sp-backward-barf-sexp . "paren")
+    '(sp-backward-copy-sexp . "paren")
+    '(sp-backward-down-sexp . "paren")
+    '(sp-backward-kill-sexp . "paren")
+    '(sp-backward-kill-word . "paren")
+    '(sp-dedent-adjust-sexp . "paren")
+    '(sp-extract-after-sexp . "paren")
+    '(sp-forward-slurp-sexp . "paren")
+    '(sp-forward-whitespace . "paren")
+    '(sp-indent-adjust-sexp . "paren")
+    '(sp-prefix-pair-object . "paren")
+    '(sp-backward-slurp-sexp . "paren")
+    '(sp-backward-whitespace . "paren")
+    '(sp-extract-before-sexp . "paren")
+    '(sp-show-enclosing-pair . "paren")
+    '(sp-swap-enclosing-sexp . "paren")
+    '(sp-add-to-previous-sexp . "paren")
+    '(sp-backward-delete-char . "paren")
+    '(sp-backward-delete-sexp . "paren")
+    '(sp-backward-delete-word . "paren")
+    '(sp-backward-kill-symbol . "paren")
+    '(sp-backward-unwrap-sexp . "paren")
+    '(sp-end-of-previous-sexp . "paren")
+    '(sp-prefix-symbol-object . "paren")
+    '(sp-use-paredit-bindings . "paren")
+    '(sp-forward-parallel-sexp . "paren")
+    '(sp-prefix-save-excursion . "paren")
+    '(sp-select-previous-thing . "paren")
+    '(sp-transpose-hybrid-sexp . "paren")
+    '(sp-backward-delete-symbol . "paren")
+    '(sp-backward-parallel-sexp . "paren")
+    '(sp-beginning-of-next-sexp . "paren")
+    '(sp-highlight-current-sexp . "paren")
+    '(sp-skip-forward-to-symbol . "paren")
+    '(sp-skip-backward-to-symbol . "paren")
+    '(sp-use-smartparens-bindings . "paren")
+    '(sp-beginning-of-previous-sexp . "paren")
+    '(sp-remove-active-pair-overlay . "paren")
+    '(sp-select-next-thing-exchange . "paren")
+    '(sp-splice-sexp-killing-around . "paren")
+    '(sp-splice-sexp-killing-forward . "paren")
+    '(sp-splice-sexp-killing-backward . "paren")
+    '(sp-select-previous-thing-exchange . "paren")))
 
 ;;; backups and auto-save
 
@@ -1204,19 +1177,19 @@ underscores in all modes."
       (akn/run-command "pwd && fclones group . | fclones link" :shell t :output-buffer " *dedupe-better-backup*"))))
 
 (after! better-backup
-  (pushnew! better-backup-exclude-file-regexps
-            (rx bos (literal (file-truename bookmark-default-file)) eos)
-            (rx "/.cache/")
-            (rx "/elgrep-data.el" eos)
-            (rx "/COMMIT_EDITMSG" eos))
-  (after! epa-hook (pushnew! better-backup-exclude-file-regexps epa-file-name-regexp))
-  (after! age      (pushnew! better-backup-exclude-file-regexps age-file-name-regexp))
-  (setq! better-backup-exclude-buffer-predicate
-         `(or ,#'doom-unreal-buffer-p
-              ,(lambda (b)
-                 (and-let* ((f (buffer-file-name b)))
-                   (or (backup-file-name-p f)
-                       (not (akn/backup-enable-predicate f))))))))
+  (akn/pushnew better-backup-exclude-file-regexps
+    (rx bos (literal (file-truename bookmark-default-file)) eos)
+    (rx "/.cache/")
+    (rx "/elgrep-data.el" eos)
+    (rx "/COMMIT_EDITMSG" eos))
+  (after! epa-hook (akn/pushnew better-backup-exclude-file-regexps epa-file-name-regexp))
+  (after! age      (akn/pushnew better-backup-exclude-file-regexps age-file-name-regexp))
+  (setopt better-backup-exclude-buffer-predicate
+          `(or ,#'doom-unreal-buffer-p
+               ,(lambda (b)
+                  (and-let* ((f (buffer-file-name b)))
+                    (or (backup-file-name-p f)
+                        (not (akn/backup-enable-predicate f))))))))
 
 ;;;; backups (disabled by doom)
 
@@ -1475,27 +1448,27 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
             (message "(lsp-tailwindcss not installed)")))))
 
   :config
-  (pushnew! lsp-tailwindcss-major-modes
-            'html-mode 'html-ts-mode
-            'mhtml-mode 'mhtml-ts-mode
-            'css-mode 'css-ts-mode
-            'scss-mode 'scss-ts-mode
-            'sass-mode 'sass-ts-mode
-            'web-mode 'web-ts-mode
-            'js2-mode 'js2-ts-mode
-            'js3-mode 'js3-ts-mode
-            'jsx-mode 'jsx-ts-mode
-            'rjsx-mode 'rjsx-ts-mode
-            'js-mode 'js-base-mode
-            'angular-mode 'angular-ts-mode
-            '+web-angularjs-mode
-            'vue-mode 'vue-ts-mode
-            'less-css-mode 'less-css-ts-mode
-            'less-mode 'less-ts-mode
-            'typescript-mode 'typescript-ts-base-mode
-            'typescript-tsx-mode 'typescript-tsx-ts-mode
-            'svelte-mode 'svelte-ts-mode
-            'astro-mode 'astro-ts-mode))
+  (akn/pushnew lsp-tailwindcss-major-modes
+    'html-mode 'html-ts-mode
+    'mhtml-mode 'mhtml-ts-mode
+    'css-mode 'css-ts-mode
+    'scss-mode 'scss-ts-mode
+    'sass-mode 'sass-ts-mode
+    'web-mode 'web-ts-mode
+    'js2-mode 'js2-ts-mode
+    'js3-mode 'js3-ts-mode
+    'jsx-mode 'jsx-ts-mode
+    'rjsx-mode 'rjsx-ts-mode
+    'js-mode 'js-base-mode
+    'angular-mode 'angular-ts-mode
+    '+web-angularjs-mode
+    'vue-mode 'vue-ts-mode
+    'less-css-mode 'less-css-ts-mode
+    'less-mode 'less-ts-mode
+    'typescript-mode 'typescript-ts-base-mode
+    'typescript-tsx-mode 'typescript-tsx-ts-mode
+    'svelte-mode 'svelte-ts-mode
+    'astro-mode 'astro-ts-mode))
 
 ;;; doom reloading and upgrading
 (setq doom-upgrade-command
@@ -1564,13 +1537,13 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   ;; :init
   ;; (let ((newval "5:00am"))
   ;;   (unless (equal (bound-and-true-p midnight-delay) newval)
-  ;;     (setq! midnight-delay newval)))
+  ;;     (setopt midnight-delay newval)))
   :config
-  (setq! clean-buffer-list-delay-special (* 60 60 6))
+  (setopt clean-buffer-list-delay-special (* 60 60 6))
   ;; https://old.reddit.com/r/emacs/comments/15rubhr/til_midnight_mode/
-  (pushnew! clean-buffer-list-kill-regexps
-            (rx bos "magit-" (or "process" "diff"))
-            (rx bos "*helpful"))
+  (akn/pushnew clean-buffer-list-kill-regexps
+    (rx bos "magit-" (or "process" "diff"))
+    (rx bos "*helpful"))
   (akn/advise-letf! clean-buffer-list (akn/dont-kill-workspace-buffers-a)
     (bufferlo-include-buried-buffers nil)
     (clean-buffer-list-kill-never-buffer-names
@@ -1594,9 +1567,9 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;;; deft
 (use-package! deft
   :config
-  (setq! deft-directory "~/Documents/obsidian-vault"
-         deft-default-extension "md"
-         deft-recursive t))
+  (setopt deft-directory "~/Documents/obsidian-vault"
+          deft-default-extension "md"
+          deft-recursive t))
 
 ;;; word wrap
 ;; enable word-wrap (almost) everywhere
@@ -1627,6 +1600,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 (after! 'rust-prog-mode
   (advice-add #'adaptive-wrap-fill-context-prefix :around #'akn/disable-slow-adaptive-fill-functions-a))
 
+(setopt +word-wrap-extra-indent 'double)
+
 ;;; isearch
 (after! isearch
   (map! :map isearch-mode-map
@@ -1638,22 +1613,22 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
         (isearch-clean-overlays)
         t)))
 
-  (setq! isearch-allow-scroll 'unlimited)
+  (setopt isearch-allow-scroll 'unlimited)
   (dolist (scroll-cmd akn/all-scroll-commands)
     (put scroll-cmd 'isearch-scroll t))
 
-  (setq! isearch-allow-motion nil)
+  (setopt isearch-allow-motion nil)
   (setf (get #'scroll-up   'isearch-motion) nil)
   (setf (get #'scroll-down 'isearch-motion) nil)
   ;; (setf (get #'evil-scroll-page-down 'isearch-motion) (get #'scroll-up   'isearch-motion))
   ;; (setf (get #'evil-scroll-page-up   'isearch-motion) (get #'scroll-down 'isearch-motion))
 
-  (setq! isearch-yank-on-move 'shift
-         isearch-lazy-count t
-         isearch-lazy-highlight t
-         isearch-resume-in-command-history t
-         search-ring-max 128
-         regexp-search-ring-max 128))
+  (setopt isearch-yank-on-move 'shift
+          isearch-lazy-count t
+          isearch-lazy-highlight t
+          isearch-resume-in-command-history t
+          search-ring-max 128
+          regexp-search-ring-max 128))
 
 ;;; fix rectangular selection in normal mode
 ;; TODO: make it actually do visual block
@@ -1680,8 +1655,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   ;; https://emacs.stackexchange.com/a/32523
   ;; https://company-mode.github.io/manual/Customization.html#index-company_002didle_002ddelay
   (after! org
-    (setq! company-idle-delay
-           (lambda () (if (string-equal major-mode "org-mode") nil 0.2)))))
+    (setopt company-idle-delay
+            (lambda () (if (string-equal major-mode "org-mode") nil 0.2)))))
 
 ;;; gmch alternative (experimental)
 ;; (when nil
@@ -1705,18 +1680,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
         [remap save-buffer] #'Custom-save))
 
 ;;; xterm-color
-(after! compile
-  (require 'xterm-color)
 
-  ;; https://github.com/atomontage/xterm-color?tab=readme-ov-file#compilation-buffers
-  ;; WARNING: "This compilation-mode configuration will break ag.el and rg.el,
-  ;; since these packages expect ANSI control sequences to be part of
-  ;; compilation output so that they can be used for matching."
-  (add-to-list 'compilation-environment "TERM=xterm-256color"))
-(defadvice! akn/xterm-color--advice-compilation-filter-a (f proc string)
-  :around #'compilation-filter
-  (funcall f proc (xterm-color-filter string)))
-
+;;;; comint / shell-mode
 ;; TODO: fix echoing and prompt
 ;; (after! shell
 ;;   (require 'xterm-color)
@@ -1738,6 +1703,18 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
 ;;
 ;;         (comint-simple-send (get-buffer-process (current-buffer)) "TERM=xterm-256color")))))
 
+;;;; compilation buffers
+(after! compile
+  (require 'xterm-color)
+  ;; https://github.com/atomontage/xterm-color?tab=readme-ov-file#compilation-buffers
+  ;; WARNING: "This compilation-mode configuration will break ag.el and rg.el,
+  ;; since these packages expect ANSI control sequences to be part of
+  ;; compilation output so that they can be used for matching."
+  (add-to-list 'compilation-environment "TERM=xterm-256color")
+  (define-advice compilation-filter (:around (f proc string) xterm-color)
+    (funcall f proc (xterm-color-filter string))))
+
+;;;; eshell
 (after! eshell
   (require 'xterm-color)
 
@@ -1748,6 +1725,7 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   (add-to-list 'eshell-preoutput-filter-functions #'xterm-color-filter)
   (setq eshell-output-filter-functions (remove #'eshell-handle-ansi-color eshell-output-filter-functions))
   (setenv "TERM" "xterm-256color"))
+
 ;;; elisp
 (map!
  (:mode (emacs-lisp-mode lisp-interaction-mode)
@@ -1802,7 +1780,8 @@ Mostly copied from `delete-auto-save-file-if-necessary'."
   "If you don't remember the emacs notation for keybindings
 (e.g. that command-shift-f is s-F), then this should help!"
   (interactive
-   (list (read-key-sequence "Press key: ")))
+   (list (progn (read-key-sequence "Press key: ")
+                (this-single-command-raw-keys))))
   (akn/evil-save-state
    (evil-force-normal-state)
    (if (akn/has-quote-in-rest-of-line-p)
@@ -1983,22 +1962,22 @@ Use \\[visible-mode] to show the full hashes."
   (dirvish-peek-mode))
 
 (after! dirvish
-  (pushnew! dirvish-preview-environment
-            '(tab-line-exclude . t)
-            '(tab-line-tabs-function . nil)))
+  (akn/pushnew dirvish-preview-environment
+    '(tab-line-exclude . t)
+    '(tab-line-tabs-function . nil)))
 (after! consult
-  (pushnew! consult-preview-variables
-            '(tab-line-exclude . t)
-            '(tab-line-tabs-function . nil))
-  (pushnew! consult-preview-allowed-hooks
-            #'doom-optimize-for-large-files-h))
+  (akn/pushnew consult-preview-variables
+    '(tab-line-exclude . t)
+    '(tab-line-tabs-function . nil))
+  (akn/pushnew consult-preview-allowed-hooks
+    #'doom-optimize-for-large-files-h))
 
 ;;; Projectile
 
 ;; At least for the projects I've been working on lately, the speedup from
 ;; caching isn't worth the annoyance of having to manually run
 ;; `projectile-invalidate-cache' (<leader> p i) all the time.
-(setq! projectile-enable-caching nil)
+(setopt projectile-enable-caching nil)
 
 (use-package! projectile
   :init
@@ -2016,7 +1995,7 @@ Use \\[visible-mode] to show the full hashes."
   :config
   (defvar akn/projectile-timer nil)
   ;; discover projects in ~/prog and its sub-directories
-  (setq! projectile-project-search-path '(("~/prog" . 2) ("~/prog/emacs/" . 2)))
+  (setopt projectile-project-search-path '(("~/prog" . 2) ("~/prog/emacs/" . 2)))
   (when akn/projectile-timer (cancel-timer akn/projectile-timer))
   (defun akn/discover-projects ()
     (interactive)
@@ -2031,7 +2010,7 @@ Use \\[visible-mode] to show the full hashes."
   ;;   (projectile-discover-projects-in-search-path)))
 
   ;; originally #'doom-project-find-file
-  (setq! +workspaces-switch-project-function #'akn/workspace-switch-project)
+  (setopt +workspaces-switch-project-function #'akn/workspace-switch-project)
   (defun akn/workspace-switch-project (&optional dirname)
     (interactive)
     (when (null dirname) (setq dirname default-directory))
@@ -2093,7 +2072,7 @@ Also see `+default/find-file-under-here'."
   (map! (:map embark-general-map
               "y" #'embark-copy-as-kill
               "s-c" #'embark-copy-as-kill))
-  (setq! embark-cycle-key "C-;"))
+  (setopt embark-cycle-key "C-;"))
 
 ;;; indent guides
 (use-package! indent-bars
@@ -2123,7 +2102,7 @@ Also see `+default/find-file-under-here'."
 
 ;;; lsp
 
-(setq! lsp-auto-guess-root t)
+(setopt lsp-auto-guess-root t)
 
 (add-to-list 'warning-suppress-types '(lsp-mode akn-unknown-notification))
 (akn/advise-letf! lsp--on-notification (akn/more-specific-warning-type-a)
@@ -2189,8 +2168,8 @@ current buffer, killing it."
 (akn/remove-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
 
 ;; default is #o111 (ugo+x)
-(setq! executable-chmod #o100) ; u+x
-(setq! executable-prefix-env t)
+(setopt executable-chmod #o100) ; u+x
+(setopt executable-prefix-env t)
 
 ;; TODO
 (add-hook! 'after-save-hook #'akn/executable-make-buffer-file-user-executable-if-script-p)
@@ -2235,11 +2214,7 @@ file modes."
 
 ;;; yasnippet
 (use-package! yasnippet
-  :config
-  (map! ;; :i "S-SPC" yas-maybe-expand
-   :i "M-TAB" (akn/cmds! (yas-maybe-expand-abbrev-key-filter #'yas-expand) #'yas-expand
-                         (and (char-before) (string-match-p (rx alphanumeric) (char-to-string (char-before)))) #'yasnippet-capf
-                         #'consult-yasnippet)))
+  :config)
    ;; (akn/defun akn/yasnippet-capf ()
    ;;   (interactive)
    ;;   (condition-case nil
@@ -2305,7 +2280,7 @@ file modes."
         "s-i" #'markdown-insert-italic
         "s-b" #'markdown-insert-bold)
   ;; In markdown, if we're in a list, add a new bullet when I press enter
-  (setq! markdown-indent-on-enter 'indent-and-new-item)
+  (setopt markdown-indent-on-enter 'indent-and-new-item)
   (defun akn/markdown-enter-key ()
     (interactive)
     (cond
@@ -2359,7 +2334,7 @@ file modes."
 
 
   ;; syntax highlight code blocks
-  (setq! markdown-fontify-code-blocks-natively t))
+  (setopt markdown-fontify-code-blocks-natively t))
 
 ;;; tty
 ;; https://stackoverflow.com/a/62266648
@@ -2374,7 +2349,7 @@ file modes."
 ;;; treesit
 (after! treesit
   (unless (eq treesit-font-lock-level 4)
-    (setq! treesit-font-lock-level 4))
+    (setopt treesit-font-lock-level 4))
   (defadvice! akn/treesit-explore-mode-dont-ask-if-one-choice-a (fn &rest outer-args)
     :around #'treesit-explore-mode
     (let* ((akn/completing-read-function--old completing-read-function)
@@ -2431,7 +2406,7 @@ file modes."
      "s" #'copy-as-format-slack
      "w" #'copy-as-format-mediawiki)))
   :config
-  (setq! copy-as-format-default "github"))
+  (setopt copy-as-format-default "github"))
 
 ;;; PERF: speed up killing emacs
 
@@ -2457,7 +2432,7 @@ file modes."
 
 ;;; spelling
 (after! ispell
-  (setq! ispell-personal-dictionary (akn/expand-file "~/.config/enchant/en.dic")))
+  (setopt ispell-personal-dictionary (akn/expand-file "~/.config/enchant/en.dic")))
 (when (modulep! :checkers spell)
   (remove-hook! '(text-mode-hook org-mode-hook markdown-mode-hook TeX-mode-hook rst-mode-hook mu4e-compose-mode-hook message-mode-hook git-commit-mode-hook)
     #'spell-fu-mode
@@ -2500,22 +2475,26 @@ file modes."
 ;;; so-long
 
 (after! so-long
-  (pushnew! so-long-minor-modes
-            'parinfer-rust-mode
-            'outline-minor-mode
-            'outli-mode
-            'display-line-numbers-mode
-            'flycheck-popup-tip-mode
-            'page-break-lines-mode
-            '+word-wrap-mode
-            'adaptive-wrap-prefix-mode
-            'goto-address-mode
-            'goto-address-prog-mode
-            'lsp-mode
-            'eglot-mode)
-  (pushnew! so-long-variable-overrides
-            '(display-line-numbers . nil)
-            '(display-line-numbers-type . nil)))
+  (akn/pushnew so-long-minor-modes
+    'parinfer-rust-mode
+    'outline-minor-mode
+    'outli-mode
+    'display-line-numbers-mode
+    'flycheck-popup-tip-mode
+    'page-break-lines-mode
+    '+word-wrap-mode
+    'adaptive-wrap-prefix-mode
+    'goto-address-mode
+    'goto-address-prog-mode
+    'lsp-mode
+    'eglot-mode)
+  (akn/pushnew so-long-variable-overrides
+    '(display-line-numbers . nil)
+    '(display-line-numbers-type . nil)))
+
+;; doom doesn't use `setq-default' for some reason?
+(setq-default so-long-function #'turn-on-so-long-minor-mode
+              so-long-revert-function #'turn-off-so-long-minor-mode)
 
 ;;; hardtime
 
@@ -2646,8 +2625,9 @@ In `eshell', fish completion is only used when `pcomplete' fails."
         (buffer-substring start end)))))
 
 ;;; buffer names
-(setq! uniquify-min-dir-content 1
-       uniquify-trailing-separator-p 'forward)
+(setopt uniquify-min-dir-content 1
+        uniquify-trailing-separator-p t
+        uniquify-buffer-name-style 'forward)
 
 ;;; polymode
 (after! polymode
@@ -2679,9 +2659,9 @@ In `eshell', fish completion is only used when `pcomplete' fails."
   (add-hook! '(polymode-init-host-hook polymode-init-inner-hook)
     (+word-wrap-mode -1))
 
-  (pushnew! polymode-move-these-minor-modes-from-old-buffer
-            'tab-line-mode
-            'better-backup-buffer-mode)
+  (akn/pushnew polymode-move-these-minor-modes-from-old-buffer
+    'tab-line-mode
+    'better-backup-buffer-mode)
 
   (add-hook! 'markdown-mode-hook
     (defun akn/disable-code-block-fontify-if-polymode-h ()
@@ -2699,10 +2679,10 @@ there's no need for `markdown-mode' to reduplicate the effort."
 ;; should probably just use org-capture
 
 (after! remember
-  (setq! remember-all-handler-functions t
-         remember-handler-functions '(remember-append-to-file remember-store-in-files remember-diary-extract-entries)
-         remember-data-directory (expand-file-name "remember" doom-data-dir)
-         remember-data-file (expand-file-name "remember.txt" doom-data-dir))
+  (setopt remember-all-handler-functions t
+          remember-handler-functions '(remember-append-to-file remember-store-in-files remember-diary-extract-entries)
+          remember-data-directory (expand-file-name "remember" doom-data-dir)
+          remember-data-file (expand-file-name "remember.txt" doom-data-dir))
 
   (advice-add #'remember-append-to-file :around #'akn/inhibit-read-only-a)
   (advice-add #'remember-store-in-files :around #'akn/inhibit-read-only-a)
@@ -2716,7 +2696,7 @@ there's no need for `markdown-mode' to reduplicate the effort."
 ;;;; diary
 
 (after! calendar
-  (setq! diary-file (expand-file-name "diary.txt" "~/org")))
+  (setopt diary-file (expand-file-name "diary.txt" "~/org")))
 
 ;;;; holidays
 
@@ -2961,7 +2941,7 @@ there's no need for `markdown-mode' to reduplicate the effort."
   ;; Set back from Doom's default, since the editorconfig maintainers say that
   ;; the elisp implementation is "faster and more secure"
   ;; (https://github.com/editorconfig/editorconfig-emacs/issues/230#issuecomment-701916590).
-  (setq! editorconfig-get-properties-function #'editorconfig-core-get-properties-hash)
+  (setopt editorconfig-get-properties-function #'editorconfig-core-get-properties-hash)
 
   ;; conf-mode isn't a child of prog-mode or text-mode, so editorconfig-mode
   ;; doesn't reapply in some cases after reverting the buffer.

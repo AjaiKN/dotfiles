@@ -2,8 +2,6 @@
 
 (require 'akn)
 (require 'general)
-(eval-when-compile
-  (require 'doom-keybinds))
 
 ;;; fullscreen stuff
 
@@ -81,7 +79,7 @@
   (interactive)
   (setq prefix-arg current-prefix-arg)
   (setq unread-command-events (listify-key-sequence (kbd doom-localleader-alt-key)))
-  (minibuffer-message "%s- ") doom-localleader-alt-key)
+  (minibuffer-message "%s- " doom-localleader-alt-key))
 (defun akn/localleader-which-key-immediate ()
   (interactive)
   (setq prefix-arg current-prefix-arg)
@@ -144,6 +142,13 @@ to normal state is deprioritized)."
         (completion-preview-hide)
         t))))
 
+;;; undo https://github.com/doomemacs/doomemacs/commit/7d0f2032ea72ae8c8ffae80787b4ee8b4a584945
+
+(map! :gi [remap newline] #'newline-and-indent
+      :i  "S-RET"         #'electric-indent-just-newline
+      :i  [S-return]      #'electric-indent-just-newline
+      :i  "C-j"           #'electric-indent-just-newline)
+
 ;;; leader bindings
 
 (map!
@@ -196,7 +201,11 @@ to normal state is deprioritized)."
 
  (:prefix "i"
   (:when (modulep! :editor typing-the-word-blimpy-in-doom-emacs)
-   :desc "Blimpy" "B" #'blimpy-type-the-word-blimpy-in-emacs))
+    :desc "Blimpy" "B" #'blimpy-type-the-word-blimpy-in-emacs)
+  (:when (modulep! :editor tempel)
+    :desc "Snippet" "s" #'tempel-insert
+    (:when (modulep! :editor snippets)
+      :desc "Yasnippet" "S" #'yas-insert-snippet)))
 
  (:prefix "o"
   (:when (and (modulep! :term term) (not (modulep! :term eat)))
@@ -214,12 +223,17 @@ to normal state is deprioritized)."
   (:when (modulep! :term mistty)
     "q" #'+mistty/toggle
     "Q" #'+mistty/here)
+  (:when (modulep! :term ghostel)
+    "g" #'+ghostel/toggle
+    "G" #'+ghostel/here)
 
   "C-c" #'akn/open-in-vscode
   "C" #'akn/open-project-in-vscode
   "L" #'akn/open-links
   (:when (modulep! :emacs calc)
    "c" #'calc-dispatch)
+  (:when (modulep! :lang mediawiki)
+   "w" #'+mediawiki/open)
   ;; Doom maps this, but then overrides it if (modulep! :emacs dired +dirvish) is enabled.
   (:when (modulep! :ui treemacs)
    :desc "Project sidebar" "p" #'+treemacs/toggle
@@ -234,7 +248,9 @@ to normal state is deprioritized)."
 
  (:prefix "q"
   "n" #'akn/open-new-emacs
-  "N" #'akn/open-new-emacs-with-profile)
+  "N" #'akn/open-new-emacs-with-profile
+  :desc "Restart & restore Emacs"      "r" #'akn/restart-and-restore
+  :desc "Restart Emacs"                "R" #'akn/restart)
 
  (:prefix "r"
   (:when (and (modulep! :tools regex) (boundp 'akn/pcre2el-keymap))
@@ -367,6 +383,9 @@ to normal state is deprioritized)."
   `(akn/cmds! (+multiple-cursors-use-evil-mc-p) ,if-evil ,if-not-evil))
 
 (map!
+ (:map override-global-map ;take precedence over Doom's Evil smart tab
+  :i [tab] (akn/cmds! (tempel-expand) #'tempel-expand))
+
  (:when (modulep! :ui highlight-symbol)
   ;; NOTE: `*' (`evil-ex-search-word-forward') and `\#' (`evil-ex-search-word-backward') might be a better way
   :desc "Highlight current symbol occurences" "M-i"  #'symbol-overlay-put)
@@ -404,6 +423,28 @@ to normal state is deprioritized)."
    "M-g z t"     (+mc-if-evil-mc #'+multiple-cursors/evil-mc-toggle-cursors             #'+multiple-cursors/mc-toggle-cursors)
    "M-s-t"       (+mc-if-evil-mc #'+multiple-cursors/evil-mc-toggle-cursors             #'+multiple-cursors/mc-toggle-cursors)
    "s-y" #'+multiple-cursors/mc-toggle-evil)
+
+ (:when (modulep! :editor snippets)
+   :i "M-TAB" (akn/cmds! (yas-maybe-expand-abbrev-key-filter #'yas-expand) #'yas-expand
+                         (and (current-word 'strict) (not (use-region-p))) #'yasnippet-capf
+                         #'yas-insert-snippet))
+
+ (:when (modulep! :editor tempel)
+   :i "M-TAB" (akn/defun akn/tempel-complete ()
+                (interactive)
+                (or (when (tempel-expand)
+                      (call-interactively #'tempel-expand)
+                      t)
+                    (and (current-word 'strict)
+                         (not (use-region-p))
+                         (condition-case _err
+                             (progn
+                               (tempel-complete t)
+                               t)
+                           (user-error nil)))
+                    (call-interactively (if (modulep! :completion vertico)
+                                            #'consult-tempel
+                                          #'tempel-insert)))))
 
  (:when (modulep! :os emacs-mac)
    "H-<up>"    (kmacro "s-<up>")
@@ -669,6 +710,7 @@ to normal state is deprioritized)."
                      (thing-at-point-file-at-point) #'find-file-at-point
                      (derived-mode-p 'helpful-mode) #'helpful-at-point
                      (derived-mode-p 'embark-collect-mode) #'embark-act
+                     (and (derived-mode-p 'special-mode) (keymap-local-lookup "RET")) it
                      ;; (doom-thing-at-point-or-region) #'+lookup/definition
                      (let ((arg current-prefix-arg))
                        (require 'embark)
@@ -782,6 +824,9 @@ to normal state is deprioritized)."
 ;;; major/minor mode keymaps
 
 (map!
+ (:map ,+default-minibuffer-maps
+  "C-v" #'yank)
+
  (:when (modulep! :editor fold)
    :after cus-edit
    :map custom-mode-map
@@ -821,25 +866,25 @@ to normal state is deprioritized)."
                                 #'+regex/xr-try-replace-at-point)))
 
  (:map help-map
-            "s-;" (cmd! (message "%s"
-                                 (let ((arg current-prefix-arg))
-                                  (if-let* ((targets (embark--targets)))
-                                        (let* ((target
-                                                (or (nth
-                                                     (if (or (null arg) (minibufferp))
-                                                         0
-                                                       (mod (prefix-numeric-value arg) (length targets)))
-                                                     targets)))
-                                               (type (plist-get target :type))
-                                               (default-action (embark--default-action type))
-                                               (action (or (command-remapping default-action) default-action)))
-                                          action)
-                                    "no command")))))
+       "s-;" (cmd! (message "%s"
+                            (let ((arg current-prefix-arg))
+                              (if-let* ((targets (embark--targets)))
+                                  (let* ((target
+                                          (or (nth
+                                               (if (or (null arg) (minibufferp))
+                                                   0
+                                                 (mod (prefix-numeric-value arg) (length targets)))
+                                               targets)))
+                                         (type (plist-get target :type))
+                                         (default-action (embark--default-action type))
+                                         (action (or (command-remapping default-action) default-action)))
+                                    action)
+                                "no command")))))
 
  (:when (and (modulep! :editor evil) (modulep! +evil-insert))
    :gi [s-backspace] #'evil-delete-back-to-indentation)
 
- (:when (modulep! :ui doom-dashboard)
+ (:when (modulep! :ui dashboard)
    "s-<return>" #'akn/fullscreen-toggle)
 
  (:after evil-snipe
@@ -853,7 +898,7 @@ to normal state is deprioritized)."
  (:map (text-mode-map org-mode-map markdown-mode-map akn/new-file-mode-map global-map)
        "s-C" #'count-words)
 
-      ;; with-editor-mode is used by commit message editors in magit, for example
+ ;; with-editor-mode is used by commit message editors in magit, for example
  (:after with-editor
   :map with-editor-mode-map
   ;; like vscode commit messages
@@ -934,7 +979,7 @@ beginning of region."
 
 ;;; evil insert
 (when (modulep! +evil-insert)
-  (setq! evil-disable-insert-state-bindings t))
+  (setopt evil-disable-insert-state-bindings t))
 
 ;;;; evil insert state C-x
 

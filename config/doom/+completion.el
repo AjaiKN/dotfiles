@@ -15,21 +15,20 @@
   ;; (require 'doom-packages)
   (require 'akn-doom-use-package)
   ;; (require 'doom-modules)
-  (require 'doom-keybinds)
   (require 'subr-x))
 
 (eval-and-compile
-  (setq! use-package-always-defer t))
+  (setopt use-package-always-defer t))
 
 (eval-and-compile
   (require 'akn))
 
 ;;; Completion
 
-(pushnew! completion-ignored-extensions
-          ".zwc"                        ; zsh word code
-          ".DS_Store"                   ; macOS
-          ".jj/")                       ; https://github.com/jj-vcs/jj
+(akn/pushnew completion-ignored-extensions
+  ".zwc"                        ; zsh word code
+  ".DS_Store"                   ; macOS
+  ".jj/")                       ; https://github.com/jj-vcs/jj
 
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
 ;; also see `completion-category-defaults' and `completion-category-overrides'
@@ -43,17 +42,17 @@
       (setf (alist-get `imenu completion-category-overrides) `((styles akn/orderless-without-initialism orderless ,@maybe-fussy basic)))
       (setf (alist-get `consult-grep completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
       (setf (alist-get `consult-location completion-category-overrides) `((styles akn/orderless-without-initialism basic)))
-      (pushnew! completion-category-overrides
-                ;; `(lsp-capf         (styles orderless ,@maybe-fussy basic)) ;doom`s default
-                `(imenu             (styles akn/orderless-without-initialism orderless ,@maybe-fussy basic))
-                `(file              (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher-or-initialism ,@maybe-fussy partial-completion))
-                `(bookmark          (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher ,@maybe-fussy partial-completion))
-                `(consult-location  (styles akn/orderless-without-initialism ,@maybe-fussy basic))
-                `(consult-grep      (styles akn/orderless-without-initialism ,@maybe-fussy basic))
-                ;; Override the defaults in completion-category-defaults
-                `(racket-identifier (styles ,@completion-styles))
-                `(racket-module     (styles ,@completion-styles))
-                `(email             (styles ,@completion-styles)))))
+      (akn/pushnew completion-category-overrides
+        ;; `(lsp-capf         (styles orderless ,@maybe-fussy basic)) ;doom`s default
+        `(imenu             (styles akn/orderless-without-initialism orderless ,@maybe-fussy basic))
+        `(file              (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher-or-initialism ,@maybe-fussy partial-completion))
+        `(bookmark          (styles +vertico-basic-remote akn/orderless-without-prefix-dispatcher ,@maybe-fussy partial-completion))
+        `(consult-location  (styles akn/orderless-without-initialism ,@maybe-fussy basic))
+        `(consult-grep      (styles akn/orderless-without-initialism ,@maybe-fussy basic))
+        ;; Override the defaults in completion-category-defaults
+        `(racket-identifier (styles ,@completion-styles))
+        `(racket-module     (styles ,@completion-styles))
+        `(email             (styles ,@completion-styles)))))
    ((modulep! :completion fussy)
     (setq completion-styles '(fussy basic)))
    (t
@@ -107,9 +106,9 @@
 
   :config
   ;; https://github.com/oantolin/orderless#component-matching-styles
-  (setq! orderless-matching-styles (list #'orderless-literal
-                                         #'orderless-regexp
-                                         #'orderless-initialism))
+  (setopt orderless-matching-styles (list #'orderless-literal
+                                          #'orderless-regexp
+                                          #'orderless-initialism))
 
   ;; add a space after point (to mimic substring completion style)
   (defadvice! akn/completion-add-space-after-point-a (args)
@@ -170,19 +169,29 @@
 ;;; corfu
 
 (after! corfu
+  (setopt +corfu-want-ret-to-confirm t ;akn/should-tab-cycle-candidates
+          corfu-preselect (if akn/should-tab-cycle-candidates 'prompt t))
+
+  ;; (when (not akn/should-tab-cycle-candidates)
+  ;;   (setq-hook! 'minibuffer-mode-hook
+  ;;     +corfu-want-ret-to-confirm nil))
+
   (map! (:map corfu-map
          ;; when inside popup
+         :gie "<tab>"     (akn/cmds! akn/should-tab-cycle-candidates #'corfu-next     #'corfu-complete)
+         :gie "TAB"       (akn/cmds! akn/should-tab-cycle-candidates #'corfu-next     #'corfu-complete)
+         :gie "<backtab>" (akn/cmds! akn/should-tab-cycle-candidates #'corfu-previous)
+         :gie "S-TAB"     (akn/cmds! akn/should-tab-cycle-candidates #'corfu-previous)
+         :gie "S-<tab>"   (akn/cmds! akn/should-tab-cycle-candidates #'corfu-previous)
          :i "C-SPC" #'corfu-insert-separator
-         :gie "<tab>" #'corfu-next
-         :gie "TAB" #'corfu-next
-         :gie "<backtab>" #'corfu-previous
-         :gie "S-TAB" #'corfu-previous)
+         :gie "<down>" #'corfu-next
+         :gie "<up>" #'corfu-previous
+         :gie "C-j" #'corfu-next
+         :gie "C-k" #'corfu-previous
+         :gie "C-n" #'corfu-next
+         :gie "C-p" #'corfu-previous)
         (:map corfu-mode-map
          ;; when corfu-mode is on
-         :i "C-@"   #'completion-at-point
-         :i "C-SPC" #'completion-at-point
-         :i "C-n"   #'+corfu/dabbrev-or-next
-         :i "C-p"   #'+corfu/dabbrev-or-last
          :nv "C-SPC" nil)
         :i "C-S-SPC" #'set-mark-command
         :i "C-@"     #'set-mark-command))
@@ -194,12 +203,36 @@
         (setq-local tab-always-indent 'complete))
     (when (eq tab-always-indent 'complete)
       (kill-local-variable 'tab-always-indent))))
-(add-hook! '(org-mode-hook markdown-mode-hook)
-  (defun akn/corfu-mode-off ()
-    (corfu-mode -1)))
 
 ;; (use-package! corfu-mouse
 ;;   :ghook 'corfu-mode-hook)
+
+;;;; disabling corfu
+
+;; TODO: PR/issue: +corfu-inhibit-auto-functions doesn't work?
+(after! corfu
+  (define-advice corfu-auto--complete-deferred (:before-while (&rest _) akn/+corfu-inhibit-auto-functions-a)
+    (not (run-hook-with-args-until-success '+corfu-inhibit-auto-functions))))
+
+(define-minor-mode akn/corfu-auto-disabled-mode
+  "Disable corfu-auto."
+  :group 'akn
+  (if akn/corfu-auto-disabled-mode
+      (remove-hook 'post-command-hook #'corfu-auto--post-command 'local)
+    (when (bound-and-true-p corfu-auto)
+      (add-hook 'post-command-hook #'corfu-auto--post-command nil 'local))))
+(when (modulep! :completion corfu)
+  (akn/pushnew +corfu-inhibit-auto-functions
+    (lambda () akn/corfu-auto-disabled-mode)
+    (lambda () (and (derived-mode-p 'org-mode) (org-at-table-p)))
+    (lambda () (and (fboundp 'yas-active-snippets) (yas-active-snippets)))))
+(add-hook! 'corfu-mode-hook :depth 95
+  (defun akn/corfu--check-auto-disabled-h ()
+    (if akn/corfu-auto-disabled-mode
+        (remove-hook 'post-command-hook #'corfu-auto--post-command 'local))))
+
+(add-hook! '(text-mode-hook org-mode-hook markdown-mode-hook mediawiki-mode-hook)
+           #'akn/corfu-auto-disabled-mode)
 
 ;;; sorting
 
@@ -251,6 +284,46 @@
   (setq list (vertico-sort-alpha list))
   (nconc (cl-loop for x in list if (string-suffix-p "/" x) collect x)
          (cl-loop for x in list if (not (string-suffix-p "/" x)) collect x)))
+
+;;; abbrev-mode
+;; mainly for tempel-abbrev-mode
+(add-hook! '(java-mode-hook java-ts-mode-hook
+             sh-base-mode-hook)
+             ;; mediawiki-mode-hook)
+           #'abbrev-mode)
+
+
+(define-advice self-insert-command (:around (fn &rest args) akn/no-abbrev-sometimes-a)
+  "Only allow abbrev expansion if the last command was `self-insert-command'.
+
+Also disable abbrev expansions temporarily after undo or when shift-translated.
+If I just undid an abbrev expansion, then I press the key again, I
+probably don't want the abbrev expansion to be done this time. Also,
+if I press shift-SPC, I don't want the abbrev to expand."
+  (if (and abbrev-mode
+           (or
+            this-command-keys-shift-translated
+            ;; Experimental: only expand abbrevs if the last command was self-insert-command
+            (not (eq last-command #'self-insert-command))))
+                     ;; (eq last-command (command-remapping 'self-insert-command))))))
+            ;; (and (fboundp 'undo--last-change-was-undo-p)
+            ;;      (undo--last-change-was-undo-p buffer-undo-list))))
+      (let (abbrev-mode)
+        (apply fn args))
+    (apply fn args)))
+;; Another possible way to do the same thing:
+;; (map! [remap self-insert-command]
+;;       (akn/cmds! (and abbrev-mode
+;;                       (or this-command-keys-shift-translated
+;;                           (and (fboundp 'undo--last-change-was-undo-p)
+;;                                (undo--last-change-was-undo-p buffer-undo-list))))
+;;                  #'akn/self-insert-command-no-abbrev))
+;; (defun akn/self-insert-command-no-abbrev ()
+;;   (interactive)
+;;   (let (abbrev-mode)
+;;     (unwind-protect
+;;         (call-interactively #'self-insert-command)
+;;       (setq this-command #'self-insert-command))))
 
 ;;; file-local variables
 

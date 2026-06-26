@@ -139,18 +139,6 @@ The predicate is passed as argument to `buffer-match-p', which see."
              #'better-backup--write-buffer-sync)
            file))
 
-(cl-defun better-backup--copy-file-async (from &optional (to (better-backup--backup-file-name from)))
-  ""
-  (let ((process
-         (make-process :name "better-backup"
-                       :command `("cp" "-i" ,from ,to)
-                       :connection-type 'pipe)))
-    (process-send-eof process)))
-
-(cl-defun better-backup--copy-file-sync (from &optional (to (better-backup--backup-file-name from)))
-  ""
-  (copy-file from to nil 'keep-mtime 'preserve-uid-gid 'preserve-permissions))
-
 ;;;; Main
 
 (defvar-local better-backup--buffer-last-backup-tick nil
@@ -179,19 +167,18 @@ The predicate is passed as argument to `buffer-match-p', which see."
   ""
   :group 'better-backup
   (if better-backup-buffer-mode
-      (progn
-        (if (buffer-modified-p)
-            (better-backup--buffer-backup-maybe)
-          (add-hook 'first-change-hook #'better-backup--buffer-backup-maybe nil 'local))
-        (add-hook 'before-save-hook #'better-backup--buffer-backup-maybe nil 'local)
-        (add-hook 'after-save-hook #'better-backup--buffer-backup-maybe 92 'local))
-    (progn
-      (remove-hook 'first-change-hook #'better-backup--buffer-backup-maybe 'local)
-      (remove-hook 'before-save-hook #'better-backup--buffer-backup-maybe 'local)
-      (remove-hook 'after-save-hook #'better-backup--buffer-backup-maybe 'local)
-      (when better-backup--buffer-local-saved-state
-        (buffer-local-restore-state better-backup--buffer-local-saved-state)
-        (setq better-backup--buffer-local-saved-state nil)))))
+      (when (buffer-modified-p)
+        (better-backup--buffer-backup-maybe))
+    (when better-backup--buffer-local-saved-state
+      (buffer-local-restore-state better-backup--buffer-local-saved-state)
+      (setq better-backup--buffer-local-saved-state nil)))
+  (dolist (h '((first-change-hook)
+               (before-save-hook) (after-save-hook . 92)
+               (before-revert-hook) (after-revert-hook . 92)
+               (kill-buffer-hook . -92)))
+    (if better-backup-buffer-mode
+        (add-hook (car h) #'better-backup--buffer-backup-maybe (cdr h) 'local)
+      (remove-hook (car h) #'better-backup--buffer-backup-maybe 'local))))
 
 (provide 'better-backup)
 ;;; better-backup.el ends here

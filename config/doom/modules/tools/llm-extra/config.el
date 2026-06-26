@@ -66,7 +66,7 @@
 (use-package! gptel
   :defer t
   :config
-  (setq! gptel-api-key #'akn/chatgpt-api-key)
+  (setopt gptel-api-key #'akn/chatgpt-api-key)
 
   (gptel-make-gemini "Gemini"
     :key #'akn/gemini-api-key
@@ -81,10 +81,10 @@
   (require 'llm-openai)
   (require 'llm-gemini)
   ;; :default-chat-temperature :default-chat-max-tokens
-  (setq! ellama-provider
-         (cdar akn/llms-alist)
-         ellama-providers
-         (cdr akn/llms-alist)))
+  (setopt ellama-provider
+          (cdar akn/llms-alist)
+          ellama-providers
+          (cdr akn/llms-alist)))
 (after! ellama
   (map! :leader "l l" nil)
   (map! :leader "l l" ellama-command-map)
@@ -104,14 +104,14 @@
 (use-package! chatgpt-shell
   :defer t
   :config
-  (setq! chatgpt-shell-openai-key #'akn/chatgpt-api-key)
+  (setopt chatgpt-shell-openai-key #'akn/chatgpt-api-key)
   (add-hook 'chatgpt-shell-mode-hook #'doom-mark-buffer-as-real-h))
 
 ;;; llm (https://github.com/ahyatt/llm) - library, supports many
 (use-package! llm
   :defer t
   :config
-  (setq! llm-warn-on-nonfree nil)
+  (setopt llm-warn-on-nonfree nil)
   (require 'llm-openai)
   (require 'llm-gemini)
   (defconst akn/llms-alist
@@ -132,10 +132,10 @@
   :commands (semext-forward-part semext-backward-part semext-clear-cache semext-query-replace semext-search-forward semext-search-backward)
   :config
   (require 'llm)
-  (setq! semext-provider
-         (akn/->> akn/llms
-                  (seq-filter (lambda (provider) (member 'json-response (llm-capabilities provider))))
-                  (seq-first))))
+  (setopt semext-provider
+          (akn/->> akn/llms
+                   (seq-filter (lambda (provider) (member 'json-response (llm-capabilities provider))))
+                   (seq-first))))
 
 ;;; magit-gptcommit
 
@@ -159,7 +159,7 @@
        ("C" "Accept" (lambda () (interactive) (call-interactively #'magit-gptcommit-commit-create)))]))
   :config
   (require 'llm)
-  (setq! magit-gptcommit-llm-provider akn/llm-main))
+  (setopt magit-gptcommit-llm-provider akn/llm-main))
 
   ;; Enable magit-gptcommit-mode to watch staged changes and generate commit message automatically in magit status buffer
   ;; This mode is optional, you can also use `magit-gptcommit-generate' to generate commit message manually
@@ -170,7 +170,7 @@
 (use-package! chat
   :defer t
   :config
-  (setq! chat-model "gpt-4o-mini")
+  (setopt chat-model "gpt-4o-mini")
   (defadvice! akn/chat-get-api-key-a ()
     :override #'chat-get-api-key
     (or chat-api-key
@@ -203,4 +203,4 @@
               ("C-TAB" . 'copilot-accept-completion-by-word)
               ("C-<tab>" . 'copilot-accept-completion-by-word))
   :config
-  (setq! copilot-indent-offset-warning-disable t))
+  (setopt copilot-indent-offset-warning-disable t))

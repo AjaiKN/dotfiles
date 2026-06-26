@@ -70,7 +70,7 @@
   (setq-hook! 'pdf-view-mode-hook evil-normal-state-cursor (list nil))
 
   ;; HACK Refresh FG/BG for pdfs when `pdf-view-midnight-colors' is changed by a
-  ;;      theme or with `setq!'.
+  ;;      theme or with `setopt'.
   (defun +pdf-reload-midnight-minor-mode-h ()
     (when pdf-view-midnight-minor-mode
       (pdf-info-setoptions

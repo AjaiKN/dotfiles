@@ -1,0 +1,184 @@
+;;; lang/mediawiki/autoload.el -*- lexical-binding: t; -*-
+
+(require 'mediawiki)
+;; (when (modulep! +wikipedia)
+;;   (require 'wikipedia))
+
+(defun +mediawiki--wikipedia-p ()
+  ;; (and-let* (((modulep! +wikipedia))
+  ;;            (site (or mediawiki-site mediawiki-site-default))
+  ;;            (domain (cadr (assoc site mediawiki-site-alist)))
+  ;;            ((string-match-p "\\<wikipedia.org\\>" domain)))))
+  nil)
+
+(defun +mediawiki--read-page (site)
+  (let* ((mediawiki-site site)
+         (hist (cdr (assoc-string mediawiki-site mediawiki-page-history)))
+         (temp-history-symbol (make-symbol "mediawiki-temp-history"))
+         (start-page (mediawiki-site-first-page mediawiki-site)))
+    (set temp-history-symbol (or hist (list start-page)))
+    (akn/completing-read "Wiki Page: "
+                         (if (require 'consult nil t)
+                             (consult--dynamic-collection
+                                 (lambda (input)
+                                   (seq-uniq
+                                    (append
+                                     (let ((downcase-input (downcase input)))
+                                       (cl-loop for page in hist
+                                                when (string-prefix-p downcase-input (downcase page))
+                                                collect (cons page page)))
+                                     (when (length> input 0)
+                                       (let ((data
+                                              (request-response-data
+                                               (request (concat (mediawiki-site-url "Wikipedia") "rest.php/v1/search/title")
+                                                 :params `((q . ,input))
+                                                 :parser #'json-read
+                                                 :timeout 0.5
+                                                 :sync t))))
+                                         (cl-loop for page-object across (alist-get 'pages data)
+                                                  collect
+                                                  (cons (concat (alist-get 'title page-object)
+                                                                (propertize " " 'display '(space :align-to 70))
+                                                                (propertize
+                                                                 (or (alist-get 'description page-object) "")
+                                                                 'face
+                                                                 'completions-annotations))
+                                                        (alist-get 'title page-object))))))
+                                    (lambda (x y) (equal (cdr x) (cdr y)))))
+                               :min-input 0)
+                           hist)
+                         :initial (+mediawiki-page-at-point)
+                         :history temp-history-symbol
+                         :default start-page
+                         :sort nil
+                         :lookup #'consult--lookup-cdr)))
+
+
+;;;###autoload
+(defun +mediawiki-page-at-point ()
+  (ignore-errors (mediawiki-page-at-point)))
+
+;;;###autoload
+(defun +mediawiki-file-p ()
+  (or (derived-mode-p #'mediawiki-file-mode)
+      buffer-file-name))
+
+;;;###autoload
+(defun +mediawiki-virtual-p ()
+  (and (derived-mode-p #'mediawiki-mode)
+       (not (+mediawiki-file-p))))
+
+;;;###autoload
+(defun +mediawiki/save ()
+  (interactive)
+  (when (buffer-modified-p)
+    (call-interactively #'mediawiki-save)
+    (revert-buffer t t t)))
+
+;;;###autoload
+(defun +mediawiki/open (site page)
+  (interactive
+   (let* ((mediawiki-site
+           (if current-prefix-arg
+               (mediawiki-prompt-for-site)
+             (or mediawiki-site mediawiki-site-default))))
+     (list
+      mediawiki-site
+      (or (and (not current-prefix-arg)
+               (+mediawiki-page-at-point))
+          (+mediawiki--read-page mediawiki-site)))))
+  (if-let* ((page (mediawiki-translate-pagename page))
+            (bufname (concat site ": " page))
+            (buf (get-buffer bufname))
+            ((with-current-buffer buf (derived-mode-p #'mediawiki-mode))))
+      (progn
+        (mediawiki-pop-to-buffer buf)
+        (setq-local mediawiki-site site
+            mediawiki-page-title page)
+        (unless (buffer-modified-p)
+          (revert-buffer t)))
+    (mediawiki-edit site page)))
+
+;;;###autoload
+(defun +mediawiki/open-page-at-point ()
+  (interactive)
+  (if-let* ((page (+mediawiki-page-at-point)))
+      (+mediawiki/open (or mediawiki-site mediawiki-site-default) page)
+    (user-error "no page at point")))
+
+;;;###autoload
+(defun +mediawiki-revert-buffer-fn (ignore-auto noconfirm)
+  (if (or (derived-mode-p #'mediawiki-file-mode)
+          buffer-file-name)
+      (revert-buffer--default ignore-auto noconfirm)
+    (run-hooks 'before-revert-hook)
+    (setq-local buffer-file-coding-system 'utf-8
+                mediawiki-page-title (mediawiki-translate-pagename mediawiki-page-title))
+    ;; Get page content and metadata, ensuring metadata is saved in current buffer
+    (let* ((page-data (mediawiki-get mediawiki-site mediawiki-page-title))
+           (page (car page-data))
+           (content (cdr page-data))
+           (tmpfile (shut-up (make-temp-file "mediawiki" nil nil (or content ""))))
+           (inhibit-read-only t)
+           (buffer-file-name tmpfile))
+      (clear-visited-file-modtime)
+      (mediawiki-save-metadata mediawiki-site page)
+      (akn/letf! ((#'set-visited-file-modtime #'ignore))
+        (funcall
+          (or revert-buffer-insert-file-contents-function
+              #'revert-buffer-insert-file-contents--default-function)
+          tmpfile nil))
+      (clear-visited-file-modtime))
+    (set-buffer-modified-p nil)
+    (run-hooks 'after-revert-hook)))
+
+;;;###autoload
+(defun +mediawiki/insert-link ()
+  "TODO: similar to org-insert-link"
+  (interactive))
+
+;;;###autoload
+(defun +mediawiki/edit-js-indirectly ()
+  (interactive)
+  (defvar edit-indirect-guess-mode-function)
+  (let ((edit-indirect-guess-mode-function
+         (lambda (&rest _)
+           (funcall (major-mode-remap #'js-mode))))
+        (display-buffer-overriding-action (cons #'display-buffer-same-window nil)))
+    (edit-indirect-region (point-min) (point-max) t)
+    (+mediawiki-indirect-mode)))
+
+;;;###autoload
+(defun +mediawiki/login (&optional site)
+  (interactive
+   (list
+    (if current-prefix-arg
+        (mediawiki-prompt-for-site))))
+  (let ((newsite
+         (let ((mediawiki-site site))
+           (mediawiki-do-login (or site mediawiki-site mediawiki-site-default)))))
+    (when (derived-mode-p 'mediawiki-mode)
+      (setq-local mediawiki-site (or newsite site mediawiki-site)))))
+
+;;;###autoload
+(defun +mediawiki/logout (&optional site)
+  (interactive
+   (list
+    (if current-prefix-arg
+        (mediawiki-prompt-for-site))))
+  (let ((mediawiki-site site))
+    (mediawiki-do-logout (or site mediawiki-site mediawiki-site-default))))
+
+;;;###autoload
+(defun +mediawiki/history (site page)
+  (interactive
+   (let* ((mediawiki-site
+           (if current-prefix-arg
+               (mediawiki-prompt-for-site)
+             (or mediawiki-site mediawiki-site-default))))
+     (list
+      mediawiki-site
+      (or (and (not current-prefix-arg)
+               mediawiki-page-title)
+          (+mediawiki--read-page mediawiki-site)))))
+  (mediawiki-history page site))

@@ -17,10 +17,8 @@
   (require 'tramp)
   (require 'macroexp)
   (require 'doom nil t)
-  (require 'akn-doom-use-package nil t)
-  ;; (require 'doom-packages)
-  ;; (require 'doom-modules)
-  (require 'doom-ui nil t))
+  (require 'doom-emacs nil t)
+  (require 'akn-doom-use-package nil t))
 (eval-and-compile
   (require 'doom-lib nil t)
   (require 'compat)
@@ -130,6 +128,15 @@ Same as Doom's `doom-unquote'."
 (akn/keywordify akn/read-file-name #'read-file-name
   (prompt dir default-filename mustmatch initial predicate))
 
+;;; obarrays
+
+(defun akn/obarray->list (ob)
+  (let (ret)
+    (when (obarrayp ob)
+      (obarray-map (lambda (sym) (push sym ret))
+                   ob))
+    ret))
+
 ;;; non-doom compat
 
 (defmacro akn--simple-modulep! (group module)
@@ -198,19 +205,6 @@ the variables instead of replacing them."
     `(cl-callf2 delete ,element ,list-var)))
 (akn/rotate-symbols! 'emacs-lisp-mode-hook "add-to-list" "akn/remove-from-list")
 
-(defmacro akn/removeall! (place &rest values)
-  ""
-  (cl-with-gensyms (x vals)
-    `(let ((,vals (list ,@values)))
-       (cl-callf2
-           cl-delete-if
-           (lambda (,x) (member ,x ,vals))
-           ,place))))
-
-(akn/rotate-symbols! 'emacs-lisp-mode-hook
-                    '("pushnew!" "akn/removeall!")
-                    '("cl-pushnew" "akn/removeall!"))
-
 (defmacro akn/remove-hook (hook function &optional _depth local)
   "Like `remove-hook', but takes the same arguments as `add-hook' for convenience."
   (if local
@@ -226,6 +220,35 @@ the variables instead of replacing them."
        ,(when advice-fn-name
           `(fmakunbound ',advice-fn-name)))))
 (akn/rotate-symbols! 'emacs-lisp-mode-hook "define-advice" "akn/undefine-advice")
+
+;;; akn/pushnew
+
+(defmacro akn/pushnew (place &rest values)
+  "Push VALUES sequentially into PLACE, if they aren't already present.
+This is a variadic `cl-pushnew'.
+
+This is taken from Doom's `pushnew!' function, which was deprecated."
+  (declare (indent 1))
+  (let ((var (make-symbol "result")))
+    ;; allow PLACE to be quoted, for compatibility with `add-to-list'
+    (pcase place
+      (`(quote ,(and (pred symbolp) sym))
+       (setq place sym)))
+    `(dolist (,var (list ,@values) (with-no-warnings ,place))
+       (cl-pushnew ,var ,place :test #'equal))))
+
+(defmacro akn/removeall (place &rest values)
+  "The opposite of `akn/pushnew'."
+  (declare (indent 1))
+  (cl-with-gensyms (x vals)
+    `(let ((,vals (list ,@values)))
+       (cl-callf2
+           cl-delete-if
+           (lambda (,x) (member ,x ,vals))
+           ,place))))
+(akn/rotate-symbols! 'emacs-lisp-mode-hook
+                    '("akn/pushnew" "akn/removeall")
+                    '("cl-pushnew" "akn/removeall"))
 
 ;;; convenience macros for setting variables then restoring the old values
 (defmacro akn/mode-set (my-mode-name &rest vars-and-values)
@@ -294,6 +317,9 @@ enabled, and when disabled resets them to their original values."
 
 ;;;###autoload
 (defalias 'akn/follow-mode-split #'follow-delete-other-windows-and-split)
+
+(defalias 'akn/diff-buffer-with-saved #'diff-buffer-with-file)
+(defalias 'akn/diff-unsaved-buffer #'diff-buffer-with-file)
 
 ;;; macros for defining things
 (defmacro akn/defun (name &rest stuff)
@@ -374,7 +400,7 @@ The def* forms accepted are:
                 add-hook add-hook!
                 defvar defvar* defconst akn/defvar-setq
                 ;; not (yet?) implemented
-                set setf setq setq! setcar setcdr setenv setopt setplist
+                set setf setq setcar setcdr setenv setopt setplist
                 setq-hook! setq-local set-default set-register set-variable
                 setq-default setq-mode-local set-default-toplevel-value
                 defalias defclass defsubst defvar-1 defcustom define-inline
@@ -501,6 +527,9 @@ We can use this function to `interactive' without needing to call
          (results (cond
                    ((hash-table-p collection)     (gethash choice collection))
                    ((consp (car-safe collection)) (alist-get choice collection default nil #'equal))
+                   ((and-let* (((not (member choice collection)))
+                               (sym (intern-soft choice))
+                               ((member sym collection)))))
                    (t                             choice))))
     (if (listp results) (car results) results)))
 
@@ -644,6 +673,11 @@ is :around, :before, :after, :override, :after-until,
 ;;;###autoload
 (defun akn/always-ignore-lock-a (fn &rest args)
   (akn/letf! ((#'ask-user-about-lock #'ignore))
+    (apply fn args)))
+
+;;;###autoload
+(defun akn/without-restriction-a (fn &rest args)
+  (without-restriction
     (apply fn args)))
 
 ;;; function for prioritizing keymaps
@@ -967,29 +1001,30 @@ FILE defaults to the current `buffer-file-name'."
     (mixed-pitch-mode 1)))
 
 (defun akn/switch-font (font)
-  (setq! doom-font font)
+  (setopt doom-font font)
   (akn/reload-font))
 ;;;###autoload
 (defun akn/choose-font-family (font-family)
   (interactive
-   (list (akn/completing-read
-          "Font name: "
-          (and window-system
-               (fboundp #'font-family-list)
-               (font-family-list))
-          :predicate nil
-          :require-match t
-          :default (if (or (stringp doom-font) (null doom-font))
-                       doom-font
-                     (symbol-name (font-get doom-font :family)))
-          :preview-key "C-SPC"
-          :state (lambda (action selected-font)
-                   (pcase action
-                     ('setup
-                      (setq akn/preview--original-font doom-font))
-                     ('preview
-                      (ignore-errors
-                        (akn/switch-font (or selected-font akn/preview--original-font)))))))))
+   (let ((doom-font (if (boundp 'doom-font) doom-font (error "doom-font variable doesn't exist"))))
+     (list (akn/completing-read
+            "Font name: "
+            (and window-system
+                 (fboundp #'font-family-list)
+                 (font-family-list))
+            :predicate nil
+            :require-match t
+            :default (if (or (stringp doom-font) (null doom-font))
+                         doom-font
+                       (symbol-name (font-get doom-font :family)))
+            :preview-key "C-SPC"
+            :state (lambda (action selected-font)
+                     (pcase action
+                       ('setup
+                        (setq akn/preview--original-font doom-font))
+                       ('preview
+                        (ignore-errors
+                          (akn/switch-font (or selected-font akn/preview--original-font))))))))))
   (akn/switch-font font-family))
 ;;;###autoload
 (defun akn/reset-font ()
@@ -997,29 +1032,30 @@ FILE defaults to the current `buffer-file-name'."
   (akn/switch-font akn/original-font))
 
 (defun akn/switch-variable-pitch-font (font)
-  (setq! doom-variable-pitch-font font)
+  (setopt doom-variable-pitch-font font)
   (akn/reload-font))
 ;;;###autoload
 (defun akn/choose-variable-pitch-font-family (font-family)
   (interactive
-   (list (akn/completing-read
-          "Font name: "
-          (and window-system
-               (fboundp #'font-family-list)
-               (font-family-list))
-          :predicate nil
-          :require-match t
-          :default (if (stringp doom-variable-pitch-font)
-                       doom-variable-pitch-font
-                     (symbol-name (font-get doom-variable-pitch-font :family)))
-          :preview-key "C-SPC"
-          :state (lambda (action selected-font)
-                   (pcase action
-                     ('setup
-                      (setq akn/preview--original-vp-font doom-variable-pitch-font))
-                     ('preview
-                      (ignore-errors
-                        (akn/switch-variable-pitch-font (or selected-font akn/preview--original-vp-font)))))))))
+   (let ((doom-variable-pitch-font (if (boundp 'doom-variable-pitch-font) doom-variable-pitch-font (error "doom-variable-pitch-font variable doesn't exist"))))
+     (list (akn/completing-read
+            "Font name: "
+            (and window-system
+                 (fboundp #'font-family-list)
+                 (font-family-list))
+            :predicate nil
+            :require-match t
+            :default (if (stringp doom-variable-pitch-font)
+                         doom-variable-pitch-font
+                       (symbol-name (font-get doom-variable-pitch-font :family)))
+            :preview-key "C-SPC"
+            :state (lambda (action selected-font)
+                     (pcase action
+                       ('setup
+                        (setq akn/preview--original-vp-font doom-variable-pitch-font))
+                       ('preview
+                        (ignore-errors
+                          (akn/switch-variable-pitch-font (or selected-font akn/preview--original-vp-font))))))))))
   (akn/switch-variable-pitch-font font-family))
 ;;;###autoload
 (defun akn/reset-variable-pitch-font ()
@@ -1283,9 +1319,9 @@ Recurses inner lists to find strings to unpropertize."
   (with-current-buffer (or buffer (current-buffer))
     (setq-local doom-real-buffer-p nil)))
 
-;;;; join (unfill) paragraph
+;;; manipulating newlines and blank lines
 ;;;###autoload
-(defun akn/join-each-paragraph ()
+(defun akn/unfill-each-paragraph ()
   "Join each paragraph in the region into a single line.
 
 If no region is active, join together the current paragraph."
@@ -1293,9 +1329,36 @@ If no region is active, join together the current paragraph."
   (let ((fill-column most-positive-fixnum))
     (call-interactively #'fill-paragraph)))
 ;;;###autoload
-(defalias 'akn/unfill-each-paragraph #'akn/join-each-paragraph)
+(defalias 'akn/join-each-paragraph #'akn/unfill-each-paragraph)
 
-;;;; debug
+;;;###autoload
+(defun akn/delete-blank-lines (&optional beg end)
+  "Delete all blank lines."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n\n" (* "\n")) "\n" beg end))
+;;;###autoload
+(defun akn/collapse-blank-lines (&optional beg end)
+  "Collapse 2+ blank lines into just 1 blank line."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n\n\n" (* "\n")) "\n\n" beg end))
+;;;###autoload
+(defun akn/shrink-blank-lines (&optional beg end)
+  "Shrink 2+X blank lines down into 1+X blank lines."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n" (group (+ "\n")))
+                            "\\1"
+                            beg end))
+;;;###autoload
+(defun akn/reduce-blank-lines (&optional beg end)
+  "Reduce 1+X blank lines into 0+X blank lines.
+
+Put another way, reduce 2+X newlines into 1+X newlines."
+  (interactive "R")
+  (replace-regexp-in-region (rx "\n" (group (+ "\n")))
+                            "\\1"
+                            beg end))
+
+;;; debug
 ;;;###autoload
 (defun akn/debug ()
   (interactive)

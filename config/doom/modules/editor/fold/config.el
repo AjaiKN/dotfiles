@@ -1,8 +1,7 @@
 ;;; editor/fold/config.el -*- lexical-binding: t; -*-
 
 (eval-when-compile
-  (require 'akn-doom-use-package)
-  (require 'doom-keybinds))
+  (require 'akn-doom-use-package))
 
 (defun +fold--to-char (thing)
   (cond
@@ -209,14 +208,14 @@ If nil, the value of `+fold-ellipsis' is used."
         (when (bound-and-true-p outli-mode)
           (outli-mode -1)))))
   (put 'outli-heading-stem 'safe-local-variable #'stringp)
-  (put 'outli-heading-char 'safe-local-variable #'integerp)
+  (put 'outli-heading-char 'safe-local-variable #'characterp)
 
   :config
-  (pushnew! outli-heading-config
-            ;;MODE STEM REPEAT-CHAR [STYLE] [NO-BAR]
-            '(sh-mode "#" ?\# t)
-            '(conf-unix-mode "#" ?\# t)
-            '(fennel-mode ";;" ?\; t))
+  (akn/pushnew outli-heading-config
+    ;;MODE STEM REPEAT-CHAR [STYLE] [NO-BAR]
+    '(sh-mode "#" ?\# t)
+    '(conf-unix-mode "#" ?\# t)
+    '(fennel-mode ";;" ?\; t))
   (add-hook! '(sh-mode-hook conf-unix-mode-hook fennel-mode-hook)
              #'outli-mode)
 
@@ -237,8 +236,8 @@ If nil, the value of `+fold-ellipsis' is used."
   :defer-incrementally (hideshow
                         ring ansi-color ansi-osc regexp-opt comint)
   :config
-  (setq! comint-fold-remap-tab nil
-         comint-fold-fringe-indicator nil)
+  (setopt comint-fold-remap-tab nil
+          comint-fold-fringe-indicator nil)
   (map! :map comint-mode-map
         :gie "TAB"       (akn/cmds! (not (comint-after-pmark-p)) #'+fold/toggle)
         :gie "<tab>"     (akn/cmds! (not (comint-after-pmark-p)) #'+fold/toggle)

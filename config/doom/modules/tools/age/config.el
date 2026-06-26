@@ -7,9 +7,9 @@
   ;; (when (boundp 'akn/age-default-identity) (customize-set-variable 'age-default-identity akn/age-default-identity))
   ;; (when (boundp 'akn/age-default-recipient) (customize-set-variable 'age-default-identity akn/age-default-recipient))
   (defvar akn/age-regex (rx ".age" eos))
-  ;; (setq! file-name-handler-alist (cons `(,akn/age-regex . age-file-handler) file-name-handler-alist))
+  ;; (setopt file-name-handler-alist (cons `(,akn/age-regex . age-file-handler) file-name-handler-alist))
   (add-to-list 'file-name-handler-alist `(,akn/age-regex . age-file-handler))
-  ;; (setq! auto-mode-alist (cons (list akn/age-regex nil 'age-file-enable) auto-mode-alist))
+  ;; (setopt auto-mode-alist (cons (list akn/age-regex nil 'age-file-enable) auto-mode-alist))
   (add-to-list 'auto-mode-alist `(,akn/age-regex nil age-file-enable))
 
   (after! undo-fu-session
@@ -25,5 +25,5 @@
 
   :config
   (when (executable-find "rage")
-   (setq! age-program "rage"))
+   (setopt age-program "rage"))
   (shut-up (age-file-enable)))

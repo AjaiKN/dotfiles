@@ -8,7 +8,7 @@
           (const :tag "medium: somewhat verbose keywords (the default)" medium)
           (const :tag "brief: short keywords" brief)
           (const :tag "terse: very short keywords" terse)))
-(setq! +regex-xr-dialect 'terse)
+(setopt +regex-xr-dialect 'terse)
 
 ;; https://www.spacemacs.org/doc/DOCUMENTATION.html#regular-expressions
 (use-package! pcre2el
