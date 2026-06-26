@@ -17,7 +17,29 @@
          (temp-history-symbol (make-symbol "mediawiki-temp-history"))
          (start-page (mediawiki-site-first-page mediawiki-site)))
     (set temp-history-symbol (or hist (list start-page)))
-    (read-string "Wiki Page: " (+mediawiki-page-at-point) temp-history-symbol start-page)))
+    (akn/completing-read "Wiki Page: "
+                         (when (require 'consult nil t)
+                           (consult--dynamic-collection
+                               (lambda (input)
+                                 (when input
+                                   (let ((data
+                                          (request-response-data
+                                           (request (concat (mediawiki-site-url "Wikipedia") "rest.php/v1/search/title")
+                                             :params `((q . ,input))
+                                             :parser #'json-read
+                                             :timeout 2
+                                             :sync t
+                                             :success
+                                             (cl-function
+                                              (lambda (&key data &allow-other-keys)
+                                                (cl-loop for page-object across (alist-get 'pages data)
+                                                         collect (alist-get 'title page-object))))))))
+                                     (cl-loop for page-object across (alist-get 'pages data)
+                                              collect (alist-get 'title page-object)))))))
+                         :initial (+mediawiki-page-at-point)
+                         :history temp-history-symbol
+                         :default start-page)))
+
 
 ;;;###autoload
 (defun +mediawiki-page-at-point ()
