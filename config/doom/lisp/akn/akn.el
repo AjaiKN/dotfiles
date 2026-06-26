@@ -527,6 +527,9 @@ We can use this function to `interactive' without needing to call
          (results (cond
                    ((hash-table-p collection)     (gethash choice collection))
                    ((consp (car-safe collection)) (alist-get choice collection default nil #'equal))
+                   ((and-let* (((not (member choice collection)))
+                               (sym (intern-soft choice))
+                               ((member sym collection)))))
                    (t                             choice))))
     (if (listp results) (car results) results)))
 
