@@ -35,7 +35,7 @@ end of the line."
   (after! corfu
     ;; also `corfu-sort-override-function'?
     (setq completion-preview-sort-function
-          (lambda (&rest args) (apply corfu-sort-function args))))
+          (lambda (&rest args) (apply (or corfu-sort-override-function corfu-sort-function) args))))
 
   ;; Non-standard commands to that should show the preview:
 
