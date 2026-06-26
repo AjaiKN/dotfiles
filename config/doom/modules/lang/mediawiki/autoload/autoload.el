@@ -3,6 +3,8 @@
 (require 'mediawiki)
 ;; (when (modulep! +wikipedia)
 ;;   (require 'wikipedia))
+(require 'request)
+(require 'akn)
 
 (defun +mediawiki--wikipedia-p ()
   ;; (and-let* (((modulep! +wikipedia))
@@ -11,8 +13,8 @@
   ;;            ((string-match-p "\\<wikipedia.org\\>" domain)))))
   nil)
 
-(defun +mediawiki--read-page (site)
-  (let* ((mediawiki-site site)
+(defun +mediawiki--read-page (&optional site)
+  (let* ((mediawiki-site (or site mediawiki-site mediawiki-site-default))
          (hist (cdr (assoc-string mediawiki-site mediawiki-page-history)))
          (temp-history-symbol (make-symbol "mediawiki-temp-history"))
          (start-page (mediawiki-site-first-page mediawiki-site)))
@@ -51,7 +53,15 @@
                          :history temp-history-symbol
                          :default start-page
                          :sort nil
-                         :lookup #'consult--lookup-cdr)))
+                         :lookup (lambda (selected candidates &rest _)
+                                   (substring-no-properties
+                                    (car
+                                     (funcall
+                                      (plist-get (alist-get consult-async-split-style consult-async-split-styles-alist)
+                                                 :function)
+                                      (or (cdr (assoc selected candidates))
+                                          selected
+                                          ""))))))))
 
 
 ;;;###autoload

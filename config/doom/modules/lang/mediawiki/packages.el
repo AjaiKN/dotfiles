@@ -7,3 +7,5 @@
 ;;   (package! wikipedia ;:pin "d7219cd453a93b93598a339d20927bdf60eded8d"
 ;;     :recipe (:host github :repo "benthamite/wikipedia"
 ;;              :local-repo "~/prog/emacs/wikipedia")))
+
+(package! request)
