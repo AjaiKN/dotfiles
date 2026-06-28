@@ -1,6 +1,7 @@
 ;;; cli.el -*- lexical-binding: t; -*-
 
-(load! "~/.config/emacs/lisp/cli/upgrade")
+;; (load! "~/.config/emacs/lisp/cli/upgrade"
+;; (load! "~/.config/emacs/bin/doom-upgrade")
 
 (defmacro akn/cli-fail! (msg &rest args)
   `(progn
