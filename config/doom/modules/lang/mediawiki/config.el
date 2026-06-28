@@ -155,6 +155,14 @@
       (setq revid (number-to-string revid)))
     `(,sitename ,title ,revid ,@rest)))
 
+;; (setq-hook! 'mediawiki-mode-hook
+;;   buffer-stale-function (lambda (&optional noconfirm &rest args)
+;;                           (if (+mediawiki-file-p)
+;;                               (apply (default-value 'buffer-stale-function)
+;;                                      noconfirm
+;;                                      args)
+;;                             (not (buffer-modified-p (current-buffer))))))
+
 ;;;; Wikipedia
 
 ;; (use-package! wikipedia
