@@ -1,6 +1,7 @@
 ;;; emacs/tramp-extra/config.el -*- lexical-binding: t; -*-
 
-(require 'akn)
+(eval-and-compile
+  (require 'akn))
 
 (after! (:or emacs tramp)
   (setq tramp-completion-use-auth-sources nil))

@@ -27,12 +27,12 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setopt use-package-always-defer t))
+  (setopt use-package-always-defer t)
+
+  (require 'akn))
 
 ;; https://discourse.doomemacs.org/t/how-to-have-tool-bar-mode-0-apply-at-startup-to-avoid-large-title-bar-on-macos-sonoma-when-using-railwaycat-homebrew-emacsmacport/4222/2
 (add-hook 'doom-after-init-hook (lambda () (tool-bar-mode 1) (tool-bar-mode 0)))
-
-(require 'akn)
 
 ;;; init perf stuff
 ;; load incrementally even if in daemon mode
@@ -337,9 +337,6 @@
    #'akn/do-scroll-conservatively
    #'akn/scroll-conservatively
    #'akn/projectile-ignored-projects--faster-file-truename-a
-   #'akn/file-remote-p
-   #'akn/tramp-p
-   #'akn/tramp-home-dir
    #'akn/known-project-roots-above
    #'akn/projectile-root-assume-cached
    #'akn/projectile-invalidate-cached-project-roots
@@ -357,7 +354,6 @@
    #'+popup-buffer-p
    #'akn/terminal-buffer-p
    #'+tabs-maybe-add-tab-line-for-popup-buffer
-   #'+vc-gutter-use-margins-in-tty-h
    #'doom-auto-revert-buffer-h
    #'+vc-gutter-update-h
    #'akn/magit-wip--only-if-not-tramp-a
@@ -378,14 +374,10 @@
    #'sp-backward-sexp@akn/a
    #'sp-forward-sexp@akn/a
    ;; #'akn/disable-slow-adaptive-fill-functions-a
-   #'akn/lsp-booster--advice-json-parse
-   #'akn/lsp-booster--advice-final-command
-   #'akn/xterm-color--advice-compilation-filter-a
+   #'+lsp--booster-final-command-a
    #'akn/better-backup-buffer-mode-maybe-h
    #'akn/better-jumper-set-jump-a
-   #'akn/+emacs-lisp-truncate-pin
-   #'akn/fix-ws-butler-in-evil-mode/before-save-a
-   #'akn/fix-ws-butler-in-evil-mode/after-save-a))
+   #'akn/+emacs-lisp-truncate-pin))
 (akn/after-idle! ((* 60 12) :timer-name akn/func-compile-timer :cancel-old-timer t)
   (akn/after-idle! (1 :repeat t :timer-name akn/func-compile-timer2 :cancel-old-timer t)
     (if-let* ((fn (pop akn/funcs-to-compile)))
@@ -396,11 +388,13 @@
                 (doom-log "compiling: %s" fn)
                 (when (autoloadp (symbol-function fn))
                   (autoload-do-load (symbol-function fn)))
-                (or (and (featurep 'native-compile)
-                         (or (native-comp-function-p (indirect-function fn))
-                             (ignore-errors (native-compile fn))))
-                    (byte-code-function-p fn)
-                    (byte-compile fn))))))
+                (or
+                 ;; otherwise, we get this native-compiler-error: "can't native compile an already byte-compiled function"
+                 (byte-code-function-p (symbol-function fn))
+                 (and (featurep 'native-compile)
+                      (or (native-comp-function-p (indirect-function fn))
+                          (ignore-errors (native-compile fn))))
+                 (byte-compile fn))))))
       (cancel-timer akn/func-compile-timer))))
 
 

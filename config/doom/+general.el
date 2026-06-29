@@ -18,9 +18,8 @@
   (require 'subr-x))
 
 (eval-and-compile
-  (setopt use-package-always-defer t))
+  (setopt use-package-always-defer t)
 
-(eval-and-compile
   (require 'akn))
 
 ;;; Misc
