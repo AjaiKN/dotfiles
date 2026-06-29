@@ -13,4 +13,12 @@ esac
 export DOTFILES
 cd "$DOTFILES"
 
-AKN_UNINSTALL=1 ./install-files.sh
+export AKN_UNINSTALL=1
+
+echo "Uninstalling files..."
+./install-files.sh
+
+if [ "$(uname -s)" = "Darwin" ]; then
+	echo "Unsetting macOS defaults..."
+	./install-defaults.mac.sh
+fi

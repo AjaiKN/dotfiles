@@ -31,13 +31,23 @@ bool_to_num() {
 }
 
 defaults_write() {
-	if [[ "$3" == -bool* && "$(defaults read-type "$1" "$2")" == "Type is boolean" && "$(defaults read "$1" "$2")" == "$(bool_to_num "$4")" ]]; then
+	local the_type the_value
+	the_type="$(defaults read-type "$1" "$2" 2>/dev/null)" || :
+	the_value=$(defaults read "$1" "$2" 2>/dev/null) || :
+	if [ -n "${AKN_UNINSTALL:-}" ]; then
+		[[ -z "$the_value" ]] || (
+			set -x
+			defaults delete "$1" "$2" || :
+		)
 		return
 	fi
-	if [[ "$3" == -string && "$(defaults read-type "$1" "$2")" == "Type is string" && "$(defaults read "$1" "$2")" == "$4" ]]; then
+	if [[ "$3" == -bool* && "$the_type" == "Type is boolean" && "$the_value" == "$(bool_to_num "$4")" ]]; then
 		return
 	fi
-	if [[ "$3" == -int* && "$(defaults read-type "$1" "$2")" == "Type is integer" && "$(defaults read "$1" "$2")" == "$4" ]]; then
+	if [[ "$3" == -string && "$the_type" == "Type is string" && "$the_value" == "$4" ]]; then
+		return
+	fi
+	if [[ "$3" == -int* && "$the_type" == "Type is integer" && "$the_value" == "$4" ]]; then
 		return
 	fi
 	(
@@ -46,32 +56,25 @@ defaults_write() {
 	)
 }
 
-## ApplePressAndHold
-# By default, holding down a key lets you open accents instead of
-# repeating the key. But I want to try out vim keybindings, and I want
-# to be able to repeat the hjkl keys while in VSCode.
-defaults_write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
-# JetBrains WebStorm
-defaults_write com.jetbrains.WebStorm ApplePressAndHoldEnabled -bool false
+## editor settings
+IFS=$'\n'
+for domain in com.microsoft.{VSCode,VSCodeInsiders} org.gnu.Emacs com.jetbrains.{WebStorm,rubymine} com.rstudio.{desktop,RStudio} $(defaults domains | sed 's/, /\n/g' | grep -iw 'rstudio\|jetbrains\|vim\|macvim\|emacs\|IDE\|eclipse\|vscode.*\|visual-studio.*\|textmate\|bbedit\|pulsar\|lapce\|noto\|neovim\|nvim\|neovide\|zed\|coteditor\|nova\|cursor\|sublime\|code\|visualstudio\|xcode'); do
+	# By default, holding down a key lets you open accents instead of
+	# repeating the key. But especially with vim keybindings, that's annoying.
+	defaults_write "$domain" ApplePressAndHoldEnabled -bool false
+	# https://superuser.com/a/1274941
+	defaults_write "$domain" NSAutomaticCapitalizationEnabled -bool false
+	defaults_write "$domain" NSAutomaticDashSubstitutionEnabled -bool false
+	defaults_write "$domain" NSAutomaticPeriodSubstitutionEnabled -bool false
+	defaults_write "$domain" NSAutomaticQuoteSubstitutionEnabled -bool false
+	defaults_write "$domain" NSAutomaticSpellingCorrectionEnabled -bool false
+	defaults_write "$domain" NSAutomaticTextCompletionEnabled -bool false
+done
+
 # To do it globally:
 #defaults_write -g ApplePressAndHoldEnabled 0
 
-## VSCode
-# https://superuser.com/a/1274941
-defaults_write com.microsoft.VSCode NSAutomaticCapitalizationEnabled -bool false
-defaults_write com.microsoft.VSCode NSAutomaticDashSubstitutionEnabled -bool false
-defaults_write com.microsoft.VSCode NSAutomaticPeriodSubstitutionEnabled -bool false
-defaults_write com.microsoft.VSCode NSAutomaticQuoteSubstitutionEnabled -bool false
-defaults_write com.microsoft.VSCode NSAutomaticSpellingCorrectionEnabled -bool false
-defaults_write com.microsoft.VSCode NSAutomaticTextCompletionEnabled -bool false
-
-## Emacs
-defaults_write org.gnu.Emacs NSAutomaticCapitalizationEnabled -bool false
-defaults_write org.gnu.Emacs NSAutomaticDashSubstitutionEnabled -bool false
-defaults_write org.gnu.Emacs NSAutomaticPeriodSubstitutionEnabled -bool false # this is the one I was looking for
-defaults_write org.gnu.Emacs NSAutomaticQuoteSubstitutionEnabled -bool false
-defaults_write org.gnu.Emacs NSAutomaticSpellingCorrectionEnabled -bool false
-defaults_write org.gnu.Emacs NSAutomaticTextCompletionEnabled -bool false
+### Emacs
 
 # https://github.com/rejeep/prodigy.el?tab=readme-ov-file#installation
 defaults_write org.gnu.Emacs NSAppSleepDisabled -bool YES
@@ -148,7 +151,11 @@ defaults_write com.apple.finder FXEnableExtensionChangeWarning -bool false
 # defaults_write com.apple.finder OpenWindowForNewRemovableDisk -bool true
 
 # Show the ~/Library folder
-chflags -vv nohidden ~/Library
+if [ -n "${AKN_UNINSTALL:-}" ]; then
+	chflags -vv hidden ~/Library
+else
+	chflags -vv nohidden ~/Library
+fi
 
 # https://macos-defaults.com/activity-monitor/updateperiod.html
 defaults_write com.apple.ActivityMonitor "UpdatePeriod" -int "2" #&& killall Activity\ Monitor
