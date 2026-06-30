@@ -32,6 +32,36 @@
 (defun +ess-eval (beg end)
   (ess-eval-region beg end nil))
 
+(defun +ess--end-of-statement ()
+  (cl-block nil
+    (save-excursion
+      (goto-char (pos-eol))
+      (and-let* ((orig-indent (ess-calculate-indent))
+                 ((numberp orig-indent)))
+        (while t
+          (forward-line)
+          (goto-char (pos-eol))
+          (let ((indent (ess-calculate-indent)))
+            (when (eobp)
+              (cl-return (point)))
+            (when (and (numberp indent) (<= indent orig-indent))
+              (cl-return (pos-bol)))))))))
+;; TODO: make it work with parens/braces/brackets
+(defun +ess/eval-statement ()
+  (interactive)
+  (cond
+   ((use-region-p)
+    (ess-eval-region (region-beginning) (region-end) nil))
+   ((when-let* ((end (+ess--end-of-statement)))
+      (ess-eval-region (pos-bol) end nil)
+      (goto-char end)
+      t))
+   (t
+    (ess-eval-region-or-line-and-step)))
+  (ignore-errors
+    (forward-sexp)
+    (backward-sexp)))
+
 ;;;###autoload
 (defun +ess/r-plot-open ()
   (interactive)
