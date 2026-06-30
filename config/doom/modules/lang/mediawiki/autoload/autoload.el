@@ -27,7 +27,7 @@
                                     (append
                                      (let ((downcase-input (downcase input)))
                                        (cl-loop for page in hist
-                                                when (string-prefix-p downcase-input (downcase page))
+                                                when (and page (string-prefix-p downcase-input (downcase page)))
                                                 collect (cons page page)))
                                      (when (length> input 0)
                                        (let ((data

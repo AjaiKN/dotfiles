@@ -1,5 +1,7 @@
 ;;; editor/tempel/config.el -*- lexical-binding: t; -*-
 
+(require 'akn-doom-use-package)
+
 (use-package! tempel
   :defer t
   :ghook ('(prog-mode-hook text-mode-hook conf-mode-hook) #'+tempel-setup-capf-h)
