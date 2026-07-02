@@ -187,7 +187,7 @@
                       #'ess-r-object-completion))
     ;; https://github.com/minad/cape?tab=readme-ov-file#capf-transformers
     (advice-add capf :around #'cape-wrap-noninterruptible)
-    (advice-add capf :around #'cape-wrap-purify)
+    (akn/advice-remove capf :around #'cape-wrap-purify)
     (advice-add capf :around #'cape-wrap-debug))
 
   ;; If the above doesn't stop the process from crashing, try this:
