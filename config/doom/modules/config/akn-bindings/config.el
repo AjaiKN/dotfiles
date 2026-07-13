@@ -296,7 +296,7 @@ to normal state is deprioritized)."
 
  (:when (or (modulep! :ui workspaces)
             (modulep! :ui tab-bar))
-  :prefix ("TAB" . "workspace")
+  :prefix "TAB"
   :desc "Display tab bar"           "TAB"     #'+workspace/display
   :desc "Switch workspace"          "."       #'+workspace/switch-to
   :desc "Switch to last workspace"  "`"       #'+workspace/other
@@ -326,7 +326,7 @@ to normal state is deprioritized)."
   :desc "Move buffer to workspace"  "m"       #'akn/move-buffer-to-workspace
   :desc "Other workspace prefix"    "O"       #'akn/other-workspace-prefix)
  (:when (modulep! :ui tab-bar)
-  :prefix ("TAB" . "workspace")
+  :prefix "TAB"
   :desc "Switch to buffer"          "b" #'+workspace/switch-to-buffer
   :desc "Force keep workspace name" "f" #'+workspace/force-keep-current-name
   :desc "Force auto workspace name" "F" #'+workspace/force-auto-name
