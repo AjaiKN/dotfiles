@@ -1095,3 +1095,104 @@ beginning of region."
                                    (interactive)
                                    (call-interactively (if (evil-visual-state-p) #'evil-change #'evil-insert-state))
                                    (call-interactively #'completion-at-point)))
+
+;;; prefix help command
+
+(setopt which-key-use-C-h-commands nil)
+
+(after! (:and embark which-key)
+  (defadvice! +vertico--embark-which-key-prompt-a (fn &rest args)
+    "Hide the which-key indicator immediately when using the completing-read prompter."
+    :around #'embark-completing-read-prompter
+    (which-key--hide-popup-ignore-command)
+    (let ((embark-indicators
+           (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
+  (cl-nsubstitute #'+vertico-embark-which-key-indicator #'embark-mixed-indicator embark-indicators))
+
+(defun akn/keymap-symbol-maybe (keymap)
+  "Return the symbol to which KEYMAP is bound, or the keymap itself
+if no such symbol exists."
+  (or (if (symbolp keymap)
+          (ignore-errors (indirect-variable keymap))
+        (require 'help-fns)
+        (help-fns-find-keymap-name keymap))
+      keymap))
+
+;; https://karthinks.com/software/persistent-prefix-keymaps-in-emacs/
+(defun akn/repeated-prefix-help-command ()
+  (interactive)
+  (when-let* ((keys (this-command-keys-vector))
+              (prefix (seq-take keys (1- (length keys))))
+              (orig-keymap (key-binding prefix 'accept-default))
+              (keymap (copy-keymap orig-keymap))
+              (exit-func (set-transient-map keymap t #'which-key-abort)))
+    ;; TODO: doesn't seem to always get deactivated?
+    (define-key keymap [remap keyboard-quit] (lambda () (interactive) (message "Exiting repeated prefix") (funcall exit-func)))
+    (add-transient-hook! 'doom-escape-hook
+      (message "Exiting repeated prefix")
+      (funcall exit-func))
+    (which-key--create-buffer-and-show nil keymap)))
+
+(defun akn/minibuffer-bindings-in-keymap ()
+  (interactive)
+  (let* ((keys (this-command-keys))
+         (prefix (seq-take keys (1- (length keys))))
+         (keymap (key-binding prefix 'accept-default)))
+    (if (fboundp 'embark-bindings-in-keymap)
+        (minibuffer-with-setup-hook
+            (lambda ()
+              (let ((pt (- (minibuffer-prompt-end) 2)))
+                (overlay-put (make-overlay pt pt) 'before-string
+                             (format " under %s" (key-description prefix)))))
+          (embark-bindings-in-keymap keymap))
+      (describe-prefix-bindings))))
+
+(defun akn/help-next-key ()
+  (interactive)
+  (let* ((keys (this-command-keys))
+         (prefix (seq-take keys (1- (length keys))))
+         (keymap (key-binding prefix 'accept-default))
+         (help-key-used (seq-elt keys (1- (length keys))))
+         (key (read-key "enter key: ")))
+    (akn/describe
+     (if (eq key help-key-used)              ;@@ means see docs for current keymap
+         keymap
+       (keymap-lookup keymap (key-description (string key)))))))
+
+;; `describe-prefix-bindings': Emacs default
+;; `embark-prefix-help-command': Doom default
+;; `which-key-C-h-dispatch': which-key default
+(defvar-keymap akn/prefix-help-map
+  "C-h" #'akn/minibuffer-bindings-in-keymap
+  "@" #'akn/help-next-key
+  "H-j" #'which-key-show-next-page-cycle
+  "H-k" #'which-key-show-previous-page-cycle
+  "<f1>" #'which-key-C-h-dispatch
+  "DEL" #'which-key-undo-key
+  "<help>" #'akn/minibuffer-bindings-in-keymap
+  "?" #'akn/minibuffer-bindings-in-keymap
+  "s-y" #'akn/repeated-prefix-help-command)
+
+(defun akn/update-prefix-help ()
+  (setq help-event-list nil
+        prefix-help-command #'akn/prefix-help-command)
+  (map-keymap
+   (lambda (event _definition)
+     (when (or (numberp event) (symbolp event))
+       (push event help-event-list)))
+   akn/prefix-help-map))
+(akn/update-prefix-help)
+
+(lookup-key akn/prefix-help-map (vector ?\H-j))
+
+(setq help-char ?\C-h)
+
+(after! which-key
+  (add-to-list 'which-key--paging-functions #'akn/prefix-help-command))
+(defun akn/prefix-help-command ()
+  (interactive)
+  ;; (message "hi %s" (which-key--popup-showing-p))
+  (let* ((keys (this-command-keys))
+         (help-key-used (seq-elt keys (1- (length keys)))))
+    (call-interactively (lookup-key akn/prefix-help-map (vector help-key-used)))))
