@@ -427,6 +427,19 @@
 (defalias 'akn/help #'akn/describe)
 
 ;;; prefix help command
+
+(setopt which-key-use-C-h-commands nil)
+
+(after! (:and embark which-key)
+  (defadvice! +vertico--embark-which-key-prompt-a (fn &rest args)
+    "Hide the which-key indicator immediately when using the completing-read prompter."
+    :around #'embark-completing-read-prompter
+    (which-key--hide-popup-ignore-command)
+    (let ((embark-indicators
+           (remq #'embark-which-key-indicator embark-indicators)))
+      (apply fn args)))
+  (cl-nsubstitute #'+vertico-embark-which-key-indicator #'embark-mixed-indicator embark-indicators))
+
 (defun akn/keymap-symbol-maybe (keymap)
   "Return the symbol to which KEYMAP is bound, or the keymap itself
 if no such symbol exists."
