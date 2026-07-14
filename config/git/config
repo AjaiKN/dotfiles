@@ -69,7 +69,6 @@
 	# TODO: make these automatically stage all *if there's nothing staged*
 	# inspired by magit
 	extend = commit --amend --no-edit
-	# TODO: make amend & reword commands - probably make them use git-branchless
 
 	# amend = branchless amend
 	# hide = branchless hide
@@ -88,6 +87,11 @@
 	# test = branchless test
 	# undo = branchless undo
 	# unhide = branchless unhide
+
+	fixup = history fixup #--update-refs=head
+	fixup-reword = history fixup --reedit-message #--update-refs=head
+	reword = history reword
+	split = history split #--update-refs=head
 
 	# https://blog.ipspace.net/2020/04/git-tip-word-diff.html
 	wdiff = diff --word-diff --word-diff-regex='\\w+'
