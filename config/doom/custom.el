@@ -24,7 +24,8 @@
    '("/home/ajainelson/prog/guix/" "/Users/ajainelson/prog/cs342-hw/"
      "/Users/ajainelson/.config/doom/" "~/.config/emacs/"))
  '(safe-local-variable-values
-   '((lisp-indent-local-overrides (cond . 0) (interactive . 0))
+   '((backup-inhibited . t)
+     (lisp-indent-local-overrides (cond . 0) (interactive . 0))
      (eval conf-quote-normal 1) (checkdoc-allow-quoting-nil-and-t . t)
      (+tree-sitter-hl-enabled-modes) (Package . April)
      (Syntax . ANSI-Common-Lisp) (nameless-current-name . "electric-operator")
