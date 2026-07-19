@@ -251,6 +251,7 @@ fi
 # https://stackoverflow.com/a/28732211
 hash -d p=$HOME/prog
 hash -d d=$DOTFILES
+hash -d w=$HOME/work
 
 ### KEYTIMEOUT
 # Otherwise, there's a delay after pressing ESC before moving to normal mode.

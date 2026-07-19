@@ -1994,7 +1994,7 @@ Use \\[visible-mode] to show the full hashes."
   :config
   (defvar akn/projectile-timer nil)
   ;; discover projects in ~/prog and its sub-directories
-  (setopt projectile-project-search-path '(("~/prog" . 2) ("~/prog/emacs/" . 2)))
+  (setopt projectile-project-search-path '(("~/prog" . 2) ("~/work" . 2) ("~/prog/emacs/" . 2)))
   (when akn/projectile-timer (cancel-timer akn/projectile-timer))
   (defun akn/discover-projects ()
     (interactive)

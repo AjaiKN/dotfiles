@@ -169,3 +169,6 @@
 	# https://gist.github.com/ruediger/5647207?permalink_comment_id=5153197#gistcomment-5153197
 	# replacement for built-in
 	xfuncname = "^.*(\\b(((public|protected|private|static)\\s+){1,4}function\\s+[_A-Za-z][_A-Za-z0-9]+\\b\\s*\\()).*$"
+
+[includeIf "gitdir:~/work/"]
+    path = ~/work/.gitconfig

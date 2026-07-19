@@ -66,6 +66,7 @@
         evil-org-top
         evil-previous-line
         evil-quoted-insert
+        evil-shift-left-line
         evil-shift-right-line
         evil-visual-char
         evil-yank
