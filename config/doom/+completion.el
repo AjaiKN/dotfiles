@@ -143,7 +143,7 @@
   (defun akn/prefixes-for-separators (pattern _index _total)
     (when (string-match-p (rx bol
                               (* (not (any "*+[\\]^"))) ; try to exclude regexps (https://old.reddit.com/r/emacs/comments/11lyg9k/have_an_emacs_completion_setup_that_works_really/jca4e53/)
-                              (any "./-")
+                              (any "-_") ; /.
                               (* (not (any "$*+[\\]")))
                               eol)
                           pattern)
