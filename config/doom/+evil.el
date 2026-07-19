@@ -81,8 +81,6 @@
 
 (setq evil-motion-state-cursor evil-normal-state-cursor)
 
-(map! :m "q" #'quit-window)
-
 (after! markdown-mode
   (defcustom akn/evil-want-o-continue-bullets t
     ""

@@ -2726,7 +2726,10 @@ there's no need for `markdown-mode' to reduplicate the effort."
 (defconst akn/server-quit-commands
   (akn/cmds! (akn/server-quit-cmd) it))
 (map! (:map akn/server-quit-mode-map
-       :mnvg "q"               akn/server-quit-commands
+       :mn "q" (akn/cmds! (or (derived-mode-p 'special-mode)
+                              (bound-and-true-p view-mode)
+                              buffer-read-only)
+                          akn/server-quit-commands)
        [remap quit-window]     akn/server-quit-commands
        [remap evil-quit]       akn/server-quit-commands
        [remap +magit/quit]     akn/server-quit-commands
@@ -2736,6 +2739,8 @@ there's no need for `markdown-mode' to reduplicate the effort."
        [remap calc-quit]       akn/server-quit-commands)
       [remap dirvish-quit]    akn/server-quit-commands
       [remap +dired/quit-all] akn/server-quit-commands
+      (:map special-mode-map
+       :mn "q" #'quit-window)
       (:map (dired-mode-map dirvish-mode-map)
        :nviemg "q" #'akn/dired-quit
        :nviemg "Q" #'akn/dired-quit-no-change-cwd))
