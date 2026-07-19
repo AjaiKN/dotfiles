@@ -324,7 +324,8 @@ to normal state is deprioritized)."
   :desc "Swap left"                 "<left>"  #'+workspace/swap-left
   :desc "Swap right"                "<right>" #'+workspace/swap-right
   :desc "Move buffer to workspace"  "m"       #'akn/move-buffer-to-workspace
-  :desc "Other workspace prefix"    "O"       #'akn/other-workspace-prefix)
+  :desc "Other workspace prefix"    "O"       #'akn/other-workspace-prefix
+  :desc "Move to group"             "g"       #'tab-group)
  (:when (modulep! :ui tab-bar)
   :prefix "TAB"
   :desc "Switch to buffer"          "b" #'+workspace/switch-to-buffer

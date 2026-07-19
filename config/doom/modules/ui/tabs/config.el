@@ -8,11 +8,25 @@
     '(tab-line-highlight)
     '(tab-line-close-highlight
       :foreground "red")
-    '((tab-line-tab tab-line-tab-current tab-line-tab-special tab-line-tab-inactive tab-line-tab-inactive-alternate tab-line-tab-modified
-       tab-bar-tab tab-bar-tab-inactive tab-bar-tab-ungrouped)
+    '((tab-line-tab tab-line-tab-current tab-line-tab-special tab-line-tab-inactive tab-line-tab-inactive-alternate tab-line-tab-modified)
       :box (:line-width (9 . 7) :color nil :style flat-button))
     '(tab-line-tab-group
-      :box (:line-width (9 . 7) :color nil :style flat-button) :inherit tab-line)))
+      :inherit tab-line
+      :box (:line-width (9 . 7) :color nil :style flat-button))
+    '((tab-bar-tab tab-bar-tab-inactive tab-bar-tab-ungrouped)
+      :box (:line-width (9 . 7) :color nil :style flat-button))
+    '(tab-bar-tab-group-inactive
+      :inherit tab-bar
+      :box (:line-width (5 . 7) :color nil :style flat-button)
+      ;; :background "gray"
+      ;; :foreground "blue"
+      :foreground "darkgreen"
+      ;; :slant italic
+      :weight bold
+      :overline t)
+    '(tab-bar-tab-group-current
+      :inherit tab-bar-tab-group-inactive
+      :underline t)))
 
 (use-package! tab-line
   :defer t

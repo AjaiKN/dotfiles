@@ -53,6 +53,27 @@ new project directory.")
                 (doom/delete-frame-with-prompt)
               (+workspace/clear-tab))))
 
+  ;; tab groups
+  (setopt tab-bar-auto-width t ;nil
+          tab-bar-format '(tab-bar-format-history
+                           tab-bar-format-tabs-groups
+                           tab-bar-separator
+                           tab-bar-format-add-tab)
+          tab-bar-tab-group-function (lambda (tab)
+                                       (or (tab-bar-tab-group-default tab)
+                                           ""))
+          tab-bar-tab-group-format-function
+          (lambda (tab i &optional current-p)
+            (when-let* ((group-name (funcall tab-bar-tab-group-function tab))
+                        ((not (string-empty-p group-name))))
+              (propertize
+               (concat ;(if (and tab-bar-tab-hints (not current-p)) (format "%d " i) "")
+                       "«"
+                       (upcase (or (funcall tab-bar-tab-group-function tab) ""))
+                       "»")
+               'face (if current-p 'tab-bar-tab-group-current 'tab-bar-tab-group-inactive)))))
+  (add-hook 'tab-bar-tab-post-open-functions #'tab-bar-move-tab-to-group)
+
   (define-minor-mode +tab-bar-show-mode
     "Show the tab bar at the top of the screen."
     :global t
