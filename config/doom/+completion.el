@@ -237,10 +237,10 @@
 ;;; sorting
 
 (map! :map vertico-map
-      "M-S" #'akn/cycle-sort-function)
+      "M-S" #'akn/cycle-between-sort-functions)
 
 ;; https://github.com/minad/vertico/wiki#toggle-sorting-functions
-(defun akn/cycle-sort-function ()
+(defun akn/cycle-between-sort-functions ()
   (interactive)
   (let* ((category (compat-call completion-metadata-get
                                 (completion-metadata (buffer-substring-no-properties
