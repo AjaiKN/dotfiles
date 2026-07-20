@@ -1294,8 +1294,6 @@ belongs according to the underlying terminal."
 ;;              "in window"
 ;;            "not in window"))))
 
-;; must declare before loading vterm
-(defvar vterm-buffer-name)
 (defun noct-run-with-vterm (command)
   "Run COMMAND in a vterm buffer.
 Open the vterm buffer reusing a window."
@@ -1309,7 +1307,7 @@ Open the vterm buffer reusing a window."
                                 ((eq major-mode 'dired-mode)
                                  (dired-get-filename nil t)))))
                           (and filename (file-relative-name filename))))))
-  (let ((vterm-buffer-name (format "*vterm command*"))) ;(car (split-string command))
+  (dlet ((vterm-buffer-name (format "*vterm command*"))) ;(car (split-string command))
     (vterm)
     (vterm-insert command)
     (with-current-buffer vterm-buffer-name
