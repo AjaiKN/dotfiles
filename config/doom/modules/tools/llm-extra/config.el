@@ -193,6 +193,8 @@
       (after! copilot
         (copilot-mode 1))))
   ;; (add-hook! 'prog-mode-hook #'akn/copilot-mode-when-ready)
+  (add-hook! '(python-mode-hook python-ts-mode-hook)
+             #'akn/copilot-mode-when-ready)
   (defun akn/disable-copilot ()
     (interactive)
     (when (fboundp 'copilot-mode)
