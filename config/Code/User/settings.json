@@ -307,7 +307,7 @@
     "file:///Users/ajainelson/.vscode/extensions/docsmsft.docs-yaml-1.0.1/dist/toc.schema.json": "/toc\\.yml/i"
   },
   "githubPullRequests.pullBranch": "never",
-  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorTheme": "Dark+",
   "zig.zls.path": "/Users/ajainelson/Library/Application Support/Code/User/globalStorage/ziglang.vscode-zig/zls_install/zls",
   "coqtop.binPath": "/Applications/Coq-Platform~8.16~2022.09.app/Contents/Resources/bin/",
   "playwright.reuseBrowser": false,
