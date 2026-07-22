@@ -1,5 +1,13 @@
 ;;; +scroll.el -*- lexical-binding: t; -*-
 
+(setopt mouse-wheel-scroll-amount '(1
+                                    ((shift) . hscroll))
+                                    ;; ((meta))
+                                    ;; ((control meta) . global-text-scale)
+                                    ;; ((control) . text-scale))
+        mouse-wheel-scroll-amount-horizontal 2
+        hscroll-margin 5)
+
 ;; Scrolling conservatively means it won't recenter as much, which speeds up smooth scrolling a lot.
 ;; But, for example, when I'm incrementally searching, I want it to recenter, so I temporarily change it back.
 (defun akn/do-scroll-conservatively (&rest _)
