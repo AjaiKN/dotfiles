@@ -28,15 +28,19 @@
 (akn/pushnew completion-ignored-extensions
   "__pycache__/"
   ".mypy_cache/"
+  ".ruff_cache/"
+  ".pytest_cache/"
   ".zwc"                        ; zsh word code
   ".DS_Store"                   ; macOS
   ".jj/")                       ; https://github.com/jj-vcs/jj
 (after! dired-x
-  (setq dired-omit-files (concat dired-omit-files
-                                 "\\|^\\.\\(?:svn\\|git\\|jj\\)\\'"
-                                 "\\|^__pycache__\\'"
-                                 "\\|^\\.mypy_cache\\'"
-                                 "\\|^flycheck_.*" "\\|^flymake_.*")))
+  (setq dired-omit-files (rx (| (regexp dired-omit-files)
+                                (: bos
+                                   (| ".svn" ".git" ".jj"
+                                      "__pycache__"
+                                      ".mypy_cache" ".pytest_cache" ".ruff_cache"
+                                      (: (| "flycheck_" "flymake_") (* nonl)))
+                                   eos)))))
 
 ;; https://www.gnu.org/software/emacs/manual/html_node/emacs/Completion-Styles.html
 ;; also see `completion-category-defaults' and `completion-category-overrides'
