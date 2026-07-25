@@ -70,7 +70,11 @@
 
   (gptel-make-gemini "Gemini"
     :key #'akn/gemini-api-key
-    :stream t))
+    :stream t)
+
+  (setopt gptel-backend
+          (gptel-make-gh-copilot "Copilot"
+            :host "api.individual.githubcopilot.com")))
 
 ;;;; evedel
 
