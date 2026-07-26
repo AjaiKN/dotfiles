@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export PATH="$PATH:/Applications/Emacs.app/Contents/MacOS/bin"
+
 # set -x
 
 args=()

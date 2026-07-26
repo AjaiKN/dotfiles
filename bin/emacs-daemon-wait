@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export PATH="$PATH:/Applications/Emacs.app/Contents/MacOS/bin"
+
 if [[ -n ${1:-} ]] && [[ $1 != -* ]]; then
 	export EMACS_SOCKET_NAME=$1
 	shift

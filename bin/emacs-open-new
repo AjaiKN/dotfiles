@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export PATH="$PATH:/Applications/Emacs.app/Contents/MacOS/bin"
+
 # Use this when you want a file to be open in a new instance of Emacs
 # (Or you just want to launch a new instance of Emacs)
 
