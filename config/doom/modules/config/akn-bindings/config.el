@@ -525,6 +525,8 @@ to normal state is deprioritized)."
                   #'boring-processes-kill-current-buffer
                   #'kill-current-buffer)
 
+ :i "C-SPC" #'completion-at-point
+
  "C-M-<return>" #'toggle-frame-maximized
 
  "s-W" #'delete-window

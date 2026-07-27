@@ -57,7 +57,12 @@
      "w" #'copilot-accept-completion-by-word
      "n" #'copilot-next-completion
      "p" #'copilot-previous-completion
-     "L" #'copilot-logout)
+     "L" #'copilot-logout
+     "r" #'copilot-chat-send-region
+     "t" #'copilot-chat-task
+     "m" #'copilot-chat
+     "C" #'copilot-chat-display
+     "M" #'copilot-chat-select-mode)
     (:prefix ("x" . "semext")
      "f" #'semext-forward-part
      "b" #'semext-backward-part
