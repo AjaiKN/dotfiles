@@ -12,7 +12,18 @@
 
 (package! magit-gptcommit :pin "97dfcf33777731ba8d8ad0522c2deb0554a143fe")
 
-(package! chatgpt-shell :pin "83b327ba55cd116d892a9b44f00bc65543b7c22e")
+(package! chatgpt-shell :pin "83b327ba55cd116d892a9b44f00bc65543b7c22e" :disable t)
+(package! shell-maker :pin "071c6df3ca22a2f4c0daa689848ac9bd21bf4e2b")
+(package! acp :pin "a29cb161ac95f1819f34481a98666707661c5cf8")
+(package! agent-shell :pin "1780e0b2501aa172c559c24d76024b8802e8d8de")
+(package! agent-recall :pin "166f421bce4a6550507e0bd2b896956d0d9d4a94")
+(package! agent-shell-bookmark :pin "c1eab34bff4f35bf929885ed5045c6100afcf496"
+  :recipe (:host github :repo "dcluna/agent-shell-bookmark"))
+(package! agent-shell-macext :pin "1f9b4e0cb1fb180f6246ed0c99a72f55187066dd"
+  :recipe (:host github :repo "cxa/agent-shell-macext"))
+
+(package! claude-code-ide :pin "1de17bbadc650962a05fd68463fdff71697ec649"
+  :recipe (:host github :repo "manzaltu/claude-code-ide.el"))
 
 (package! chat :pin "a14df12bda3951e53553426629f4af7a638f6eee" :disable t
   :recipe (:host github :repo "iwahbe/chat.el"))

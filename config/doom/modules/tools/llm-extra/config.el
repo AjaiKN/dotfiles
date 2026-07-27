@@ -37,12 +37,15 @@
                                                                     evil-normal-state-map
                                                                     t))
                                                (this-command-keys)))))
-    (:prefix ("s" . "chatgpt-shell")
-     "s" #'chatgpt-shell
-     "m" #'chatgpt-shell-swap-model
-     "M" #'chatgpt-shell-model-version
-     "c" #'chatgpt-shell-prompt-compose
-     "i" #'chatgpt-shell-describe-image)
+    ;; (:prefix ("s" . "chatgpt-shell")
+    ;;  "s" #'chatgpt-shell
+    ;;  "m" #'chatgpt-shell-swap-model
+    ;;  "M" #'chatgpt-shell-model-version
+    ;;  "c" #'chatgpt-shell-prompt-compose
+    ;;  "i" #'chatgpt-shell-describe-image)
+    (:prefix ("s" . "agent-shell")
+     "s" #'agent-shell)
+    "C" #'claude-code-ide-menu
     (:prefix ("c" . "copilot")
      "d" #'copilot-diagnose
      "l" #'copilot-login
@@ -110,6 +113,34 @@
   :config
   (setopt chatgpt-shell-openai-key #'akn/chatgpt-api-key)
   (add-hook 'chatgpt-shell-mode-hook #'doom-mark-buffer-as-real-h))
+
+;;; agent-shell (https://github.com/xenodium/agent-shell)
+(use-package! agent-shell
+  :defer t
+  :config
+  (setq agent-shell-preferred-agent-config '(preselect . claude-code)))
+
+(use-package! agent-recall
+  :config
+  (setopt agent-recall-search-paths '("~/prog" "~/work")))
+
+(use-package! agent-shell-bookmark
+  :after agent-shell)
+
+(use-package agent-shell-macext
+  :when (featurep :system 'macos)
+  :hook (agent-shell-mode . agent-shell-macext-setup)
+  :config
+  (setopt agent-shell-macext-file-copy-policy 'auto
+          agent-shell-macext-notifications t
+          agent-shell-macext-notify-current-buffer nil))
+
+;;; claude-code-ide
+
+(use-package! claude-code-ide
+  :defer t
+  :config
+  (claude-code-ide-emacs-tools-setup)) ; Optionally enable Emacs MCP tools
 
 ;;; llm (https://github.com/ahyatt/llm) - library, supports many
 (use-package! llm
