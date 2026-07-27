@@ -702,6 +702,7 @@ MINOR-MODE-NAME, a symbol, is the name of a minor mode. If it ends with
 (setq akn/hooks-to-record '(doom-first-file-hook
                             doom-first-input-hook
                             doom-first-buffer-hook
+                            doom-after-modules-config-hook
                             doom-init-ui-hook
                             akn/evil-respect-line-move-visual-mode-hook
                             akn/server-quit-mode-hook

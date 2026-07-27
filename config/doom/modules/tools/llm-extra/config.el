@@ -7,69 +7,70 @@
 (defun akn/gemini-api-key ()
   (auth-source-pick-first-password :host "generativelanguage.googleapis.com" :user "apikey" :require '(:secret)))
 
-(add-hook! 'doom-after-modules-config-hook
-  (if (boundp 'doom-leader-open-map)
-      (defvar akn/doom-llm-gptel-map (keymap-lookup doom-leader-open-map "l"))
-    (warn "llm-extra: doom-leader-open-map doesn't exist"))
-  (map!
-   :leader
-   (:prefix ("l". "llm")
-    :desc "gptel" "g" akn/doom-llm-gptel-map
-    (:prefix ("e" . "evedel")
-     ;; TODO: modification
-     :desc "Create reference"                      "r" #'evedel-create-reference
-     :desc "Create directive"                      "d" #'evedel-create-directive
-     :desc "Process directives"                    "e" #'evedel-process-directives
-     :desc "Preview prompt for directive at point" "p" #'evedel-preview-directive-prompt
-     :desc "Delete instructions at point/region"   "k" #'evedel-delete-instructions
-     :desc "Delete all instructions"               "K" #'evedel-delete-all
-     :desc "Save instructions"                     "s" #'evedel-save-instructions
-     :desc "Load instructions"                     "L" #'evedel-load-instructions)
-    :desc "aidermacs" "a" #'aidermacs-transient-menu
-    :desc "ellama" "l" (cmd!
-                        (require 'ellama)
-                        ;; copied from `+default/lsp-command-map'
-                        (setq prefix-arg current-prefix-arg
-                              unread-command-events
-                              (mapcar (lambda (e) (cons t e))
-                                      (vconcat (when (bound-and-true-p evil-this-operator)
-                                                 (where-is-internal evil-this-operator
-                                                                    evil-normal-state-map
-                                                                    t))
-                                               (this-command-keys)))))
-    ;; (:prefix ("s" . "chatgpt-shell")
-    ;;  "s" #'chatgpt-shell
-    ;;  "m" #'chatgpt-shell-swap-model
-    ;;  "M" #'chatgpt-shell-model-version
-    ;;  "c" #'chatgpt-shell-prompt-compose
-    ;;  "i" #'chatgpt-shell-describe-image)
-    ;; (:prefix ("s" . "agent-shell")
-    ;;  "s" #'agent-shell)
-    "s" #'agent-shell
-    "C" #'claude-code-ide-menu
-    (:prefix ("c" . "copilot")
-     "d" #'copilot-diagnose
-     "l" #'copilot-login
-     "c" #'copilot-mode
-     "TAB" #'copilot-complete
-     "a" #'copilot-accept-completion
-     "x" #'copilot-clear-overlay
-     "W" #'copilot-accept-completion-by-line
-     "w" #'copilot-accept-completion-by-word
-     "n" #'copilot-next-completion
-     "p" #'copilot-previous-completion
-     "L" #'copilot-logout
-     "r" #'copilot-chat-send-region
-     "t" #'copilot-chat-task
-     "m" #'copilot-chat
-     "C" #'copilot-chat-display
-     "M" #'copilot-chat-select-mode)
-    (:prefix ("x" . "semext")
-     "f" #'semext-forward-part
-     "b" #'semext-backward-part
-     "%" #'semext-query-replace
-     "s" #'semext-search-forward
-     "r" #'semext-search-backward))))
+(akn/after-hook! 'doom-after-modules-config-hook
+  (akn/defun +llm-extra-make-map ()
+    (if (boundp 'doom-leader-open-map)
+        (defvar akn/doom-llm-gptel-map (keymap-lookup doom-leader-open-map "l"))
+      (warn "llm-extra: doom-leader-open-map doesn't exist"))
+    (map!
+     :leader
+     (:prefix ("l". "llm")
+      :desc "gptel" "g" akn/doom-llm-gptel-map
+      (:prefix ("e" . "evedel")
+       ;; TODO: modification
+       :desc "Create reference"                      "r" #'evedel-create-reference
+       :desc "Create directive"                      "d" #'evedel-create-directive
+       :desc "Process directives"                    "e" #'evedel-process-directives
+       :desc "Preview prompt for directive at point" "p" #'evedel-preview-directive-prompt
+       :desc "Delete instructions at point/region"   "k" #'evedel-delete-instructions
+       :desc "Delete all instructions"               "K" #'evedel-delete-all
+       :desc "Save instructions"                     "s" #'evedel-save-instructions
+       :desc "Load instructions"                     "L" #'evedel-load-instructions)
+      :desc "aidermacs" "a" #'aidermacs-transient-menu
+      :desc "ellama" "l" (cmd!
+                          (require 'ellama)
+                          ;; copied from `+default/lsp-command-map'
+                          (setq prefix-arg current-prefix-arg
+                                unread-command-events
+                                (mapcar (lambda (e) (cons t e))
+                                        (vconcat (when (bound-and-true-p evil-this-operator)
+                                                   (where-is-internal evil-this-operator
+                                                                      evil-normal-state-map
+                                                                      t))
+                                                 (this-command-keys)))))
+      ;; (:prefix ("s" . "chatgpt-shell")
+      ;;  "s" #'chatgpt-shell
+      ;;  "m" #'chatgpt-shell-swap-model
+      ;;  "M" #'chatgpt-shell-model-version
+      ;;  "c" #'chatgpt-shell-prompt-compose
+      ;;  "i" #'chatgpt-shell-describe-image)
+      ;; (:prefix ("s" . "agent-shell")
+      ;;  "s" #'agent-shell)
+      "s" #'agent-shell
+      "C" #'claude-code-ide-menu
+      (:prefix ("c" . "copilot")
+       "d" #'copilot-diagnose
+       "l" #'copilot-login
+       "c" #'copilot-mode
+       "TAB" #'copilot-complete
+       "a" #'copilot-accept-completion
+       "x" #'copilot-clear-overlay
+       "W" #'copilot-accept-completion-by-line
+       "w" #'copilot-accept-completion-by-word
+       "n" #'copilot-next-completion
+       "p" #'copilot-previous-completion
+       "L" #'copilot-logout
+       "r" #'copilot-chat-send-region
+       "t" #'copilot-chat-task
+       "m" #'copilot-chat
+       "C" #'copilot-chat-display
+       "M" #'copilot-chat-select-mode)
+      (:prefix ("x" . "semext")
+       "f" #'semext-forward-part
+       "b" #'semext-backward-part
+       "%" #'semext-query-replace
+       "s" #'semext-search-forward
+       "r" #'semext-search-backward)))))
 
 ;;; gptel (https://github.com/karthink/gptel) - supports many
 (use-package! gptel
@@ -124,7 +125,10 @@
 (use-package! agent-shell
   :defer t
   :config
-  (setq agent-shell-preferred-agent-config '(preselect . claude-code)))
+  (setq agent-shell-preferred-agent-config '(preselect . claude-code))
+  (add-hook 'agent-shell-mode-hook #'akn/mark-buffer-real)
+  (map! :map agent-shell-mode-map
+        "s-w" #'bury-buffer))
 
 (use-package! agent-recall
   :config
