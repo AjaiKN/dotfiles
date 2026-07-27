@@ -43,8 +43,9 @@
     ;;  "M" #'chatgpt-shell-model-version
     ;;  "c" #'chatgpt-shell-prompt-compose
     ;;  "i" #'chatgpt-shell-describe-image)
-    (:prefix ("s" . "agent-shell")
-     "s" #'agent-shell)
+    ;; (:prefix ("s" . "agent-shell")
+    ;;  "s" #'agent-shell)
+    "s" #'agent-shell
     "C" #'claude-code-ide-menu
     (:prefix ("c" . "copilot")
      "d" #'copilot-diagnose
