@@ -117,11 +117,15 @@ Forked from Doom's ~:editor multiple-cursors~.
 - Added some extra commands and keybindings (e.g., for making a cursor below, and for super-clicking somewhere to create a cursor there)
 *** 🕰 [[./editor/smart-tabs][smart-tabs]]: see [[https://github.com/jcsalomon/smarttabs][the smart-tabs-mode package]] (tabs for indentation, spaces for alignment)
 *** 🕰 [[./editor/symex][symex]]: the evilest way to lisp, and the modalest way to evil
+*** ⭐🏢 [[./editor/tempel][tempel]]: snippets using [[https://github.com/minad/tempel][tempel]]; alternative to Doom's ~:editor snippets~ (which currently uses yasnippet)
+I've added some hacky/invasive extensions to tempel. I also add custom template elements and (with [[doom-module::completion vertico][:completion vertico]] enabled) integrate my [[https://github.com/AjaiKN/consult-tempel][consult-tempel]] package.
+*** 🚧 [[./editor/things][things]]: evil text objects based on [[https://github.com/noctuid/things.el][things.el]]
 *** 🐁 [[./editor/titlecase][titlecase]]: Switching a Sentence to Title Case
 *** ⭐ [[./editor/typing-the-word-blimpy-in-doom-emacs][typing-the-word-blimpy-in-doom-emacs]]: limpy b
 *** ⭐ [[./editor/words][words]]: toggling different ways of detecting word boundaries
 ** :emacs
 *** 🐁 [[./emacs/bookmark-in-project][bookmark-in-project]]: project-local bookmarks
+*** [[./emacs/calc][calc]]: tweaks for the built-in [[https://www.gnu.org/software/emacs/manual/html_mono/calc.html][calc]]
 *** 🕰 [[./emacs/casual][casual]]: use [[https://github.com/kickingvegas/casual-suite][casual]]'s user-friendly [[https://github.com/magit/transient][transient]] menus, modified to be closer to Doom's default keybindings
 *** ⭐ [[./emacs/electric-operator][electric-operator]]: automatically insert spaces around operators in many different programming languages (e.g., typing "3+3" produces "3 + 3")
 *** 🕰 [[./emacs/elmacro][elmacro]]: convert keyboard macros into Emacs Lisp functions
@@ -129,6 +133,10 @@ Forked from Doom's ~:editor multiple-cursors~.
 *** 🕰🐁 [[./emacs/perf-extras][perf-extras]]: some packages for measuring Emacs peformance
 *** ⭐ [[./emacs/repeat][repeat]]: support for ~repeat-mode~
 *** [[./emacs/secondary-selection][secondary-selection]]: make use of Emacs's obscure [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Secondary-Selection.html]["secondary selection" feature]]
+*** 🏢 [[./emacs/tramp-extra][tramp-extra]]: performance tweaks and bugfixes for [[https://www.gnu.org/software/emacs/manual/html_node/tramp/index.html][TRAMP]]
+Flags:
+**** +hlo: use [[https://github.com/jsadusk/tramp-hlo][tramp-hlo]] for further performance improvements
+**** +rpc: use [[https://github.com/ArthurHeymans/emacs-tramp-rpc][tramp-rpc]] for further performance improvements
 *** ⭐🏢 [[./emacs/vlf][vlf]]: view large files without loading the whole thing into memory
 ** :input
 *** 🕰 [[./input/csi-u][csi-u]]: support for [[https://www.leonerd.org.uk/hacks/fixterms/][CSI u]], which is used by [[https://iterm2.com/documentation-csiu.html][iTerm2]] to send lots of extra keys that terminal emulators don't normally send
@@ -136,13 +144,17 @@ Forked from Doom's ~:editor multiple-cursors~.
 NOTE: On terminal emulators that support the [[https://sw.kovidgoyal.net/kitty/keyboard-protocol/][Kitty Keyboard Protocol (KKP)]], like Kitty and WezTerm, this module isn't needed, since Doom now supports KKP by default if ~:os tty~ is enabled.
 *** [[./input/reverse-im][reverse-im]]: see [[https://github.com/a13/reverse-im.el][the reverse-im package]]
 ** :lang
+*** 🐁 [[./lang/applescript][applescript]]: editing [[https://en.wikipedia.org/wiki/AppleScript][AppleScript]] files using [[https://github.com/AjaiKN/apples-mode][apples-mode]]
 *** 🏢 [[./lang/ess][ess]]: fork of doom's ess module (R and Julia)
 *** 🐁 [[./lang/hare][hare]]: [[https://harelang.org/][Hare]]
 *** [[./lang/jsonian][jsonian]]: like doom's json module, but uses [[https://github.com/iwahbe/jsonian][jsonian]]
 *** 🐁 [[./lang/kdl][kdl]]: KDL (JSON/YAML/XML alternative, used for serialization and configuration)
+*** 🐁 [[./lang/ledger+hledger][ledger+hledger]]: editing [[https://www.ledger-cli.org/][ledger]]/[[https://hledger.org/][hledger]] plain-text accounting files
 *** [[./lang/linear-program][linear-program]]: editing files for linear programming tools like GLPK, Gurobi, and HiGHS (depeends on [[https://github.com/AjaiKN/dotfiles/blob/main/config/doom/lisp/linear-program-mode/linear-program-mode.el][linear-program-mode.el]])
 *** 🐁 [[./lang/log][log]]: dealing with log files
 *** [[./lang/maxima][maxima]]: [[https://maxima.sourceforge.io/][Maxima]] (computer algebra system)
+*** 🏢 [[./lang/mediawiki][mediawiki]]: editing and browsing MediaWiki pages (e.g. Wikipedia, Wiktionary) from Emacs
+Fork of [[https://github.com/hexmode/mediawiki-el][mediawiki-el]] with extra commands/keybindings and various fixes.
 *** 🐁 [[./lang/mercury][mercury]]: [[https://mercurylang.org/][Mercury]] (logical + functional programming)
 *** [[./lang/obsidian][obsidian]]: dealing with [[https://obsidian.md/][Obsidian]] markdown files
 *** 🐁 [[./lang/pdf-raw][pdf-raw]]: editing raw PDF files for some reason
@@ -151,20 +163,34 @@ NOTE: On terminal emulators that support the [[https://sw.kovidgoyal.net/kitty/k
 *** [[./lang/typst][typst]]: [[https://typst.app/][Typst]] (LaTeX alternative)
 *** 🐁 [[./lang/uiua][uiua]]: [[https://www.uiua.org/][Uiua]] (stack-based array programming)
 *** 🐁 [[./lang/vimrc][vimrc]]: editing vimrc files
+*** [[./lang/vue][vue]]: [[https://vuejs.org/][Vue]] single-file components
+Uses [[https://github.com/8uff3r/vue-ts-mode][vue-ts-mode]] with tree-sitter, or falls back to ~web-mode~ otherwise.
 ** :os
 *** 🕰 [[./os/emacs-mac][emacs-mac]]: stuff specific to [[https://bitbucket.org/mituharu/emacs-mac/][Mitsuharu Yamamoto's emacs-mac]] (a fork of Emacs for better Mac support, which can be installed [[https://github.com/railwaycat/homebrew-emacsmacport][with Homebrew]] or [[https://ports.macports.org/port/emacs-mac-app/][with MacPorts]])
 *** ⭐ [[./os/emacs-plus][emacs-plus]]: stuff I use on Mac with [[github.com/d12frosted/homebrew-emacs-plus][emacs-plus]]
 *** 🚧 [[./os/exwm][exwm]]: Emacs X Window Manager (for Linux)
 ** :term
 *** 🐛 [[./term/eat][eat]]: Emulate A Terminal with [[https://codeberg.org/akib/emacs-eat][eat]]
+*** 🐁 [[./term/eshell-extra][eshell-extra]]: extra eshell utilities
+Adds ~$~, ~_~, and ~OUTPUT~ variable aliases for referencing the last command's output (as text, as a list, or as a file). From [[https://github.com/howardabrams/hamacs][hamacs]].
+*** ⭐🐛 [[./term/ghostel][ghostel]]: support for the [[https://github.com/dakra/ghostel][ghostel]] terminal emulator
 *** 🐛🏢 [[./term/mistty][mistty]]: a fancier frontend for term.el
 I make some very invasive changes to mistty to make commands only act on the prompt
 ** :tools
 *** 🕰🐁 [[./tools/age][age]]: integration for [[https://github.com/FiloSottile/age][age]] file encryption
 *** 🐁🚧 [[./tools/dwim-shell-command][dwim-shell-command]]: support for [[https://github.com/xenodium/dwim-shell-command][dwim-shell-command]]
 *** [[./tools/fasd][fasd]]: integration for [[https://github.com/clvv/fasd][fasd]] (directory and file navigation based on frecency)
+*** 🐁 [[./tools/guix][guix]]: integration with [[https://guix.gnu.org/][GNU Guix]]
+Adds Guix profile directories to ~exec-path~/~PATH~, and a helper for attaching a buffer to a Guix REPL.
 *** 🚧🏢 [[./tools/llm-extra][llm-extra]]: stuff related to large language models
 Meant to be used in addition to Doom's ~:tools llm~ module.
+*** [[./tools/mason][mason]]: install LSPs and other external dependencies using [[https://github.com/deirn/mason.el][mason.el]] (the same registry as [[https://github.com/mason-org/mason.nvim][mason.nvim]])
+Run ~doom +mason sync~ to install dependencies for the Doom modules you have enabled.
+
+Flags:
+**** +sync: automatically install the relevant Mason packages every time you run ~doom sync~
+*** 🐁 [[./tools/mise][mise]]: integration for [[https://mise.jdx.dev/][mise]] (dev tool/environment version manager)
+Puts mise's shims on ~PATH~ / ~exec-path~, and automatically trusts mise/tool-version config files when you save them.
 *** ⭐ [[./tools/pdf][pdf]]: viewing PDFs in Emacs
 Forked from Doom's ~:tools pdf~ module.
 *** ⭐ [[./tools/prodigy][prodigy]]: managing external services (e.g. starting a development server that you use all the time)
@@ -173,6 +199,7 @@ Forked from Doom's deleted module of the same name
 *** [[./tools/regex][regex]]: tools for working with regular expressions - converting between Perl-style (PCRE) regex syntax, Emacs regex syntax, and Emacs [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Regular-Expressions.html][rx]] syntax
 *** 🕰 [[./tools/stgit][stgit]]: integration with [[https://stacked-git.github.io/][stacked git]].
 *** [[./tools/upload][upload]]: fork of doom's ~:tools upload~ module
+*** 🐁 [[./tools/vim-file-locals][vim-file-locals]]: apply Vim-style modelines using [[https://github.com/abougouffa/emacs-vim-file-locals][vim-file-locals]]
 ** :ui
 *** ⭐🐁 [[./ui/blamer][blamer]]: [[https://github.com/Artawower/blamer.el][blamer]] package (inline git blame for the current line)
 *** ⭐🐁 [[./ui/buffer-move][buffer-move]]: moving buffers between windows
@@ -182,6 +209,7 @@ Forked from Doom's deleted module of the same name
 *** ⭐🐁 [[./ui/highlight-numbers][highlight-numbers]]: highlight numbers in modes that don't highlight them
 This is taken from Doom's source code from before it was removed in [[https://github.com/doomemacs/doomemacs/commit/5cb34fa15155c6525ceb33a715b6c1944410bad3][this commit]].
 *** ⭐ [[./ui/highlight-symbol][highlight-symbol]]: highlight all instances of the symbol the cursor is on
+*** 🐁 [[./ui/mini-frame][mini-frame]]: show the minibuffer in a centered child frame using [[https://github.com/muffinmad/emacs-mini-frame][mini-frame]]
 *** ⭐ [[./ui/modeline-minor-modes][modeline-minor-modes]]: show a menu of minor modes in the modeline
 *** ⭐🐁 [[./ui/modeline-scrollbar][modeline-scrollbar]]: show a mini scrollbar in the modeline
 *** ⭐ [[./ui/nav-flash][nav-flash]]: flash the line the cursor's on after big motions
