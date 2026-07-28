@@ -10,8 +10,7 @@ Files under `config/`, `dot-home/`, `launchd/`, etc. are installed into `$HOME` 
 
 - `private/` is a git submodule pointing at a separate private repo.
 - `vendor/` holds vendored third-party code (`fasd`, `zap`, `stow.sh`) — read-only upstream snapshots, not something to edit.
-- `nix/` (home-manager, nix-darwin, nixos) configs are optional — Nix is just one of the tools/package managers usable with this repo, not a requirement. It's unrelated to `install-files.sh`; changes there don't take effect via that installer.
-- A `.jj` directory exists (Jujutsu colocated with this Git repo), but it's currently uninitialized/broken here (`jj status` errors) — use `git` for VCS operations unless the user says otherwise.
+- `nix/` (home-manager, nix-darwin, nixos) and `guix/` (Guix Home) are experiments the user has tried at various points, not maintained alternatives to the primary `install-files.sh`-based install — don't assume they need to stay in sync with it, and don't treat them as evidence of "three parallel provisioning systems" to reconcile.
 - `.gitmodules` lists many more submodules than are actually checked out. `submodules-update.sh` (run by `install`/`install-files.sh`) only `git submodule init`s a fixed subset (`config/nano`, `vendor`, `config/zsh/themes`) plus whatever paths are passed explicitly as args, then updates whatever's already initialized. So most of `config/zsh/plugins/*/*` (individual zsh plugins, each its own submodule/vendored upstream code) start out **uninitialized** and appear as empty directories — that's expected, not missing/broken content. Run `git submodule status` to see current state (a `-` prefix means uninitialized); don't try to "fix" an empty plugin dir by writing content into it.
 
 ## Emacs layout

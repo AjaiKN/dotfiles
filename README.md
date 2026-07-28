@@ -49,7 +49,8 @@ NOTE: The `uninstall` script ONLY removes symlinks to my dotfiles. If you told t
 - `bin/`: Custom scripts and utilities that belong in my PATH
 - `scripts/`: Scripts that _don't_ need to be in my PATH
 - `launchd/`: macOS LaunchAgents for background tasks
-- `nix/`: Nix, NixOS, and Home Manager configurations
+- `nix/`: Nix, NixOS, and Home Manager configurations (experimental, I don't usually use this)
+- `guix/`: Guix Home configuration (experimental, I don't usually use this)
 - `vendor/`: Third-party dependencies
 - `private/`: A git submodule linking to a private repository containing configuration I haven't (yet) publicized
 
