@@ -916,7 +916,33 @@ or creates it if it does not exist."
 
 ;;; python
 (after! python
-  (setopt python-fill-docstring-style 'django))
+  (setopt python-fill-docstring-style 'django)
+
+  ;; Share input history with the `python' REPL invoked from the command
+  ;; line (which persists to `~/.python_history' via readline/site.py).
+  ;; Mirrors what `ielm.el' does for `ielm-history-file-name'.
+  (defvar-local akn/python-shell-history--exit nil)
+  (add-hook! 'inferior-python-mode-hook
+    (defun akn/python-shell-history-setup-h ()
+      (setq-local comint-input-ring-file-name "~/.python_history")
+      ;; Don't pollute history with the `__PYTHON_EL_eval(...)' /
+      ;; `__PYTHON_EL_eval_file(...)' wrapper calls python.el sends
+      ;; when running `python-shell-send-region'/`-buffer'/etc.
+      (setq-local comint-input-filter
+                  (lambda (str)
+                    (and (not (string-match-p "\\`\\s *\\'" str))
+                         (not (string-match-p "\\`__PYTHON_EL_eval" str)))))
+      (setq akn/python-shell-history--exit
+            (let ((buf (current-buffer)))
+              (lambda () (with-current-buffer buf (comint-write-input-ring)))))
+      (add-hook 'kill-buffer-hook
+                (lambda ()
+                  (funcall akn/python-shell-history--exit)
+                  (remove-hook 'kill-emacs-hook akn/python-shell-history--exit))
+                nil t)
+      (unless noninteractive
+        (add-hook 'kill-emacs-hook akn/python-shell-history--exit))
+      (comint-read-input-ring t))))
 
 (add-to-list 'interpreter-mode-alist
              (cons (rx bos "uv" eos) #'python-mode))
