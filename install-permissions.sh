@@ -35,6 +35,10 @@ mychmod() {
 # mychmod go-rwx "$HOME"
 mychmod go-rwx prog
 mychmod go-rwx .ssh .gnupg
+mychmod go-rwx .wget-hsts
+mychmod go-rwx .zcompdump
+mychmod go-rwx ./*.save ./*.bkp ./*.bak ./*.log ./*.lic
+mychmod go-rwx  .*.save  .*.bkp  .*.bak  .*.log  .*.lic
 mychmod go-rwx Trash .Trash "${XDG_DATA_HOME:-.local/share}"/Trash .local/share/Trash
 mychmod go-rwx Desktop Documents Downloads Finance Library Movies Music Pictures Vidoes
 mychmod go-rwx "${XDG_DESKTOP_DIR:-Desktop}" "${XDG_DOCUMENTS_DIR:-Documents}" "${XDG_DOWNLOAD_DIR:-Downloads}" "${XDG_MUSIC_DIR:-Music}" "${XDG_PICTURES_DIR:-Pictures}" "${XDG_VIDEOS_DIR:-Videos}"
