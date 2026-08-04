@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+for repo in *; do
+	if [[ -e $repo/.git ]]; then
+		echo "=== $repo ($(git -C "$repo" rev-parse --abbrev-ref HEAD)) ==="
+		git -C "$repo" status --short
+	fi
+done
