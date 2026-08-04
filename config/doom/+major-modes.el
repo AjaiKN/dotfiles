@@ -154,7 +154,7 @@
                       dired-movement-style nil)
         (kill-local-variable 'dirvish-use-mode-line)
         (setq-local dired-movement-style 'cycle))
-      (hide-mode-line-mode (if akn/dirvish-side-mode 1 -1)))))
+      (mode-line-invisible-mode (if akn/dirvish-side-mode 1 -1)))))
 
 (after! dirvish-side
   (akn/remove-from-list 'dirvish-side-attributes 'file-size))
@@ -333,10 +333,10 @@
                           (akn/treemacs-single-click-expand-action event))))
 
   (add-hook! 'treemacs-mode-hook
-    (defun akn/hide-mode-line-mode ()
-      (hide-mode-line-mode)
+    (defun akn/mode-line-invisible-mode ()
+      (mode-line-invisible-mode)
       (akn/after-timer! (0)
-        (hide-mode-line-mode)
+        (mode-line-invisible-mode)
         (redraw-display))))
   (add-hook 'treemacs-mode-hook #'treemacs-follow-mode)
   (defalias 'akn/treemacs-preview-mode #'treemacs-peek-mode))

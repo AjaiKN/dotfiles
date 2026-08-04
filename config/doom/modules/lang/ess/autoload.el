@@ -93,7 +93,7 @@
                                                       (mode . (xwidget-webkit-mode essgd-mode))))))
         (xwidget-webkit-browse-url url)
         (tab-line-mode -1)
-        (hide-mode-line-mode)
+        (mode-line-invisible-mode)
         (set-window-dedicated-p (selected-window) 'plot)))))
 
 ;;;###autoload

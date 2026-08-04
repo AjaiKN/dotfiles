@@ -248,7 +248,7 @@
   (add-hook! 'essgd-mode-hook
     (defun +ess--essgd-h ()
       (tab-line-mode -1)
-      (hide-mode-line-mode)
+      (mode-line-invisible-mode)
       (set-window-dedicated-p (selected-window) 'plot)))
 
   (akn/advise-letf! essgd-show-plot-n (+ess-set-background-a)
