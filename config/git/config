@@ -172,3 +172,5 @@
 
 [includeIf "gitdir:~/work/"]
     path = ~/work/.gitconfig
+[index]
+	skipHash = false # so that feature.manyFiles=true in repos' .git/config doesn't break powerlevel10k: https://github.com/romkatv/powerlevel10k#incorrect-git-status-in-prompt
