@@ -53,6 +53,31 @@
 (after! lsp-tailwindcss
   (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
 
+;;; compilation-mode
+(after! compile
+  (add-to-list 'compilation-error-regexp-alist-alist
+               `(ruff ,(rx bol (+ upper) (+ digit) " " (+ nonl)
+                           "\n"
+                           (* space) "-->" (* space)
+                           (group
+                            (group (+ (not ":")))
+                            (or
+                             (: ":" (group (+ digit))
+                                ":" (group (+ digit)))
+                             (: ":cell " (* any))))
+                           eol)
+                 2 ;FILE
+                 3 ;LINE
+                 4 ;COLUMN
+                 1 ;TYPE
+                 ;; 1 ;HYPERLINK
+                 . nil))
+  (add-to-list 'compilation-error-regexp-alist
+               'ruff)
+
+  (map! :map (compilation-mode-map compilation-minor-mode-map)
+        [remap flycheck-next-error] #'compilation-next-error))
+
 ;;; conf-mode
 ;; https://docs.netlify.com/manage/routing/redirects/overview/
 (add-to-list 'auto-mode-alist '("/_redirects\\'" . conf-space-mode))
