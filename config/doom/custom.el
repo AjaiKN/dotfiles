@@ -24,7 +24,8 @@
    '("/home/ajainelson/prog/guix/" "/Users/ajainelson/prog/cs342-hw/"
      "/Users/ajainelson/.config/doom/" "~/.config/emacs/"))
  '(safe-local-variable-values
-   '((lisp-indent-local-overrides (cond . 0) (interactive . 0)
+   '((+format-with ruff-isort ruff)
+     (lisp-indent-local-overrides (cond . 0) (interactive . 0)
       (make-obsolete-variable . 1))
      (+format-with . ruff) (backup-inhibited . t)
      (lisp-indent-local-overrides (cond . 0) (interactive . 0))
