@@ -2,7 +2,18 @@
 
 for repo in *; do
 	if [[ -e $repo/.git ]]; then
-		echo "=== $repo ($(git -C "$repo" rev-parse --abbrev-ref HEAD)) ==="
+		branch=$(git -C "$repo" rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+		ahead_behind=""
+		upstream=$(git -C "$repo" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}' 2>/dev/null)
+		[[ -z $upstream ]] && upstream=$(git -C "$repo" rev-parse --abbrev-ref --symbolic-full-name '@{push}' 2>/dev/null)
+		if [[ -n $upstream ]]; then
+			read -r ahead behind < <(git -C "$repo" rev-list --left-right --count "$upstream...HEAD" 2>/dev/null | awk '{print $2, $1}')
+			[[ $ahead -gt 0 ]] && ahead_behind+="⇡$ahead"
+			[[ $behind -gt 0 ]] && ahead_behind+="⇣$behind"
+		fi
+
+		echo "=== $repo ($branch$ahead_behind) ==="
 		git -C "$repo" status --short
 	fi
 done
