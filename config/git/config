@@ -39,7 +39,7 @@
 	# Push current branch to same-named branch on remote by default
 	# https://jvns.ca/blog/2024/02/16/popular-git-config-options/#push-default-simple-push-default-current-push-autosetupremote-true
 	default = current
-	# autoSetupRemote = true
+	autoSetupRemote = true
 [core]
 	autocrlf = input
 	safecrlf = warn
