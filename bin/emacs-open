@@ -16,6 +16,7 @@ verbose=
 create_frame=
 create_tab=
 new_emacs=
+flags=() # to pass through to emacs or emacsclient
 while [[ $# -gt 0 ]]; do
 	case "$1" in
 		(--version|-V)
@@ -42,6 +43,10 @@ while [[ $# -gt 0 ]]; do
 		(--verbose|-v)
 			verbose=1
 			shift
+			;;
+		(--eval|-e)
+			flags=("--eval" "$2")
+			shift; shift
 			;;
 		(--)
 			shift
@@ -109,25 +114,25 @@ else
 	# Don't wait for it to finish.
 
 	if [[ -n "$EMACS_MAC" ]]; then
-		if [[ $# -eq 0 ]]; then
+		if [[ $# -eq 0 ]] && [[ ${#flags[@]} -eq 0 ]]; then
 			# number of args is zero
 			open /Applications/Emacs.app
 		elif [[ -z "$new_emacs" ]] && pgrep -f Emacs.app >/dev/null; then
 			# emacs server/daemon is already running
 			open /Applications/Emacs.app & # focus Emacs
-			emacsclient -n -- "$@"
+			emacsclient -n "${flags[@]}" -- "$@"
 		else
 			# emacs server/daemon is not running
-			open /Applications/Emacs.app --args "$@"
+			open /Applications/Emacs.app --args "${flags[@]}" -- "$@"
 		fi
 	elif [[ -n "$new_emacs" ]]; then
-		nohup emacs "$@" </dev/null >/dev/null 2>&1 &
+		nohup emacs "${flags[@]}" "$@" </dev/null >/dev/null 2>&1 &
 	else
 		emacs-daemon-wait
 		# open /Applications/Emacs.app & # focus Emacs
 		if [[ "$(emacsclient -e '(display-graphic-p)')" = "t" ]]; then
 			# first arg
-			flags=(-n)
+			flags+=(-n)
 			if [[ -n "$create_frame" ]]; then
 				flags+=(-c)
 			fi
@@ -141,9 +146,11 @@ else
 		else
 			if [[ "$(uname -s)" = "Linux" ]]; then
 				# For some reason, emacsclient -c -n wasn't working on my Asahi Linux
-				TERM=xterm-256color nohup emacsclient -c -- "$@" </dev/null >/dev/null 2>&1 &
+				flags+=(-c)
+				TERM=xterm-256color nohup emacsclient "${flags[@]}" -- "$@" </dev/null >/dev/null 2>&1 &
 			else
-				TERM=xterm-256color emacsclient -c -n -- "$@"
+				flags+=(-c -n)
+				TERM=xterm-256color emacsclient "${flags[@]}" -- "$@"
 			fi
 		fi
 		emacsclient -e '(ignore-errors (akn/focus-this-frame))' >/dev/null
