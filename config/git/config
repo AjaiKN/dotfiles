@@ -95,6 +95,8 @@
 
 	# https://blog.ipspace.net/2020/04/git-tip-word-diff.html
 	wdiff = diff --word-diff --word-diff-regex='\\w+'
+
+	ms = multistatus # see dotfiles/bin
 [merge]
 	# https://github.blog/2022-01-24-highlights-from-git-2-35/: zdiff3 (disabled b/c could be confusing sometimes maybe)
 	conflictstyle = diff3
