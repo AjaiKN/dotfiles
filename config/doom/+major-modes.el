@@ -232,8 +232,8 @@
 ;;;; visiting directories from the command line with dired
 (add-hook! 'server-visit-hook
   (defun akn/server-visit-dired-h ()
-    (akn/dirvish-do-layout)
     (unless (display-graphic-p)
+      (akn/dirvish-do-layout)
       (akn/server-quit-mode))))
 
 ;;;; movement remaps
