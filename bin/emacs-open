@@ -7,8 +7,8 @@ export PATH="$PATH:/Applications/Emacs.app/Contents/MacOS/bin"
 export EMACS_PLUS_NO_PATH_INJECTION=1
 
 print_usage() {
-	echo "Usage: $0 [-c|-f|--create-frame|--[new-]frame] [-t|--[new-]tab] [-v|--verbose] [--] [file...]"
-	echo "   or: $0 [-v|--verbose] -n|--new [emacs_args...]"
+	echo "Usage: $0 [-c|-f|--create-frame|--[new-]frame] [-t|--[new-]tab] [-v|--verbose] [-w|--wait] [--] [file...]"
+	echo "   or: $0 [-v|--verbose] [-w|--wait] -n|--new [emacs_args...]"
 }
 
 # read options
@@ -39,6 +39,10 @@ while [[ $# -gt 0 ]]; do
 			new_emacs=1
 			shift
 			break # so that the rest of the flags (e.g., --profile) will go through to emacs
+			;;
+		(-w|--wait)
+			wait=1
+			shift
 			;;
 		(--verbose|-v)
 			verbose=1
@@ -116,13 +120,32 @@ else
 		elif [[ -z "$new_emacs" ]] && pgrep -f Emacs.app >/dev/null; then
 			# emacs server/daemon is already running
 			open /Applications/Emacs.app & # focus Emacs
-			emacsclient -n "${flags[@]}" -- "$@"
+			flags+=(-n)
+			emacsclient "${flags[@]}" -- "$@"
 		else
+			open_flags=()
+			if [[ -n "$wait" ]]; then
+				open_flags+=(-W)
+			fi
+			if [[ -n "$new" ]]; then
+				open_flags+=(-n)
+			fi
 			# emacs server/daemon is not running
-			open /Applications/Emacs.app --args "${flags[@]}" -- "$@"
+			open "${open_flags[@]}" /Applications/Emacs.app --args "${flags[@]}" -- "$@"
 		fi
 	elif [[ -n "$new_emacs" ]]; then
-		nohup emacs "${flags[@]}" "$@" </dev/null >/dev/null 2>&1 &
+		if [[ -n "$wait" ]]; then
+			emacs "${flags[@]}" "$@"
+		else
+			nohup emacs "${flags[@]}" "$@" </dev/null >/dev/null 2>&1 &
+		fi
+	elif [[ -n "$wait" ]]; then
+		if [[ -n "$create_frame" ]]; then
+			flags+=(-c)
+		else
+			flags+=(-r)
+		fi
+		exec emacsclient "${flags[@]}" "$@"
 	else
 		emacs-daemon-wait
 		# open /Applications/Emacs.app & # focus Emacs
@@ -131,12 +154,14 @@ else
 			flags+=(-n)
 			if [[ -n "$create_frame" ]]; then
 				flags+=(-c)
+			else
+				flags+=(-r)
 			fi
 			TERM=xterm-256color emacsclient "${flags[@]}" -- "$1"
 			shift
 			# rest of args
 			for arg in "$@"; do
-				flags=(-n)
+				flags=(-n -r)
 				TERM=xterm-256color emacsclient "${flags[@]}" -- "$arg"
 			done
 		else
