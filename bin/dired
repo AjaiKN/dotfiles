@@ -17,7 +17,7 @@ fi
 rm -f ~/.cache/doom/akn-cwd
 
 # If Emacs.app isn't already running, ...
-if ! pgrep -f Emacs.app >/dev/null; then
+if ! emacsclient -e t >/dev/null 2>&1; then
 	emacs-term-new "$dir" || exit $?
 else
 	emacs-term "$dir" || exit $?

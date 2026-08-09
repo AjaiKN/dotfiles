@@ -12,7 +12,7 @@ fi
 # set -x
 
 # If Emacs.app isn't already running, ...
-if ! pgrep -f Emacs.app >/dev/null; then
+if ! emacsclient -e t >/dev/null 2>&1; then
 	exec emacs -nw --eval '(progn (magit) (doom/window-maximize-buffer) (akn/server-quit-mode))'
 else
 	export EMACS_SOCKET_NAME=term
