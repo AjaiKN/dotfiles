@@ -7,8 +7,8 @@ export PATH="$PATH:/Applications/Emacs.app/Contents/MacOS/bin"
 export EMACS_PLUS_NO_PATH_INJECTION=1
 
 print_usage() {
-	echo "Usage: $0 [-c|-f|--create-frame|--[new-]frame] [-t|--[new-]tab] [-v|--verbose] [-w|--wait] [--] [file...]"
-	echo "   or: $0 [-v|--verbose] [-w|--wait] -n|--new [emacs_args...]"
+	echo "Usage: $0 [-c|-f|--create-frame|--[new-]frame] [-T|--[new-]tab] [-t|--term[inal]] [-nw|--tty|--no-window-system] [-v|--verbose] [-w|--wait] [--] [file...]"
+	echo "   or: $0 [-t|--term[inal]] [-nw|--tty|--no-window-system] [-v|--verbose] [-w|--wait] -n|--new [emacs_args...]"
 }
 
 # read options
@@ -16,6 +16,8 @@ verbose=
 create_frame=
 create_tab=
 new_emacs=
+term= # use term socket specifically
+tty= # use tty without changing the socket
 flags=() # to pass through to emacs or emacsclient
 while [[ $# -gt 0 ]]; do
 	case "$1" in
@@ -31,7 +33,15 @@ while [[ $# -gt 0 ]]; do
 			create_frame=1
 			shift
 			;;
-		(-t|--new-tab|--tab)
+		(-t|--term|--terminal)
+			term=1
+			shift
+			;;
+		(-nw|--tty|--no-window-system)
+			tty=1
+			shift
+			;;
+		(-T|--new-tab|--tab)
 			create_tab=1
 			shift
 			;;
@@ -69,9 +79,28 @@ while [[ $# -gt 0 ]]; do
 	esac
 done
 
+if [[ -n "$term" ]]; then
+	if [[ -z "${EMACS_SOCKET_NAME:-}" ]]; then
+		export EMACS_SOCKET_NAME=term
+	fi
+	create_frame=1
+	wait=1
+	tty=1
+	if [[ $# -eq 0 ]]; then
+		set -- .
+	fi
+fi
+if [[ -n "$tty" ]] || [[ "$(emacsclient --timeout=0.5 -e '(display-graphic-p)' 2>/dev/null)" = "nil" ]]; then
+	tty=1
+	flags+=(-nw)
+fi
+
 # see if pipe is needed
 needs_pipe=
 if (( $# == 0 )) && [[ ! -t 0 ]] && [[ -t 2 ]]; then
+	if [[ -n "$term" ]] && (( $# == 1 )) && [[ "$1" == "-" ]]; then
+		exec epipe -nw
+	fi
 	# No args, stdin isn't a tty but stderr is -> something is probably being piped to us
 	needs_pipe=1
 fi
@@ -113,7 +142,7 @@ else
 	# If Emacs is already running, open the file in the existing Emacs.
 	# Don't wait for it to finish.
 
-	if [[ -n "$EMACS_MAC" ]]; then
+	if [[ -n "$EMACS_MAC" ]] && [[ -z "$tty" ]]; then
 		if [[ $# -eq 0 ]] && [[ ${#flags[@]} -eq 0 ]]; then
 			# number of args is zero
 			open /Applications/Emacs.app
@@ -149,7 +178,7 @@ else
 	else
 		emacs-daemon-wait
 		# open /Applications/Emacs.app & # focus Emacs
-		if [[ "$(emacsclient -e '(display-graphic-p)')" = "t" ]]; then
+		if [[ "$(emacsclient -e '(display-graphic-p)')" != "nil" ]]; then
 			# first arg
 			flags+=(-n)
 			if [[ -n "$create_frame" ]]; then

@@ -581,10 +581,10 @@ This is to mimic the behavior of RET in Stand-alone GNU Info."
                                   (bound-and-true-p anzu--state)))
                          #'Info-next))
 
-;; TUI new:      emacs-term-new --eval '(akn/info-standalone "info")'
-;; GUI new:      emacs-open-new --eval '(akn/info-standalone "info")'
-;; TUI existing: emacs-term --eval '(akn/info-standalone "info")'
-;; GUI existing: emacs-frame-new --eval '(akn/info-standalone "info")'
+;; TUI new:      emacs -nw --eval '(akn/info-standalone "info")'
+;; GUI new:      nohup emacs --eval '(akn/info-standalone "info")' </dev/null >/dev/null 2>&1 &
+;; TUI existing: emacsclient -s term -nw --eval '(akn/info-standalone "info")'
+;; GUI existing: emacsclient -nc --eval '(progn (akn/info-standalone "info") (akn/focus-this-frame))'
 (defun akn/info-standalone (&optional topic)
   (setq topic (or topic
                   (and command-line-args-left
