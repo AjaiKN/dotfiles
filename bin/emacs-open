@@ -171,8 +171,6 @@ else
 	elif [[ -n "$wait" ]]; then
 		if [[ -n "$create_frame" ]]; then
 			flags+=(-c)
-		else
-			flags+=(-r)
 		fi
 		exec emacsclient "${flags[@]}" "$@"
 	else
@@ -183,14 +181,12 @@ else
 			flags+=(-n)
 			if [[ -n "$create_frame" ]]; then
 				flags+=(-c)
-			else
-				flags+=(-r)
 			fi
 			TERM=xterm-256color emacsclient "${flags[@]}" -- "$1"
 			shift
 			# rest of args
 			for arg in "$@"; do
-				flags=(-n -r)
+				flags=(-n)
 				TERM=xterm-256color emacsclient "${flags[@]}" -- "$arg"
 			done
 		else
