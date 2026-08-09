@@ -13,11 +13,14 @@ if (( $# == 0 )) && [[ ! -t 0 ]] && [[ -t 2 ]]; then
 fi
 args=()
 for arg in "$@"; do
-	if [[ "$arg" == "-" ]]; then
-		needs_pipe=1
-	else
-		args+=("$arg")
-	fi
+	case "$arg" in
+		-)
+			needs_pipe=1
+			;;
+		*)
+			args+=("$arg")
+			;;
+	esac
 done
 set -- "${args[@]}"
 

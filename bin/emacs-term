@@ -15,14 +15,17 @@ fi
 
 args=()
 for arg in "$@"; do
-	if [[ "$arg" == "-" ]]; then
-		DIR=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
-		out="$DIR/pipe"
-		( umask 077; cat >"$out"; )
-		args+=("$out")
-	else
-		args+=("$arg")
-	fi
+	case "$arg" in
+		-)
+			DIR=$(mktemp -d "$TMPDIR/epipe-$$.XXXXXXXXXX")
+			out="$DIR/pipe"
+			( umask 077; cat >"$out"; )
+			args+=("$out")
+			;;
+		*)
+			args+=("$arg")
+			;;
+	esac
 done
 set -- "${args[@]}"
 
