@@ -94,6 +94,9 @@ if [[ -n "$tty" ]] || [[ "$(emacsclient --timeout=0.5 -e '(display-graphic-p)' 2
 	tty=1
 	flags+=(-nw)
 fi
+if [[ -n "$create_frame" ]]; then
+	create_tab=
+fi
 
 # see if pipe is needed
 needs_pipe=
@@ -129,7 +132,7 @@ if [[ -n "$verbose" ]]; then
 fi
 
 if [[ -n "$create_tab" ]]; then
-	emacsclient -e '(tab-new)'
+	emacsclient -e '(tab-new)' >/dev/null
 fi
 
 if [ -n "$INSIDE_EMACS" ]; then
@@ -176,18 +179,14 @@ else
 	else
 		emacs-daemon-wait
 		# open /Applications/Emacs.app & # focus Emacs
-		if [[ "$(emacsclient -e '(display-graphic-p)')" != "nil" ]]; then
-			# first arg
+		if [[ -z "$tty" ]]; then
 			flags+=(-n)
 			if [[ -n "$create_frame" ]]; then
 				flags+=(-c)
 			fi
-			TERM=xterm-256color emacsclient "${flags[@]}" -- "$1"
-			shift
-			# rest of args
 			for arg in "$@"; do
-				flags=(-n)
 				TERM=xterm-256color emacsclient "${flags[@]}" -- "$arg"
+				flags=(-n) # reset flags (so we don't create extra new frames, for example)
 			done
 		else
 			if [[ "$(uname -s)" = "Linux" ]]; then
@@ -198,8 +197,9 @@ else
 				flags+=(-c -n)
 				TERM=xterm-256color emacsclient "${flags[@]}" -- "$@"
 			fi
+			flags=(-n) # reset flags (so we don't create a new frame when focusing)
 		fi
-		emacsclient -e '(ignore-errors (akn/focus-this-frame))' >/dev/null
+		emacsclient "${flags[@]}" -e '(ignore-errors (akn/focus-this-frame))' >/dev/null
 	fi
 fi
 
