@@ -44,10 +44,6 @@ while [[ $# -gt 0 ]]; do
 			verbose=1
 			shift
 			;;
-		(--eval|-e)
-			flags=("--eval" "$2")
-			shift; shift
-			;;
 		(--)
 			shift
 			break
