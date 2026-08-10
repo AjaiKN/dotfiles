@@ -1,3 +1,4 @@
+# -*- doom-docs -*-
 #+title:    :tools prodigy
 #+subtitle: No sweatshop is complete without child processes
 #+created:  May 16, 2018
