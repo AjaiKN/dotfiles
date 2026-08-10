@@ -617,12 +617,12 @@ This is to mimic the behavior of RET in Stand-alone GNU Info."
 ;;; json
 
 (when (modulep! :lang json +lsp)
-  (remove-hook 'json-mode-local-vars-hook #'lsp!)
+  (remove-hook! '(json-mode-local-vars-hook jsonian-mode-local-vars-hook jsonian-c-mode-local-vars-hook) #'lsp!)
   (define-minor-mode akn/json-always-lsp-mode
     "If enabled, always enable LSP for json files."
     :global t
     :group 'akn)
-  (add-hook! 'json-mode-local-vars-hook :append
+  (add-hook! '(json-mode-local-vars-hook jsonian-mode-local-vars-hook jsonian-c-mode-local-vars-hook) :append
     (defun akn/json-maybe-lsp-h ()
       (when (or akn/json-always-lsp-mode
                 (and (not (bound-and-true-p so-long-minor-mode))

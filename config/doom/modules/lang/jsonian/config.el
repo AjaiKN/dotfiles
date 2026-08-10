@@ -93,4 +93,14 @@
         (save-restriction
           (narrow-to-region (line-beginning-position) (line-end-position))
           (apply fn args))
-      (apply fn args))))
+      (apply fn args)))
+
+  (after! eglot
+    (akn/pushnew (car
+                  (cl-assoc-if (lambda (modes) (and (listp modes) (memq 'json-mode modes)))
+                               eglot-server-programs))
+      'jsonian-mode
+      'jsonian-c-mode))
+
+  (add-hook! '(jsonian-mode-local-vars-hook jsonian-c-mode-local-vars-hook) :append
+             #'lsp!))
