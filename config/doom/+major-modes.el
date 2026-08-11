@@ -972,6 +972,9 @@ or creates it if it does not exist."
 (add-to-list 'interpreter-mode-alist
              (cons (rx bos "uv" eos) #'python-mode))
 
+(setq-hook! 'python-base-mode-hook
+  tab-width 4)
+
 (use-package! pet
   :ghook ('python-base-mode-hook #'pet-mode -10)
   :config
