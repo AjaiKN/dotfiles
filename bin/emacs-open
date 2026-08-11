@@ -96,12 +96,18 @@ if [[ -n "$tty" ]]; then
 	wait=1
 	flags+=(-nw)
 fi
-if [[ -z "$new_emacs" ]] && [[ "$(emacsclient -e '(display-graphic-p)')" = "nil" ]]; then
-	# Either it's non-graphical (tty), or no frames are open yet.
-	create_frame=1
-fi
-if [[ -n "$create_frame" ]]; then
-	create_tab=
+if [[ -z "$new_emacs" ]]; then
+	emacs-daemon-wait
+	if [[ -z "$create_frame" ]] && [[ "$(emacsclient -e '(display-graphic-p)')" = "nil" ]]; then
+		# Either it's non-graphical (tty), or no frames are open yet.
+		create_frame=1
+	fi
+	if [[ -n "$create_frame" ]]; then
+		create_tab=
+	fi
+	if [[ -n "$create_tab" ]]; then
+		emacsclient -e '(tab-new)' >/dev/null
+	fi
 fi
 
 # see if pipe is needed
@@ -135,10 +141,6 @@ set -- "${args[@]}"
 
 if [[ -n "$verbose" ]]; then
 	set -x
-fi
-
-if [[ -n "$create_tab" ]]; then
-	emacsclient -e '(tab-new)' >/dev/null
 fi
 
 if [ -n "$INSIDE_EMACS" ]; then
@@ -183,7 +185,6 @@ else
 		fi
 		exec emacsclient "${flags[@]}" "$@"
 	else
-		emacs-daemon-wait
 		# open /Applications/Emacs.app & # focus Emacs
 		flags+=(-n)
 		if [[ -n "$create_frame" ]]; then
