@@ -96,6 +96,10 @@ if [[ -n "$tty" ]]; then
 	wait=1
 	flags+=(-nw)
 fi
+if [[ -z "$new_emacs" ]] && [[ "$(emacsclient -e '(display-graphic-p)')" = "nil" ]]; then
+	# Either it's non-graphical (tty), or no frames are open yet.
+	create_frame=1
+fi
 if [[ -n "$create_frame" ]]; then
 	create_tab=
 fi
@@ -181,28 +185,18 @@ else
 	else
 		emacs-daemon-wait
 		# open /Applications/Emacs.app & # focus Emacs
-		if [[ "$(emacsclient -e '(display-graphic-p)')" != "nil" ]]; then
-			# It's graphical emacs, and at least one frame is open.
-			flags+=(-n)
-			if [[ -n "$create_frame" ]]; then
-				flags+=(-c)
-			fi
-			for arg in "$@"; do
-				TERM=xterm-256color emacsclient "${flags[@]}" -- "$arg"
-				flags=(-n) # reset flags (so we don't create extra new frames, for example)
-			done
-		else
-			# Either it's tty emacs, or there are no frames open.
+		flags+=(-n)
+		if [[ -n "$create_frame" ]]; then
+			flags+=(-c)
+		fi
+		for arg in "$@"; do
 			if [[ "$(uname -s)" = "Linux" ]]; then
-				# For some reason, emacsclient -c -n wasn't working on my Asahi Linux
-				flags+=(-c)
 				TERM=xterm-256color nohup emacsclient "${flags[@]}" -- "$@" </dev/null >/dev/null 2>&1 &
 			else
-				flags+=(-c -n)
-				TERM=xterm-256color emacsclient "${flags[@]}" -- "$@"
+				TERM=xterm-256color emacsclient "${flags[@]}" -- "$arg"
 			fi
-			flags=(-n) # reset flags (so we don't create a new frame when focusing)
-		fi
+			flags=(-n) # reset flags (so we don't create extra new frames, for example)
+		done
 		emacsclient "${flags[@]}" -e '(ignore-errors (akn/focus-this-frame))' >/dev/null
 	fi
 fi
