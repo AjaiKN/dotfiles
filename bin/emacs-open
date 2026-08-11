@@ -68,6 +68,9 @@ while [[ $# -gt 0 ]]; do
 			other="${opt#-?}"
 			set -- "${opt%"$other"}" "-${other}" "$@"
 			;;
+		(-)
+			break
+			;;
 		(-*)
 			echo "ERROR: Unknown option: $1"
 			print_usage
@@ -83,15 +86,14 @@ if [[ -n "$term" ]]; then
 	if [[ -z "${EMACS_SOCKET_NAME:-}" ]]; then
 		export EMACS_SOCKET_NAME=term
 	fi
-	create_frame=1
-	wait=1
 	tty=1
 	if [[ $# -eq 0 ]]; then
 		set -- .
 	fi
 fi
-if [[ -n "$tty" ]] || [[ "$(emacsclient --timeout=0.5 -e '(display-graphic-p)' 2>/dev/null)" = "nil" ]]; then
-	tty=1
+if [[ -n "$tty" ]]; then
+	create_frame=1
+	wait=1
 	flags+=(-nw)
 fi
 if [[ -n "$create_frame" ]]; then
@@ -179,7 +181,8 @@ else
 	else
 		emacs-daemon-wait
 		# open /Applications/Emacs.app & # focus Emacs
-		if [[ -z "$tty" ]]; then
+		if [[ "$(emacsclient -e '(display-graphic-p)')" != "nil" ]]; then
+			# It's graphical emacs, and at least one frame is open.
 			flags+=(-n)
 			if [[ -n "$create_frame" ]]; then
 				flags+=(-c)
@@ -189,6 +192,7 @@ else
 				flags=(-n) # reset flags (so we don't create extra new frames, for example)
 			done
 		else
+			# Either it's tty emacs, or there are no frames open.
 			if [[ "$(uname -s)" = "Linux" ]]; then
 				# For some reason, emacsclient -c -n wasn't working on my Asahi Linux
 				flags+=(-c)
