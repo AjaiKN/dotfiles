@@ -11,13 +11,22 @@
       ,(lambda (&optional _)
          (if (+ghostel--kkp-app-p)
              #'ghostel--send-event
-           (cmd! (apply #'ghostel-send-key args))))))
+           (cmd! (cl-loop for (key mod &rest _) on args by #'cddr
+                          do (funcall #'ghostel-send-key key mod)))))))
   (map! :map (ghostel-semi-char-mode-map ghostel-char-mode-map)
         :nviemorg "s-<left>"      (+ghostel--dumb-key "a" "ctrl")
         :nviemorg "s-<right>"     (+ghostel--dumb-key "e" "ctrl")
         :nviemorg "s-<backspace>" (+ghostel--dumb-key "u" "ctrl")
         :nviemorg "M-<left>"      (+ghostel--dumb-key "b" "meta")
-        :nviemorg "M-<right>"     (+ghostel--dumb-key "f" "meta"))
+        :nviemorg "M-<right>"     (+ghostel--dumb-key "f" "meta")
+        [remap undo]              (+ghostel--dumb-key "/" "ctrl")
+        [remap undo-fu-only-undo] (+ghostel--dumb-key "/" "ctrl")
+        [remap undo-only]         (+ghostel--dumb-key "/" "ctrl")
+        :nviemorg "s-z"           (+ghostel--dumb-key "/" "ctrl")
+        [remap undo-redo]         (+ghostel--dumb-key "x" "ctrl" "y" "ctrl")
+        [remap undo-fu-only-redo] (+ghostel--dumb-key "x" "ctrl" "y" "ctrl")
+        :nviemorg "s-Z"           (+ghostel--dumb-key "x" "ctrl" "y" "ctrl")
+        :nviemorg "M-<backspace>" #'ghostel--send-event)
 
   (setopt ghostel-enable-osc52 t
           ghostel-module-auto-install 'download)

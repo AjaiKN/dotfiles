@@ -42,8 +42,10 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey "^X^O" overwrite-mode
 	bindkey "^X^R" _read_comp
 	bindkey "^X^U" undo
+	bindkey "^[^_" redo # control alt shift hyphen
 	bindkey "^X^V" vi-cmd-mode
 	bindkey "^X^X" exchange-point-and-mark
+	bindkey "^X^Y" redo
 	bindkey "^X*" expand-word
 	bindkey "^X=" what-cursor-position
 	bindkey "^X?" _complete_debug
@@ -70,7 +72,7 @@ if [ "$TERM" != "eterm-color" ]; then
 	bindkey "^[^J" self-insert-unmeta
 	bindkey "^[^L" clear-screen
 	bindkey "^[^M" self-insert-unmeta
-	bindkey "^[^_" copy-prev-word
+	# bindkey "^[^_" copy-prev-word
 	bindkey "^[ " expand-history
 	bindkey "^[!" expand-history
 	bindkey "^[\"" quote-region
