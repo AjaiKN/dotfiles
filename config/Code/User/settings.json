@@ -357,5 +357,8 @@
   "svelte.enable-ts-plugin": true,
   "files.autoSaveDelay": 1,
   "dotenv.enableAutocloaking": false,
-  "jupyter.interactiveWindow.creationMode": "perFile"
+  "jupyter.interactiveWindow.creationMode": "perFile",
+  "json.schemaDownload.trustedDomains": {
+    "https://raw.githubusercontent.com/microsoft/pyright/": true
+  }
 }
