@@ -55,18 +55,17 @@
 
          :desc "Magit run"          "!" #'magit-run
          :desc "Magit status here"  "RET" #'magit-status-here
-         :desc "Magit git command"  "Q" #'magit-git-command
-         :desc "Magit stash"        "Z" #'magit-stash
-         :desc "Magit quit"         "q" #'akn/magit-quit
-         :desc "Magit push"         "p" #'magit-push
-         :desc "Magit pull"         "F" #'magit-pull ; can do fetch from here too if `magit-pull-or-fetch' = t
-         :desc "Refresh"            "r" #'akn/vc-full-refresh
-         ;; "g c" #'magit-commit
-         ;; previously magit-branch-checkout
-         :desc "Magit branch"       "b" #'magit-branch
-         :desc "Magit ignore"       "i" #'magit-gitignore
-         :desc "Magit reset"        "O" #'magit-reset
          :desc "Magit worktree"     "%" #'magit-worktree
+         :desc "Magit branch"       "b" #'magit-branch ; previously magit-branch-checkout
+         :desc "Magit pull"         "F" #'magit-pull ; can do fetch from here too if `magit-pull-or-fetch' = t
+         :desc "Magit ignore"       "i" #'magit-gitignore
+         :desc "Magit merge"        "m" #'magit-merge
+         :desc "Magit git command"  "Q" #'magit-git-command
+         :desc "Refresh"            "r" #'akn/vc-full-refresh
+         :desc "Magit reset"        "O" #'magit-reset
+         :desc "Magit push"         "p" #'magit-push
+         :desc "Magit quit"         "q" #'akn/magit-quit
+         :desc "Magit stash"        "Z" #'magit-stash
 
          :desc "unstage hunk at point" "u" #'akn/unstage-hunk
          :desc "stage hunk at point"   "s" #'akn/stage-hunk
