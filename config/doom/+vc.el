@@ -59,6 +59,7 @@
          :desc "Magit stash"        "Z" #'magit-stash
          :desc "Magit quit"         "q" #'akn/magit-quit
          :desc "Magit push"         "p" #'magit-push
+         :desc "Magit pull"         "F" #'magit-pull ; can do fetch from here too if `magit-pull-or-fetch' = t
          :desc "Refresh"            "r" #'akn/vc-full-refresh
          ;; "g c" #'magit-commit
          ;; previously magit-branch-checkout
@@ -257,6 +258,9 @@ If a prefix argument is provided, ask before reverting hunk."
   ;; If it turns out to be too aggressive, we could also try
   ;; adding hooks that run #'magit-save-repository-buffers
   (setopt magit-save-repository-buffers 'dontask)
+
+  ;; So that magit-pull also offers some fetch suffixes.
+  (setopt magit-pull-or-fetch t)
 
   (akn/pushnew magit-no-confirm
     'safe-with-wip
