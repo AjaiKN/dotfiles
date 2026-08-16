@@ -173,7 +173,6 @@ Uses [[https://github.com/8uff3r/vue-ts-mode][vue-ts-mode]] with tree-sitter, or
 *** 🐛 [[./term/eat][eat]]: Emulate A Terminal with [[https://codeberg.org/akib/emacs-eat][eat]]
 *** 🐁 [[./term/eshell-extra][eshell-extra]]: extra eshell utilities
 Adds ~$~, ~_~, and ~OUTPUT~ variable aliases for referencing the last command's output (as text, as a list, or as a file). From [[https://github.com/howardabrams/hamacs][hamacs]].
-*** ⭐🐛 [[./term/ghostel][ghostel]]: support for the [[https://github.com/dakra/ghostel][ghostel]] terminal emulator
 *** 🐛🏢 [[./term/mistty][mistty]]: a fancier frontend for term.el
 I make some very invasive changes to mistty to make commands only act on the prompt
 ** :tools

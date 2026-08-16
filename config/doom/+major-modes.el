@@ -1189,6 +1189,97 @@ or creates it if it does not exist."
   (defalias 'akn/kill-current-buffer #'boring-processes-kill-current-buffer)
   (map! [remap kill-current-buffer] #'boring-processes-kill-current-buffer))
 
+;;;; ghostel
+
+(use-package! ghostel
+  :defer t
+  :defer-incrementally t
+  :config
+  (defun +ghostel--kkp-app-p ()
+    nil)
+  (defun +ghostel--dumb-key (&rest args)
+    `(menu-item "" nil :filter
+      ,(lambda (&optional _)
+         (if (+ghostel--kkp-app-p)
+             #'ghostel--send-event
+           (cmd! (cl-loop for (key mod &rest _) on args by #'cddr
+                          do (funcall #'ghostel-send-key key mod)))))))
+  (map! :map (ghostel-semi-char-mode-map ghostel-char-mode-map)
+        :nviemorg "s-<left>"      (+ghostel--dumb-key "a" "ctrl")
+        :nviemorg "s-<right>"     (+ghostel--dumb-key "e" "ctrl")
+        :nviemorg "s-<backspace>" (+ghostel--dumb-key "u" "ctrl")
+        :nviemorg "M-<left>"      (+ghostel--dumb-key "b" "meta")
+        :nviemorg "M-<right>"     (+ghostel--dumb-key "f" "meta")
+        [remap undo]              (+ghostel--dumb-key "/" "ctrl")
+        [remap undo-fu-only-undo] (+ghostel--dumb-key "/" "ctrl")
+        [remap undo-only]         (+ghostel--dumb-key "/" "ctrl")
+        :nviemorg "s-z"           (+ghostel--dumb-key "/" "ctrl")
+        [remap undo-redo]         (+ghostel--dumb-key "x" "ctrl" "y" "ctrl")
+        [remap undo-fu-only-redo] (+ghostel--dumb-key "x" "ctrl" "y" "ctrl")
+        :nviemorg "s-Z"           (+ghostel--dumb-key "x" "ctrl" "y" "ctrl")
+        :nviemorg "M-<backspace>" #'ghostel--send-event)
+
+  (setopt ghostel-enable-osc52 t
+          ghostel-module-auto-install 'download)
+
+  (add-hook! 'ghostel-mode-hook
+    (defun +ghostel--set-field-every-command-h ()
+      (add-hook! '(pre-command-hook post-command-hook) :local
+        (defun +ghostel--set-field-h ()
+          (when-let* ((start-pos (and (markerp ghostel--line-input-start) (marker-position ghostel--line-input-start)))
+                      (end-pos (and (markerp ghostel--line-input-end) (marker-position ghostel--line-input-end)))
+                      ((< start-pos end-pos))
+                      (inhibit-read-only t))
+            (put-text-property start-pos end-pos 'field 'ghostel-input)
+            (put-text-property start-pos end-pos 'front-sticky t))
+          (save-excursion
+            (unless (get-text-property (point) 'ghostel-input)
+              (ignore-errors
+                (forward-char -1)))
+            (when-let* (((get-text-property (point) 'ghostel-input))
+                        (start-pos (previous-single-property-change (point) 'ghostel-input))
+                        (start-pos (1+ start-pos))
+                        (end-pos (next-single-property-change (point) 'ghostel-input)))
+              (put-text-property start-pos end-pos 'field 'ghostel-input)
+              (put-text-property start-pos end-pos 'front-sticky t))))))))
+
+;; NOTE: disable xterm-color before enabling these:
+
+;; (use-package! ghostel-compile
+;;   :defer t
+;;   :after-call compilation-start compile recompile
+;;   :init
+;;   (after! (:and compile ghostel) (require 'ghostel-compile))
+;;   (define-advice compilation-start (:around (fn &rest args) +ghostel-compile-global-a -95)
+;;     "Lazy load ghostel-compile when compilation-start is first called."
+;;     (if (featurep 'ghostel-compile)
+;;         (apply fn args)
+;;       (require 'ghostel-compile)
+;;       (apply #'compilation-start args)))
+;;   (map! [remap compile]   #'ghostel-compile
+;;         [remap recompile] #'ghostel-recompile)
+;;   :config
+;;   (advice-remove #'compilation-start 'compilation-start@+ghostel-compile-global-a)
+;;   (ghostel-compile-global-mode)
+;;   (when (modulep! :ui popup +defaults)
+;;     (set-popup-rule! "^\\*ghostel-compil"
+;;       :vslot -2 :size 0.3 :autosave t :quit t :ttl 0)))
+
+;; (use-package! ghostel-eshell
+;;   :when (modulep! :term eshell)
+;;   :ghook ('eshell-load-hook #'ghostel-eshell-visual-command-mode))
+
+;; (use-package! ghostel-comint
+;;   :ghook 'shell-mode-hook
+
+;;   :after-call comint-mode-hook
+;;   :config
+;;   (ghostel-comint-global-mode 1)
+
+;;   (add-hook! '(shell-mode-hook ghostel-comint-mode-hook)
+;;     (font-lock-mode -1)
+;;     (setq-local font-lock-function #'ignore)))
+
 ;;;; vterm
 (defadvice! akn/secret-paste-minibuffer-a (&rest _)
   :before #'comint-send-invisible
