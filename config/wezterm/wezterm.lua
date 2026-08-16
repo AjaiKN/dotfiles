@@ -47,9 +47,9 @@ config.enable_kitty_keyboard = true
 config.window_background_opacity = my_opacity
 config.macos_window_background_blur = 3
 config.quit_when_all_windows_are_closed = false
-if file_exists(home .. "/prog/") then
-  config.default_cwd = home .. "/prog"
-end
+-- if file_exists(home .. "/prog/") then
+--   config.default_cwd = home .. "/prog"
+-- end
 config.prefer_to_spawn_tabs = true
 config.scrollback_lines = 200000
 
