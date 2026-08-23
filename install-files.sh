@@ -220,7 +220,7 @@ $1 should not exist.
 					;;
 				2|a)
 					"$DOTFILES"/bin/zap -v "$2"
-					mv -nv "$1" "$2"
+					mv -iv "$1" "$2" </dev/null
 					;;
 				3|z|t)
 					"$DOTFILES"/bin/zap -v "$1"
