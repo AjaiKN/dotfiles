@@ -225,7 +225,7 @@ are exactly the same too."
   (setq recentf-max-saved-items (max 5000 recentf-max-saved-items))
 
   ;; similar to https://news.ycombinator.com/item?id=33186412
-  (setq recentf-save-file (concat doom-cache-dir "my_recentf"))
+  (setq recentf-save-file (doom-cache-dir "my_recentf"))
 
   (advice-add #'recentf-save-list :around #'akn/always-steal-lock-a)
 
@@ -245,7 +245,7 @@ are exactly the same too."
     (savehist-autosave))
 
   ;; similar to https://news.ycombinator.com/item?id=33186412
-  (setq savehist-file (concat doom-cache-dir "my_savehist"))
+  (setq savehist-file (doom-cache-dir "my_savehist"))
 
   (advice-add #'savehist-save :around #'akn/always-steal-lock-a))
 
@@ -2774,7 +2774,7 @@ there's no need for `markdown-mode' to reduplicate the effort."
 (defun akn/server-quit-window-h ()
   (akn/server-quit))
 
-(defvar akn/dired-file (file-name-concat doom-cache-dir "akn-cwd"))
+(defvar akn/dired-file (doom-cache-dir "akn-cwd"))
 
 ;;; opening links
 

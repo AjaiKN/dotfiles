@@ -178,8 +178,7 @@
 
 (after! multiple-cursors-core
   (setq mc/list-file
-        ;; (concat doom-data-dir "mc-lists.el"))
-        (concat doom-user-dir "mc-lists.el"))
+        (doom-user-dir "mc-lists.el"))
 
   (map! :map mc/keymap
         "<return>" nil)

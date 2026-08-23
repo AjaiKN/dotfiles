@@ -27,7 +27,7 @@
           t))))
 
   (setopt
-   calc-settings-file (file-name-concat doom-user-dir "calc.el")
+   calc-settings-file (doom-user-dir "calc.el")
    ;; By default, multiplication has precedence over division in calc for some reason.
    ;; Let's make it follow regular order of operations (multiplication and division have equal precedence).
    calc-multiplication-has-precedence nil

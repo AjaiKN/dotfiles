@@ -145,7 +145,7 @@ new project directory.")
   ;;;; sessions
   (setopt tabspaces-session nil ; do this ourselves better
           tabspaces-session-auto-restore nil
-          tabspaces-session-project-session-store (file-name-concat doom-state-dir "tabspaces-sessions/")
+          tabspaces-session-project-session-store (doom-state-dir "tabspaces-sessions/")
           tabspaces-session-file (+tab-bar:doom-session-file))
   (unless (file-exists-p tabspaces-session-project-session-store)
     (mkdir tabspaces-session-project-session-store))

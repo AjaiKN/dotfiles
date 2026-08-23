@@ -10,5 +10,4 @@
   (defalias 'akn/sage-repl-new #'sage-shell:run-new-sage)
   :config
   (setq sage-shell:input-history-cache-file
-        (concat doom-cache-dir "sage_shell_input_history")))
-
+        (doom-cache-dir "sage_shell_input_history")))

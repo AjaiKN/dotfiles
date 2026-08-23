@@ -57,7 +57,7 @@
           doom-projectile-cache-dir (doom-profile-cache-dir t "projectile/")
           doom-sync-info-file       (doom-profile-data-dir  t "sync")
           project-list-file         (doom-profile-state-dir t "projects")
-          doom-store-dir (concat doom-data-dir "store/")
+          doom-store-dir (file-name-concat doom-profile-data-dir "store/")
           doom-profiles-generated-dir doom-data-dir
           doom-cli-log-file-format (doom-state-dir "logs/cli.%s.%s.%s"))
   (when (boundp 'doom-local-dir)
@@ -184,7 +184,7 @@ Does it mean I should disable core.untrackedCache even though
 (defvar restart-emacs-daemon-with-tty-frames-p)
 (setq restart-emacs-daemon-with-tty-frames-p t)
 
-(defconst akn/restart-emacs-file (file-name-concat doom-cache-dir "emacs-restarting.el"))
+(defconst akn/restart-emacs-file (doom-cache-dir "emacs-restarting.el"))
 (defun akn/restart-emacs-and-then (lisp-form)
   (with-file! akn/restart-emacs-file
     (insert ";;; restarting emacs -*- lexical-binding: t; -*-\n")
@@ -249,5 +249,5 @@ Does it mean I should disable core.untrackedCache even though
          nil))
       (delete-file akn/restart-emacs-file)
     (rename-file akn/restart-emacs-file
-                 (file-name-concat doom-cache-dir "emacs-restarting-FAILED.el")
+                 (doom-cache-dir "emacs-restarting-FAILED.el")
                  'ok-if-already-exists)))
