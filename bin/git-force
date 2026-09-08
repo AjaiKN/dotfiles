@@ -12,5 +12,16 @@ if [[ -z "$FIRST" ]]; then
 	exit 1
 fi
 shift
+
+CURRENT_BRANCH="$(git symbolic-ref --short HEAD)"
+LEASE_REFNAME="${FIRST%%:*}"
+if [[ "$LEASE_REFNAME" != "$CURRENT_BRANCH" ]]; then
+	echo "git-force: error: lease refname '$LEASE_REFNAME' doesn't match the current branch '$CURRENT_BRANCH'." >&2
+	echo -e "This command pushes your \e[34mcurrent branch\e[0m, so the lease refname must match it." >&2
+	echo -e "  $ git checkout \e[34m$LEASE_REFNAME\e[0m" >&2
+	echo "Or if you meant to push a different branch, check that one out first." >&2
+	exit 1
+fi
+
 set -x
-git push --force-if-includes --force-with-lease="$FIRST" "$@"
+git push --force-if-includes --force-with-lease --force-with-lease="$FIRST" --no-recurse-submodules "$@"
