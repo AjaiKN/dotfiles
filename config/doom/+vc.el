@@ -414,8 +414,9 @@ If a prefix argument is provided, ask before reverting hunk."
 
 (after! magit-push
   (transient-append-suffix #'magit-push "e"
-    '("f" "Force push" akn/magit-git-force)))
-(defun akn/magit-force ()
+    '("f" "Force push (TODO)" akn/magit-git-force)))
+(defun akn/magit-git-force ()
+  "TODO"
   (interactive
    ()))
 
