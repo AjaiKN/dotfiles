@@ -18,6 +18,8 @@ flycheck_*
 .project
 .projectile-cache.eld
 
+.claude
+
 ## gitignore.io #############################
 
 # Created by https://www.toptal.com/developers/gitignore/api/macos,linux,direnv,emacs,vim,gpg,visualstudiocode,backup,diff,git,kate,mercurial,patch,ssh

@@ -172,6 +172,8 @@
         special-lispy-x
         string-inflection-kebab-case
         wdired--self-insert
+        yaml-electric-backspace
+        yaml-electric-dash-and-dot
         ))
 
 (setq mc/cmds-to-run-once

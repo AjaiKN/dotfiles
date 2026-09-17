@@ -81,6 +81,7 @@
          :desc "Reflog current"     "l R" #'magit-reflog-current
          :desc "Reflog HEAD"        "l H" #'magit-reflog-head
          :desc "Reflog other"       "l O" #'magit-reflog-other
+         ;; :desc "List work repos"    "l w" #'akn/magit-list-work-repositories
 
          :desc "Magit amend"          "c a" #'magit-commit-amend
          :desc "Magit extend"         "c e" #'magit-commit-extend
@@ -214,6 +215,47 @@ If a prefix argument is provided, ask before reverting hunk."
 
 ;;; magit
 
+;; (define-advice magit-list-repositories (:before (&rest _) akn/reset-a)
+;;   (kill-local-variable 'magit-repository-directories))
+;; (defun akn/magit-list-repositories-here (&optional dir)
+;;   (interactive (list default-directory))
+;;   (let ((magit-repository-directories `((,(or dir default-directory) . 3))))
+;;     (magit-list-repositories)
+;;     (setq-local magit-repository-directories magit-repository-directories)))
+;; (defun akn/magit-list-work-repositories ()
+;;   (interactive)
+;;   (let ((magit-repository-directories `(("~/work" . 2))))
+;;     (magit-list-repositories)
+;;     (setq-local magit-repository-directories magit-repository-directories)))
+
+(setq magit-repository-directories `(;("~/prog" . 2)
+                                     ;("~/.config/emacs" . 0)
+                                     ;("~/org" . 0)
+                                     ;("~/Documents/obsidian-vault/" . 0)
+                                     ("~/work" . 2))
+      magit-repolist-columns '(("↓" 3 magit-repolist-column-unpulled-from-upstream
+                                ((:right-align t)
+                                 (:sort <)))
+                               ("⇡" 3 magit-repolist-column-unpushed-to-upstream
+                                ((:right-align t)
+                                 (:sort <)))
+                               ("*" 3 magit-repolist-column-stashes
+                                ((:right-align t)
+                                 (:sort <)))
+                               ("!?+" 3 magit-repolist-column-flags nil)
+                               ("Path" 45 magit-repolist-column-path nil)
+                               ;; ("Name" 25 magit-repolist-column-ident nil)
+                               ("Version" 25 magit-repolist-column-version
+                                ((:sort magit-repolist-version<)))
+                               ("Branch" 20 magit-repolist-column-branch))
+      magit-repolist-column-flag-alist '((magit-untracked-files . "?")
+                                         (magit-unstaged-files . "!")
+                                         (magit-staged-files . "+")))
+(akn/advise-letf! magit-list-repositories (akn/a)
+  (directory-abbrev-alist `((,(directory-abbrev-make-regexp (akn/expand-file "~/prog")) . "~p/")
+                            (,(directory-abbrev-make-regexp (akn/expand-file "~/work")) . "~w/")
+                            ,@directory-abbrev-alist)))
+
 (defun akn/git-undo-last-commit (&optional args)
   (interactive (progn (require 'magit-commit) (magit-commit-arguments)))
   (require 'magit-process)
@@ -273,32 +315,6 @@ If a prefix argument is provided, ask before reverting hunk."
     "upstream/master"
     "origin/main"
     "upstream/main")
-
-  (setq magit-repository-directories `(("~/prog" . 2)
-                                       ("~/.config/emacs" . 0)
-                                       ("~/org" . 0)
-                                       ("~/Documents/obsidian-vault/" . 0))
-        magit-repolist-columns '(("↓" 3 magit-repolist-column-unpulled-from-upstream
-                                  ((:right-align t)
-                                   (:sort <)))
-                                 ("⇡" 3 magit-repolist-column-unpushed-to-upstream
-                                  ((:right-align t)
-                                   (:sort <)))
-                                 ("*" 3 magit-repolist-column-stashes
-                                  ((:right-align t)
-                                   (:sort <)))
-                                 ("!?+" 3 magit-repolist-column-flags nil)
-                                 ("Path" 45 magit-repolist-column-path nil)
-                                 ;; ("Name" 25 magit-repolist-column-ident nil)
-                                 ("Version" 25 magit-repolist-column-version
-                                  ((:sort magit-repolist-version<)))
-                                 ("Branch" 20 magit-repolist-column-branch))
-        magit-repolist-column-flag-alist '((magit-untracked-files . "?")
-                                           (magit-unstaged-files . "!")
-                                           (magit-staged-files . "+")))
-  (akn/advise-letf! magit-list-repositories (akn/a)
-    (directory-abbrev-alist (cons `(,(directory-abbrev-make-regexp (akn/expand-file "~/prog")) . "")
-                                  directory-abbrev-alist)))
 
   (when (not (member "commit.verbose=false" magit-git-global-arguments))
     (cl-callf append magit-git-global-arguments '("-c" "commit.verbose=false")))
@@ -395,6 +411,13 @@ If a prefix argument is provided, ask before reverting hunk."
     '("u" "Undo last" akn/git-undo-last-commit))
   (transient-append-suffix #'magit-commit "u"
     '("C-r" "Redo" akn/git-redo-commit)))
+
+(after! magit-push
+  (transient-append-suffix #'magit-push "e"
+    '("f" "Force push" akn/magit-git-force)))
+(defun akn/magit-force ()
+  (interactive
+   ()))
 
 ;; When copying from a magit diff buffer, don't include the diff markers at the
 ;; beginning of the line.
