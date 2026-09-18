@@ -201,8 +201,8 @@ the variables instead of replacing them."
   ""
   (setq list-var (akn/unquote list-var))
   (if compare-fn
-      `(cl-callf2 cl-delete ,element ,list-var :test ,compare-fn)
-    `(cl-callf2 delete ,element ,list-var)))
+      `(cl-callf2 cl-remove ,element ,list-var :test ,compare-fn)
+    `(cl-callf2 remove ,element ,list-var)))
 (akn/rotate-symbols! 'emacs-lisp-mode-hook "add-to-list" "akn/remove-from-list")
 
 (defmacro akn/remove-hook (hook function &optional _depth local)

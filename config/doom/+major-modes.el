@@ -1176,6 +1176,8 @@ or creates it if it does not exist."
           (group-n 2 (+ (not (any "\t\n "))))))))
 
 (after! sh-script
+  (cl-callf copy-alist sh-builtins) ; avoid mutating quoted literal
+  (cl-callf copy-sequence (alist-get 'zsh sh-builtins)) ; avoid mutating quoted literal
   (akn/pushnew (cddr (alist-get 'zsh sh-builtins))
     "zstyle"
     ;; somem others from `man zshbuiltins':

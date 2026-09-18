@@ -94,6 +94,7 @@
     (+lookup/definition (doom-thing-at-point-or-region)))
   t)
 
+(cl-callf copy-alist avy-dispatch-alist) ; avoid mutating quoted literal
 (setf (alist-get ?\; avy-dispatch-alist) #'akn/avy-action-embark
       ;; kill = cut
       (alist-get ?x avy-dispatch-alist)  #'avy-action-kill-stay

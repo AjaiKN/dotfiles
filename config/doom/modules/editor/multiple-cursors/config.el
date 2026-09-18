@@ -103,6 +103,7 @@
     ;; Make evil-mc cooperate with smartparens better
     (let ((vars (cdr (assq :default evil-mc-cursor-variables))))
       (unless (memq (car sp--mc/cursor-specific-vars) vars)
+        (cl-callf copy-alist evil-mc-cursor-variables) ; avoid mutating quoted literal
         (setcdr (assq :default evil-mc-cursor-variables)
                 (append vars sp--mc/cursor-specific-vars)))))
 

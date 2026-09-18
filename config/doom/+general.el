@@ -1898,6 +1898,7 @@ Use \\[visible-mode] to show the full hashes."
   :defer-incrementally (compat pp tabulated-list text-property-search fringe bookmark)
   :config
   (after! consult-imenu
+    (cl-callf copy-alist consult-imenu-config) ; avoid mutating quoted literal
     (setf (alist-get 'emacs-lisp-mode consult-imenu-config)
           '(:toplevel "Functions"
             :types ((?f "Functions"   font-lock-function-name-face)

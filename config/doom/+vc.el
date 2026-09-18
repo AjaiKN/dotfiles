@@ -164,6 +164,7 @@
     '(diff-hl-reference-insert :foreground "darkblue"))
   (setopt diff-hl-highlight-reference-function #'diff-hl-highlight-on-fringe))
 (after! diff-hl-margin
+  (cl-callf copy-alist diff-hl-margin-symbols-alist) ; avoid mutating quoted literal
   (setf
    (alist-get 'reference diff-hl-margin-symbols-alist) "["))
 
@@ -405,6 +406,14 @@ If a prefix argument is provided, ask before reverting hunk."
                 nil)
 
                ('(+magit--display-buffer-in-direction)))))))
+
+;; Magit d7e0ee3 (magit#5448) made the status buffer pass
+;; `--ignore-submodules=none', which overrides `submodule.<name>.ignore' in
+;; .gitmodules. Without the flag, git diff already shows everything unless
+;; configured otherwise, so drop it to respect per-repo settings again.
+(after! magit-status
+  (akn/remove-from-list (get 'magit-status-mode 'magit-diff-default-arguments)
+                        "--ignore-submodules=none"))
 
 (after! magit-commit
   (transient-append-suffix #'magit-commit "n"

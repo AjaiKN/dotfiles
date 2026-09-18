@@ -344,7 +344,7 @@
   (when (null args)
     (push "start" args))
   (when (member "--if-present" args)
-    (setq args (delq "--if-present" args))
+    (setq args (remove "--if-present" args))
     (setq args (cons (format "--if-present %s" (car args))
                      (cdr args))))
   (js-manager/get-command agent 'run args))

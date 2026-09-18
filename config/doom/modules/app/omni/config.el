@@ -198,5 +198,6 @@
   :config
   (require 'embark)
   (setq browser-hist-default-browser 'firefox)
+  (cl-callf copy-alist browser-hist-db-paths) ; avoid mutating quoted literal
   (setf (alist-get 'firefox browser-hist-db-paths)
         "/Users/ajainelson/Library/Application Support/Firefox/Profiles/g85mnrh5.default/places.sqlite"))
