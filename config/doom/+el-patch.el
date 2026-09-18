@@ -104,7 +104,7 @@ Respects `ws-butler-keep-whitespace-before-point', which see."
      " This\ncommand will throw an error if a parent of DIR is a valid project (which would\nmask DIR)."
      ""))
   (interactive "D")
-  (when-let ((proj-dir (doom-project-root dir)))
+  (when-let* ((proj-dir (doom-project-root dir)))
     (if (file-equal-p proj-dir dir)
         (user-error "ERROR: Directory is already a project: %s" proj-dir)
       (user-error "ERROR: Directory is already inside another project: %s" proj-dir)))
@@ -212,7 +212,7 @@ Pops up a diff buffer that can be edited to choose the changes to stage."
     (diff-hl--ensure-staging-supported)
     (let* ((line-beg (and beg (line-number-at-pos beg t)))
            (line-end (and end (line-number-at-pos end t)))
-           (file buffer-file-name)
+           (file (diff-hl--buffer-file-name))
            (dest-buffer (get-buffer-create "*diff-hl-stage-some*"))
            (orig-buffer (current-buffer))
            (diff-hl-update-async nil)
@@ -313,98 +313,6 @@ position of EVENT."
 
     (popup-menu menu event)))
 
-;;;; cus-edit
-(use-package! cus-edit
-  :config/el-patch
-  ;; improve warning message
-  (el-patch-defun setopt--set (variable value)
-    (el-patch-wrap 2 0
-      (let ((custom-load-recursion t)) ;(doom does this with setopt--set@inhibit-load-symbol)
-        (custom-load-symbol variable)
-        ;; Check that the type is correct.
-        (when-let ((type (get variable 'custom-type)))
-          (unless (widget-apply (widget-convert type) :match value)
-            (el-patch-swap
-              (warn "Value `%S' does not match type %s" value type)
-              (warn "setopt %s: Value `%S' does not match type %s" variable value type))))
-        (put variable 'custom-check-value (list value))
-        (funcall (or (get variable 'custom-set) #'set-default) variable value)))))
-
-;;;; projectile
-
-(use-package! projectile
-  :config/el-patch
-  ;; https://github.com/bbatsov/projectile/issues/1836
-  ;; https://github.com/fuyu0425/projectile/commit/664365f77f3e71a17291891cf5f06104b839cffd
-  (el-patch-defun projectile-project-root (&optional dir)
-    "Retrieves the root directory of a project if available.
-If DIR is not supplied it's set to the current directory by default."
-    (let ((dir (or dir default-directory)))
-      ;; Back out of any archives, the project will live on the outside and
-      ;; searching them is slow.
-      (when (and (fboundp 'tramp-archive-file-name-p)
-                 (tramp-archive-file-name-p dir))
-        (setq dir (file-name-directory (tramp-archive-file-name-archive dir))))
-      ;; the cached value will be 'none in the case of no project root (this is to
-      ;; ensure it is not reevaluated each time when not inside a project) so use
-      ;; cl-subst to replace this 'none value with nil so a nil value is used
-      ;; instead
-      (let ((result
-             (or
-              ;; if we've already failed to find a project dir for this
-              ;; dir, and cached that failure, don't recompute
-              (let* ((cache-key (format "projectilerootless-%s" dir))
-                     (cache-value (gethash cache-key projectile-project-root-cache)))
-                cache-value)
-              ;; if the file isn't local, and we're not connected, don't try to
-              ;; find a root now now, but don't cache failure, as we might
-              ;; re-connect.  The `is-local' and `is-connected' variables are
-              ;; used to fix the behavior where Emacs hangs because of
-              ;; Projectile when you open a file over TRAMP. It basically
-              ;; prevents Projectile from trying to find information about
-              ;; files for which it's not possible to get that information
-              ;; right now.
-              (let ((is-local (not (file-remote-p dir)))      ;; `true' if the file is local
-                    (is-connected (file-remote-p dir nil t))) ;; `true' if the file is remote AND we are connected to the remote
-                (unless (or is-local is-connected)
-                  'none))
-              ;; if the file is local or we're connected to it via TRAMP, run
-              ;; through the project root functions until we find a project dir
-              (el-patch-swap
-                (seq-some
-                 (lambda (func)
-                   (let* ((cache-key (format "%s-%s" func dir))
-                          (cache-value (gethash cache-key projectile-project-root-cache)))
-                     (if (and cache-value (file-exists-p cache-value))
-                         cache-value
-                       (let ((value (funcall func (file-truename dir))))
-                         (puthash cache-key value projectile-project-root-cache)
-                         value))))
-                 projectile-project-root-functions)
-                (if-let* ((found (gethash (format "%s-%s" "projectile-root-any" dir) projectile-project-root-cache)))
-                    found
-                  (let ((cache-truename))
-                    (seq-some
-                     (lambda (func)
-                       (let* ((cache-key (format "%s-%s" func dir))
-                              (cache-value (gethash cache-key projectile-project-root-cache)))
-                         (if (and cache-value (file-exists-p cache-value))
-                             cache-value
-                           (unless cache-truename (setq cache-truename (file-truename dir)))
-                           (let ((value (funcall func cache-truename)))
-                             (puthash cache-key value projectile-project-root-cache)
-                             (when value (puthash (format "%s-%s" "projectile-root-any" dir)
-                                                  value projectile-project-root-cache))
-                             value))))
-                     projectile-project-root-functions))))
-              ;; if we get here, we have failed to find a root by all
-              ;; conventional means, and we assume the failure isn't transient
-              ;; / network related, so cache the failure
-              (let ((cache-key (format "projectilerootless-%s" dir)))
-                (puthash cache-key 'none projectile-project-root-cache)
-                'none))))
-        (unless (eq result 'none) result)))))
-
 ;;;; treesit
 
 (when (and (modulep! :tools tree-sitter)
@@ -422,7 +330,7 @@ If DIR is not supplied it's set to the current directory by default."
 The option `treesit-auto-install-grammar' defines whether to install
 the grammar library if it's unavailable."
     (when (treesit-available-p)
-      (or (treesit-ready-p lang t)
+      (or (treesit-language-available-p lang)
           (let ((out-dir (or (seq-find #'file-writable-p
                                        treesit-extra-load-path)
                              (locate-user-emacs-file "tree-sitter"))))
@@ -444,7 +352,7 @@ the grammar library if it's unavailable."
                                     t))))))
               (treesit-install-language-grammar lang out-dir)
               ;; Check that the grammar was installed successfully
-              (treesit-ready-p lang)))))))
+              (treesit-language-available-p lang)))))))
 
 ;;; validating
 (cond

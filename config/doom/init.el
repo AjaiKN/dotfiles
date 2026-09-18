@@ -16,10 +16,7 @@
           initial-major-mode 'fundamental-mode
           initial-scratch-message nil)
     (advice-add #'display-startup-echo-area-message :override #'ignore)
-    (advice-add #'display-startup-screen :override #'ignore)
-    (define-advice setopt--set (:around (fn &rest args) inhibit-load-symbol -90)
-      (let ((custom-load-recursion t))
-        (apply fn args)))))
+    (advice-add #'display-startup-screen :override #'ignore)))
 
 (add-load-path! "./lisp")
 
