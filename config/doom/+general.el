@@ -55,6 +55,8 @@
 (global-set-key [remap eval-region] nil)
 (global-set-key [remap eval-buffer] nil)
 
+(setopt save-place-autosave-interval 67)
+
 ;;; modeline
 
 ;; light modeline and regular doom-modeline

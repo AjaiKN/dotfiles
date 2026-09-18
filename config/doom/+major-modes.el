@@ -366,6 +366,32 @@
   (add-hook 'treemacs-mode-hook #'treemacs-follow-mode)
   (defalias 'akn/treemacs-preview-mode #'treemacs-peek-mode))
 
+;;; speedbar
+(use-package! speedbar
+  :defer t
+  :config
+  (setopt speedbar-prefer-window t
+          speedbar-default-position 'left
+          speedbar-window-dedicated-window t
+          speedbar-window-side 'left
+
+          speedbar-file-unshown-regexp
+          ;; (let ((nstr "")
+          ;;       (noext completion-ignored-extensions))
+          ;;   (while noext
+          ;;     (setq nstr (concat nstr (regexp-quote (car noext)) "\\'"
+          ;;                        (if (cdr noext) "\\|" ""))
+          ;;           noext (cdr noext)))
+          ;;   ;;               backup      refdir      lockfile
+          ;;   (concat nstr "\\|#[^#]+#$\\|\\.\\.?\\'\\|\\.#"))
+          (rx bos "." (* ".") eos)
+
+          speedbar-directory-unshown-regexp
+          ;; (rx bol (group "." (* nonl)) eos)
+          (rx bos "." (* ".") eos)
+
+          speedbar-show-unknown-files t))
+
 ;;; ibuffer
 (after! ibuffer
   (add-hook! 'ibuffer-mode-hook #'ibuffer-auto-mode))
