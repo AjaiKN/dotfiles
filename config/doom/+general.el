@@ -57,6 +57,8 @@
 
 (setopt save-place-autosave-interval 67)
 
+(setopt view-lossage-auto-refresh t)
+
 ;;; modeline
 
 ;; light modeline and regular doom-modeline
