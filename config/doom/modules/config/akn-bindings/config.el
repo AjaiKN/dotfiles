@@ -1113,7 +1113,8 @@ beginning of region."
            (remq #'embark-which-key-indicator embark-indicators)))
       (apply fn args)))
   ;; `cl-substitute' instead of `cl-nsubstitute' to avoid mutating quoted literal
-  (cl-callf2 cl-substitute #'+vertico-embark-which-key-indicator #'embark-mixed-indicator embark-indicators))
+  (setq embark-indicators
+        (cl-substitute #'+vertico-embark-which-key-indicator #'embark-mixed-indicator embark-indicators)))
 
 (defun akn/keymap-symbol-maybe (keymap)
   "Return the symbol to which KEYMAP is bound, or the keymap itself
