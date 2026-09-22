@@ -1,3 +1,3 @@
 ;;; ui/modeline-scrollbar/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
-(package! mlscroll :pin "27e9cb98b6063d96ca21fd5a958c9df7efe109a0")
+(package! mlscroll :pin "5a7cfed411cc5f8d8894dcbd989fd5c81ebcf8a8")

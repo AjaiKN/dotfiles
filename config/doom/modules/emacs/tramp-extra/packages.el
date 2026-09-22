@@ -5,7 +5,7 @@
     :recipe (:host github :repo "jsadusk/tramp-hlo")))
 
 (when (modulep! +rpc)
-  (package! msgpack :pin "90e3086f259549b1667a3c5b9aa2d70aaeaa4d3d")
-  (package! tramp-rpc :pin "26d82116d4d94d4452bada990aacf5d54ff10a82"
+  (package! msgpack :pin "5353a7b2da854c843cbec4536996242001f63471")
+  (package! tramp-rpc :pin "948e42a76a97947fb2a00e2815f958b7e7b40534"
     :recipe (:host github :repo "ArthurHeymans/emacs-tramp-rpc"
              :files (:defaults "**/*"))))

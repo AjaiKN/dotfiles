@@ -1,3 +1,3 @@
 ;;; term/mistty/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
-(package! mistty :pin "bfb17611cff6c845270050a0756a38489cdf4ed6")
+(package! mistty :pin "37fd8765e112f3125f2500a1e08328066dd56b19")

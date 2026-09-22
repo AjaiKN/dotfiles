@@ -16,6 +16,15 @@
                         typst-ts-misc-commands
                         ;; transient typst-ts-transient ;was causing an error
                         typst-ts-compile typst-ts-misc-commands)
+  :commands (typst-ts-watch-display-buffer
+             typst-ts-watch-start
+             typst-ts-watch-stop
+             typst-ts-mode
+             typst-ts-lsp-download-binary
+             typst-ts-main-file-ask
+             typst-ts-compile-and-preview
+             typst-ts-preview
+             typst-ts-compilation-mode)
 
   :init
   (set-tree-sitter! 'typst-mode 'typst-ts-mode

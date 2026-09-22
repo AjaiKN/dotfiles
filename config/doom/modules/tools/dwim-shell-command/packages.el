@@ -1,3 +1,3 @@
 ;;; tools/dwim-shell-command/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
-(package! dwim-shell-command :pin "44b35c8af2e1c5ba156a7a4d1766c3b6e55611ad")
+(package! dwim-shell-command :pin "3566651e24ca05fe818897f2cf31718d2bcd1c99")
