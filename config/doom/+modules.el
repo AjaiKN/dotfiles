@@ -202,6 +202,7 @@ returns true."
            *basic editorconfig      ; let someone else argue about tabs vs spaces
            *basic (:if (versionp! emacs-version >= "30.1") vim-file-locals)
            ein               ; tame Jupyter notebooks with emacs
+           *basic code-cells
            *extra quarto
            *basic (:if (featurep :system 'linux) guix)
            *basic (eval +overlay)     ; run code, run (also, repls)
