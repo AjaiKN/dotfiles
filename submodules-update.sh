@@ -24,7 +24,10 @@ git submodule init config/nano vendor config/zsh/themes "$@"
 # ! command -v emacs >/dev/null 2>&1 || git submodule init config/emacs config/doom
 
 # update all submodules
-git -c submodule.fetchJobs=0 submodule update --recursive --depth=1
+git -c submodule.fetchJobs=0 submodule update --init --recursive --depth=1 -- config/nano vendor config/zsh/themes "$@" || {
+	echo "submodules-update.sh: shallow update failed (non-tip pin or an old git version?); retrying without --depth" >&2
+	git -c submodule.fetchJobs=0 submodule update --init --recursive --no-recommend-shallow -- config/nano vendor config/zsh/themes "$@"
+}
 
 # shellcheck disable=SC2016
 git submodule --quiet foreach '"$toplevel"/submodules-update--checkout-branch.sh'
