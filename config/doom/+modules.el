@@ -205,7 +205,7 @@ returns true."
            *basic code-cells
            *extra quarto
            *basic (:if (featurep :system 'linux) guix)
-           *basic (eval +overlay)     ; run code, run (also, repls)
+           (eval +overlay)     ; run code, run (also, repls)
            *basic fasd
            *basic lookup              ; navigate your code and its documentation
            *extra (:if (executable-find "emacs-lsp-booster")
