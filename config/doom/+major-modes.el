@@ -1009,7 +1009,34 @@ or creates it if it does not exist."
         :map python-base-mode-map
         :localleader
         "v" #'pet-verify-setup)
-  (set-popup-rule! (rx bol "*pet info") :select nil :quit t))
+  (set-popup-rule! (rx bol "*pet info") :select nil :quit t)
+
+  ;; PERF: cache project-root, config-file, and `executable-find' lookups for
+  ;; remote/TRAMP files.
+  (defvar akn/pet-remote-cache (make-hash-table :test #'equal))
+  (defun akn/pet-remote-cache-clear (&rest _)
+    (interactive)
+    (clrhash akn/pet-remote-cache))
+  (advice-add #'pet-cache-clear-project :after #'akn/pet-remote-cache-clear)
+  (advice-add #'pet-cache-clear-all :after #'akn/pet-remote-cache-clear)
+  (defun akn/pet-remote-memoize (key thunk)
+    (let ((val (gethash key akn/pet-remote-cache 'akn--none)))
+      (if (eq val 'akn--none)
+          (puthash key (funcall thunk) akn/pet-remote-cache)
+        val)))
+  (defadvice! akn/pet-remote-cache-root-a (fn &rest args)
+    :around #'pet-project-root
+    (if (akn/file-remote-p default-directory)
+        (akn/pet-remote-memoize (list :root default-directory)
+                                (lambda () (apply fn args)))
+      (apply fn args)))
+  (defadvice! akn/pet-remote-cache-lookup-a (fn &rest args)
+    :around '(pet-executable-find pet-find-file-from-project)
+    (if-let* (((akn/file-remote-p default-directory))
+              (root (pet-project-root)))
+        (akn/pet-remote-memoize (list fn root args)
+                                (lambda () (apply fn args)))
+      (apply fn args))))
 
 ;;; racket
 ;; This has precedence over the file extension (#'auto-afadsfm) magic-fallback-mode-alist.
