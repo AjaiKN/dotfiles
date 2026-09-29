@@ -94,7 +94,11 @@
   ;; NOTE: These are regexes.
   (dolist (x '("ITERM" "TERM" "MISE" "RUBYLIB"
                "JAVA_HOME" "_P9K_SSH_TTY" "P9K_TTY"
-               "TTY" "TMPDIR"))
+               "TTY" "TMPDIR"
+               "VIRTUAL_ENV" "^CONDA_" "^_CE_" "^PYENV_VERSION" "^PYTHONHOME"
+               "^POETRY_ACTIVE" "^PIPENV_ACTIVE" "^UV_ACTIVE"
+               "^PDM_" "^HATCH_ENV_ACTIVE"
+               "^DIRENV_DIR" "^DIRENV_FILE" "^DIRENV_DIFF" "^DIRENV_WATCHES"))
     (add-to-list 'doom-env-deny x))
 
   (dolist (x '("COLORTERM"
