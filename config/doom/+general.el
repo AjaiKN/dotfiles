@@ -2153,7 +2153,13 @@ Also see `+default/find-file-under-here'."
     ;; only occurs when `eglot-code-action-indicator' is a character like "💡"
     ;; (the default) rather than a character like "*". But I'm not finding the
     ;; margin indicator very helpful anyway right now, so I'm just disabling it.
-    (akn/remove-from-list 'eglot-code-action-indications 'margin)))
+    (akn/remove-from-list 'eglot-code-action-indications 'margin))
+
+  ;; ty registers `**' watchers on directories outside the project (e.g. the
+  ;; common parent of editable-installed sibling repos, like ~/work). Eglot
+  ;; walks those synchronously and adds thousands of file-notify watches
+  ;; (kqueue on macOS), freezing Emacs for seconds each time ty re-registers.
+  (setq eglot-watch-files-outside-project-root nil))
 
 ;;; sqlite
 ;; https://christiantietze.de/posts/2024/01/emacs-sqlite-mode-open-sqlite-files-automatically/
