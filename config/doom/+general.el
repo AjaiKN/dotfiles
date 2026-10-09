@@ -203,13 +203,13 @@ changing the value of `recentf-keep') and
 `projectile-keep-project-p', since their original implementations
 are exactly the same too."
   (condition-case err
-      (let
-          ((is-maybe-remote (akn/file-remote-p file)))
-        (cond
-         ((and is-maybe-remote (file-remote-p file nil t))
-          (file-readable-p file))
-         ((and is-maybe-remote (file-remote-p file)))
-         ((file-readable-p file))))
+      ;; Never touch TRAMP here: this runs from idle timers (e.g.
+      ;; `recentf-cleanup'), and a TRAMP call made while another TRAMP command
+      ;; is in flight on the same connection can desync it and hang Emacs
+      ;; until C-g.
+      (cond
+       ((akn/file-remote-p file) t)
+       ((file-readable-p file)))
     (error
      (message "akn/keep-predicate error: %S" err)
      t)))
