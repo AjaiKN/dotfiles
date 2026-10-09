@@ -239,6 +239,16 @@ TYPE can be either `toggle', t, or nil."
     (forward-line -1))
   (recenter))
 
+;;; profiler-report-mode
+
+(defun +fold--profiler-open-all ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (when (profiler-report-calltree-at-point)
+        (profiler-report-expand-entry t))
+      (forward-line))))
+
 ;;
 ;;; Commands
 
@@ -249,6 +259,7 @@ TYPE can be either `toggle', t, or nil."
 Targets `vimish-fold', `hideshow', `ts-fold' and `outline' folds."
   (interactive)
   (cond ((derived-mode-p 'Custom-mode) (+fold--custom-toggle))
+        ((derived-mode-p 'profiler-report-mode) (profiler-report-toggle-entry))
         ((+fold--vimish-fold-p) (save-excursion (vimish-fold-toggle)))
         ((+fold--outline-fold-p)
          (save-excursion (+fold--outline-cycle-state)))
@@ -272,8 +283,10 @@ Targets `vimish-fold', `hideshow', `ts-fold' and `outline' folds."
 
 Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
   (interactive)
-  (cl-destructuring-bind (beg . end) (+fold--union)
-    (+fold--open-rec-between beg end)))
+  (if (derived-mode-p 'profiler-report-mode)
+      (profiler-report-expand-entry t)
+    (cl-destructuring-bind (beg . end) (+fold--union)
+      (+fold--open-rec-between beg end))))
 
 ;;;###autoload
 (defun +fold/open ()
@@ -282,6 +295,7 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
 Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
   (interactive)
   (cond ((derived-mode-p 'Custom-mode) (+fold--custom-open))
+        ((derived-mode-p 'profiler-report-mode) (profiler-report-expand-entry))
         ((+fold--vimish-fold-p) (save-excursion (vimish-fold-unfold)))
         ((+fold--outline-fold-p)
          (save-excursion
@@ -316,6 +330,7 @@ If that doesn't work, try closing the block at the end of the line."
 Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
   (interactive)
   (cond ((derived-mode-p 'Custom-mode) (+fold--custom-close))
+        ((derived-mode-p 'profiler-report-mode) (profiler-report-collapse-entry))
         ((+fold--vimish-fold-p) (save-excursion (vimish-fold-refold)))
         ((+fold--outline-fold-p) (save-excursion (outline-hide-subtree)))
         ((+fold--treesit-fold-p) (save-excursion (treesit-fold-close)))
@@ -331,6 +346,8 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
   (setq selective-display nil)
   (cond ((derived-mode-p 'Custom-mode)
          (+fold--custom-open-all))
+        ((derived-mode-p 'profiler-report-mode)
+         (+fold--profiler-open-all))
         ((+fold--treesit-fold-p) (treesit-fold-open-all))
         ((+fold--ts-fold-p) (ts-fold-open-all))
         ((and (featurep 'vimish-fold) (+fold--vimish-fold-p))
@@ -355,6 +372,8 @@ Targets `vimmish-fold', `hideshow', `ts-fold' and `outline' folds."
     (cond
      ((derived-mode-p 'Custom-mode)
       (+fold--custom-close-all))
+     ((derived-mode-p 'profiler-report-mode)
+      (profiler-report-rerender-calltree))
      ((+fold--treesit-fold-p) (treesit-fold-close-all))
      ((+fold--ts-fold-p) (ts-fold-close-all))
      (t
