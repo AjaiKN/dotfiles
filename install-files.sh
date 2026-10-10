@@ -317,6 +317,9 @@ uninstall() {
 	## launchd
 	uninstall_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
 	uninstall_file "$HOME/Library/LaunchAgents" "$DOTFILES/private/launchd"
+	## Automator Quick Actions / Services
+	uninstall_file "$HOME/Library/Services" "$DOTFILES/services"
+	uninstall_file "$HOME/Library/Services" "$DOTFILES/private/services"
 	## xbar
 	uninstall_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/xbar"
 	uninstall_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/private/xbar"
@@ -400,6 +403,12 @@ fi
 if [ "$(uname -s)" = "Darwin" ]; then
 	handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
 	[ ! -d "$DOTFILES/private/launchd" ] || handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/private/launchd"
+fi
+
+## Automator Quick Actions / Services
+if [ "$(uname -s)" = "Darwin" ]; then
+	[ ! -d "$DOTFILES/services" ] || handle_file "$HOME/Library/Services" "$DOTFILES/services"
+	[ ! -d "$DOTFILES/private/services" ] || handle_file "$HOME/Library/Services" "$DOTFILES/private/services"
 fi
 
 ## xbar
