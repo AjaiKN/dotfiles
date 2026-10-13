@@ -19,6 +19,7 @@ if [ "$HOME/.bashrc" -ef "$DOTFILES/config/bash/.bashrc" ]; then
 	unset AKN_DOTFILES_UNINSTALLED
 else
 	AKN_DOTFILES_UNINSTALLED=1
+	export XDG_CACHE_HOME="$DOTFILES/.cache" XDG_STATE_HOME="$DOTFILES/.local/state"
 fi
 
 source "$DOTFILES/config/shell/env.sh"

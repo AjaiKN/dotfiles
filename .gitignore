@@ -13,3 +13,5 @@ trusted_users.txt
 /.bash_my_history
 /.zsh_my_history
 /dot-home/*.zwc
+/.cache/
+/.local/
