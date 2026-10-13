@@ -28,7 +28,9 @@ if : ; then
 		cd "$(dirname "$DOTFILES")"
 		echo "Installing to $DOTFILES..."
 		if command -v git >/dev/null 2>&1 && [ -z "${NO_GIT:-}" ]; then
-			git clone --depth=1 "https://github.com/AjaiKN/dotfiles"
+			git clone --depth=1 "https://github.com/AjaiKN/dotfiles" "$DOTFILES"
+			# shellcheck disable=SC2097,SC2098
+			DOTFILES="$DOTFILES" "$DOTFILES"/submodules-update.sh
 		else
 			confirm "There's no git command in PATH. Use wget/curl instead?" || exit 2
 
