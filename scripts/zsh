@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Run zsh using the rc files from this checkout of the dotfiles, even if they
+# aren't installed into $HOME. Arguments are passed on to zsh.
+#   /tmp/dotfiles/scripts/zsh
+#   /tmp/dotfiles/scripts/zsh -l
+
+DOTFILES=$(cd -P -- "$(dirname -- "$0")/.." && pwd -P) || exit 1
+export DOTFILES
+ZDOTDIR="$DOTFILES/config/zsh" exec zsh "$@"

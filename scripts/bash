@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Run bash using the rc files from this checkout of the dotfiles, even if they
+# aren't installed into $HOME. Arguments are passed on to bash.
+#   /tmp/dotfiles/scripts/bash
+#   /tmp/dotfiles/scripts/bash -c 'gst'  # (non-interactive: only env.sh, via BASH_ENV)
+
+DOTFILES=$(cd -P -- "$(dirname -- "$0")/.." && pwd -P) || exit 1
+export DOTFILES
+export BASH_ENV="$DOTFILES/config/shell/env.sh"
+
+# --noprofile: the login-shell files in $HOME might not be ours
+exec bash --noprofile --rcfile "$DOTFILES/config/bash/.bashrc" "$@"
