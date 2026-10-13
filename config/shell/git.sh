@@ -10,7 +10,7 @@ function git_main_branch() {
 
 	for ref in refs/{heads,remotes/{origin,upstream}}/{main,trunk,mainline,default,stable,master}; do
 		if command git show-ref -q --verify "$ref"; then
-			echo "${ref:t}"
+			echo "${ref##*/}"
 			return 0
 		fi
 	done
