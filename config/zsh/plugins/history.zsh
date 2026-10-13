@@ -4,6 +4,9 @@ export HISTSIZE=5000000000
 export SAVEHIST=1000000000
 if [[ -n $AKN_DOTFILES_UNINSTALLED ]]; then
 	export HISTFILE="$DOTFILES/.zsh_my_history"
+	# If sourced into an already-running shell, its history came from the old
+	# HISTFILE; switch to a fresh history list backed by ours
+	[[ -n "$(fc -ln -1 2>/dev/null)" ]] && fc -p "$HISTFILE"
 else
 	export HISTFILE="$HOME/.zsh_my_history"
 fi

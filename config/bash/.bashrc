@@ -20,6 +20,8 @@ if [ "$HOME/.bashrc" -ef "$DOTFILES/config/bash/.bashrc" ]; then
 else
 	AKN_DOTFILES_UNINSTALLED=1
 	export XDG_CACHE_HOME="$DOTFILES/.cache" XDG_STATE_HOME="$DOTFILES/.local/state"
+	# so that zsh (including the `exec zsh` below) uses this checkout too
+	export ZDOTDIR="$DOTFILES/config/zsh"
 fi
 
 source "$DOTFILES/config/shell/env.sh"
@@ -106,6 +108,12 @@ HISTTIMEFORMAT='%F %T '
 # https://news.ycombinator.com/item?id=33186412
 if [ -n "${AKN_DOTFILES_UNINSTALLED:-}" ]; then
 	export HISTFILE="$DOTFILES/.bash_my_history"
+	# If sourced into an already-running shell, its history came from the old
+	# HISTFILE; replace it with ours
+	if [[ $- == *i* && -n $(HISTTIMEFORMAT='' history 1) ]]; then
+		history -c
+		history -r
+	fi
 	export INPUTRC="$DOTFILES/dot-home/.inputrc"
 	[[ $- == *i* ]] && bind -f "$INPUTRC"
 else

@@ -9,6 +9,17 @@
 # SHOULD_PROFILE=yup # uncomment this line to profile zsh startup time
 [ -z "$SHOULD_PROFILE" ] || zmodload zsh/zprof
 
+### .zshenv
+# If this file is sourced into an already-running shell (e.g. `source
+# /tmp/dotfiles/config/zsh/.zshrc` without installing), this checkout's .zshenv
+# hasn't run yet, so run it now.
+if [[ $DOTFILES != ${${(%):-%x}:A:h:h:h} ]]; then
+	_akn_zshenv_late=1 builtin source ${${(%):-%x}:A:h}/.zshenv
+	# If the running shell already loaded another checkout's config, start from
+	# empty plugin lists rather than also loading its plugins
+	unset plugins plugin_files plugin_shortnames plugin_nocompile zsh_loaded_plugins
+fi
+
 ### AKN_INSIDE_ZSH
 
 export AKN_INSIDE_ZSH=1

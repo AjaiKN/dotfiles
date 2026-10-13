@@ -18,6 +18,8 @@ if [[ ~/.zshenv -ef $DOTFILES/config/zsh/.zshenv ]]; then
 else
 	typeset -g AKN_DOTFILES_UNINSTALLED=1
 	export XDG_CACHE_HOME="$DOTFILES/.cache" XDG_STATE_HOME="$DOTFILES/.local/state"
+	# so that nested zsh shells use this checkout too
+	export ZDOTDIR="$DOTFILES/config/zsh"
 fi
 
 if [[ -o interactive ]]; then
@@ -37,7 +39,8 @@ if [[ -o interactive ]]; then
 
 		### Powerlevel10k instant prompt
 		# EXPERIMENTAL: load powerlevel10k instant prompt super early
-		if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" ]]; then
+		# (not when .zshrc is sourced into an already-running shell; see .zshrc)
+		if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" && -z $_akn_zshenv_late ]]; then
 			# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 			# Initialization code that may require console input (password prompts, [y/n]
 			# confirmations, etc.) must go above this block; everything else may go below.
