@@ -12,7 +12,10 @@ umask go-w
 
 ## DOTFILES
 
-if [ -d "$HOME/.dotfiles" ]; then
+# Keep an existing DOTFILES (e.g. set by .bashrc when it's used without install-files.sh)
+if [ -n "${DOTFILES:-}" ] && [ -d "$DOTFILES/config/shell" ]; then
+	:
+elif [ -d "$HOME/.dotfiles" ]; then
 	DOTFILES="$( (cd "$HOME/.dotfiles" >/dev/null && pwd -P) )"
 elif [ -d "$HOME/prog/dotfiles" ]; then
 	DOTFILES="$HOME/prog/dotfiles"

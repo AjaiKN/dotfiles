@@ -42,7 +42,11 @@ if [[ -o interactive ]] && ! (( $+functions[_git] )); then
 	autoload -Uzr _git
 fi
 
-source "$HOME/.config/shell/env.sh"
+# Find DOTFILES from this file's real location, so this also works without
+# install-files.sh, e.g. `ZDOTDIR=/tmp/dotfiles/config/zsh zsh`.
+export DOTFILES=${${(%):-%x}:A:h:h:h}
+
+source "$DOTFILES/config/shell/env.sh"
 
 # from zsh4humans
 if [[ $EUID == 0 ]]; then # && -z ~(#qNU) && $DOTFILES == ~/* ]]; then

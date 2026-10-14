@@ -23,7 +23,11 @@ OLD_PATH_SHELL_PROFILE=$PATH
 
 ## env vars
 # shellcheck source=./envvars.sh
-. "$HOME/.config/shell/envvars.sh"
+if [ -n "${DOTFILES:-}" ]; then
+	. "$DOTFILES/config/shell/envvars.sh"
+else
+	. "$HOME/.config/shell/envvars.sh"
+fi
 
 ## shell_env
 # shellcheck source=./env.sh

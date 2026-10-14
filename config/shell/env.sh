@@ -6,13 +6,21 @@
 #   - bash: $BASH_ENV, ~/.bash_profile, and ~/.bashrc
 #   - sh:   $ENV, ~/.profile
 
-export ENV="$HOME/.config/shell/env.sh"
-export BASH_ENV="$HOME/.config/shell/env.sh"
-
 ## Load ~/.config/shell/envvars.sh if not already loaded
 
 # shellcheck source=./envvars.sh
-[ -n "${AKN_SHELL_ENVVARS_LOADED:-}" ] || . "$HOME/.config/shell/envvars.sh" || :
+if [ -z "${AKN_SHELL_ENVVARS_LOADED:-}" ]; then
+	if [ -n "${DOTFILES:-}" ]; then
+		. "$DOTFILES/config/shell/envvars.sh" || :
+	else
+		. "$HOME/.config/shell/envvars.sh" || :
+	fi
+fi
+
+if [ -n "${DOTFILES:-}" ]; then
+	export ENV="$DOTFILES/config/shell/env.sh"
+	export BASH_ENV="$ENV"
+fi
 
 ## PS4 (used by set -x and bash -x)
 # $PS4 is the prefix used by `set -x`, and it's '+ ' by default.
