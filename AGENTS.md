@@ -4,7 +4,14 @@ Notes for coding agents working in this repo. See `README.md` for the human-faci
 
 ## This repo is live, not just source
 
-Files under `config/`, `dot-home/`, `launchd/`, etc. are installed into `$HOME` / `$XDG_CONFIG_HOME` by a **custom hand-rolled installer** (`install-files.sh`), not GNU Stow — Stow only shows up elsewhere as an installed package dependency (e.g. `install.debian.sh`), it isn't what actually links these files. `install-files.sh` generally symlinks whole directories (e.g. `~/.config` -> `config/`) rather than per-file, except where a directory contains a `.unfold` marker file, which makes it recurse and symlink that directory's contents individually instead. So on this machine, editing e.g. `config/zsh/...` or `config/git/config` here is editing the user's actual live shell/git/etc. config, the same way `config/doom` is the live Emacs config (see below).
+Files under `config/`, `dot-home/`, `launchd/`, etc. are installed into `$HOME`, `~/.config` (hardcoded, not `$XDG_CONFIG_HOME`), and on macOS a few `~/Library/...` locations (`LaunchAgents`, `Services`, `Application Support/{Code,edir-flags.conf,xbar/plugins}`) by a **custom hand-rolled installer** (`install-files.sh`), not GNU Stow — Stow only shows up elsewhere as an installed package dependency (e.g. `install.debian.sh`), it isn't what actually links these files. How it links:
+
+- Each source entry (file or directory) gets a single relative symlink, unless it's a directory containing a `.unfold` marker file — then the destination becomes a real directory and each entry inside is handled the same way, recursively.
+- Nearly all roots (`dot-home/`, `config/`, `launchd/`, `services/`, and their `private/` counterparts, which merge into the same destinations) are unfolded. So e.g. `~/.config` is a real directory whose entries are symlinks into the repo (`~/.config/zsh` -> `../prog/dotfiles/config/zsh`), except subdirectories with their own `.unfold` (e.g. `config/systemd/`).
+- `.DS_Store`, `.unfold`, and editor backup/lock files (`*~`, `.#*`, `#*#`) are never linked.
+- Re-running removes orphaned links whose target no longer exists, and replaces a single directory symlink with per-entry links if that directory has since gained a `.unfold`.
+
+So on a machine where these dotfiles are installed, editing e.g. `config/zsh/...` or `config/git/config` here is editing the user's actual live shell/git/etc. config, the same way `config/doom` is the live Emacs config (see below). However, the addition of a file/directory directly inside of an unfolded directory won't be reflected until `install-files.sh` is rerun.
 
 ## Other repo-structure notes
 
@@ -23,8 +30,8 @@ In recent history (`git log`), the first line is consistently `scope: descriptio
 
 ## Emacs layout
 
-- `~/.config/emacs` is a symlink to `config/emacs` in this repo. It's a full from-source checkout of the Doom Emacs framework itself (not just config) — `config/emacs/README.md` is upstream Doom's own README, not something to edit.
-- `~/.config/doom` is a symlink to `config/doom` in this repo. This is the actual personal config: `+major-modes.el`, `+general.el`, `+buffers.el`, `config.el`, and private module overrides/additions under `config/doom/modules/`. Changes belong here.
+- `~/.config/emacs` is a symlink to `config/emacs` in this repo. It's a git submodule containing the Doom Emacs framework itself (not personal config) — e.g. `config/emacs/README.md` is upstream Doom's own README, not something to edit.
+- `~/.config/doom` is a symlink to `config/doom` in this repo. This is the actual personal config: `+major-modes.el`, `+general.el`, `+buffers.el`, `config.el`, and personal module overrides/additions under `config/doom/modules/`. Changes belong here.
 - Doom was restructured upstream: the official module sources (e.g. `:lang python`, `:lang common-lisp`) now live at `config/emacs/sources/doom+/modules/`, not under `config/doom/`. This is vendored framework code — treat it as read-only reference (e.g. to check what a module does or doesn't already set up); put overrides/customizations in `config/doom/` instead, typically via `(after! <feature> ...)` blocks in `+major-modes.el` or a private module under `config/doom/modules/`.
 - `config/doom/modules/` also contains a separate library of the user's own standalone Doom modules (see `config/doom/modules/README.org`), distinct from the personal `~/.config/doom` customization layer above — these are meant to be reusable by other Doom users too, so keep them relatively generic/self-contained rather than coupling them to personal preferences (those belong in `+major-modes.el`/`+general.el`/etc. instead). They can depend on `config/doom/lisp/akn.el`, though.
 - After changing which modules/packages are enabled (`config/doom/+modules.el`, `config/doom/packages.el`), Doom itself expects a `doom sync` run to pick that up — this is separate from and in addition to the daemon-restart caveat below (a `doom sync` without a subsequent daemon restart won't take effect either).
@@ -35,6 +42,6 @@ In recent history (`git log`), the first line is consistently `scope: descriptio
   - `~/Library/LaunchAgents/dev.ajai.emacsdaemonserver.plist` (symlink to `launchd/dev.ajai.emacsdaemonserver.plist`) — the main/GUI daemon, default `emacsclient` socket.
   - `~/Library/LaunchAgents/dev.ajai.emacsdaemonterm.plist` (symlink to `launchd/dev.ajai.emacsdaemonterm.plist`) — a separate daemon for terminal clients, reached via `emacsclient --socket-name=term`.
   - For Linux, the same two daemons are run using systemd - see `config/systemd/user/emacs@.service`.
-- **Always use `emacsclient`, never `emacs`/`emacs --batch`**, for evaluating elisp, checking parens, byte-compiling, etc. — there's always a live server to talk to.
+- **You should usually use `emacsclient`, not `emacs`/`emacs --batch`**, for evaluating elisp, checking parens, byte-compiling, etc. — there's usually a live server to talk to. You may wish to start your own server/daemon for testing.
 - Editing a config `.el` file does **not** hot-reload into the running daemon(s). You can verify a fix against the live daemon via `emacsclient --eval ...`.
 - Since state (buffers, hooks, rings, etc.) persists indefinitely across "sessions" in this daemon model, in-memory state can go stale relative to the source files in ways that a fresh `emacs` invocation would never exhibit — e.g. an old buffer created before a fix was loaded can still carry forward pre-fix behavior (buffer-local hooks, variables) until it's actually killed/recreated.
