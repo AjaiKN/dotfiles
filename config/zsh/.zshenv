@@ -45,6 +45,12 @@ fi
 # Find DOTFILES from this file's real location, so this also works without
 # install-files.sh, e.g. `ZDOTDIR=/tmp/dotfiles/config/zsh zsh`.
 export DOTFILES=${${(%):-%x}:A:h:h:h}
+# Not installed (or a different checkout than the installed one): avoid writing into $HOME
+if [[ ~/.zshenv -ef $DOTFILES/config/zsh/.zshenv ]]; then
+	unset AKN_DOTFILES_UNINSTALLED
+else
+	typeset -g AKN_DOTFILES_UNINSTALLED=1
+fi
 
 source "$DOTFILES/config/shell/env.sh"
 

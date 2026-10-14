@@ -2,9 +2,15 @@
 # https://news.ycombinator.com/item?id=33186412
 export HISTSIZE=5000000000
 export SAVEHIST=1000000000
-export HISTFILE="$HOME/.zsh_my_history"
+if [[ -n $AKN_DOTFILES_UNINSTALLED ]]; then
+	export HISTFILE="$DOTFILES/.zsh_my_history"
+else
+	export HISTFILE="$HOME/.zsh_my_history"
+fi
 
-if (( $+commands[awk] )); then
+if [[ -n $AKN_DOTFILES_UNINSTALLED ]]; then
+	: # don't write the backup into $HOME
+elif (( $+commands[awk] )); then
 	# echo_if_interactive 'Backing up ~/.zsh_my_history to ~/.zsh_my_history_backup'
 	(
 		umask go-rwx

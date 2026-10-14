@@ -14,6 +14,12 @@ while [ -L "$__akn_bashrc" ]; do
 done
 DOTFILES=$(cd -P "$(dirname "$__akn_bashrc")/../.." && pwd -P) && export DOTFILES
 unset __akn_bashrc __akn_link
+# Not installed (or a different checkout than the installed one): avoid writing into $HOME
+if [ "$HOME/.bashrc" -ef "$DOTFILES/config/bash/.bashrc" ]; then
+	unset AKN_DOTFILES_UNINSTALLED
+else
+	AKN_DOTFILES_UNINSTALLED=1
+fi
 
 source "$DOTFILES/config/shell/env.sh"
 
@@ -97,7 +103,13 @@ HISTTIMEFORMAT='%F %T '
 
 ### HISTFILE
 # https://news.ycombinator.com/item?id=33186412
-export HISTFILE="$HOME/.bash_my_history"
+if [ -n "${AKN_DOTFILES_UNINSTALLED:-}" ]; then
+	export HISTFILE="$DOTFILES/.bash_my_history"
+	export INPUTRC="$DOTFILES/dot-home/.inputrc"
+	[[ $- == *i* ]] && bind -f "$INPUTRC"
+else
+	export HISTFILE="$HOME/.bash_my_history"
+fi
 
 ## Settings
 # check the window size after each command and, if necessary,
@@ -258,7 +270,8 @@ if command -v fzf >/dev/null 2>&1; then
 fi
 
 ## fasd
-if command -v fasd >/dev/null 2>&1; then
+# (skipped when uninstalled, since it writes ~/.fasd and ~/.cache)
+if [ -z "${AKN_DOTFILES_UNINSTALLED:-}" ] && command -v fasd >/dev/null 2>&1; then
 	fasd_cache="${XDG_CACHE_HOME:-$HOME/.cache}/fasd-init-bash"
 	if [ "$(command -v fasd)" -nt "$fasd_cache" ] || [ ! -s "$fasd_cache" ]; then
 		fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasd_cache"
