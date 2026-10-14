@@ -56,11 +56,11 @@ alias di=dired
 
 ## git aliases
 # shellcheck source=./git.sh
-. "$HOME/.config/shell/git.sh"
+. "$DOTFILES/config/shell/git.sh"
 
 ## tar aliases
 # shellcheck source=./archives.sh
-. "$HOME/.config/shell/archives.sh"
+. "$DOTFILES/config/shell/archives.sh"
 
 ## Misc
 
@@ -82,12 +82,12 @@ fi
 
 alias spacemacs='emacs-open-new --profile spacemacs'
 
-alias reload_shared='. ${ZDOTDIR:-"$HOME"}/.config/shell/rc.sh'
+alias reload_shared='. "$DOTFILES/config/shell/rc.sh"'
 
 function cdls { cd "$1" && ls; }
 
 #remember: no space between name and '='
-alias edit_shared='vim ${ZDOTDIR:-"$HOME"}/.config/shell/rc.sh; . ${ZDOTDIR:-"$HOME"}/.config/shell/rc.sh'
+alias edit_shared='vim "$DOTFILES/config/shell/rc.sh"; . "$DOTFILES/config/shell/rc.sh"'
 alias edit_vimrc='vim ~/.vimrc'
 alias gitbook='open http://git-scm.com/book/en/v2'
 alias matlab-orig='/Applications/MATLAB_*.app/bin/matlab'

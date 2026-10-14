@@ -31,7 +31,7 @@ fi
 
 ## shell_env
 # shellcheck source=./env.sh
-. "$HOME/.config/shell/env.sh"
+. "$DOTFILES/config/shell/env.sh"
 
 ## Stuff
 

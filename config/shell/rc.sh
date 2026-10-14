@@ -36,19 +36,19 @@ alias i="arch -x86_64 /bin/zsh"
 
 ## Load envvars (in case they've changed)
 # shellcheck source=./envvars.sh
-. "$HOME/.config/shell/envvars.sh"
+. "$DOTFILES/config/shell/envvars.sh"
 
 ## Functions and Aliases
 # shellcheck source=./aliases_and_functions.sh
-. "$HOME/.config/shell/aliases_and_functions.sh"
+. "$DOTFILES/config/shell/aliases_and_functions.sh"
 
 ## Enable colors
 # shellcheck source=./colors.sh
-. "$HOME/.config/shell/colors.sh"
+. "$DOTFILES/config/shell/colors.sh"
 
 ## Python: warn if venv isn't sourced
 # shellcheck source=./python_venv.sh
-. "$HOME/.config/shell/python_venv.sh"
+. "$DOTFILES/config/shell/python_venv.sh"
 
 ## Mise
 # https://mise.jdx.dev/lang/ruby.html#configuration

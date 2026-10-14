@@ -40,15 +40,15 @@ export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:-/etc/xdg}"
 
 ## brew
 # shellcheck source=./brew.sh
-. "$HOME/.config/shell/brew.sh"
+. "$DOTFILES/config/shell/brew.sh"
 
 ## PATH
 # shellcheck source=./path.sh
-. "$HOME/.config/shell/path.sh"
+. "$DOTFILES/config/shell/path.sh"
 
 ## Guix
 
-. "$HOME/.config/shell/guix.sh"
+. "$DOTFILES/config/shell/guix.sh"
 
 ## MANPATH
 # from brew shellenv

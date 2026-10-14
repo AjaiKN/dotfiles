@@ -1,1 +1,1 @@
-safe_source "$HOME"/.config/shell/rc.sh
+safe_source "$DOTFILES"/config/shell/rc.sh

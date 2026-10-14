@@ -10,3 +10,4 @@ __pycache__
 *.eln
 *.elc
 trusted_users.txt
+/dot-home/*.zwc

@@ -268,7 +268,7 @@ if command -v fasd >/dev/null 2>&1; then
 fi
 
 ## ~/.config/shell/rc.sh
-source "$HOME/.config/shell/rc.sh"
+source "$DOTFILES/config/shell/rc.sh"
 
 ## mise
 unset __MISE_ORIG_PATH # Leaving this set has resulted in some confusing behavior sometimes
@@ -331,7 +331,7 @@ fi
 
 ## Guix
 
-. "$HOME/.config/shell/guix.sh"
+. "$DOTFILES/config/shell/guix.sh"
 
 ### Automatically added by the Guix install script.
 if [ -n "$GUIX_ENVIRONMENT" ]; then
