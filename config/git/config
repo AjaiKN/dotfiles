@@ -92,6 +92,7 @@
 	fixup-reword = history fixup --reedit-message #--update-refs=head
 	reword = history reword
 	split = history split #--update-refs=head
+	drop = history drop #--update-refs=head
 
 	# https://blog.ipspace.net/2020/04/git-tip-word-diff.html
 	wdiff = diff --word-diff --word-diff-regex='\\w+'
