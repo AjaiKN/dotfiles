@@ -4,7 +4,59 @@
 # aren't installed into $HOME. Arguments are passed on to zsh.
 #   /tmp/dotfiles/scripts/zsh
 #   /tmp/dotfiles/scripts/zsh -l
+#
+# If there's no usable zsh, offer to install a static build of it with zsh-bin
+# (https://github.com/romkatv/zsh-bin) into $DOTFILES/.local/zsh-bin, like
+# zsh4humans does when teleporting over ssh.
 
 DOTFILES=$(cd -P -- "$(dirname -- "$0")/.." && pwd -P) || exit 1
 export DOTFILES
-ZDOTDIR="$DOTFILES/config/zsh" exec zsh "$@"
+export ZDOTDIR="$DOTFILES/config/zsh"
+
+zsh_bin_dir="$DOTFILES/.local/zsh-bin"
+# so that nested shells can find it too
+[ -d "$zsh_bin_dir/bin" ] && PATH="$PATH:$zsh_bin_dir/bin"
+
+try_exec_zsh() {
+	command -v "$1" >/dev/null 2>&1 || return 0
+	"$1" -fc 'true' </dev/null >/dev/null 2>&1 || return 0
+	exec "$@"
+}
+
+try_exec_zsh zsh "$@"
+try_exec_zsh "$zsh_bin_dir/bin/zsh" "$@"
+try_exec_zsh "$HOME/.local/bin/zsh" "$@"
+try_exec_zsh "$HOME/.zsh-bin/bin/zsh" "$@"
+
+## No usable zsh: install it
+
+echo "scripts/zsh: cannot find a usable zsh" >&2
+if ! [ -t 0 ]; then
+	echo "scripts/zsh: not a terminal, so not offering to install it" >&2
+	exit 127
+fi
+printf 'Install zsh into %s using zsh-bin? (y/n) ' "$zsh_bin_dir" >&2
+read -r REPLY || exit 127
+case "$REPLY" in
+	y* | Y*) : ;;
+	*) exit 127 ;;
+esac
+
+# pinned to a specific commit of the installer
+zsh_bin_url='https://raw.githubusercontent.com/romkatv/zsh-bin/0c5d2f31679a6bd9a639c1d0b027feed7c271625/install'
+mkdir -p "$zsh_bin_dir" || exit 1
+installer="$zsh_bin_dir/install.sh"
+if command -v curl >/dev/null 2>&1; then
+	curl -fsSL -o "$installer" -- "$zsh_bin_url" || exit 1
+elif command -v wget >/dev/null 2>&1; then
+	wget -O "$installer" -- "$zsh_bin_url" || exit 1
+else
+	echo "scripts/zsh: need curl or wget to install zsh" >&2
+	exit 127
+fi
+
+# -e no: don't add it to /etc/shells
+sh -- "$installer" -d "$zsh_bin_dir" -e no -q || exit 1
+PATH="$PATH:$zsh_bin_dir/bin"
+
+exec "$zsh_bin_dir/bin/zsh" "$@"

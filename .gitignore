@@ -11,3 +11,4 @@ __pycache__
 *.elc
 trusted_users.txt
 /dot-home/*.zwc
+/.local/
