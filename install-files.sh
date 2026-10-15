@@ -311,18 +311,9 @@ uninstall() {
 	## config
 	uninstall_file "$HOME/.config" "$DOTFILES/config"
 	uninstall_file "$HOME/.config" "$DOTFILES/private/config"
-	## macOS Application Support
-	uninstall_file "$HOME/Library/Application Support/Code" "$DOTFILES/config/Code"
-	uninstall_file "$HOME/Library/Application Support/edir-flags.conf" "$DOTFILES/config/edir-flags.conf"
-	## launchd
-	uninstall_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
-	uninstall_file "$HOME/Library/LaunchAgents" "$DOTFILES/private/launchd"
-	## Automator Quick Actions / Services
-	uninstall_file "$HOME/Library/Services" "$DOTFILES/services"
-	uninstall_file "$HOME/Library/Services" "$DOTFILES/private/services"
-	## xbar
-	uninstall_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/xbar"
-	uninstall_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/private/xbar"
+	## ~/Library
+	uninstall_file "$HOME/Library" "$DOTFILES/macos-library"
+	uninstall_file "$HOME/Library" "$DOTFILES/private/macos-library"
 
 	## rename ~/.ssh/config.local back to ~/.ssh/config
 	# I use ~/.ssh/config.local as machine-specific configuration. I import it from my ~/.ssh/config.
@@ -393,26 +384,8 @@ handle_file "$HOME" "$DOTFILES/dot-home"
 handle_file "$HOME/.config" "$DOTFILES/config"
 [ ! -d "$DOTFILES/private/config" ] || handle_file "$HOME/.config" "$DOTFILES/private/config"
 
-## macOS Application Support
+## ~/Library (LaunchAgents, Services, xbar plugins, ...)
 if [ "$(uname -s)" = "Darwin" ]; then
-	handle_file "$HOME/Library/Application Support/Code" "$DOTFILES/config/Code"
-	handle_file "$HOME/Library/Application Support/edir-flags.conf" "$DOTFILES/config/edir-flags.conf"
-fi
-
-## launchd
-if [ "$(uname -s)" = "Darwin" ]; then
-	handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/launchd"
-	[ ! -d "$DOTFILES/private/launchd" ] || handle_file "$HOME/Library/LaunchAgents" "$DOTFILES/private/launchd"
-fi
-
-## Automator Quick Actions / Services
-if [ "$(uname -s)" = "Darwin" ]; then
-	[ ! -d "$DOTFILES/services" ] || handle_file "$HOME/Library/Services" "$DOTFILES/services"
-	[ ! -d "$DOTFILES/private/services" ] || handle_file "$HOME/Library/Services" "$DOTFILES/private/services"
-fi
-
-## xbar
-if [ "$(uname -s)" = "Darwin" ]; then
-	[ ! -d "$DOTFILES/xbar" ] || handle_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/xbar"
-	[ ! -d "$DOTFILES/private/xbar" ] || handle_file "$HOME/Library/Application Support/xbar/plugins" "$DOTFILES/private/xbar"
+	handle_file "$HOME/Library" "$DOTFILES/macos-library"
+	[ ! -d "$DOTFILES/private/macos-library" ] || handle_file "$HOME/Library" "$DOTFILES/private/macos-library"
 fi

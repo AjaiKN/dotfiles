@@ -1,13 +1,13 @@
 # AGENTS.md
 
-Notes for coding agents working in this repo. See `README.md` for the human-facing overview and basic repository structure (`config/`, `dot-home/`, `bin/`, `scripts/`, `launchd/`, `nix/`, `vendor/`, `private/`).
+Notes for coding agents working in this repo. See `README.md` for the human-facing overview and basic repository structure (`config/`, `dot-home/`, `bin/`, `scripts/`, `macos-library/`, `nix/`, `vendor/`, `private/`).
 
 ## This repo is live, not just source
 
-Files under `config/`, `dot-home/`, `launchd/`, etc. are installed into `$HOME`, `~/.config` (hardcoded, not `$XDG_CONFIG_HOME`), and on macOS a few `~/Library/...` locations (`LaunchAgents`, `Services`, `Application Support/{Code,edir-flags.conf,xbar/plugins}`) by a **custom hand-rolled installer** (`install-files.sh`), not GNU Stow — Stow only shows up elsewhere as an installed package dependency (e.g. `install.debian.sh`), it isn't what actually links these files. How it links:
+Files under `config/`, `dot-home/`, `macos-library/`, etc. are installed into `$HOME`, `~/.config` (hardcoded, not `$XDG_CONFIG_HOME`), and on macOS `~/Library` (from `macos-library/`, e.g. `LaunchAgents`, `Services`, `Application Support/xbar/plugins`; `Application Support/{Code,edir-flags.conf}` there are in-repo symlinks into `config/`, since they're shared with Linux) by a **custom hand-rolled installer** (`install-files.sh`), not GNU Stow — Stow only shows up elsewhere as an installed package dependency (e.g. `install.debian.sh`), it isn't what actually links these files. How it links:
 
 - Each source entry (file or directory) gets a single relative symlink, unless it's a directory containing a `.unfold` marker file — then the destination becomes a real directory and each entry inside is handled the same way, recursively.
-- Nearly all roots (`dot-home/`, `config/`, `launchd/`, `services/`, and their `private/` counterparts, which merge into the same destinations) are unfolded. So e.g. `~/.config` is a real directory whose entries are symlinks into the repo (`~/.config/zsh` -> `../prog/dotfiles/config/zsh`), except subdirectories with their own `.unfold` (e.g. `config/systemd/`).
+- Nearly all roots (`dot-home/`, `config/`, `macos-library/`, and their `private/` counterparts, which merge into the same destinations) are unfolded. So e.g. `~/.config` is a real directory whose entries are symlinks into the repo (`~/.config/zsh` -> `../prog/dotfiles/config/zsh`), except subdirectories with their own `.unfold` (e.g. `config/systemd/`).
 - `.DS_Store`, `.unfold`, and editor backup/lock files (`*~`, `.#*`, `#*#`) are never linked.
 - Re-running removes orphaned links whose target no longer exists, and replaces a single directory symlink with per-entry links if that directory has since gained a `.unfold`.
 
@@ -39,8 +39,8 @@ In recent history (`git log`), the first line is consistently `scope: descriptio
 ## Working with the live Emacs
 
 - Emacs runs as persistent daemons via launchd, not started fresh per session. Two are configured:
-  - `~/Library/LaunchAgents/dev.ajai.emacsdaemonserver.plist` (symlink to `launchd/dev.ajai.emacsdaemonserver.plist`) — the main/GUI daemon, default `emacsclient` socket.
-  - `~/Library/LaunchAgents/dev.ajai.emacsdaemonterm.plist` (symlink to `launchd/dev.ajai.emacsdaemonterm.plist`) — a separate daemon for terminal clients, reached via `emacsclient --socket-name=term`.
+  - `~/Library/LaunchAgents/dev.ajai.emacsdaemonserver.plist` (symlink to `macos-library/LaunchAgents/dev.ajai.emacsdaemonserver.plist`) — the main/GUI daemon, default `emacsclient` socket.
+  - `~/Library/LaunchAgents/dev.ajai.emacsdaemonterm.plist` (symlink to `macos-library/LaunchAgents/dev.ajai.emacsdaemonterm.plist`) — a separate daemon for terminal clients, reached via `emacsclient --socket-name=term`.
   - For Linux, the same two daemons are run using systemd - see `config/systemd/user/emacs@.service`.
 - **You should usually use `emacsclient`, not `emacs`/`emacs --batch`**, for evaluating elisp, checking parens, byte-compiling, etc. — there's usually a live server to talk to. You may wish to start your own server/daemon for testing.
 - Editing a config `.el` file does **not** hot-reload into the running daemon(s). You can verify a fix against the live daemon via `emacsclient --eval ...`.
