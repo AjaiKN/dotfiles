@@ -1,0 +1,36 @@
+#!/usr/bin/env raku
+
+my (:$HOME, :$DOTFILES, *%) := %*ENV;
+
+sub expand-path($_ is copy) {
+	s/ \s* '#' .* //;        # remove comment from end
+	s/ \s* \|\| \s* \: //;   # remove "|| :" from end
+	$_= $0 if m/'"'(.*)'"'/; # remove quotes around it
+
+	# substitute some environment variables
+	s/\$HOME/$HOME/;
+	s/\~/$HOME/;
+	s/\$DOTFILES/$DOTFILES/;
+
+	$_
+}
+
+sub process-file(IO::Path $file) {
+	for $file.lines -> $line {
+		if $line ~~ /^\s* [source|\.] \s+ (.*) / {
+			my $sourced-file = expand-path(~$0).IO;
+			if $sourced-file.e {
+				say "## $sourced-file";
+				process-file $sourced-file;
+				say "## CONTINUED: $file";
+				next;
+			}
+		}
+		say $line.subst(/^ '##'/, '###');
+	}
+}
+
+sub MAIN(Str $start = "$HOME/.bashrc") {
+	say "export AKN_BUNDLED=1";
+	process-file $start.IO;
+}
