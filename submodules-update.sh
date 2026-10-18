@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cd "${DOTFILES:=$(dirname "$0")}" || exit 1
+DOTFILES=$PWD
 
 # set -x
 
