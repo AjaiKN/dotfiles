@@ -23,7 +23,21 @@ if : ; then
 		)
 	}
 
-	if ! [ -e "${DOTFILES:=$HOME/prog/dotfiles}" ]; then
+	default_dotfiles="${DOTFILES:-$HOME/prog/dotfiles}"
+	DOTFILES="$(
+		set +x
+		printf 'Where should the dotfiles be downloaded to? [%s] ' "$default_dotfiles" >/dev/tty
+		read -r REPLY </dev/tty
+		printf '%s\n' "${REPLY:-$default_dotfiles}"
+	)"
+	# Expand a leading ~ typed at the prompt
+	# shellcheck disable=SC2088
+	case "$DOTFILES" in
+		"~") DOTFILES="$HOME" ;;
+		"~/"*) DOTFILES="$HOME/${DOTFILES#"~/"}" ;;
+	esac
+
+	if ! [ -e "$DOTFILES" ]; then
 		mkdir -p "$(dirname "$DOTFILES")"
 		cd "$(dirname "$DOTFILES")"
 		echo "Installing to $DOTFILES..."

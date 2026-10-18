@@ -14,7 +14,7 @@ curl https://dotfiles.ajai.dev/download | sh
 wget -O - https://dotfiles.ajai.dev/download | sh
 ```
 
-By default, it will download to `~/prog/dotfiles`. If you want it to download to a different directory, set the `DOTFILES` environment variable to the location the repository should go.
+It will ask where to download the repository to (default: `$DOTFILES`, or `~/prog/dotfiles` if that's unset).
 
 Or you can just clone it yourself:
 
