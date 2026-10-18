@@ -24,7 +24,8 @@ elif [ -d "$HOME/dotfiles" ]; then
 elif [ -d "$HOME/.dotfiles" ]; then
 	DOTFILES="$HOME/.dotfiles"
 else
-	[ -t 0 ] && echo "Unable to locate DOTFILES directory" >&2
+	# (expected when bundled by scripts/bundle)
+	[ -t 0 ] && [ -z "${AKN_BUNDLED:-}" ] && echo "Unable to locate DOTFILES directory" >&2
 	DOTFILES="$HOME/.dotfiles"
 fi
 export DOTFILES
@@ -122,7 +123,8 @@ export GIT_PAGER="less -FX"
 
 # bat is called batcat on Ubuntu & Debian
 if command -v bat >/dev/null 2>&1 || command -v batcat >/dev/null 2>&1; then
-	export MANPAGER="bat_manpager"
+	# (bat_manpager is in $DOTFILES/bin, which might not exist, e.g. when bundled)
+	command -v bat_manpager >/dev/null 2>&1 && export MANPAGER="bat_manpager"
 	if command -v delta >/dev/null 2>&1; then
 		export GIT_PAGER="delta"
 	fi

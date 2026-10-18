@@ -30,6 +30,16 @@ curl -LO 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.t
 tar xf dotfiles.tar.gz
 ```
 
+### Trying the bash config without downloading
+
+`bundled.bashrc` is my bash config (just the parts that are `source`d) bundled into a single file by `scripts/bundle`:
+
+```sh
+bash --rcfile <(curl -fsSL 'https://github.com/AjaiKN/dotfiles/releases/latest/download/bundled.bashrc')
+# OR, in a running bash:
+eval "$(curl -fsSL 'https://github.com/AjaiKN/dotfiles/releases/latest/download/bundled.bashrc')"
+```
+
 ## Installation
 
 To install the dotfiles to your home directory, run `./install`.

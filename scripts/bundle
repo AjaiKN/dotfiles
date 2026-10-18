@@ -1,36 +1,55 @@
 #!/usr/bin/env raku
 
-my (:$HOME, :$DOTFILES, *%) := %*ENV;
+# bundle - Inline the shell config into a single bash rc file, for using these
+# dotfiles on a machine without downloading or installing them:
+#   bash --rcfile <(curl -fsSL URL)  # new shell
+#   eval "$(curl -fsSL URL)"         # in a running bash
+# (`source <(...)` silently reads nothing in macOS's bash 3.2 for a file this big.)
+#
+# Usage: scripts/bundle [START-FILE] >bundled.bashrc
+#
+# Only lines of the form `. "$DOTFILES/some/file"` or `source "$DOTFILES/some/file"`
+# (optionally followed by `|| :`) are inlined. Everything else, including
+# sources of files outside this repo, is left as-is.
 
-sub expand-path($_ is copy) {
-	s/ \s* '#' .* //;        # remove comment from end
-	s/ \s* \|\| \s* \: //;   # remove "|| :" from end
-	$_= $0 if m/'"'(.*)'"'/; # remove quotes around it
+my $repo = $*PROGRAM.resolve.parent.parent;
 
-	# substitute some environment variables
-	s/\$HOME/$HOME/;
-	s/\~/$HOME/;
-	s/\$DOTFILES/$DOTFILES/;
+my @open-files; # for detecting cycles
 
-	$_
-}
+sub relative(IO::Path $file) { $file.relative($repo) }
 
 sub process-file(IO::Path $file) {
+	if $file.Str ∈ @open-files».Str {
+		die "bundle: cycle: {(|@open-files, $file).map(&relative).join(' -> ')}";
+	}
+	@open-files.push: $file;
 	for $file.lines -> $line {
-		if $line ~~ /^\s* [source|\.] \s+ (.*) / {
-			my $sourced-file = expand-path(~$0).IO;
-			if $sourced-file.e {
-				say "## $sourced-file";
-				process-file $sourced-file;
-				say "## CONTINUED: $file";
-				next;
-			}
+		if $line ~~ /^ \s* ['source'|'.'] \s+ '"$DOTFILES/' $<path>=(<-["$]>+) '"' [\s* '||' \s* ':']? \s* $/ {
+			my $sourced-file = $repo.add(~$<path>).resolve;
+			die "bundle: {relative $file}: no such file: $<path>" unless $sourced-file.f;
+			say "## {relative $sourced-file}";
+			process-file $sourced-file;
+			say "## CONTINUED: {relative $file}";
+			next;
+		}
+		if $line ~~ /^ \s* ['source'|'.'] \s .* 'DOTFILES'/ {
+			note "bundle: warning: {relative $file}: not inlining: {$line.trim}";
 		}
 		say $line.subst(/^ '##'/, '###');
 	}
+	@open-files.pop;
 }
 
-sub MAIN(Str $start = "$HOME/.bashrc") {
-	say "export AKN_BUNDLED=1";
-	process-file $start.IO;
+sub MAIN(Str $start = $repo.add('config/bash/.bashrc').Str) {
+	my $commit = (run 'git', '-C', $repo, 'rev-parse', '--short', 'HEAD', :out, :err).out.slurp(:close).trim;
+	say "# Ajai's dotfiles: bash config bundled into one file by scripts/bundle{" from $commit" if $commit}.";
+	say "# See https://github.com/AjaiKN/dotfiles";
+	say "#   bash --rcfile <(curl -fsSL URL)  # new shell";
+	say "#   eval \"\$(curl -fsSL URL)\"         # in a running bash";
+	say "";
+	say "# Truncation guard: bash reads this whole if-block before running any of it.";
+	say "if : ; then";
+	say "AKN_BUNDLED=1";
+	process-file $start.IO.resolve;
+	say "fi";
 }

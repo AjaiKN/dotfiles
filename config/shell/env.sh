@@ -17,7 +17,7 @@ if [ -z "${AKN_SHELL_ENVVARS_LOADED:-}" ]; then
 	fi
 fi
 
-if [ -n "${DOTFILES:-}" ]; then
+if [ -n "${DOTFILES:-}" ] && [ -r "$DOTFILES/config/shell/env.sh" ]; then
 	export ENV="$DOTFILES/config/shell/env.sh"
 	export BASH_ENV="$ENV"
 fi

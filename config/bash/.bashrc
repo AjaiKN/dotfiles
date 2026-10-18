@@ -2,28 +2,35 @@
 # shellcheck disable=SC2317
 
 ## DOTFILES
-# Find DOTFILES from this file's real location, so this also works without
-# install-files.sh, e.g. `bash --rcfile /tmp/dotfiles/config/bash/.bashrc`.
-__akn_bashrc=${BASH_SOURCE[0]}
-while [ -L "$__akn_bashrc" ]; do
-	__akn_link=$(readlink "$__akn_bashrc")
-	case $__akn_link in
-		/*) __akn_bashrc=$__akn_link ;;
-		*) __akn_bashrc=$(dirname "$__akn_bashrc")/$__akn_link ;;
-	esac
-done
-DOTFILES=$(cd -P "$(dirname "$__akn_bashrc")/../.." && pwd -P) && export DOTFILES
-unset __akn_bashrc __akn_link
-# Not installed (or a different checkout than the installed one)
-if [ "$HOME/.bashrc" -ef "$DOTFILES/config/bash/.bashrc" ]; then
-	unset AKN_DOTFILES_UNINSTALLED
+if [ -n "${AKN_BUNDLED:-}" ]; then
+	# Bundled into one file by scripts/bundle, so there's no checkout to find.
+	# Non-empty so env.sh loads the (inlined) envvars.sh, which then guesses
+	# DOTFILES as usual.
+	export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 else
-	AKN_DOTFILES_UNINSTALLED=1
-	# so that zsh (including the `exec zsh` below) uses this checkout too
-	export ZDOTDIR="$DOTFILES/config/zsh"
-	# ~/.inputrc isn't ours
-	export INPUTRC="$DOTFILES/dot-home/.inputrc"
-	[[ $- == *i* ]] && bind -f "$INPUTRC"
+	# Find DOTFILES from this file's real location, so this also works without
+	# install-files.sh, e.g. `bash --rcfile /tmp/dotfiles/config/bash/.bashrc`.
+	__akn_bashrc=${BASH_SOURCE[0]}
+	while [ -L "$__akn_bashrc" ]; do
+		__akn_link=$(readlink "$__akn_bashrc")
+		case $__akn_link in
+			/*) __akn_bashrc=$__akn_link ;;
+			*) __akn_bashrc=$(dirname "$__akn_bashrc")/$__akn_link ;;
+		esac
+	done
+	DOTFILES=$(cd -P "$(dirname "$__akn_bashrc")/../.." && pwd -P) && export DOTFILES
+	unset __akn_bashrc __akn_link
+	# Not installed (or a different checkout than the installed one)
+	if [ "$HOME/.bashrc" -ef "$DOTFILES/config/bash/.bashrc" ]; then
+		unset AKN_DOTFILES_UNINSTALLED
+	else
+		AKN_DOTFILES_UNINSTALLED=1
+		# so that zsh (including the `exec zsh` below) uses this checkout too
+		export ZDOTDIR="$DOTFILES/config/zsh"
+		# ~/.inputrc isn't ours
+		export INPUTRC="$DOTFILES/dot-home/.inputrc"
+		[[ $- == *i* ]] && bind -f "$INPUTRC"
+	fi
 fi
 
 source "$DOTFILES/config/shell/env.sh"
@@ -33,6 +40,8 @@ source "$DOTFILES/config/shell/env.sh"
 if
 	# - This shell is interactive
 	[[ $- == *i* ]] &&
+		# - We're not running from scripts/bundle's output (zsh would load the host's zsh config)
+		[[ -z ${AKN_BUNDLED:-} ]] &&
 		# # - We're not in a login shell
 		# ! shopt -q login_shell &&
 		# - AKN_INSIDE_ZSH isn't defined (so that `exec bash` from inside zsh doesn't trigger it)
