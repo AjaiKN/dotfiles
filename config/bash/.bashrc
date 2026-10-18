@@ -7,6 +7,8 @@ if [ -n "${AKN_BUNDLED:-}" ]; then
 	# Non-empty so env.sh loads the (inlined) envvars.sh, which then guesses
 	# DOTFILES as usual.
 	export DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+	# ~/.inputrc isn't ours; use the copy embedded in the bundle
+	[[ $- == *i* ]] && bind -f <(__akn_bundled_file dot-home/.inputrc)
 else
 	# Find DOTFILES from this file's real location, so this also works without
 	# install-files.sh, e.g. `bash --rcfile /tmp/dotfiles/config/bash/.bashrc`.

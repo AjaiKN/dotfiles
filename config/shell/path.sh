@@ -44,12 +44,21 @@ $HOMEBREW_PREFIX/opt/trash-cli/bin:\
 $HOME/prog/plan9port/bin"
 
 ## Secure PATH
-if [ -x "$DOTFILES/scripts/secure_path" ]; then
+if [ -n "${AKN_BUNDLED:-}" ]; then
+	# embedded in the bundle by scripts/bundle
+	akn_secure_path=__akn_bundled_secure_path
+elif [ -x "$DOTFILES/scripts/secure_path" ]; then
+	akn_secure_path="$DOTFILES/scripts/secure_path"
+else
+	akn_secure_path=
+fi
+if [ -n "$akn_secure_path" ]; then
 	if [ -t 0 ]; then
-		PATH="$("$DOTFILES/scripts/secure_path" || printf '%s' "$PATH")"
+		PATH="$("$akn_secure_path" || printf '%s' "$PATH")"
 	else
 		# if not interactive, don't let it print anything
-		PATH="$("$DOTFILES/scripts/secure_path" 2>/dev/null || printf '%s' "$PATH")"
+		PATH="$("$akn_secure_path" 2>/dev/null || printf '%s' "$PATH")"
 	fi
 	export PATH
 fi
+unset akn_secure_path

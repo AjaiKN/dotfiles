@@ -34,7 +34,7 @@ tar xf dotfiles.tar.gz
 
 ### Using the bash config without downloading
 
-`bundled.bashrc` is my bash config (just the parts that are `source`d) bundled into a single file by `scripts/bundle`:
+`bundled.bashrc` is my bash config (the parts that are `source`d, plus a few other files it needs) bundled into a single file by `scripts/bundle`:
 
 ```sh
 bash --rcfile <(curl -fsSL 'https://dotfiles.ajai.dev/bashrc')

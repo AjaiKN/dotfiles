@@ -11,8 +11,48 @@
 # Only lines of the form `. "$DOTFILES/some/file"` or `source "$DOTFILES/some/file"`
 # (optionally followed by `|| :`) are inlined. Everything else, including
 # sources of files outside this repo, is left as-is.
+#
+# Some files that aren't sourced are embedded too: `__akn_bundled_file PATH`
+# prints one, and the commands below run an embedded script.
 
 my $repo = $*PROGRAM.resolve.parent.parent;
+
+# Files embedded in the bundle, by repo-relative path
+my @embedded-files = <dot-home/.inputrc bin/zap scripts/secure_path>;
+# Shell functions that run an embedded script
+my %embedded-commands = zap => 'bin/zap', __akn_bundled_secure_path => 'scripts/secure_path';
+
+my $heredoc-end = 'AKN_BUNDLED_FILE_EOF';
+
+sub embed-files() {
+	say "__akn_bundled_file() \{";
+	say "\tcase \$1 in";
+	for @embedded-files -> $path {
+		my $content = $repo.add($path).resolve.slurp;
+		die "bundle: $path contains the line $heredoc-end" if $content.lines.grep($heredoc-end);
+		say "\t\t$path) cat <<'$heredoc-end'";
+		print $content;
+		print "\n" unless $content.ends-with("\n");
+		say $heredoc-end;
+		say "\t\t\t;;";
+	}
+	say "\t\t*) echo \"__akn_bundled_file: not bundled: \$1\" >&2; return 1 ;;";
+	say "\tesac";
+	say "}";
+	for %embedded-commands.sort -> (:key($name), :value($path)) {
+		die "bundle: $path isn't in \@embedded-files" unless $path ∈ @embedded-files;
+		my $file = $repo.add($path).resolve;
+		# Linux limits a single argument (here, the `-c` script) to 128 KiB
+		die "bundle: $path is too big to run with -c" if $file.s > 100_000;
+		my $shebang = $file.lines.head;
+		my $interpreter = do given $shebang {
+			when /^ '#!' \s* '/usr/bin/env' \s+ (\S+) / { ~$0 }
+			when /^ '#!' \s* (\S+) / { ~$0 }
+			default { die "bundle: $path has no #! line" }
+		};
+		say "{$name}() \{ $interpreter -c \"\$(__akn_bundled_file $path)\" {$file.basename} \"\$@\"; \}";
+	}
+}
 
 my @open-files; # for detecting cycles
 
@@ -50,6 +90,7 @@ sub MAIN(Str $start = $repo.add('config/bash/.bashrc').Str) {
 	say "# Truncation guard: bash reads this whole if-block before running any of it.";
 	say "if : ; then";
 	say "AKN_BUNDLED=1";
+	embed-files;
 	process-file $start.IO.resolve;
 	say "fi";
 }
