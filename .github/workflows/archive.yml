@@ -10,6 +10,8 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    outputs:
+      tagname: ${{ steps.generate_tagname.outputs.tagname }}
     steps:
     - name: Set DOTFILES environment variable
       run: printf 'DOTFILES=%s\n' "$PWD"/dotfiles >> $GITHUB_ENV
@@ -22,13 +24,6 @@ jobs:
       run:
         # not including private submodule
         dotfiles/submodules-update.sh bin config dot-home macos-library man nix scripts vendor
-    - name: Install Raku
-      run: sudo apt-get update && sudo apt-get install -y rakudo
-    - name: Bundle bashrc
-      run: |
-        raku dotfiles/scripts/bundle > bundled.bashrc
-        bash -n bundled.bashrc
-        HOME="$(mktemp -d)" bash --noprofile --rcfile bundled.bashrc -ic 'type gst'
     - name: Generate tag-name
       id: generate_tagname
       working-directory: dotfiles
@@ -44,16 +39,46 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         if-no-files-found: error
-        path: |
-          ./dotfiles.tar.gz
-          ./bundled.bashrc
-        name: dotfiles
+        path: ./dotfiles.tar.gz
+        name: dotfiles.tar.gz
     - name: Create a GitHub release
       uses: ncipollo/release-action@v1.20.0
       with:
         commit: main
         tag: ${{ steps.generate_tagname.outputs.tagname }}
-        artifacts: ./dotfiles.tar.gz,./bundled.bashrc
+        artifacts: ./dotfiles.tar.gz
         artifactErrorsFailBuild: true
         makeLatest: true
         removeArtifacts: true
+
+  # Separate job so that a failure here doesn't stop the release from being
+  # published; it just won't have bundled.bashrc.
+  bundle:
+    needs: archive
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+      with:
+        path: dotfiles
+        submodules: false
+    - name: Install Raku
+      run: sudo apt-get update && sudo apt-get install -y rakudo
+    - name: Bundle bashrc
+      run: |
+        raku dotfiles/scripts/bundle > bundled.bashrc
+        bash -n bundled.bashrc
+        HOME="$(mktemp -d)" bash --noprofile --rcfile bundled.bashrc -ic 'type gst'
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        if-no-files-found: error
+        path: ./bundled.bashrc
+        name: bundled.bashrc
+    - name: Add to the GitHub release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        TAG: ${{ needs.archive.outputs.tagname }}
+      run: gh release upload "$TAG" bundled.bashrc --repo "$GITHUB_REPOSITORY" --clobber
