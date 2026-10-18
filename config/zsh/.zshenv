@@ -9,6 +9,18 @@
 # commands that produce output or assume the shell is attached to a tty.
 #
 
+# Find DOTFILES from this file's real location, so this also works without
+# install-files.sh, e.g. `ZDOTDIR=/tmp/dotfiles/config/zsh zsh`.
+export DOTFILES=${${(%):-%x}:A:h:h:h}
+# Not installed (or a different checkout than the installed one)
+if [[ ~/.zshenv -ef $DOTFILES/config/zsh/.zshenv ]]; then
+	unset AKN_DOTFILES_UNINSTALLED
+else
+	typeset -g AKN_DOTFILES_UNINSTALLED=1
+	# so that nested zsh shells use this checkout too
+	export ZDOTDIR="$DOTFILES/config/zsh"
+fi
+
 if [[ -o interactive ]]; then
 	### choosing a theme
 	# version >= 5.1
@@ -41,10 +53,6 @@ if [[ -o interactive ]] && ! (( $+functions[_git] )); then
 	# make sure we use the git completion that ships with zsh, which is better than the one that ships with git
 	autoload -Uzr _git
 fi
-
-# Find DOTFILES from this file's real location, so this also works without
-# install-files.sh, e.g. `ZDOTDIR=/tmp/dotfiles/config/zsh zsh`.
-export DOTFILES=${${(%):-%x}:A:h:h:h}
 
 source "$DOTFILES/config/shell/env.sh"
 

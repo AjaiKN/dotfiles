@@ -14,6 +14,17 @@ while [ -L "$__akn_bashrc" ]; do
 done
 DOTFILES=$(cd -P "$(dirname "$__akn_bashrc")/../.." && pwd -P) && export DOTFILES
 unset __akn_bashrc __akn_link
+# Not installed (or a different checkout than the installed one)
+if [ "$HOME/.bashrc" -ef "$DOTFILES/config/bash/.bashrc" ]; then
+	unset AKN_DOTFILES_UNINSTALLED
+else
+	AKN_DOTFILES_UNINSTALLED=1
+	# so that zsh (including the `exec zsh` below) uses this checkout too
+	export ZDOTDIR="$DOTFILES/config/zsh"
+	# ~/.inputrc isn't ours
+	export INPUTRC="$DOTFILES/dot-home/.inputrc"
+	[[ $- == *i* ]] && bind -f "$INPUTRC"
+fi
 
 source "$DOTFILES/config/shell/env.sh"
 
