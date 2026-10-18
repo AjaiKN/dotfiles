@@ -20,6 +20,7 @@ jobs:
       with:
         path: dotfiles
         submodules: false
+        persist-credentials: false
     - name: Get submodules
       run:
         # not including private submodule
@@ -64,6 +65,7 @@ jobs:
       with:
         path: dotfiles
         submodules: false
+        persist-credentials: false
     - name: Install Raku
       uses: Raku/setup-raku@b8b1a4ebe85ef112edfc65e9edc8c57735367e3f # v1
       with:
