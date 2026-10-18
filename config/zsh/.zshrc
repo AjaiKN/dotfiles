@@ -134,7 +134,7 @@ OLD_PATH_ZSHRC=$PATH
 
 ### Basic variables
 
-ZSH_CUSTOM="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
+ZSH_CUSTOM="$DOTFILES/config/zsh"
 ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
 ZSH_PLUGINS="$ZSH_CUSTOM/plugins"
 
@@ -205,7 +205,7 @@ plugin ohmyzsh/plugins/gitignore
 # plugin prezto/modules/gnu-utility
 (( $+commands[npm] )) && plugin lukechilds/zsh-better-npm-completion
 plugin help
-plugin ~/.config/shell/rc.sh --no-compile
+plugin $DOTFILES/config/shell/rc.sh --no-compile
 plugin options
 plugin aliases
 plugin compdef
@@ -260,8 +260,8 @@ KEYTIMEOUT=1 # 0.01 seconds
 ### Powerlevel10k
 if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" ]]; then
 	# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-	[[ ! -f ~/.p10k.zsh ]] || compile_and_source ~/.p10k.zsh
-	[[ ! -f ~/.p10k.mise.zsh ]] || compile_and_source ~/.p10k.mise.zsh
+	[[ ! -f $DOTFILES/dot-home/.p10k.zsh ]] || compile_and_source $DOTFILES/dot-home/.p10k.zsh
+	[[ ! -f $DOTFILES/dot-home/.p10k.mise.zsh ]] || compile_and_source $DOTFILES/dot-home/.p10k.mise.zsh
 fi
 
 ### Emacs  tramp
@@ -313,7 +313,7 @@ fi
 
 ### Guix
 
-. "$HOME/.config/shell/guix.sh"
+. "$DOTFILES/config/shell/guix.sh"
 
 ### Deduplicate PATH, MANPATH, and fpath
 typeset -U path manpath fpath

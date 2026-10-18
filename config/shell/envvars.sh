@@ -12,7 +12,10 @@ umask go-w
 
 ## DOTFILES
 
-if [ -d "$HOME/.dotfiles" ]; then
+# Keep an existing DOTFILES (e.g. set by .bashrc when it's used without install-files.sh)
+if [ -n "${DOTFILES:-}" ] && [ -d "$DOTFILES/config/shell" ]; then
+	:
+elif [ -d "$HOME/.dotfiles" ]; then
 	DOTFILES="$( (cd "$HOME/.dotfiles" >/dev/null && pwd -P) )"
 elif [ -d "$HOME/prog/dotfiles" ]; then
 	DOTFILES="$HOME/prog/dotfiles"
@@ -37,15 +40,15 @@ export XDG_CONFIG_DIRS="${XDG_CONFIG_DIRS:-/etc/xdg}"
 
 ## brew
 # shellcheck source=./brew.sh
-. "$HOME/.config/shell/brew.sh"
+. "$DOTFILES/config/shell/brew.sh"
 
 ## PATH
 # shellcheck source=./path.sh
-. "$HOME/.config/shell/path.sh"
+. "$DOTFILES/config/shell/path.sh"
 
 ## Guix
 
-. "$HOME/.config/shell/guix.sh"
+. "$DOTFILES/config/shell/guix.sh"
 
 ## MANPATH
 # from brew shellenv

@@ -33,8 +33,8 @@ function reload {
 	# Check whether to run a login shell
 	[[ "$zsh" = -* || -o login ]] && exec -l "${zsh#-}" || exec "$zsh"
 }
-alias reload_zshrc='source ~/.zshrc'
-alias edit_zshrc='vim ~/.zshrc; reload_zshrc'
+alias reload_zshrc='source "$DOTFILES/config/zsh/.zshrc"'
+alias edit_zshrc='vim "$DOTFILES/config/zsh/.zshrc"; reload_zshrc'
 
 alias time_since_last_prompt='echo $P9K_COMMAND_DURATION_SECONDS'
 

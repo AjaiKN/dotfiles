@@ -1,7 +1,21 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2317
 
-source "$HOME/.config/shell/env.sh"
+## DOTFILES
+# Find DOTFILES from this file's real location, so this also works without
+# install-files.sh, e.g. `bash --rcfile /tmp/dotfiles/config/bash/.bashrc`.
+__akn_bashrc=${BASH_SOURCE[0]}
+while [ -L "$__akn_bashrc" ]; do
+	__akn_link=$(readlink "$__akn_bashrc")
+	case $__akn_link in
+		/*) __akn_bashrc=$__akn_link ;;
+		*) __akn_bashrc=$(dirname "$__akn_bashrc")/$__akn_link ;;
+	esac
+done
+DOTFILES=$(cd -P "$(dirname "$__akn_bashrc")/../.." && pwd -P) && export DOTFILES
+unset __akn_bashrc __akn_link
+
+source "$DOTFILES/config/shell/env.sh"
 
 # https://planet.kde.org/siosms-blog-2023-12-21-dont-change-your-login-shell-use-a-modern-terminal-emulator/
 # Only trigger if:
@@ -254,7 +268,7 @@ if command -v fasd >/dev/null 2>&1; then
 fi
 
 ## ~/.config/shell/rc.sh
-source "$HOME/.config/shell/rc.sh"
+source "$DOTFILES/config/shell/rc.sh"
 
 ## mise
 unset __MISE_ORIG_PATH # Leaving this set has resulted in some confusing behavior sometimes
@@ -317,7 +331,7 @@ fi
 
 ## Guix
 
-. "$HOME/.config/shell/guix.sh"
+. "$DOTFILES/config/shell/guix.sh"
 
 ### Automatically added by the Guix install script.
 if [ -n "$GUIX_ENVIRONMENT" ]; then
