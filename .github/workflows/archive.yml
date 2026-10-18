@@ -16,7 +16,7 @@ jobs:
     - name: Set DOTFILES environment variable
       run: printf 'DOTFILES=%s\n' "$PWD"/dotfiles >> $GITHUB_ENV
     - name: Checkout without submodules
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: dotfiles
         submodules: false
@@ -61,7 +61,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: dotfiles
         submodules: false
