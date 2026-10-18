@@ -7,6 +7,7 @@ To download my dotfiles, you can run either of the following commands:
 <!-- sh -c "$(curl -fsSL https://dotfiles.ajai.dev/download)" -->
 ``` sh
 curl https://dotfiles.ajai.dev/download | sh
+# (URL is short for https://raw.githubusercontent.com/AjaiKN/dotfiles/refs/heads/main/download)
 ```
 
 <!-- sh -c "$(wget -qO - https://dotfiles.ajai.dev/download)" -->
@@ -25,19 +26,21 @@ git clone --depth=1 https://github.com/AjaiKN/dotfiles
 If you don't have git installed, you should probably install it. But you can also download my dotfiles without git:
 
 ```sh
-curl -LO 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
-# OR: wget 'https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz'
+curl -LO 'https://dotfiles.ajai.dev/dotfiles.tar.gz'
+# OR: wget 'https://dotfiles.ajai.dev/dotfiles.tar.gz'
+# (URL is short for https://github.com/AjaiKN/dotfiles/releases/latest/download/dotfiles.tar.gz)
 tar xf dotfiles.tar.gz
 ```
 
-### Trying the bash config without downloading
+### Using the bash config without downloading
 
 `bundled.bashrc` is my bash config (just the parts that are `source`d) bundled into a single file by `scripts/bundle`:
 
 ```sh
-bash --rcfile <(curl -fsSL 'https://github.com/AjaiKN/dotfiles/releases/latest/download/bundled.bashrc')
+bash --rcfile <(curl -fsSL 'https://dotfiles.ajai.dev/bashrc')
 # OR, in a running bash:
-eval "$(curl -fsSL 'https://github.com/AjaiKN/dotfiles/releases/latest/download/bundled.bashrc')"
+eval "$(curl -fsSL 'https://dotfiles.ajai.dev/bashrc')"
+# (URL is short for https://github.com/AjaiKN/dotfiles/releases/latest/download/bundled.bashrc)
 ```
 
 ## Installation
