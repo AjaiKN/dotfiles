@@ -57,19 +57,33 @@ if : ; then
 
 	if [ -e "$DOTFILES"/install ]; then
 		set +x
-		if confirm "Dotfiles are downloaded to $DOTFILES. Install to home directory now?"; then
-			"$DOTFILES"/install -v </dev/tty || {
-				ret=$?
-				echo
-				echo "Installing failed!"
-				echo "To try again, run:"
+		echo "Dotfiles are downloaded to $DOTFILES."
+		echo "  i) install to home directory now"
+		echo "  b) start bash using them, without installing"
+		echo "  z) start zsh using them, without installing"
+		echo "  n) neither"
+		printf 'Choice? (i/b/z/n) '
+		read -r REPLY </dev/tty
+		case "$REPLY" in
+			i* | I*)
+				"$DOTFILES"/install -v </dev/tty || {
+					ret=$?
+					echo
+					echo "Installing failed!"
+					echo "To try again, run:"
+					echo "$DOTFILES/install -v"
+					exit $ret
+				}
+				;;
+			b* | B*) exec "$DOTFILES"/scripts/bash </dev/tty ;;
+			z* | Z*) exec "$DOTFILES"/scripts/zsh </dev/tty ;;
+			*)
+				echo "To install, run:"
 				echo "$DOTFILES/install -v"
-				exit $ret
-			}
-		else
-			echo "To install, run:"
-			echo "$DOTFILES/install -v"
-		fi
+				echo "To start a shell using them without installing, run:"
+				echo "$DOTFILES/scripts/bash  # or scripts/zsh"
+				;;
+		esac
 	else
 		echo "Failed to download"
 		exit 1

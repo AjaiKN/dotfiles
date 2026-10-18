@@ -34,6 +34,7 @@ tar xf dotfiles.tar.gz
 
 To install the dotfiles to your home directory, run `./install`.
 (The download script will also offer to run this for you.)
+To try them without installing, run `scripts/bash` or `scripts/zsh` instead, which start a shell using the config from the downloaded directory (the download script also offers this).
 If any of the relevant dotfiles already exist in the home directory, don't worry: the install script will prompt to ask you whether to skip that file, delete the original file, back up the original file, or [zap](https://github.com/AjaiKN/zap.sh) the original file to the trash.
 
 ## Uninstalling
