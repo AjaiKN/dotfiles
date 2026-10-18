@@ -65,7 +65,9 @@ jobs:
         path: dotfiles
         submodules: false
     - name: Install Raku
-      run: sudo apt-get update && sudo apt-get install -y rakudo
+      uses: Raku/setup-raku@v1
+      with:
+        raku-version: "2026.09"
     - name: Bundle bashrc
       run: |
         raku dotfiles/scripts/bundle > bundled.bashrc
