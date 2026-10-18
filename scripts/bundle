@@ -2,9 +2,10 @@
 
 # bundle - Inline the shell config into a single bash rc file, for using these
 # dotfiles on a machine without downloading or installing them:
-#   bash --rcfile <(curl -fsSL URL)  # new shell
-#   eval "$(curl -fsSL URL)"         # in a running bash
-# (`source <(...)` silently reads nothing in macOS's bash 3.2 for a file this big.)
+#   bash --rcfile <(echo 'eval "$(curl -fsSL URL)"')  # new shell
+#   eval "$(curl -fsSL URL)"                          # in a running bash
+# (Not `bash --rcfile <(curl ...)` or `source <(curl ...)`: macOS's bash 3.2
+# silently reads nothing from a pipe this big.)
 #
 # Usage: scripts/bundle [START-FILE] >bundled.bashrc
 #
@@ -84,8 +85,8 @@ sub MAIN(Str $start = $repo.add('config/bash/.bashrc').Str) {
 	my $commit = (run 'git', '-C', $repo, 'rev-parse', '--short', 'HEAD', :out, :err).out.slurp(:close).trim;
 	say "# Ajai's dotfiles: bash config bundled into one file by scripts/bundle{" from $commit" if $commit}.";
 	say "# See https://github.com/AjaiKN/dotfiles";
-	say "#   bash --rcfile <(curl -fsSL URL)  # new shell";
-	say "#   eval \"\$(curl -fsSL URL)\"         # in a running bash";
+	say "#   bash --rcfile <(echo 'eval \"\$(curl -fsSL URL)\"')  # new shell";
+	say "#   eval \"\$(curl -fsSL URL)\"                          # in a running bash";
 	say "";
 	say "# Truncation guard: bash reads this whole if-block before running any of it.";
 	say "if : ; then";

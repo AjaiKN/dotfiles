@@ -37,7 +37,7 @@ tar xf dotfiles.tar.gz
 `bundled.bashrc` is my bash config (the parts that are `source`d, plus a few other files it needs) bundled into a single file by `scripts/bundle`:
 
 ```sh
-bash --rcfile <(curl -fsSL 'https://dotfiles.ajai.dev/bashrc')
+bash --rcfile <(echo 'eval "$(curl -fsSL https://dotfiles.ajai.dev/bashrc)"')
 # OR, in a running bash:
 eval "$(curl -fsSL 'https://dotfiles.ajai.dev/bashrc')"
 # (URL is short for https://github.com/AjaiKN/dotfiles/releases/latest/download/bundled.bashrc)
