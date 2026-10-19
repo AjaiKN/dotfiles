@@ -124,7 +124,15 @@ HISTTIMEFORMAT='%F %T '
 
 ### HISTFILE
 # https://news.ycombinator.com/item?id=33186412
+__akn_old_histfile=${HISTFILE-}
 HISTFILE="$HOME/.bash_my_history"
+# If this is sourced into an already-running shell (e.g. `eval`ing the bundle),
+# its history was loaded from a different file; reload it from ours
+if [[ $- == *i* && $__akn_old_histfile != "$HISTFILE" && -n $(HISTTIMEFORMAT='' history 1) ]]; then
+	history -c
+	history -r
+fi
+unset __akn_old_histfile
 # Not exported (and un-exported if inherited that way), so that child shells
 # like zsh don't read and write bash's history file
 export -n HISTFILE
