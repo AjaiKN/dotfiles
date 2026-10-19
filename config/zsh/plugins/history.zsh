@@ -1,8 +1,11 @@
 ### History
 # https://news.ycombinator.com/item?id=33186412
-export HISTSIZE=5000000000
-export SAVEHIST=1000000000
-export HISTFILE="$HOME/.zsh_my_history"
+HISTSIZE=5000000000
+SAVEHIST=1000000000
+HISTFILE="$HOME/.zsh_my_history"
+# Not exported (and un-exported if inherited that way), so that child shells
+# like bash don't read and write zsh's history file
+typeset -g +x HISTSIZE SAVEHIST HISTFILE
 
 if (( $+commands[awk] )); then
 	# echo_if_interactive 'Backing up ~/.zsh_my_history to ~/.zsh_my_history_backup'

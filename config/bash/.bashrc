@@ -124,7 +124,10 @@ HISTTIMEFORMAT='%F %T '
 
 ### HISTFILE
 # https://news.ycombinator.com/item?id=33186412
-export HISTFILE="$HOME/.bash_my_history"
+HISTFILE="$HOME/.bash_my_history"
+# Not exported (and un-exported if inherited that way), so that child shells
+# like zsh don't read and write bash's history file
+export -n HISTFILE
 
 ## Settings
 # check the window size after each command and, if necessary,
