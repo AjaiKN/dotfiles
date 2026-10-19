@@ -296,9 +296,13 @@ if command -v fzf >/dev/null 2>&1; then
 fi
 
 ## fasd
+if [ -n "${AKN_BUNDLED:-}" ]; then
+	# Inlined by scripts/bundle; when sourced, fasd defines a `fasd` function
+	. "$DOTFILES/vendor/fasd/fasd"
+fi
 if command -v fasd >/dev/null 2>&1; then
 	fasd_cache="${XDG_CACHE_HOME:-$HOME/.cache}/fasd-init-bash"
-	if [ "$(command -v fasd)" -nt "$fasd_cache" ] || [ ! -s "$fasd_cache" ]; then
+	if [ "$(command -v fasd)" -nt "$fasd_cache" ] || [ ! -s "$fasd_cache" ] || [ -n "${AKN_BUNDLED:-}" ]; then
 		mkdir -p "${fasd_cache%/*}"
 		fasd --init posix-alias bash-hook bash-ccomp bash-ccomp-install >| "$fasd_cache"
 	fi
