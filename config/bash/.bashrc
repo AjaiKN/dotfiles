@@ -14,6 +14,9 @@ if [ -n "${AKN_BUNDLED:-}" ]; then
 		rm -f "$__akn_inputrc"
 		unset __akn_inputrc
 	fi
+	# Likewise for ~/.tmux.conf. tmux only reads its config when starting a
+	# server, so use our own server (-L) rather than the account's usual one.
+	tmux() { command tmux -L akn -f <(__akn_bundled_file dot-home/.tmux.conf) "$@"; }
 else
 	# Find DOTFILES from this file's real location, so this also works without
 	# install-files.sh, e.g. `bash --rcfile /tmp/dotfiles/config/bash/.bashrc`.

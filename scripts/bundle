@@ -19,7 +19,7 @@
 my $repo = $*PROGRAM.resolve.parent.parent;
 
 # Files embedded in the bundle, by repo-relative path
-my @embedded-files = <dot-home/.inputrc bin/zap scripts/secure_path>;
+my @embedded-files = <dot-home/.inputrc dot-home/.tmux.conf bin/zap scripts/secure_path>;
 # Shell functions that run an embedded script
 my %embedded-commands = zap => 'bin/zap', __akn_bundled_secure_path => 'scripts/secure_path';
 
