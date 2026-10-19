@@ -118,7 +118,8 @@ if !has('nvim')
 	set ttyfast
 endif
 
-if !has('nvim')
+" (Not when run from scripts/bundle's bashrc, which shouldn't download plugins.)
+if !has('nvim') && empty($AKN_BUNDLED)
 	" https://github.com/junegunn/vim-plug/wiki/tips#conditional-activation
 	function! Cond(cond, ...)
 		let opts = get(a:000, 0, {})

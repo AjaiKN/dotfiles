@@ -17,6 +17,10 @@ if [ -n "${AKN_BUNDLED:-}" ]; then
 	# Likewise for ~/.tmux.conf. tmux only reads its config when starting a
 	# server, so use our own server (-L) rather than the account's usual one.
 	tmux() { command tmux -L akn -f <(__akn_bundled_file dot-home/.tmux.conf) "$@"; }
+	# And for vim and neovim, which both use the vimrc (the nvim config isn't
+	# bundled). AKN_BUNDLED tells the vimrc not to set up plugins.
+	vim() { AKN_BUNDLED=1 command vim -u <(__akn_bundled_file config/vim/vimrc) "$@"; }
+	nvim() { AKN_BUNDLED=1 command nvim -u <(__akn_bundled_file config/vim/vimrc) "$@"; }
 else
 	# Find DOTFILES from this file's real location, so this also works without
 	# install-files.sh, e.g. `bash --rcfile /tmp/dotfiles/config/bash/.bashrc`.

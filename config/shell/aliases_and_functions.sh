@@ -133,9 +133,11 @@ alias er="brew services restart emacs-plus@30"
 # alias doom-plus='EMACS=/opt/homebrew/opt/emacs-plus@30/bin/emacs EMACSDIR=$HOME/.emacs-plus.d ~/.emacs-plus.d/bin/doom'
 # alias emacs-plus-app='open /opt/homebrew/opt/emacs-plus@30/Emacs.app --env EMACS=$HOMEBREW_PREFIX/opt/emacs-plus@30/bin/emacs --env EMACSDIR=$HOME/.emacs-plus.d --args --init-directory "$HOME/.emacs-plus.d"'
 
-if command -v nvim >/dev/null 2>&1; then
-	alias vim=nvim
-fi
+# (Checking for a path, not just `command -v`, since bundled.bashrc defines an
+# nvim function even when there's no nvim.)
+case "$(command -v nvim 2>/dev/null)" in
+	/*) alias vim=nvim ;;
+esac
 alias vimregular="/usr/bin/vim"
 alias oldvim="/usr/bin/vim"
 
