@@ -14,9 +14,23 @@ if [ -n "${AKN_BUNDLED:-}" ]; then
 		rm -f "$__akn_inputrc"
 		unset __akn_inputrc
 	fi
+	# Nested bash shells can't read this bundle, so they download it again (from
+	# $AKN_BUNDLE_URL), using the eval form since bash 3.2 can't read a pipe this
+	# big. (--rcfile only affects interactive shells, so `bash script` is unchanged.)
+	__akn_bundle_url() { printf '%s\n' "${AKN_BUNDLE_URL:-https://dotfiles.ajai.dev/bashrc}"; }
+	bash() { command bash --rcfile <(echo "eval \"\$(curl -fsSL $(__akn_bundle_url))\"") "$@"; }
 	# Likewise for ~/.tmux.conf. tmux only reads its config when starting a
 	# server, so use our own server (-L) rather than the account's usual one.
-	tmux() { command tmux -L akn -f <(__akn_bundled_file dot-home/.tmux.conf) "$@"; }
+	# New panes get the bundle the same way as nested bash shells.
+	tmux() {
+		command tmux -L akn -f <(
+			__akn_bundled_file dot-home/.tmux.conf
+			cat <<EOF
+set -g default-shell '$BASH'
+set -g default-command "exec '$BASH' --rcfile <(echo 'eval \\"\\\$(curl -fsSL $(__akn_bundle_url))\\"')"
+EOF
+		) "$@"
+	}
 	# And for vim and neovim, which both use the vimrc (the nvim config isn't
 	# bundled). AKN_BUNDLED tells the vimrc not to set up plugins.
 	vim() { AKN_BUNDLED=1 command vim -u <(__akn_bundled_file config/vim/vimrc) "$@"; }
