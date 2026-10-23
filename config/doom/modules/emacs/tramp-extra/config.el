@@ -211,16 +211,6 @@
   (projectile-invalidate-cache nil)
   (message "%s" (projectile-project-root)))
 
-(defadvice! akn/doom-project-ignored-p--a (project-root)
-  :override #'doom-project-ignored-p
-  (when (string-match-p (rx bos "~" (or "/" eos)) project-root)
-    (setq project-root (concat (getenv-internal "HOME") (substring-no-properties project-root 1))))
-  (if (akn/file-remote-p project-root)
-      (or (file-in-directory-p project-root temporary-file-directory)
-          (file-in-directory-p project-root doom-local-dir))
-    (or (string-prefix-p temporary-file-directory project-root)
-        (string-prefix-p doom-local-dir project-root))))
-
 ;;; PERF: tramp-hlo
 
 (use-package! tramp-hlo

@@ -2418,6 +2418,16 @@ file modes."
   :config
   (setopt copy-as-format-default "github"))
 
+;;; PERF: speed up listing known projects
+
+(define-advice doom-project-ignored-p (:override (project-root) akn/perf-a)
+  (when (string-match-p (rx bos "~" (or "/" eos)) project-root)
+    ;; replace "~" with the full $HOME so we can use string-prefix-p instead of file-in-directory
+    (setq project-root (concat (getenv-internal "HOME") (substring-no-properties project-root 1))))
+  (unless (akn/file-remote-p project-root)
+    (or (string-prefix-p temporary-file-directory project-root)
+        (string-prefix-p doom-local-dir project-root))))
+
 ;;; PERF: speed up killing emacs
 
 (after! projectile
