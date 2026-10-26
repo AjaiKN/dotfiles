@@ -1,6 +1,6 @@
 ;;; app/transcribe/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
-(package! emms :pin "e3824b81b11ac71b9bb0993a3a3d3647b923a377")
+(package! emms :pin "6f704fd3c12f35e059700aaeb43ae64c35ad81b2")
 
 ;; (package! transcribe         :pin "e9dbfeb50b5845fc9a5fbe524a733752d948c352") ; depends on emms
 ;; (package! transcription-mode :pin "308d70bb2392f24da0003e9da9ff0be845b6ffe2" :recipe (:host github :repo "skeeto/transcription-mode"))

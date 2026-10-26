@@ -1,6 +1,6 @@
 ;;; lang/ess/packages.el -*- lexical-binding: t; no-byte-compile: t; -*-
 
-(package! ess :pin "254d3297836f2a2a509fe78fc393ba9037d73614")
+(package! ess :pin "bb8f50f08798928c71fce20c7ea92fa16dbece0a")
 (package! ess-R-data-view :pin "d6e98d3ae1e2a2ea39a56eebcdb73e99d29562e9")
 (package! ess-view-data :pin "9d12c80097b532a5af4561a8c65f1862cb414c7a")
 (package! essgd :pin "d9a3729ebaeeeec78984f00508cf2785bc7e8978")

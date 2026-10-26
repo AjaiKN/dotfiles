@@ -17,7 +17,7 @@
 (package! outli :pin "36a5048805f363b3161c8d0a96cd904351231c91"
   :recipe (:host github :repo "jdtsmith/outli"))
 
-(package! outline-indent :pin "41b5065b5c9a2a0b8a796cab27e60aad00d762f0")
+(package! outline-indent :pin "8d4cc855d9447a57d4361792c5cd4c4a7dbdaecc")
 
 (package! comint-fold :pin "0dd06663d4e666c20650c3556fe4985731dd600f"
   :recipe (:host github :repo "jdtsmith/comint-fold"))

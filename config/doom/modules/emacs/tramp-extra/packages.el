@@ -6,6 +6,6 @@
 
 (when (modulep! +rpc)
   (package! msgpack :pin "5353a7b2da854c843cbec4536996242001f63471")
-  (package! tramp-rpc :pin "948e42a76a97947fb2a00e2815f958b7e7b40534"
+  (package! tramp-rpc :pin "c00e7171cb390a8bf53ec818ea95167a0d8b7945"
     :recipe (:host github :repo "ArthurHeymans/emacs-tramp-rpc"
              :files (:defaults "**/*"))))

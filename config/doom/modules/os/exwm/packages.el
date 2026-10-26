@@ -2,12 +2,12 @@
 
 ;; https://github.com/LemonBreezes/cyber-angel-emacs
 
-(package! cae-lib :recipe (:host github :repo "LemonBreezes/cae-lib") :pin "de3d8379b631eef57e683af0dec65c8d4fb0350f")
+(package! cae-lib :recipe (:host github :repo "LemonBreezes/cae-lib") :pin "2cac10a793cd913f08b1fbfe8f3609bff9e5f8fe")
 
 (package! xelb :recipe
-  (:host github :repo "emacs-exwm/xelb") :pin "9e007c9eb595cd5d58e749c7679201bda999a229")
+  (:host github :repo "emacs-exwm/xelb") :pin "638692fac2e3ef081cd8c39891d6d6e15032ff17")
 (package! exwm :recipe
-  (:host github :repo "emacs-exwm/exwm") :pin "f719e872a8579a5407d55f7eaa90b68a81e6df86")
+  (:host github :repo "emacs-exwm/exwm") :pin "5cd76bb639df30a8a7d0f0bbf2edeacd75be0548")
 (package! exwm-mff :pin "89206f2e3189f589c27c56bd2b6203e906ee7100")
 (when (modulep! :editor evil +everywhere)
   (package! exwm-evil
