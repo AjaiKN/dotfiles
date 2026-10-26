@@ -9,8 +9,7 @@
       "n"   #'mindstream-new
       "b"   #'mindstream-enter-anonymous-session
       "t"   #'mindstream-enter-session-for-template
-      "m"   #'mindstream-begin-session
-      "q"   #'mindstream-end-session
+      "m"   #'mindstream-start-stream
       "s"   #'mindstream-save-session
       "C-s" #'mindstream-save-session
       "r"   #'mindstream-load-session
@@ -19,7 +18,7 @@
       "C-o" #'mindstream-go-offline)
 
 (use-package! mindstream
-  :commands (mindstream-new mindstream-enter-anonymous-session mindstream-enter-session-for-template mindstream-begin-session mindstream-end-session mindstream-save-session mindstream-save-session mindstream-load-session mindstream-archive mindstream-go-live mindstream-go-offline)
+  :commands (mindstream-new mindstream-enter-anonymous-session mindstream-enter-session-for-template mindstream-start-stream mindstream-save-session mindstream-save-session mindstream-load-session mindstream-archive mindstream-go-live mindstream-go-offline)
   :config
   (setq mindstream-template-path (expand-file-name "mindstream-templates/" doom-user-dir)
         mindstream-path (akn/expand-file "~/mindstream/anon")
