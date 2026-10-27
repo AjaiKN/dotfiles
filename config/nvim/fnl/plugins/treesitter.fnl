@@ -2,7 +2,11 @@
 
 [;; Highlight, edit, and navigate code
  (tx "nvim-treesitter/nvim-treesitter"
-     {:build ":TSUpdate"
+     {;; Upstream's default branch is now `main`, an incompatible rewrite
+      ;; (no `nvim-treesitter.configs`). Stay on the frozen `master` until
+      ;; this config is migrated.
+      :branch :master
+      :build ":TSUpdate"
       :main "nvim-treesitter.configs" ;; Sets main module to use for opts
       ;; [[ Configure Treesitter ]] See `:help nvim-treesitter`
       ;; There are additional nvim-treesitter modules that you can use to interact
@@ -22,5 +26,5 @@
              :indent {:enable true :disable [:ruby]}}})
 
  (tx "nvim-treesitter/nvim-treesitter-context")
- (tx "nvim-treesitter/nvim-treesitter-textobjects")]
+ (tx "nvim-treesitter/nvim-treesitter-textobjects" {:branch :master})]
 
