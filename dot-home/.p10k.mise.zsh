@@ -16,11 +16,15 @@
 
 () {
   function prompt_mise() {
-    local plugins=("${(@f)$(mise ls --current --offline 2>/dev/null | awk '!/\(symlink\)/ && $3!="~/.tool-versions" && $3!="~/.config/mise/config.toml" {if ($1) print $1, $2}')}")
+    # mise reports the global config by its resolved path when inside the dotfiles repo
+    local global_real=${${:-~/.config/mise/config.toml}:A}
+    global_real=${global_real/#$HOME/\~}
+    local plugins=("${(@f)$(mise ls --current --offline 2>/dev/null | awk -v global_real="$global_real" '!/\(symlink\)/ && $3!="~/.tool-versions" && $3!="~/.config/mise/config.toml" && $3!=global_real {if ($1) print $1, $2}')}")
     local plugin
     for plugin in ${(k)plugins}; do
       local parts=("${(@s/ /)plugin}")
-      local tool=${(U)parts[1]}
+      # tool names like "go:github.com/..." aren't valid in p10k's parameter names
+      local tool=${(U)parts[1]//[^[:alnum:]_]/_}
       local version=${parts[2]}
       p10k segment -r -i "${tool}_ICON" -s $tool -t "$version"
     done
