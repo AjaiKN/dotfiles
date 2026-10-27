@@ -142,6 +142,7 @@ is_ignored() {
 	base=$(basename "$1") || exit 34
 	case "$base" in
 		.DS_Store|.unfold|.#*|*~|'#'*'#') return 0 ;;
+		*.zwc) return 0 ;;
 		*) return 1 ;;
 	esac
 }
