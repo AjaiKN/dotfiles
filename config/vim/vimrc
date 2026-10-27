@@ -127,24 +127,25 @@ if !has('nvim') && empty($AKN_BUNDLED)
 	endfunction
 
 	if empty(glob(data_dir . '/autoload/plug.vim'))
-		silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+		silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/7e5aae5e1187842cb0b1d8def986e48d481c4410/plug.vim'
 		autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 	endif
 
 	" vim-plug
 	call plug#begin(plug_dir)
-		Plug 'tpope/vim-commentary'
-		Plug 'tpope/vim-sleuth'
-		Plug 'easymotion/vim-easymotion'
-		Plug 'tommcdo/vim-lion'
-		Plug 'justinmk/vim-sneak'
-		Plug 'tpope/vim-surround'
-		Plug 'tpope/vim-unimpaired'
-		Plug 'liuchengxu/vim-which-key'
-		Plug 'tpope/vim-fugitive'
-		Plug 'ctrlpvim/ctrlp.vim', Cond(!exists('g:vscode'))
-		Plug 'rhysd/git-messenger.vim'
-		Plug 'psliwka/vim-smoothie'
+		" Pinned; bump with the vim-plugins-upgrade skill.
+		Plug 'tpope/vim-commentary', { 'commit': '64a654ef4a20db1727938338310209b6a63f60c9' }
+		Plug 'tpope/vim-sleuth', { 'commit': 'be69bff86754b1aa5adcbb527d7fcd1635a84080' }
+		Plug 'easymotion/vim-easymotion', { 'commit': 'b3cfab2a6302b3b39f53d9fd2cd997e1127d7878' }
+		Plug 'tommcdo/vim-lion', { 'commit': 'ce46593ecd60e6051fb6e4d3986d2fc9f5a618b1' }
+		Plug 'justinmk/vim-sneak', { 'commit': 'feea86adcfbf8e6b5e71fdd5f4f5736fd8819fdb' }
+		Plug 'tpope/vim-surround', { 'commit': '3d188ed2113431cf8dac77be61b842acb64433d9' }
+		Plug 'tpope/vim-unimpaired', { 'commit': 'db65482581a28e4ccf355be297f1864a4e66985c' }
+		Plug 'liuchengxu/vim-which-key', { 'commit': '72a4267b46a76f541b3e9500a7503575575d4f57' }
+		Plug 'tpope/vim-fugitive', { 'commit': '3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0' }
+		Plug 'ctrlpvim/ctrlp.vim', Cond(!exists('g:vscode'), { 'commit': '0065942ef13ce28293e2b26cb622d035da050b44' })
+		Plug 'rhysd/git-messenger.vim', { 'commit': 'fd124457378a295a5d1036af4954b35d6b807385' }
+		Plug 'psliwka/vim-smoothie', { 'commit': 'df1e324e9f3395c630c1c523d0555a01d2eb1b7e' }
 		"Plug 'preservim/nerdtree'
 	call plug#end()
 endif
