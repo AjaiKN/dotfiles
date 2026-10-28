@@ -20,6 +20,25 @@
 
 (add-load-path! "./lisp")
 
+;; Older libgccjit (e.g. 14.3, bundled by build-emacs-for-macos) guesses the
+;; macOS version as Darwin major - 9, which is wrong since Apple's renumbering
+;; (Darwin 27 -> "-mmacosx-version-min=18.0"), so clang rejects it and all
+;; native compilation fails. Pass the real version explicitly.
+;; Remove this once the Emacs.app's bundled libgccjit is new enough to get the
+;; version right (build-emacs-for-macos takes it from the nixpkgs in its
+;; flake.nix). To check: comment this out, restart, and see whether
+;; (native-compile '(lambda (x) x)) still fails.
+;; https://github.com/caldwell/build-emacs/issues/158
+;; https://gcc.gnu.org/bugzilla/show_bug.cgi?id=120645
+(when (and (eq system-type 'darwin) (featurep 'native-compile))
+  ;; `native-comp-driver-options' is defined in comp.el, which isn't loaded yet.
+  (with-eval-after-load 'comp
+    (when-let* ((version (ignore-errors
+                           (car (process-lines "sw_vers" "-productVersion")))))
+      (add-to-list 'native-comp-driver-options
+                   (concat "-mmacosx-version-min=" version)
+                   t))))
+
 (setq el-patch-use-advice t)
 (setq evil-collection-setup-minibuffer t)
 
