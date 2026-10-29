@@ -94,6 +94,10 @@
 	split = history split #--update-refs=head
 	drop = history drop #--update-refs=head
 
+	toplevel = rev-parse --show-toplevel
+	dirprefix = rev-parse --show-prefix
+	superdir = rev-parse --show-superproject-working-tree
+
 	# https://blog.ipspace.net/2020/04/git-tip-word-diff.html
 	wdiff = diff --word-diff --word-diff-regex='\\w+'
 
