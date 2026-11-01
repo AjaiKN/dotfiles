@@ -2734,6 +2734,44 @@ there's no need for `markdown-mode' to reduplicate the effort."
   (makunbound 'calendar-holidays)
   (load "holidays" nil 'nomessage))
 
+;;; server
+
+(setq server-kill-new-buffers nil)
+
+;; With multiple files, emacsclient only displays the first one, so the rest
+;; wouldn't be in the frame's buffer list (which hides them from bufferlo) or the
+;; window's buffer history (which hides them from the tab line).
+(defvar akn/server--visited-buffers nil)
+(add-hook! 'server-visit-hook
+  (defun akn/server-visit-add-to-frame-buffers-h ()
+    "Add the buffer we're being asked to visit to the current frame.
+
+Also add the buffer to `akn/server--visited-buffers' so we can later add
+it to the window."
+    ;; Create the frame's initial tab now, since doing so runs
+    ;; `tab-bar-tab-post-open-functions', and bufferlo resets the buffer list there.
+    (funcall tab-bar-tabs-function)
+    (akn/record-buffer)
+    (push (current-buffer) akn/server--visited-buffers)))
+(add-hook! 'server-switch-hook
+  (defun akn/server-switch-add-to-window-buffers-h ()
+    "Add all the buffers we were asked to visit to the current window."
+    (let* ((buffers (cl-loop for b in akn/server--visited-buffers
+                             unless (or (eq b (current-buffer))
+                                        (assq b (window-prev-buffers))
+                                        (not (buffer-live-p b)))
+                             collect b))
+           (buffers-and-markers
+            (cl-loop for b in buffers
+                     collect (with-current-buffer b
+                               (list b (point-min-marker) (point-marker))))))
+      (setq akn/server--visited-buffers nil)
+      ;; `switch-to-next-buffer' skips next-buffers with no prev-buffers entry.
+      (set-window-prev-buffers nil (append (window-prev-buffers)
+                                           (nreverse buffers-and-markers)))
+      (set-window-next-buffers nil (append buffers
+                                           (window-next-buffers))))))
+
 ;;; akn/server-quit-mode
 
 ;; TODO: combine with `akn/info-standalone'

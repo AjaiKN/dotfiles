@@ -190,14 +190,14 @@ else
 		if [[ -n "$create_frame" ]]; then
 			flags+=(-c)
 		fi
-		for arg in "$@"; do
+		if (( $# > 0 )); then
 			if [[ "$(uname -s)" = "Linux" ]]; then
-				TERM=xterm-256color nohup emacsclient "${flags[@]}" -- "$arg" </dev/null >/dev/null 2>&1 &
+				TERM=xterm-256color nohup emacsclient "${flags[@]}" -- "$@" </dev/null >/dev/null 2>&1 &
 			else
-				TERM=xterm-256color emacsclient "${flags[@]}" -- "$arg"
+				TERM=xterm-256color emacsclient "${flags[@]}" -- "$@"
 			fi
 			flags=(-n) # reset flags (so we don't create extra new frames, for example)
-		done
+		fi
 		emacsclient "${flags[@]}" -e '(ignore-errors (akn/focus-this-frame))' >/dev/null
 	fi
 fi
