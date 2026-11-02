@@ -35,18 +35,31 @@ if !has('nvim')
 	set runtimepath=$XDG_CONFIG_HOME/vim,$vim_data_dir,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,$vim_data_dir/after,$XDG_CONFIG_HOME/vim/after
 endif
 
-" https://vi.stackexchange.com/a/53
-" Saving undo info
-if !isdirectory(data_dir)
-    call mkdir(data_dir, 'p', 0700)
+" Running as root, $HOME might still be my user's (macOS's sudo keeps it), so
+" don't create any files there; they'd end up owned by root.
+let is_root = systemlist('id -u')[0] ==# '0'
+
+if is_root
+	set noundofile noswapfile
+	if has('nvim')
+		set shada=
+	else
+		set viminfo=
+	endif
+else
+	" https://vi.stackexchange.com/a/53
+	" Saving undo info
+	if !isdirectory(data_dir)
+	    call mkdir(data_dir, 'p', 0700)
+	endif
+	if !isdirectory(plug_dir)
+	    call mkdir(plug_dir, 'p', 0700)
+	endif
+	if !isdirectory(undo_dir)
+	    call mkdir(undo_dir, 'p', 0700)
+	endif
+	set undofile
 endif
-if !isdirectory(plug_dir)
-    call mkdir(plug_dir, 'p', 0700)
-endif
-if !isdirectory(undo_dir)
-    call mkdir(undo_dir, 'p', 0700)
-endif
-set undofile
 
 set incsearch
 set hlsearch
@@ -119,7 +132,7 @@ if !has('nvim')
 endif
 
 " (Not when run from scripts/bundle's bashrc, which shouldn't download plugins.)
-if !has('nvim') && empty($AKN_BUNDLED)
+if !has('nvim') && empty($AKN_BUNDLED) && !is_root
 	" https://github.com/junegunn/vim-plug/wiki/tips#conditional-activation
 	function! Cond(cond, ...)
 		let opts = get(a:000, 0, {})

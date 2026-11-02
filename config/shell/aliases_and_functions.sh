@@ -1,4 +1,4 @@
-# shellcheck shell=bash
+# shellcheck shell=bash disable=SC2139
 
 ## Changing/making/removing directories
 alias -- -='cd -'
@@ -151,11 +151,14 @@ alias copy="cp -i"
 # for local files only
 alias cpv='rsync -pogbr -hhh --backup-dir="/tmp/rsync-${USERNAME}" -e /dev/null --progress'
 
-# https://github.com/ohmyzsh/ohmyzsh/blob/master/plugins/rsync/rsync.plugin.zsh
-alias rsync-copy="rsync -avz --progress -h"
-alias rsync-move="rsync -avz --progress -h --remove-source-files"
-alias rsync-update="rsync -avzu --progress -h"
-alias rsync-synchronize="rsync -avzu --delete --progress -h"
+rsync_akn="rsync -avzh --progress"
+alias rsync-move-overwrite="$rsync_akn --partial --remove-source-files"
+alias rsync-move-keepexisting="$rsync_akn --remove-source-files --ignore-existing"
+alias rsync-overwrite="$rsync_akn --partial"
+alias rsync-newer-overwrite="$rsync_akn -u --partial"
+alias rsync-nogit-overwrite="$rsync_akn --partial --exclude=.git --filter=':- .gitignore'"
+alias rsync-keepexisting="$rsync_akn --ignore-existing"
+alias rsync-nogit-keepexisting="$rsync_akn --exclude=.git --filter=':- .gitignore' --ignore-existing"
 
 alias trash=zap
 

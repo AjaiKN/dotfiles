@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
 
+# This is usually $EDITOR, and root can't reach my Emacs daemon.
+if [[ $EUID -eq 0 ]]; then
+	exec "$(command -v vim || echo vi)" "$@"
+fi
+
 exec "$(dirname "$0")"/emacs-open --term "$@"

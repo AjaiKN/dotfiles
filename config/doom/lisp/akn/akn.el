@@ -1303,11 +1303,14 @@ Recurses inner lists to find strings to unpropertize."
 
 ;;;###autoload
 (defun akn/record-buffer (&optional buffer)
+  "Record BUFFER as recently used in the selected frame.
+If it's in the selected window, move it to the front of the buffer lists."
   (with-current-buffer (or buffer (current-buffer))
     (cl-pushnew (current-buffer) (frame-parameter nil 'buffer-list) :test #'eq)
     ;; window.c says: switch-to-buffer uses (select-window (selected-window)) as a
     ;; "clever" way to call record_buffer from Elisp
-    (select-window (selected-window))))
+    (when (eq (window-buffer) (current-buffer))
+      (select-window (selected-window)))))
 ;;;###autoload
 (defun akn/mark-buffer-real (&optional buffer)
   (interactive)
