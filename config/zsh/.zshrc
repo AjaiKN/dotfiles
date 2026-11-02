@@ -274,9 +274,10 @@ akn_this_is_my_regular_computer_and_account() {
 
 # omz-termsupport
 if [[ -n $SSH_CLIENT || -n $SSH_TTY || -n $SSH_CONNECTION || -z $akn_this_is_my_regular_computer_and_account ]]; then
-	ZSH_THEME_TERM_TAB_TITLE_IDLE='%n@%m:'
 	if [[ $USER == (#i)*ajai* || $USER == nelso2ak ]]; then
-		ZSH_THEME_TERM_TAB_TITLE_IDLE='%m:'
+		ZSH_THEME_TERM_TAB_TITLE_IDLE="%m: $ZSH_THEME_TERM_TAB_TITLE_IDLE"
+	else
+		ZSH_THEME_TERM_TAB_TITLE_IDLE="%n@%m: $ZSH_THEME_TERM_TAB_TITLE_IDLE"
 	fi
 fi
 
