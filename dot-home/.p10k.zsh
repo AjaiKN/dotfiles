@@ -917,11 +917,9 @@
   # Default context format (no privileges, no SSH): user@hostname.
   typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%n@%m'
 
-  if ! [[ $USER != (#i)*ajai* || $HOST != (#i)*ajai* ]]; then
-    # Don't show context unless running with privileges or in SSH.
-    # Tip: Remove the next line to always show context.
-    typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
-  fi
+  # Don't show context unless running with privileges or in SSH.
+  # I set this in ~/.zshrc if I'm on my regular computer/account.
+  # typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
 
   # Custom icon.
   # typeset -g POWERLEVEL9K_CONTEXT_VISUAL_IDENTIFIER_EXPANSION='⭐'

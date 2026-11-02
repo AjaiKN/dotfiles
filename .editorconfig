@@ -19,7 +19,7 @@ indent_style = space
 indent_style = space
 indent_size = 4
 
-[*.{roc,nix,json,yml,kdl,swift,lua,go,org,toml}]
+[{*.{roc,nix,json,yml,kdl,swift,lua,go,org,toml},.p10k.*}]
 indent_style = unset
 
 [*.md]
