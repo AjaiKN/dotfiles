@@ -284,7 +284,8 @@ fi
 if [[ -n $akn_this_is_my_regular_computer_and_account ]]; then
 	# Don't show context unless running with privileges or in SSH.
 	typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
-elif [[ $USER == (#i)*ajai* || $USER == nelso2ak ]]; then
+fi
+if [[ $USER == (#i)*ajai* || $USER == nelso2ak ]]; then
 	typeset -g POWERLEVEL9K_CONTEXT_{,REMOTE_}TEMPLATE='%m:'
 elif [[ $HOST == (#i)*ajai* ]]; then
 	typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%n:'
