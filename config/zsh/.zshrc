@@ -272,15 +272,19 @@ akn_this_is_my_regular_computer_and_account() {
 	touch ${XDG_CONFIG_HOME:-~/.config}/.akn_this_is_my_regular_computer_and_account
 }
 
+# omz-termsupport
 if [[ -n $SSH_CLIENT || -n $SSH_TTY || -n $SSH_CONNECTION || -z $akn_this_is_my_regular_computer_and_account ]]; then
-	# omz-termsupport
 	ZSH_THEME_TERM_TAB_TITLE_IDLE='%n@%m:'
 fi
 
+# powerlevel10k
 if [[ -n $akn_this_is_my_regular_computer_and_account ]]; then
-	# powerlevel10k
 	# Don't show context unless running with privileges or in SSH.
 	typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
+elif [[ $USER == (#i)*ajai* || $USER == nelso2ak ]]; then
+	typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%m'
+elif [[ $HOST == (#i)*ajai* ]]; then
+	typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE='%n'
 fi
 
 ### Emacs  tramp
