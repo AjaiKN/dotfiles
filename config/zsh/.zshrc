@@ -237,11 +237,6 @@ load_plugins
 
 ZSH_HIGHLIGHT_HIGHLIGHTERS+=(brackets)
 
-# omz-termsupport
-if [[ -n $SSH_CLIENT || -n $SSH_TTY || -n $SSH_CONNECTION || $USER != (#i)*ajai* || $HOST != (#i)*ajai* ]]; then
-  ZSH_THEME_TERM_TAB_TITLE_IDLE='%n@%m:'
-fi
-
 ### Misc
 
 # Sets color variable such as $fg, $bg, $color and $reset_color
@@ -259,9 +254,33 @@ KEYTIMEOUT=1 # 0.01 seconds
 
 ### Powerlevel10k
 if [[ $ZSH_THEME == "powerlevel10k/powerlevel10k" ]]; then
-	# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+	# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh
 	[[ ! -f $DOTFILES/dot-home/.p10k.zsh ]] || compile_and_source $DOTFILES/dot-home/.p10k.zsh
 	[[ ! -f $DOTFILES/dot-home/.p10k.mise.zsh ]] || compile_and_source $DOTFILES/dot-home/.p10k.mise.zsh
+fi
+
+### Is this my regular computer/account?
+
+akn_this_is_my_regular_computer_and_account=
+if
+	[[ $USER == (#i)*ajai* && $HOST == (#i)*ajai* ]] ||
+		[[ -e ${XDG_CONFIG_HOME:-~/.config}/.akn_this_is_my_regular_computer_and_account ]]
+then
+	akn_this_is_my_regular_computer_and_account=1
+fi
+akn_this_is_my_regular_computer_and_account() {
+	touch ${XDG_CONFIG_HOME:-~/.config}/.akn_this_is_my_regular_computer_and_account
+}
+
+if [[ -n $SSH_CLIENT || -n $SSH_TTY || -n $SSH_CONNECTION || -z $akn_this_is_my_regular_computer_and_account ]]; then
+	# omz-termsupport
+	ZSH_THEME_TERM_TAB_TITLE_IDLE='%n@%m:'
+fi
+
+if [[ -n $akn_this_is_my_regular_computer_and_account ]]; then
+	# powerlevel10k
+	# Don't show context unless running with privileges or in SSH.
+	typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
 fi
 
 ### Emacs  tramp
