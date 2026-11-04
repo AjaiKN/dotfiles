@@ -1173,7 +1173,7 @@ underscores in all modes."
     (when (and buffer-file-name (not (bound-and-true-p better-backup-buffer-mode)))
       (better-backup-buffer-mode))))
 
-(akn/after-idle! ((* 60 27) :each-idle t)
+(akn/after-idle! ((* 60 27) :each-idle t :timer-name akn/dedupe-better-backup-timer)
   (let ((default-directory better-backup-directory))
     (when (and (file-exists-p default-directory)
                (executable-find "fclones"))
