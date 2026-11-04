@@ -789,7 +789,8 @@ Emacs is idle; if you leave Emacs idle for 20 minutes all at once, a
 2-minute idle timer will only run once.
 
 If you want it to be run 10 times in that example, use REPEAT instead.
-It's best to specify the TIMER-NAME when using REPEAT.
+
+It's best to specify a TIMER-NAME when using EACH-IDLE or REPEAT.
 
 If STARTING-NOW is nil, then if, for example, Emacs has already been
 idle for 10 seconds when this macro is run, those 10 seconds will
