@@ -46,11 +46,15 @@
 (defun +fold--hideshow-fold-p ()
   (when (+fold--ensure-hideshow-mode)
     (save-excursion
-      (or (ignore-errors (funcall hs-looking-at-block-start-p-func))
+      (or (ignore-errors (funcall (if (boundp 'hs-looking-at-block-start-predicate)
+                                      hs-looking-at-block-start-predicate ; Emacs 31.1+
+                                    hs-looking-at-block-start-p-func)))
           ;;DIFFERENCE FROM ORIGINAL
           (save-excursion
             (when-let* ((line-num-orig (line-number-at-pos))
-                        (block-beginning (ignore-errors (funcall hs-find-block-beginning-func)))
+                        (block-beginning (ignore-errors (funcall (if (boundp 'hs-find-block-beginning-function)
+                                                                      hs-find-block-beginning-function ; Emacs 31.1+
+                                                                    hs-find-block-beginning-func))))
                         (line-num-of-block-beginning (line-number-at-pos block-beginning))
                         (line-num-of-block-end (when hs-minor-mode
                                                  (hs-minor-mode 1)
