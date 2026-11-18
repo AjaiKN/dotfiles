@@ -20,6 +20,7 @@ $HOME/.local/state/nix/profile/bin:\
 /run/current-system/sw/bin:\
 $HOME/.cargo/bin:\
 $HOME/.poetry/bin:\
+${XDG_DATA_HOME:-$HOME/.local/share}/pnpm/bin:\
 /Applications/Emacs.app/Contents/MacOS/bin:\
 /Applications/Coq-Platform~8.16~2022.09.app/Contents/Resources/bin:\
 /opt/local/bin:/opt/local/sbin:\
