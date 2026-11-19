@@ -2251,6 +2251,10 @@ file modes."
 
   (add-hook 'akn/vertico-buffer-hook #'akn/local-smooth-scroll-disabled-mode))
 
+(after! vertico-repeat
+  (akn/pushnew vertico-repeat-filter
+    #'embark-kill-ring-remove))
+
 ;;; show line numbers when narrowing
 (map! "C-x n e" #'widen    ; e for "expand"
       :n "z w"  #'widen)   ; to match "z n"
