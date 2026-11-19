@@ -210,7 +210,8 @@
 
 (akn/load! "+major-modes")
 
-(akn/load-private! "+prodigy")
+(when (modulep! :tools prodigy)
+  (akn/load-private! "+prodigy"))
 
 (use-package! org
   :when (modulep! :lang org)
