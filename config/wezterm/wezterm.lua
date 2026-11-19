@@ -5,7 +5,7 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 
 local home = wezterm.home_dir --os.getenv("HOME")
-local is_mac = string.find(wezterm.target_triple, 'darwin')
+local is_mac = string.find(wezterm.target_triple, 'darwin') and true or false
 
 function file_exists(name)
   -- https://stackoverflow.com/a/4991602
@@ -32,6 +32,17 @@ wezterm.on('toggle-opacity', function(window, pane)
   window:set_config_overrides(overrides)
 end)
 
+-- https://wezterm.org/config/lua/pane/get_metadata.html#since_last_response_ms
+wezterm.on('update-status', function(window, pane)
+  local meta = pane:get_metadata() or {}
+  if meta.is_tardy then
+    local secs = meta.since_last_response_ms / 1000.0
+    window:set_right_status(string.format('tardy: %5.1fs⏳', secs))
+  else
+    window:set_right_status('')
+  end
+end)
+
 for _,dir in ipairs({ home.."/.local/bin", home.."/bin", home.."/.config/guix/current/bin", home.."/.nix-profile/bin", "/nix/profile/bin", home.."/.local/state/nix/profile/bin", "/nix/var/nix/profiles/default/bin", "/usr/local/bin", "/usr/bin", "/bin", not is_mac and "/home/linuxbrew/.linuxbrew/bin" }) do
   if dir and file_exists(dir.."/zsh") then
     wezterm.log_info("shell: " .. dir.."/zsh")
@@ -46,6 +57,10 @@ end
 config.enable_kitty_keyboard = true
 config.window_background_opacity = my_opacity
 config.macos_window_background_blur = 3
+-- config.macos_fullscreen_extend_behind_notch = true
+config.swallow_mouse_click_on_pane_focus = false
+config.swallow_mouse_click_on_window_focus = is_mac
+config.switch_to_last_active_tab_when_closing_tab = true
 config.quit_when_all_windows_are_closed = false
 -- if file_exists(home .. "/prog/") then
 --   config.default_cwd = home .. "/prog"
@@ -120,7 +135,8 @@ config.keys = {
   bind('SUPER',       'd', act.SplitHorizontal),
   bind('SHIFT|SUPER', 'D', act.SplitVertical),
   bind('SHIFT|SUPER', 'L', act.ShowDebugOverlay),
-  bind('SUPER', 'p', act.ActivateCommandPalette),
+  bind('SUPER',       'p', act.ActivateCommandPalette),
+  bind('SHIFT|SUPER', 'P', act.ActivateCommandPalette),
   bind('CTRL|SUPER', 'f', act.ToggleFullScreen),
   bind('SUPER', 'Enter', if_kkp(kkp_super_enter, act.ToggleFullScreen)),
   bind('SUPER', 'LeftArrow', if_kkp(kkp_super_left, act.SendKey{ mods = 'CTRL', key = 'a' })),
@@ -142,6 +158,9 @@ config.keys = {
   bind('SHIFT|SUPER', 'O', wezterm.action.EmitEvent 'toggle-opacity'),
   bind('SHIFT|SUPER', 'UpArrow', if_kkp(kkp_super_shift_up, act.ScrollToPrompt(-1))),
   bind('SHIFT|SUPER', 'DownArrow', if_kkp(kkp_super_shift_up, act.ScrollToPrompt(1))),
+  -- or maybe attach?
+  -- bind('SUPER', 'u', act.SpawnTab{ DomainName = 'SSHMUX:ucdesktop' }),
+  bind('SHIFT|SUPER', 'U', act.AttachDomain 'SSHMUX:ucdesktop'),
 }
 
 if not is_mac then
@@ -216,6 +235,13 @@ config.mouse_bindings = {
     event = { Down = { streak = 4, button = 'Left' } },
     action = act.SelectTextAtMouseCursor 'SemanticZone',
   },
+
+  -- Change the default click behavior so that it only selects text and doesn't open hyperlinks
+  { mods = 'NONE', event = { Up   = { streak = 1, button = 'Left' } }, action = act.CompleteSelection 'ClipboardAndPrimarySelection' },
+  -- Bind 'Up' event of ALT-Click to open hyperlinks
+  { mods = 'ALT',  event = { Up   = { streak = 1, button = 'Left' } }, action = act.OpenLinkAtMouseCursor },
+  -- Disable the 'Down' event of ALT-Click to avoid weird program behaviors
+  { mods = 'ALT',  event = { Down = { streak = 1, button = 'Left' } }, action = act.Nop },
 }
 
 -- config.font = wezterm.font('Iosevka Term') -- crazy slow for some reason
