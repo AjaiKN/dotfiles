@@ -19,9 +19,10 @@
 my $repo = $*PROGRAM.resolve.parent.parent;
 
 # Files embedded in the bundle, by repo-relative path
-my @embedded-files = <dot-home/.inputrc dot-home/.tmux.conf config/vim/vimrc bin/zap scripts/secure_path>;
+my @embedded-files = <dot-home/.inputrc dot-home/.tmux.conf config/vim/vimrc>;
 # Shell functions that run an embedded script
-my %embedded-commands = zap => 'bin/zap', __akn_bundled_secure_path => 'scripts/secure_path';
+my %embedded-commands = zap => 'bin/zap', __akn_bundled_secure_path => 'scripts/secure_path', delete-ds-stores => 'bin/delete-ds-stores', secretly => 'bin/secretly';
+@embedded-files.append: %embedded-commands.values.sort;
 
 my $heredoc-end = 'AKN_BUNDLED_FILE_EOF';
 
